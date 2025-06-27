@@ -1,14 +1,42 @@
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://jeffhonforlocophotos.com/sitemap.xml
+
+# Specific crawl guidelines
+Crawl-delay: 1
+
+# Allow all major search engines
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
-User-agent: Twitterbot
+User-agent: Slurp
 Allow: /
 
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Social media crawlers
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# Pinterest
+User-agent: Pinterest
 Allow: /
