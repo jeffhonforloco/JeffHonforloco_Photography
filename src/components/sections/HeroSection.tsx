@@ -12,7 +12,7 @@ const HeroSection = () => {
   }, []);
 
   if (!contentData) {
-    return <div className="min-h-screen bg-photo-black"></div>;
+    return <div className="min-h-screen bg-black"></div>;
   }
 
   const portfolioImages = [
@@ -40,6 +40,10 @@ const HeroSection = () => {
               alt="Fashion Portrait"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '0s', animationDuration: '20s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[0]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
           <div className="col-span-6 row-span-3 relative overflow-hidden">
@@ -48,6 +52,10 @@ const HeroSection = () => {
               alt="Beauty Portrait"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '2s', animationDuration: '18s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[1]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
           <div className="col-span-3 row-span-4 relative overflow-hidden">
@@ -56,6 +64,10 @@ const HeroSection = () => {
               alt="Editorial Portrait"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '1s', animationDuration: '22s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[2]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
 
@@ -66,6 +78,10 @@ const HeroSection = () => {
               alt="Glamour Portrait"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '3s', animationDuration: '16s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[3]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
           <div className="col-span-2 row-span-2 relative overflow-hidden">
@@ -74,6 +90,10 @@ const HeroSection = () => {
               alt="Fashion Model"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '4s', animationDuration: '19s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[4]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
           <div className="col-span-3 row-span-3 relative overflow-hidden">
@@ -82,6 +102,10 @@ const HeroSection = () => {
               alt="Portrait Photography"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '1.5s', animationDuration: '21s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[5]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
 
@@ -92,6 +116,10 @@ const HeroSection = () => {
               alt="Beauty Shot"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '2.5s', animationDuration: '17s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[6]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
           <div className="col-span-4 row-span-1 relative overflow-hidden">
@@ -100,6 +128,10 @@ const HeroSection = () => {
               alt="Fashion Editorial"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '3.5s', animationDuration: '20s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[7]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
           <div className="col-span-2 row-span-3 relative overflow-hidden">
@@ -108,6 +140,10 @@ const HeroSection = () => {
               alt="Lifestyle Portrait"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '0.5s', animationDuration: '23s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[8]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
 
@@ -118,6 +154,10 @@ const HeroSection = () => {
               alt="Professional Portrait"
               className="w-full h-full object-cover animate-slide-up"
               style={{ animationDelay: '4.5s', animationDuration: '15s' }}
+              onError={(e) => {
+                console.log('Image failed to load:', portfolioImages[9]);
+                e.currentTarget.style.backgroundColor = '#333';
+              }}
             />
           </div>
         </div>
