@@ -7,11 +7,15 @@ const HeroSection = () => {
   const [isShareOpen, setIsShareOpen] = useState(false);
 
   const portfolioImages = [
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    'https://images.unsplash.com/photo-1506629905963-b3b17f54e5b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1506629905963-b3b17f54e5b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1518577915332-c2a19f149a75?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1512646605205-78422b7c7896?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+    'https://images.unsplash.com/photo-1539571696520-9f2891b92ac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
   ];
 
   useEffect(() => {
@@ -22,36 +26,80 @@ const HeroSection = () => {
   }, [portfolioImages.length]);
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
-      {/* Hero Image Slider */}
-      <div className="absolute inset-0">
-        {portfolioImages.map((image, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentSlide ? 'opacity-100' : 'opacity-0'
-            }`}
-          >
-            <img
-              src={image}
-              alt={`Editorial Photography ${index + 1}`}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.backgroundColor = '#000';
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
+    <section className="relative min-h-screen overflow-hidden bg-black">
+      {/* Three Column Image Collage with Infinite Scroll */}
+      <div className="absolute inset-0 flex">
+        {/* Column 1 */}
+        <div className="flex-1 relative overflow-hidden">
+          <div className="animate-slide-up-slow" style={{animationDuration: '40s'}}>
+            <div className="flex flex-col">
+              {portfolioImages.concat(portfolioImages).map((image, index) => (
+                <div key={`col1-${index}`} className="h-[70vh] mb-4">
+                  <img
+                    src={image}
+                    alt={`Editorial ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.backgroundColor = '#000';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        </div>
+
+        {/* Column 2 */}
+        <div className="flex-1 relative overflow-hidden">
+          <div className="animate-slide-up-slow" style={{animationDuration: '35s', animationDelay: '-10s'}}>
+            <div className="flex flex-col">
+              {portfolioImages.slice(3).concat(portfolioImages.slice(0, 3)).concat(portfolioImages.slice(3)).concat(portfolioImages.slice(0, 3)).map((image, index) => (
+                <div key={`col2-${index}`} className="h-[60vh] mb-4">
+                  <img
+                    src={image}
+                    alt={`Editorial ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.backgroundColor = '#000';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Column 3 */}
+        <div className="flex-1 relative overflow-hidden">
+          <div className="animate-slide-up-slow" style={{animationDuration: '45s', animationDelay: '-20s'}}>
+            <div className="flex flex-col">
+              {portfolioImages.slice(6).concat(portfolioImages.slice(0, 6)).concat(portfolioImages.slice(6)).concat(portfolioImages.slice(0, 6)).map((image, index) => (
+                <div key={`col3-${index}`} className="h-[80vh] mb-4">
+                  <img
+                    src={image}
+                    alt={`Editorial ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.backgroundColor = '#000';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/40 z-10"></div>
 
       {/* Central Logo */}
       <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="text-center animate-fade-in">
           <img 
-            src="/lovable-uploads/73dc6884-f3c8-4a35-b5f5-4b36c8cc8c36.png" 
+            src="/lovable-uploads/f17266df-16a1-4edd-8581-23b10bdb2eda.png" 
             alt="J Logo" 
-            className="w-32 h-32 md:w-48 md:h-48 lg:w-64 lg:h-64 mx-auto mb-8 filter drop-shadow-2xl opacity-90 hover:opacity-100 transition-opacity duration-500"
+            className="w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96 mx-auto filter drop-shadow-2xl opacity-95 hover:opacity-100 transition-opacity duration-500"
           />
         </div>
       </div>

@@ -36,14 +36,16 @@ const Header = () => {
     }`}>
       <div className="max-w-8xl mx-auto px-8 md:px-16">
         <div className="flex justify-between items-center">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-300">
-            <img 
-              src="/lovable-uploads/73dc6884-f3c8-4a35-b5f5-4b36c8cc8c36.png" 
-              alt="J Logo" 
-              className="w-8 h-8 md:w-10 md:h-10"
-            />
-          </Link>
+          {/* Logo - Only show on non-homepage */}
+          {location.pathname !== '/' && (
+            <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-300">
+              <img 
+                src="/lovable-uploads/f17266df-16a1-4edd-8581-23b10bdb2eda.png" 
+                alt="J Logo" 
+                className="w-8 h-8 md:w-10 md:h-10"
+              />
+            </Link>
+          )}
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-12">

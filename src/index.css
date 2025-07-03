@@ -205,6 +205,11 @@
   100% { transform: translateY(0%); }
 }
 
+@keyframes slideUpSlow {
+  from { transform: translateY(0); }
+  to { transform: translateY(-100%); }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
@@ -219,4 +224,8 @@
 
 .animate-slide-up {
   animation: slideUp linear infinite;
+}
+
+.animate-slide-up-slow {
+  animation: slideUpSlow linear infinite;
 }
