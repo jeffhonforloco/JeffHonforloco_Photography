@@ -104,8 +104,8 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Floating Share Menu */}
-      <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-30">
+      {/* Floating Share Menu - Positioned closer to center navigation */}
+      <div className="fixed right-16 top-1/2 transform -translate-y-1/2 z-30">
         <div className="relative">
           <button
             onClick={() => setIsShareOpen(!isShareOpen)}

@@ -47,13 +47,13 @@ const Header = () => {
             </Link>
           )}
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-12">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex space-x-12 absolute left-1/2 transform -translate-x-1/2">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`luxury-nav-link ${
+                className={`luxury-nav-link-thin ${
                   isActive(item.href) ? 'text-white' : 'text-white/70'
                 }`}
               >
