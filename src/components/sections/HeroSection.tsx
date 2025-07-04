@@ -1,10 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { Share2, Instagram, Youtube, Facebook } from 'lucide-react';
 
 const HeroSection = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isShareOpen, setIsShareOpen] = useState(false);
 
   const portfolioImages = [
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
@@ -21,17 +19,17 @@ const HeroSection = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % portfolioImages.length);
-    }, 5000);
+    }, 8000); // Slowed down from 5000ms to 8000ms
     return () => clearInterval(timer);
   }, [portfolioImages.length]);
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
-      {/* Three Column Image Collage with Infinite Scroll */}
+      {/* Image Collage - 2 columns on mobile, 3 on desktop */}
       <div className="absolute inset-0 flex">
         {/* Column 1 */}
         <div className="flex-1 relative overflow-hidden">
-          <div className="animate-slide-up-slow" style={{animationDuration: '120s'}}>
+          <div className="animate-slide-up-slow" style={{animationDuration: '180s'}}>
             <div className="flex flex-col">
               {portfolioImages.concat(portfolioImages).map((image, index) => (
                 <div key={`col1-${index}`} className="h-[70vh] mb-4">
@@ -51,7 +49,7 @@ const HeroSection = () => {
 
         {/* Column 2 */}
         <div className="flex-1 relative overflow-hidden">
-          <div className="animate-slide-up-slow" style={{animationDuration: '100s', animationDelay: '-30s'}}>
+          <div className="animate-slide-up-slow" style={{animationDuration: '160s', animationDelay: '-40s'}}>
             <div className="flex flex-col">
               {portfolioImages.slice(3).concat(portfolioImages.slice(0, 3)).concat(portfolioImages.slice(3)).concat(portfolioImages.slice(0, 3)).map((image, index) => (
                 <div key={`col2-${index}`} className="h-[60vh] mb-4">
@@ -69,9 +67,9 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Column 3 */}
-        <div className="flex-1 relative overflow-hidden">
-          <div className="animate-slide-up-slow" style={{animationDuration: '140s', animationDelay: '-60s'}}>
+        {/* Column 3 - Hidden on mobile */}
+        <div className="hidden md:flex flex-1 relative overflow-hidden">
+          <div className="animate-slide-up-slow" style={{animationDuration: '200s', animationDelay: '-80s'}}>
             <div className="flex flex-col">
               {portfolioImages.slice(6).concat(portfolioImages.slice(0, 6)).concat(portfolioImages.slice(6)).concat(portfolioImages.slice(0, 6)).map((image, index) => (
                 <div key={`col3-${index}`} className="h-[80vh] mb-4">
@@ -101,33 +99,6 @@ const HeroSection = () => {
             alt="J Logo" 
             className="mx-auto filter drop-shadow-2xl opacity-95 hover:opacity-100 transition-opacity duration-500"
           />
-        </div>
-      </div>
-
-      {/* Floating Share Menu - Positioned closer to center navigation */}
-      <div className="fixed right-16 top-1/2 transform -translate-y-1/2 z-30">
-        <div className="relative">
-          <button
-            onClick={() => setIsShareOpen(!isShareOpen)}
-            className="w-12 h-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 group"
-          >
-            <Share2 className={`w-5 h-5 transition-transform duration-300 ${isShareOpen ? 'rotate-180' : ''}`} />
-          </button>
-          
-          {/* Social Links */}
-          <div className={`absolute right-16 top-0 flex items-center space-x-4 transition-all duration-500 ${
-            isShareOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8 pointer-events-none'
-          }`}>
-            <a href="#" className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300">
-              <Instagram className="w-4 h-4" />
-            </a>
-            <a href="#" className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300">
-              <Youtube className="w-4 h-4" />
-            </a>
-            <a href="#" className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300">
-              <Facebook className="w-4 h-4" />
-            </a>
-          </div>
         </div>
       </div>
 
