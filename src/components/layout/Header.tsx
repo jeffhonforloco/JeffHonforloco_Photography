@@ -62,7 +62,7 @@ const Header = () => {
             ))}
           </div>
 
-          {/* Mobile Right Side - Social Media Icons and Menu */}
+          {/* Mobile Right Side - Social Media Icons then Menu */}
           <div className="md:hidden flex items-center space-x-4">
             <a href="#" className="text-white/70 hover:text-white transition-colors">
               <Facebook className="w-5 h-5" />
