@@ -21,7 +21,6 @@ const Header = () => {
     { name: 'About', href: '/about' },
     { name: 'Journal', href: '/journal' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Book a Session', href: '/contact?session=true' },
   ];
 
   const isActive = (path: string) => {
