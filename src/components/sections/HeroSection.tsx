@@ -24,8 +24,8 @@ const HeroSection = () => {
   }, [portfolioImages.length]);
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-gray-50 to-blue-50">
-      {/* Enhanced Image Collage - Bright and High Resolution */}
+    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-black via-gray-900 to-black">
+      {/* Enhanced Image Collage - High Resolution with Black Background */}
       <div className="absolute inset-0 flex gap-4 p-4 lg:gap-6 lg:p-6">
         {/* Column 1 */}
         <div className="flex-1 relative overflow-hidden">
@@ -39,11 +39,11 @@ const HeroSection = () => {
                     className="w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-700 group-hover:shadow-3xl brightness-110 contrast-115 saturate-125 hover:scale-[1.02]"
                     loading="lazy"
                     onError={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f8fafc';
+                      e.currentTarget.style.backgroundColor = '#000';
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-white/10 rounded-3xl"></div>
-                  <div className="absolute inset-0 ring-1 ring-white/20 rounded-3xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 rounded-3xl"></div>
+                  <div className="absolute inset-0 ring-1 ring-white/10 rounded-3xl"></div>
                 </div>
               ))}
             </div>
@@ -62,11 +62,11 @@ const HeroSection = () => {
                     className="w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-700 group-hover:shadow-3xl brightness-110 contrast-115 saturate-125 hover:scale-[1.02]"
                     loading="lazy"
                     onError={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f8fafc';
+                      e.currentTarget.style.backgroundColor = '#000';
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-white/10 rounded-3xl"></div>
-                  <div className="absolute inset-0 ring-1 ring-white/20 rounded-3xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 rounded-3xl"></div>
+                  <div className="absolute inset-0 ring-1 ring-white/10 rounded-3xl"></div>
                 </div>
               ))}
             </div>
@@ -85,11 +85,11 @@ const HeroSection = () => {
                     className="w-full h-full object-cover rounded-3xl shadow-2xl transition-all duration-700 group-hover:shadow-3xl brightness-110 contrast-115 saturate-125 hover:scale-[1.02]"
                     loading="lazy"
                     onError={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f8fafc';
+                      e.currentTarget.style.backgroundColor = '#000';
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white/30 via-transparent to-white/10 rounded-3xl"></div>
-                  <div className="absolute inset-0 ring-1 ring-white/20 rounded-3xl"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 rounded-3xl"></div>
+                  <div className="absolute inset-0 ring-1 ring-white/10 rounded-3xl"></div>
                 </div>
               ))}
             </div>
@@ -97,10 +97,10 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Bright Overlay with subtle gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/20 to-white/30 z-10"></div>
+      {/* Dark Overlay with enhanced contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60 z-10"></div>
 
-      {/* Central Logo with enhanced bright presentation */}
+      {/* Central Logo with enhanced bright presentation on dark background */}
       <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="text-center animate-fade-in">
           <div className="relative">
@@ -110,21 +110,21 @@ const HeroSection = () => {
               className="w-72 md:w-80 lg:w-96 xl:w-[28rem] 2xl:w-[32rem] mx-auto filter drop-shadow-2xl brightness-105 hover:brightness-110 transition-all duration-700 hover:scale-105"
               style={{ imageRendering: 'crisp-edges' }}
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-transparent rounded-full blur-2xl"></div>
-            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-transparent rounded-full blur-2xl"></div>
+            <div className="absolute -inset-4 bg-gradient-to-r from-photo-red/20 via-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse-subtle"></div>
           </div>
           
-          {/* Enhanced tagline for bright theme */}
+          {/* Enhanced tagline for dark theme */}
           <div className="mt-8 opacity-0 animate-fade-in" style={{ animationDelay: '1s', animationFillMode: 'forwards' }}>
-            <p className="text-gray-800 text-lg md:text-xl lg:text-2xl font-light tracking-wide max-w-2xl mx-auto leading-relaxed backdrop-blur-sm bg-white/30 rounded-2xl px-6 py-3 border border-white/40">
+            <p className="text-white text-lg md:text-xl lg:text-2xl font-light tracking-wide max-w-2xl mx-auto leading-relaxed backdrop-blur-sm bg-black/30 rounded-2xl px-6 py-3 border border-white/20">
               Capturing moments that shine with brilliance and beauty
             </p>
           </div>
         </div>
       </div>
 
-      {/* Floating elements for depth */}
-      <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-xl animate-float"></div>
+      {/* Floating elements for depth on dark background */}
+      <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-br from-photo-red/20 to-purple-400/20 rounded-full blur-xl animate-float"></div>
       <div className="absolute bottom-32 right-32 w-24 h-24 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '-2s' }}></div>
       <div className="absolute top-1/2 left-10 w-16 h-16 bg-gradient-to-br from-yellow-400/20 to-red-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '-4s' }}></div>
     </section>
