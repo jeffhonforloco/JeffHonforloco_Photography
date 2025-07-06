@@ -38,22 +38,24 @@ const About = () => {
               <div className="space-y-6 text-gray-300 text-lg leading-relaxed max-w-2xl">
                 <p>
                   Specializing in fashion and beauty photography, Jeff is a hyper-creative photographer 
-                  and astute businessman with over {contentData.experience.years} years of experience. 
-                  Based in {contentData.personal.location}, he has traveled extensively creating 
-                  compelling visual stories for brands and high-end editorial publications.
+                  and astute businessman with over 15+ years of experience. Based in Providence, RI area, USA, 
+                  he has traveled extensively creating compelling visual stories for brands and high-end 
+                  editorial publications.
                 </p>
                 
                 <p>
-                  {contentData.personal.bio} Jeff is known for his signature bold, clean, and graphic style. 
-                  Driven by his passion to be a visual problem solver and his love for creative collaboration, 
-                  he utilizes his best-in-class crew and production resources to push boundaries and lift 
-                  his commissioned and personal work.
+                  With over a decade of experience in professional photography, I've dedicated my career to 
+                  creating compelling visual stories that capture the essence and beauty of my subjects. 
+                  My work spans across fashion, beauty, editorial, and lifestyle photography. Jeff is known 
+                  for his signature bold, clean, and graphic style. Driven by his passion to be a visual 
+                  problem solver and his love for creative collaboration, he utilizes his best-in-class crew 
+                  and production resources to push boundaries and lift his commissioned and personal work.
                 </p>
                 
                 <p>
-                  With {contentData.experience.publishedWorks} published works and {contentData.experience.happyClients} happy clients, 
-                  Jeff continues to create timeless imagery that captures the essence and beauty of his subjects 
-                  while maintaining artistic integrity and technical excellence.
+                  With 50+ published works and 100+ happy clients, Jeff continues to create timeless imagery 
+                  that captures the essence and beauty of his subjects while maintaining artistic integrity 
+                  and technical excellence.
                 </p>
               </div>
               
