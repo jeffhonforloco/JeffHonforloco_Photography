@@ -335,7 +335,7 @@ const Journal = () => {
                 </button>
               </div>
               <p className="text-gray-500 text-sm mt-4">
-                © 2025 Jeff Honforloco Photography. All rights reserved.
+                No spam, unsubscribe at any time. Privacy policy applies.
               </p>
             </div>
           </div>
