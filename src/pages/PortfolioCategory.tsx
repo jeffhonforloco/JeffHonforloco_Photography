@@ -191,6 +191,17 @@ const PortfolioCategory = () => {
               </div>
             </div>
           </section>
+
+          {/* Copyright Notice */}
+          <section className="pb-8">
+            <div className="px-8">
+              <div className="max-w-7xl mx-auto text-center">
+                <p className="text-gray-500 text-sm">
+                  © 2025 Jeff Honforloco Photography. All rights reserved.
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </Layout>
     );
