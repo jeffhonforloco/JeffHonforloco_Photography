@@ -341,13 +341,6 @@ const Journal = () => {
           </div>
         </div>
       </section>
-
-      {/* Copyright */}
-      <section className="py-4 bg-black text-center">
-        <p className="text-gray-500 text-sm">
-          © 2025 Jeff Honforloco Photography. All rights reserved.
-        </p>
-      </section>
     </Layout>
   );
 };
