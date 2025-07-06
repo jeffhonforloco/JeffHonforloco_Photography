@@ -29,11 +29,11 @@ const AboutPreview = () => {
             <div className="w-32 h-px bg-gradient-to-r from-photo-red to-transparent mb-16"></div>
             
             <p className="font-light text-xl md:text-2xl text-gray-300 leading-relaxed mb-10 tracking-wide">
-              {contentData.personal.bio}
+              A visionary photographer and creative entrepreneur based in the United States, renowned for his captivating imagery and client-first approach. With years of hands-on experience in fashion, beauty, and lifestyle photography, Jeff has become a trusted name in the industry—recognized for delivering high-quality, emotionally compelling visuals that consistently leave clients amazed.
             </p>
             
             <p className="font-light text-xl md:text-2xl text-gray-300 leading-relaxed mb-16 tracking-wide">
-              Located in {contentData.personal.location}, specializing in {contentData.personal.specialization.toLowerCase()}.
+              Located in Providence, RI area, USA, specializing in fashion, beauty, editorial, lifestyle, and portrait photography.
             </p>
             
             <Link 
