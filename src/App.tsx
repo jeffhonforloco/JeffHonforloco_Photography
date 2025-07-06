@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Portfolio from "./pages/Portfolio";
 import PortfolioCategory from "./pages/PortfolioCategory";
 import Journal from "./pages/Journal";
+import JournalArticle from "./pages/JournalArticle";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -25,7 +26,7 @@ const App = () => (
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/portfolio/:category" element={<PortfolioCategory />} />
           <Route path="/journal" element={<Journal />} />
-          <Route path="/journal/:slug" element={<Journal />} />
+          <Route path="/journal/:slug" element={<JournalArticle />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
