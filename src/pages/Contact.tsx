@@ -48,24 +48,24 @@ const Contact = () => {
         <div className="lg:hidden">
           {/* Portrait Image - Mobile First */}
           <div className="pt-20 px-4">
-            <div className="relative max-w-sm mx-auto">
+            <div className="relative max-w-xs mx-auto">
               <img
                 src="/lovable-uploads/a1c7a9f7-09e2-44b4-9dbb-d807b674060c.png"
                 alt="Jeff Honforloco Portrait"
-                className="w-full aspect-[4/5] object-cover"
+                className="w-full aspect-[3/4] object-cover"
               />
               {/* Red Border Accent */}
-              <div className="absolute -bottom-4 -right-4 w-full h-full border-4 border-photo-red -z-10"></div>
+              <div className="absolute -bottom-3 -right-3 w-full h-full border-4 border-photo-red -z-10"></div>
             </div>
           </div>
 
           {/* Header */}
-          <div className="pt-12 pb-8 px-4">
+          <div className="pt-8 pb-6 px-4">
             <div className="text-center">
-              <h1 className="text-4xl font-light text-white mb-2 tracking-wider">
+              <h1 className="text-3xl font-serif text-white mb-1 tracking-wide">
                 CONTACT
               </h1>
-              <h2 className="text-4xl font-light text-white tracking-wider">
+              <h2 className="text-3xl font-serif text-white tracking-wide">
                 JEFF HONFORLOCO
               </h2>
             </div>
@@ -149,10 +149,10 @@ const Contact = () => {
           {/* Header */}
           <div className="pt-32 pb-16">
             <div className="max-w-7xl mx-auto px-8">
-              <h1 className="text-5xl md:text-6xl font-light text-white mb-2 tracking-wider">
+              <h1 className="text-5xl md:text-6xl font-serif text-white mb-2 tracking-wide">
                 CONTACT
               </h1>
-              <h2 className="text-5xl md:text-6xl font-light text-white tracking-wider">
+              <h2 className="text-5xl md:text-6xl font-serif text-white tracking-wide">
                 JEFF HONFORLOCO
               </h2>
             </div>
