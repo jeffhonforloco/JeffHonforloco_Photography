@@ -17,9 +17,7 @@ const Footer = () => {
           <div>
             <h3 className="font-playfair text-3xl font-light mb-6">Jeff Honforloco</h3>
             <p className="text-lg md:text-xl font-light leading-relaxed text-gray-400">
-              Professional portrait, fashion, and editorial photography with a focus on 
-              capturing authentic moments and creating compelling visual narratives that 
-              resonate with sophistication and artistic vision.
+              Jeff Honforloco Photography – Fashion & Beauty Photographer | USA
             </p>
           </div>
           <div>
