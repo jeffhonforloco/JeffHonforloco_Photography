@@ -37,25 +37,19 @@ const About = () => {
               
               <div className="space-y-6 text-gray-300 text-lg leading-relaxed max-w-2xl">
                 <p>
-                  Specializing in fashion and beauty photography, Jeff is a hyper-creative photographer 
-                  and astute businessman with over 15+ years of experience. Based in Providence, RI area, USA, 
-                  he has traveled extensively creating compelling visual stories for brands and high-end 
-                  editorial publications.
+                  A visionary photographer and creative entrepreneur based in the United States, renowned for his captivating imagery and client-first approach. With years of hands-on experience in fashion, beauty, and lifestyle photography, Jeff has become a trusted name in the industry—recognized for delivering high-quality, emotionally compelling visuals that consistently leave clients amazed.
                 </p>
                 
                 <p>
-                  With over a decade of experience in professional photography, I've dedicated my career to 
-                  creating compelling visual stories that capture the essence and beauty of my subjects. 
-                  My work spans across fashion, beauty, editorial, and lifestyle photography. Jeff is known 
-                  for his signature bold, clean, and graphic style. Driven by his passion to be a visual 
-                  problem solver and his love for creative collaboration, he utilizes his best-in-class crew 
-                  and production resources to push boundaries and lift his commissioned and personal work.
+                  Passionate about highlighting the glamour, strength, and individuality of every subject, Jeff's work has graced top fashion shows in Providence, Rhode Island, where he currently resides and operates. His artistic eye and attention to detail make him a go-to photographer for models, brands, agencies, and individuals seeking to tell their story through powerful visuals.
                 </p>
                 
                 <p>
-                  With 50+ published works and 100+ happy clients, Jeff continues to create timeless imagery 
-                  that captures the essence and beauty of his subjects while maintaining artistic integrity 
-                  and technical excellence.
+                  Specializing in fashion, beauty, editorial, lifestyle, and portrait photography, Jeff takes pride in understanding his clients' vision and turning it into timeless art. His clients not only value his technical skill but also his warm energy, professionalism, and commitment to excellence.
+                </p>
+                
+                <p>
+                  Whether in front of the lens or behind it, Jeff is dedicated to creating meaningful moments. He believes, "A well-captured image represents a moment in time that lives on forever."
                 </p>
               </div>
               
