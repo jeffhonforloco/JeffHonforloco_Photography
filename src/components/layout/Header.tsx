@@ -1,7 +1,7 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Menu, X, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Menu, X, Facebook, Instagram, Youtube, Share } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,7 +53,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation - Centered */}
-          <div className="hidden md:flex space-x-12 absolute left-1/2 transform -translate-x-1/2">
+          <div className="hidden md:flex space-x-12 absolute left-1/2 transform -translate-x-1/2 items-center">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -65,6 +65,7 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            <Share className="w-5 h-5 text-white/70 hover:text-white transition-colors duration-300 cursor-pointer ml-12" />
           </div>
 
           {/* Right side - Social Media Icons */}
@@ -136,6 +137,7 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            <Share className="w-6 h-6 text-white/70 hover:text-white transition-colors duration-300 cursor-pointer mt-8" />
             
             {/* Share Button */}
             <div className="mt-8 flex items-center space-x-4">
