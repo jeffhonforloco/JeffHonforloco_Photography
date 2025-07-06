@@ -67,7 +67,7 @@ const DesktopNavigation = ({
       
       <div className="ml-4">
         <svg 
-          className="w-6 h-6 text-white hover:opacity-80 transition-all duration-300 cursor-pointer" 
+          className="w-5 h-5 text-white hover:opacity-80 transition-all duration-300 cursor-pointer" 
           onClick={onShareClick}
           fill="currentColor" 
           viewBox="0 0 24 24"
