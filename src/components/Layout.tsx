@@ -13,7 +13,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <main>
         {children}
       </main>
-      {location.pathname !== '/' && <Footer />}
+      {location.pathname !== '/' && location.pathname !== '/about' && <Footer />}
     </div>
   );
 };
