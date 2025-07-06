@@ -49,7 +49,7 @@ const HeroSection = () => {
 
         {/* Column 2 */}
         <div className="flex-1 relative overflow-hidden">
-          <div className="animate-slide-up-slow" style={{animationDuration: '160s', animationDelay: '-40s'}}>
+          <div className="animate-slide-up-slow" style={{animationDuration: '180s', animationDelay: '-60s'}}>
             <div className="flex flex-col gap-4">
               {portfolioImages.slice(3).concat(portfolioImages.slice(0, 3)).concat(portfolioImages.slice(3)).concat(portfolioImages.slice(0, 3)).map((image, index) => (
                 <div key={`col2-${index}`} className="h-[60vh]">
@@ -69,7 +69,7 @@ const HeroSection = () => {
 
         {/* Column 3 - Hidden on mobile */}
         <div className="hidden md:flex flex-1 relative overflow-hidden">
-          <div className="animate-slide-up-slow" style={{animationDuration: '200s', animationDelay: '-80s'}}>
+          <div className="animate-slide-up-slow" style={{animationDuration: '180s', animationDelay: '-120s'}}>
             <div className="flex flex-col gap-4">
               {portfolioImages.slice(6).concat(portfolioImages.slice(0, 6)).concat(portfolioImages.slice(6)).concat(portfolioImages.slice(0, 6)).map((image, index) => (
                 <div key={`col3-${index}`} className="h-[80vh]">
