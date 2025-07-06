@@ -70,7 +70,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/06e1e583-fc89-475d-bf22-b6d815ab75f0.png" 
               alt="Share" 
-              className="w-6 h-6 filter brightness-0 invert hover:opacity-80 transition-all duration-300 cursor-pointer ml-4" 
+              className="w-6 h-6 filter brightness-0 invert hover:opacity-80 transition-all duration-300 cursor-pointer ml-2" 
               onClick={() => setIsShareModalOpen(true)}
             />
           </div>
