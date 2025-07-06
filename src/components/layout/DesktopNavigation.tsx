@@ -34,7 +34,7 @@ const DesktopNavigation = ({
       <div className="relative group">
         <Link
           to="/portfolio"
-          className={`luxury-nav-link-thin font-black text-white brightness-150 hover:text-white text-lg font-extrabold ${
+          className={`luxury-nav-link-thin font-black text-white brightness-150 hover:text-white text-sm font-extrabold ${
             isActive('/portfolio') ? 'text-white' : 'text-white'
           }`}
           onMouseEnter={() => setIsPortfolioDropdownOpen(true)}
@@ -56,7 +56,7 @@ const DesktopNavigation = ({
         <Link
           key={item.name}
           to={item.href}
-          className={`luxury-nav-link-thin font-black text-white brightness-150 hover:text-white text-lg font-extrabold ${
+          className={`luxury-nav-link-thin font-black text-white brightness-150 hover:text-white text-sm font-extrabold ${
             isActive(item.href) ? 'text-white' : 'text-white'
           }`}
           style={{ textShadow: '0 0 1px currentColor' }}
@@ -66,7 +66,7 @@ const DesktopNavigation = ({
       ))}
       
       <svg 
-        className="w-12 h-12 text-white hover:opacity-80 transition-all duration-300 cursor-pointer" 
+        className="w-8 h-8 text-white hover:opacity-80 transition-all duration-300 cursor-pointer" 
         onClick={onShareClick}
         fill="currentColor" 
         viewBox="0 0 24 24"
