@@ -143,61 +143,6 @@ const Portfolio = () => {
               </Link>
             ))}
           </div>
-
-          {/* Portfolio Statistics */}
-          <div className="mt-20 text-center">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              <div className="animate-fade-in" style={{ animationDelay: '0.8s' }}>
-                <div className="text-3xl md:text-4xl font-bold text-photo-red mb-2">137+</div>
-                <div className="text-gray-400 text-sm font-medium uppercase tracking-wide">Total Images</div>
-              </div>
-              <div className="animate-fade-in" style={{ animationDelay: '0.9s' }}>
-                <div className="text-3xl md:text-4xl font-bold text-photo-red mb-2">8</div>
-                <div className="text-gray-400 text-sm font-medium uppercase tracking-wide">Categories</div>
-              </div>
-              <div className="animate-fade-in" style={{ animationDelay: '1.0s' }}>
-                <div className="text-3xl md:text-4xl font-bold text-photo-red mb-2">15+</div>
-                <div className="text-gray-400 text-sm font-medium uppercase tracking-wide">Years Experience</div>
-              </div>
-              <div className="animate-fade-in" style={{ animationDelay: '1.1s' }}>
-                <div className="text-3xl md:text-4xl font-bold text-photo-red mb-2">100+</div>
-                <div className="text-gray-400 text-sm font-medium uppercase tracking-wide">Happy Clients</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
-        <div className="max-w-4xl mx-auto px-8 md:px-16 text-center">
-          <div className="animate-fade-in">
-            <h2 className="font-bold text-4xl md:text-5xl text-white mb-6 leading-tight">
-              Ready to Create Something <span className="text-photo-red">Extraordinary</span>?
-            </h2>
-            <p className="text-gray-300 text-lg md:text-xl mb-12 leading-relaxed max-w-3xl mx-auto">
-              Let's collaborate to bring your vision to life through sophisticated photography 
-              that captures not just moments, but the essence of your story.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                to="/contact" 
-                className="group inline-flex items-center px-8 py-4 bg-photo-red text-white font-semibold rounded-full hover:bg-photo-red-hover transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-photo-red/30"
-              >
-                <span>Start Your Project</span>
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-              
-              <Link 
-                to="/about" 
-                className="group inline-flex items-center px-8 py-4 border-2 border-photo-red text-photo-red font-semibold rounded-full hover:bg-photo-red hover:text-white transition-all duration-300 hover:scale-105"
-              >
-                <span>Learn More About Jeff</span>
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-              </Link>
-            </div>
-          </div>
         </div>
       </section>
     </Layout>
