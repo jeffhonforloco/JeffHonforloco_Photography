@@ -8,6 +8,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isPortfolioDropdownOpen, setIsPortfolioDropdownOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -24,6 +25,17 @@ const Header = () => {
     { name: 'Journal', href: '/journal' },
     { name: 'Motion', href: '/portfolio/motion' },
     { name: 'Contact', href: '/contact' },
+  ];
+
+  const portfolioCategories = [
+    { name: 'Beauty', href: '/portfolio/beauty' },
+    { name: 'Fashion', href: '/portfolio/fashion' },
+    { name: 'Editorial', href: '/portfolio/editorial' },
+    { name: 'Glamour', href: '/portfolio/glamour' },
+    { name: 'Portrait', href: '/portfolio/portrait' },
+    { name: 'Creative', href: '/portfolio/creative' },
+    { name: 'Lifestyle', href: '/portfolio/lifestyle' },
+    { name: 'Motion', href: '/portfolio/motion' },
   ];
 
   const isActive = (path: string) => {
@@ -56,7 +68,41 @@ const Header = () => {
 
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2 items-center">
-            {navigation.map((item) => (
+            {/* Portfolios with Dropdown */}
+            <div 
+              className="relative"
+              onMouseEnter={() => setIsPortfolioDropdownOpen(true)}
+              onMouseLeave={() => setIsPortfolioDropdownOpen(false)}
+            >
+              <Link
+                to="/portfolio"
+                className={`luxury-nav-link-thin font-black text-white ${
+                  isActive('/portfolio') ? 'text-white' : 'text-white'
+                }`}
+              >
+                Portfolios
+              </Link>
+              
+              {/* Dropdown Menu */}
+              {isPortfolioDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-48 bg-black/95 backdrop-blur-md border border-white/10 rounded-lg shadow-xl z-50">
+                  <div className="py-2">
+                    {portfolioCategories.map((category) => (
+                      <Link
+                        key={category.name}
+                        to={category.href}
+                        className="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 transition-colors duration-200 font-medium"
+                      >
+                        {category.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Other Navigation Items */}
+            {navigation.slice(1).map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
@@ -67,6 +113,7 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            
             <img 
               src="/lovable-uploads/06e1e583-fc89-475d-bf22-b6d815ab75f0.png" 
               alt="Share" 
