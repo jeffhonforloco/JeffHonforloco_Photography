@@ -51,21 +51,12 @@ const HeroSection = () => {
             ))}
           </div>
           
-          {/* Column 2 - Desktop (with logo overlay area) */}
+          {/* Column 2 - Desktop */}
           <div className="flex flex-col gap-2 animate-slide-up-continuous" style={{ animationDelay: '-20s' }}>
             {portfolioImages.slice(3).concat(portfolioImages.slice(0, 3)).concat(portfolioImages.slice(3)).concat(portfolioImages.slice(0, 3)).map((image, index) => (
               <div key={`desktop-col2-${index}`} className="relative group overflow-hidden h-[40vh] flex-shrink-0">
                 <img src={image} alt={`Portfolio ${index + 1}`} className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-500"></div>
-                {index === 4 && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <img 
-                      src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
-                      alt="J Logo" 
-                      className="w-32 md:w-40 lg:w-48 filter drop-shadow-2xl opacity-90"
-                    />
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -89,6 +80,17 @@ const HeroSection = () => {
             src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
             alt="J Logo" 
             className="w-32 sm:w-40 filter drop-shadow-2xl opacity-90"
+          />
+        </div>
+      </div>
+
+      {/* Desktop Logo - Static centered overlay */}
+      <div className="hidden md:flex absolute inset-0 items-center justify-center z-20 pointer-events-none">
+        <div className="bg-black/40 rounded-lg p-6">
+          <img 
+            src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
+            alt="J Logo" 
+            className="w-40 lg:w-48 xl:w-56 filter drop-shadow-2xl opacity-90"
           />
         </div>
       </div>
