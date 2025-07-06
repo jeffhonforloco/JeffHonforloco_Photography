@@ -38,7 +38,7 @@ const Header = () => {
                 <img 
                   src="/lovable-uploads/f17266df-16a1-4edd-8581-23b10bdb2eda.png" 
                   alt="J Logo" 
-                  className="w-16 h-16 md:w-20 md:h-20"
+                  className="h-16 md:h-20 w-auto object-contain"
                 />
               </Link>
             )}
