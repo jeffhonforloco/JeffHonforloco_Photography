@@ -7,7 +7,7 @@ const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    sessionType: '',
+    inquiryType: '',
     message: ''
   });
 
@@ -43,162 +43,128 @@ const Contact = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="py-40 md:py-48 pt-32 max-w-6xl mx-auto px-8 md:px-16">
-        <div className="text-center mb-20 animate-fade-in">
-          <h1 className="font-playfair text-6xl md:text-7xl lg:text-8xl font-extralight tracking-wide text-white mb-12 leading-[0.9]">
-            Get in Touch
+      <div className="min-h-screen bg-black">
+        {/* Header */}
+        <div className="pt-32 pb-12 text-center">
+          <h1 className="text-5xl md:text-6xl font-light text-white mb-2 tracking-wider">
+            CONTACT
           </h1>
-          <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto mb-12"></div>
-          <p className="text-gray-400 text-xl leading-relaxed tracking-wide max-w-3xl mx-auto">
-            Ready to create something extraordinary? Let's discuss your photography needs 
-            and bring your vision to life.
-          </p>
+          <h2 className="text-5xl md:text-6xl font-light text-white tracking-wider">
+            JEFF HONFORLOCO
+          </h2>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-20">
-          {/* Contact Form */}
-          <div className="animate-scale-in">
-            <h2 className="font-playfair text-4xl font-extralight tracking-wide text-white mb-12">Book a Session</h2>
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-3 tracking-wider uppercase">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-6 py-4 bg-photo-gray-900 border border-gray-700 text-white focus:border-photo-red focus:outline-none transition-colors text-lg"
-                />
-              </div>
+        {/* Main Content */}
+        <div className="px-8 pb-20">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-16 items-start">
+              {/* Contact Form */}
+              <div className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Name and Email Row */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white text-black placeholder-gray-500 border-0 focus:outline-none focus:ring-2 focus:ring-photo-red"
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white text-black placeholder-gray-500 border-0 focus:outline-none focus:ring-2 focus:ring-photo-red"
+                    />
+                  </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-3 tracking-wider uppercase">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-6 py-4 bg-photo-gray-900 border border-gray-700 text-white focus:border-photo-red focus:outline-none transition-colors text-lg"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="sessionType" className="block text-sm font-medium mb-3 tracking-wider uppercase">
-                  Session Type
-                </label>
-                <select
-                  id="sessionType"
-                  name="sessionType"
-                  value={formData.sessionType}
-                  onChange={handleChange}
-                  className="w-full px-6 py-4 bg-photo-gray-900 border border-gray-700 text-white focus:border-photo-red focus:outline-none transition-colors text-lg"
-                >
-                  <option value="">Select a session type</option>
-                  {contentData.services.map((service: string, index: number) => (
-                    <option key={index} value={service.toLowerCase().replace(' ', '-')}>
-                      {service}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-3 tracking-wider uppercase">
-                  Project Details *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  rows={6}
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Tell me about your project, vision, timeline, and any specific requirements..."
-                  className="w-full px-6 py-4 bg-photo-gray-900 border border-gray-700 text-white focus:border-photo-red focus:outline-none transition-colors resize-none text-lg"
-                />
-              </div>
-
-              <button type="submit" className="w-full bg-photo-red hover:bg-photo-red-hover text-white px-12 py-6 font-medium tracking-[0.2em] uppercase text-sm transition-all duration-700 hover:scale-105">
-                Send Message
-              </button>
-            </form>
-          </div>
-
-          {/* Contact Information */}
-          <div className="animate-fade-in space-y-16">
-            <div>
-              <h2 className="font-playfair text-4xl font-extralight tracking-wide text-white mb-12">Let's Connect</h2>
-              
-              <div className="space-y-12">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-photo-red tracking-wider uppercase">Contact Information</h3>
-                  <div className="space-y-3 text-gray-400 text-lg">
-                    <p>{contentData.contact.address}</p>
-                    <p>{contentData.contact.phone}</p>
-                    {contentData.contact.emails.map((email: string, index: number) => (
-                      <p key={index}>
-                        <a href={`mailto:${email}`} className="hover:text-photo-red transition-colors">
-                          {email}
-                        </a>
-                      </p>
+                  {/* Inquiry Type Dropdown */}
+                  <select
+                    name="inquiryType"
+                    value={formData.inquiryType}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-white text-black border-0 focus:outline-none focus:ring-2 focus:ring-photo-red appearance-none"
+                    required
+                  >
+                    <option value="">Inquiry type</option>
+                    {contentData.services.map((service: string, index: number) => (
+                      <option key={index} value={service}>
+                        {service}
+                      </option>
                     ))}
-                  </div>
-                </div>
+                  </select>
 
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-photo-red tracking-wider uppercase">Response Time</h3>
-                  <p className="text-gray-400 text-lg leading-relaxed">
-                    I typically respond to inquiries within 24-48 hours. For urgent projects 
-                    or time-sensitive bookings, please mention this in your message.
-                  </p>
-                </div>
+                  {/* Message Textarea */}
+                  <textarea
+                    name="message"
+                    placeholder="Your message here"
+                    required
+                    rows={8}
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-white text-black placeholder-gray-500 border-0 focus:outline-none focus:ring-2 focus:ring-photo-red resize-none"
+                  />
 
-                <div>
-                  <h3 className="text-xl font-semibold mb-4 text-photo-red tracking-wider uppercase">Social Media</h3>
-                  <div className="space-y-3">
-                    <a 
-                      href="https://instagram.com/jeffhonforloco" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block text-gray-400 hover:text-photo-red transition-colors text-lg"
-                    >
-                      Instagram: @jeffhonforloco
-                    </a>
-                    <a 
-                      href="https://youtube.com/@jeffhonforloco" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block text-gray-400 hover:text-photo-red transition-colors text-lg"
-                    >
-                      YouTube: @jeffhonforloco
-                    </a>
+                  {/* reCAPTCHA Placeholder */}
+                  <div className="bg-gray-100 p-4 border border-gray-300 flex items-center space-x-3">
+                    <input type="checkbox" className="w-5 h-5" />
+                    <span className="text-gray-700 text-sm">I am human</span>
+                    <div className="ml-auto">
+                      <div className="text-xs text-gray-500">reCAPTCHA</div>
+                      <div className="text-xs text-gray-400">Privacy - Terms</div>
+                    </div>
                   </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 font-medium text-sm uppercase tracking-wider transition-colors duration-300"
+                  >
+                    Send Message
+                  </button>
+                </form>
+              </div>
+
+              {/* Portrait Image */}
+              <div className="relative">
+                <div className="relative">
+                  <img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    alt="Jeff Honforloco Portrait"
+                    className="w-full aspect-[4/5] object-cover"
+                  />
+                  {/* Red Border Accent */}
+                  <div className="absolute -bottom-4 -right-4 w-full h-full border-4 border-photo-red -z-10"></div>
                 </div>
               </div>
             </div>
 
-            {/* Additional CTA */}
-            <div className="bg-photo-gray-900 p-8 text-center">
-              <h3 className="text-2xl font-bold mb-4 text-white">Portfolio Review</h3>
-              <p className="text-gray-400 mb-6 text-lg">
-                Explore my work to get inspired for your upcoming project.
-              </p>
-              <a href="/portfolio" className="bg-photo-red hover:bg-photo-red-hover text-white px-12 py-4 font-medium tracking-[0.2em] uppercase text-sm transition-all duration-700 hover:scale-105 inline-block">
-                View Portfolio
-              </a>
+            {/* Bottom Gallery Thumbnails */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-16">
+              <img
+                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                alt="Portfolio Sample 1"
+                className="w-full aspect-square object-cover"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                alt="Portfolio Sample 2"
+                className="w-full aspect-square object-cover"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                alt="Portfolio Sample 3"
+                className="w-full aspect-square object-cover md:block hidden"
+              />
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </Layout>
   );
 };
