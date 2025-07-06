@@ -68,7 +68,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/099f5b67-8ba8-4e5f-94a3-d2f14679b248.png" 
               alt="Share" 
-              className="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity duration-300 cursor-pointer ml-12" 
+              className="w-6 h-6 filter invert opacity-70 hover:opacity-100 transition-all duration-300 cursor-pointer ml-12" 
             />
           </div>
 
@@ -144,7 +144,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/099f5b67-8ba8-4e5f-94a3-d2f14679b248.png" 
               alt="Share" 
-              className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity duration-300 cursor-pointer mt-8" 
+              className="w-7 h-7 filter invert opacity-70 hover:opacity-100 transition-all duration-300 cursor-pointer mt-8" 
             />
             
             {/* Share Button */}
