@@ -1,8 +1,9 @@
 
 import { useState, useEffect } from 'react';
+import { ContentData } from '@/types/content';
 
 const Recognition = () => {
-  const [contentData, setContentData] = useState<any>(null);
+  const [contentData, setContentData] = useState<ContentData | null>(null);
 
   useEffect(() => {
     fetch('/data/jeff-content.json')

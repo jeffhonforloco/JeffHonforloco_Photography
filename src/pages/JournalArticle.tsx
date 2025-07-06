@@ -2,25 +2,26 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, Clock, ArrowLeft, ArrowRight, Tag, Share2 } from 'lucide-react';
 import Layout from '../components/Layout';
+import { BlogData, BlogPost } from '@/types/content';
 
 const JournalArticle = () => {
   const { slug } = useParams();
-  const [blogData, setBlogData] = useState<any>(null);
-  const [article, setArticle] = useState<any>(null);
-  const [relatedArticles, setRelatedArticles] = useState<any[]>([]);
+  const [blogData, setBlogData] = useState<BlogData | null>(null);
+  const [article, setArticle] = useState<BlogPost | null>(null);
+  const [relatedArticles, setRelatedArticles] = useState<BlogPost[]>([]);
 
   useEffect(() => {
     fetch('/data/blog-posts.json')
       .then(response => response.json())
       .then(data => {
         setBlogData(data);
-        const foundArticle = data.posts.find((post: any) => post.id === slug);
+        const foundArticle = data.posts.find((post: BlogPost) => post.id === slug);
         setArticle(foundArticle);
         
         // Get related articles (same category, excluding current)
         if (foundArticle) {
           const related = data.posts
-            .filter((post: any) => post.id !== slug && post.category === foundArticle.category)
+            .filter((post: BlogPost) => post.id !== slug && post.category === foundArticle.category)
             .slice(0, 3);
           setRelatedArticles(related);
         }
@@ -213,7 +214,7 @@ const JournalArticle = () => {
             </h2>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {relatedArticles.map((relatedArticle: any) => (
+              {relatedArticles.map((relatedArticle: BlogPost) => (
                 <Link
                   key={relatedArticle.id}
                   to={`/journal/${relatedArticle.id}`}

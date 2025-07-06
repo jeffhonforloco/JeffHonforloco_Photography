@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Textarea } from '../ui/textarea';
 import { Mail, Phone, Calendar, Star, Reply, Archive, Trash2 } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
+import { ContactFilter } from '@/types/content';
 
 interface ContactMessage {
   id: string;
@@ -143,7 +144,7 @@ const AdminContacts = () => {
               key={status}
               variant={filter === status ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setFilter(status as any)}
+              onClick={() => setFilter(status as ContactFilter)}
               className="capitalize"
             >
               {status} ({contacts.filter(c => status === 'all' || c.status === status).length})

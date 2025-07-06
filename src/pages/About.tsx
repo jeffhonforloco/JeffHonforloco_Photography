@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import { ContentData } from '@/types/content';
 
 const About = () => {
-  const [contentData, setContentData] = useState<any>(null);
+  const [contentData, setContentData] = useState<ContentData | null>(null);
 
   useEffect(() => {
     fetch('/data/jeff-content.json')

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Play } from 'lucide-react';
 import Layout from '../components/Layout';
 import ImageGallery from '../components/ImageGallery';
+import { MotionItem } from '@/types/content';
 
 const PortfolioCategory = () => {
   const { category } = useParams<{ category: string }>();
@@ -129,7 +130,7 @@ const PortfolioCategory = () => {
 
   // Special layout for motion category
   if (currentCategory === 'motion') {
-    const motionData = portfolioImages.motion as any[];
+    const motionData = portfolioImages.motion as MotionItem[];
     const featuredVideo = motionData.find(video => video.featured);
     const otherVideos = motionData.filter(video => !video.featured);
 

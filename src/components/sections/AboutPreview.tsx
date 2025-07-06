@@ -1,9 +1,10 @@
 
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { ContentData } from '@/types/content';
 
 const AboutPreview = () => {
-  const [contentData, setContentData] = useState<any>(null);
+  const [contentData, setContentData] = useState<ContentData | null>(null);
 
   useEffect(() => {
     fetch('/data/jeff-content.json')

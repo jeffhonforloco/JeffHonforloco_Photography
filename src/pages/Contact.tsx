@@ -1,9 +1,10 @@
 
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import { ContentData } from '@/types/content';
 
 const Contact = () => {
-  const [contentData, setContentData] = useState<any>(null);
+  const [contentData, setContentData] = useState<ContentData | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',

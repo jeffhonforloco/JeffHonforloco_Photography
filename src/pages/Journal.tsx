@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, ArrowRight, Calendar, Tag } from 'lucide-react';
 import Layout from '../components/Layout';
+import { BlogData, BlogPost } from '@/types/content';
 
 const Journal = () => {
-  const [blogData, setBlogData] = useState<any>(null);
+  const [blogData, setBlogData] = useState<BlogData | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -58,7 +59,7 @@ const Journal = () => {
   }
 
   const filteredPosts = selectedCategory 
-    ? blogData.posts.filter((post: any) => post.category === selectedCategory)
+    ? blogData.posts.filter((post: BlogPost) => post.category === selectedCategory)
     : blogData.posts;
 
   return (
@@ -67,7 +68,7 @@ const Journal = () => {
       <section className="relative min-h-screen pt-20">
         <div className="relative h-screen overflow-hidden">
           {/* Article Slides */}
-          {blogData.posts.map((post: any, index: number) => (
+          {blogData.posts.map((post: BlogPost, index: number) => (
             <div
               key={post.id}
               className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
@@ -150,7 +151,7 @@ const Journal = () => {
           {/* Navigation Dots */}
           <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40">
             <div className="flex items-center gap-3">
-              {blogData.posts.map((_: any, index: number) => (
+              {blogData.posts.map((_: BlogPost, index: number) => (
                 <button
                   key={index}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
@@ -232,7 +233,7 @@ const Journal = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-8">
-            {filteredPosts.map((post: any, index: number) => (
+            {filteredPosts.map((post: BlogPost, index: number) => (
               <Link
                 key={post.id}
                 to={`/journal/${post.id}`}
