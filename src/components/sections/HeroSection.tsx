@@ -75,22 +75,22 @@ const HeroSection = () => {
 
       {/* Mobile Logo - Centered overlay */}
       <div className="md:hidden absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-        <div className="bg-black/40 rounded-lg p-4">
+        <div className="bg-black rounded-lg p-4">
           <img 
             src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
             alt="J Logo" 
-            className="w-32 sm:w-40 filter drop-shadow-2xl opacity-90"
+            className="w-32 sm:w-40 filter drop-shadow-2xl"
           />
         </div>
       </div>
 
       {/* Desktop Logo - Static centered overlay */}
       <div className="hidden md:flex absolute inset-0 items-center justify-center z-20 pointer-events-none">
-        <div className="bg-black/40 rounded-lg p-6">
+        <div className="bg-black rounded-lg p-6">
           <img 
             src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
             alt="J Logo" 
-            className="w-40 lg:w-48 xl:w-56 filter drop-shadow-2xl opacity-90"
+            className="w-40 lg:w-48 xl:w-56 filter drop-shadow-2xl"
           />
         </div>
       </div>
