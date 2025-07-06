@@ -49,16 +49,14 @@ const Header = () => {
         <div className="flex justify-between items-start">
           {/* Left side - Logo or empty space */}
           <div className="flex items-center">
-            {/* Logo - Only show on non-homepage and desktop */}
-            {location.pathname !== '/' && (
-              <Link to="/" className="hidden md:flex items-center space-x-2 hover:opacity-80 transition-opacity duration-300">
-                <img 
-                  src="/lovable-uploads/f17266df-16a1-4edd-8581-23b10bdb2eda.png" 
-                  alt="J Logo" 
-                  className="w-40 h-40 md:w-48 md:h-48"
-                />
-              </Link>
-            )}
+            {/* Logo - Always visible on desktop */}
+            <Link to="/" className="hidden md:flex items-center space-x-2 hover:opacity-80 transition-opacity duration-300">
+              <img 
+                src="/lovable-uploads/f17266df-16a1-4edd-8581-23b10bdb2eda.png" 
+                alt="J Logo" 
+                className="w-40 h-40 md:w-48 md:h-48"
+              />
+            </Link>
             {/* Empty div for spacing on mobile */}
             <div className="md:hidden"></div>
           </div>
