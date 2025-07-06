@@ -36,7 +36,7 @@ const Header = () => {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       isScrolled ? 'bg-black/95 backdrop-blur-md py-4' : 'bg-transparent py-6'
     }`}>
-      <div className="max-w-8xl mx-auto pl-8 md:pl-16 pr-2 md:pr-4">
+      <div className="max-w-8xl mx-auto pl-8 md:pl-16 pr-1 md:pr-2">
         <div className="flex justify-between items-start">
           {/* Left side - Logo or empty space */}
           <div className="flex items-center">
