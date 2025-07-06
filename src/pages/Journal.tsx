@@ -335,19 +335,10 @@ const Journal = () => {
                 </button>
               </div>
               <p className="text-gray-500 text-sm mt-4">
-                No spam, unsubscribe at any time. Privacy policy applies.
+                © 2025 Jeff Honforloco Photography. All rights reserved.
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Copyright */}
-      <section className="py-8 bg-black border-t border-gray-900">
-        <div className="text-center">
-          <p className="text-gray-500 text-sm">
-            © 2025 Jeff Honforloco Photography. All rights reserved.
-          </p>
         </div>
       </section>
     </Layout>
