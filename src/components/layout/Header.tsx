@@ -55,12 +55,12 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation - Centered */}
-          <div className="hidden md:flex space-x-12 absolute left-1/2 transform -translate-x-1/2 items-center">
+          <div className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2 items-center">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`luxury-nav-link-thin font-extrabold ${
+                className={`luxury-nav-link-thin font-black text-white ${
                   isActive(item.href) ? 'text-white' : 'text-white'
                 }`}
               >
@@ -70,7 +70,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/06e1e583-fc89-475d-bf22-b6d815ab75f0.png" 
               alt="Share" 
-              className="w-6 h-6 filter brightness-0 invert hover:opacity-80 transition-all duration-300 cursor-pointer ml-2" 
+              className="w-6 h-6 filter brightness-0 invert hover:opacity-80 transition-all duration-300 cursor-pointer" 
               onClick={() => setIsShareModalOpen(true)}
             />
           </div>
