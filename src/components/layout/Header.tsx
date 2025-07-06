@@ -2,10 +2,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Menu, X, Facebook, Instagram, Youtube } from 'lucide-react';
+import ShareModal from '../ShareModal';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -69,6 +71,7 @@ const Header = () => {
               src="/lovable-uploads/06e1e583-fc89-475d-bf22-b6d815ab75f0.png" 
               alt="Share" 
               className="w-6 h-6 filter brightness-0 invert hover:opacity-80 transition-all duration-300 cursor-pointer ml-12" 
+              onClick={() => setIsShareModalOpen(true)}
             />
           </div>
 
@@ -145,6 +148,7 @@ const Header = () => {
               src="/lovable-uploads/06e1e583-fc89-475d-bf22-b6d815ab75f0.png" 
               alt="Share" 
               className="w-6 h-6 filter brightness-0 invert hover:opacity-80 transition-all duration-300 cursor-pointer mt-8" 
+              onClick={() => setIsShareModalOpen(true)}
             />
             
             {/* Share Button */}
@@ -167,6 +171,12 @@ const Header = () => {
           </div>
         </div>
       </div>
+      
+      {/* Share Modal */}
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)} 
+      />
     </nav>
   );
 };
