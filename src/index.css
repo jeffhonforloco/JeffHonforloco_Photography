@@ -242,3 +242,72 @@
 .animate-slide-up-slow {
   animation: slideUpSlow linear infinite;
 }
+
+/* Enhanced bright theme animations and styles */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+/* High-resolution image optimizations */
+@media (min-resolution: 2dppx), (min-resolution: 192dpi) {
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* 4K display optimizations */
+@media (min-width: 2560px) {
+  .text-2xl { font-size: 2rem; line-height: 2.25rem; }
+  .text-xl { font-size: 1.5rem; line-height: 2rem; }
+  .text-lg { font-size: 1.25rem; line-height: 1.75rem; }
+  .w-72 { width: 20rem; }
+  .w-80 { width: 22rem; }
+  .w-96 { width: 26rem; }
+}
+
+/* Ultra-wide display optimizations */
+@media (min-width: 3440px) {
+  .text-3xl { font-size: 2.25rem; line-height: 2.5rem; }
+  .text-2xl { font-size: 2.125rem; line-height: 2.375rem; }
+  .text-xl { font-size: 1.625rem; line-height: 2.125rem; }
+}
+
+/* Bright theme utilities */
+.brightness-110 { filter: brightness(1.1); }
+.brightness-115 { filter: brightness(1.15); }
+.contrast-115 { filter: contrast(1.15); }
+.saturate-125 { filter: saturate(1.25); }
+
+/* Enhanced shadow utilities for bright theme */
+.shadow-3xl {
+  box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+}
+
+.drop-shadow-3xl {
+  filter: drop-shadow(0 35px 35px rgba(0, 0, 0, 0.25));
+}
