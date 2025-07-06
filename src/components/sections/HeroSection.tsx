@@ -14,64 +14,112 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
-      {/* Responsive Image Grid - 2 cols mobile, 3 cols desktop */}
-      <div className="absolute inset-0 p-2 md:p-4 lg:p-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 lg:gap-4 h-full auto-rows-fr">
-          {portfolioImages.map((image, index) => {
-            // Create varied layouts for visual interest
-            const getGridClasses = (i) => {
-              if (i === 0) return 'row-span-2'; // First image spans 2 rows
-              if (i === 2) return 'row-span-2'; // Third image spans 2 rows  
-              if (i === 4) return 'row-span-2'; // Fifth image spans 2 rows
-              if (i === 6) return 'row-span-2'; // Seventh image spans 2 rows
-              return '';
-            };
-
-            return (
-              <div 
-                key={index} 
-                className={`relative group overflow-hidden rounded-xl md:rounded-2xl lg:rounded-3xl ${getGridClasses(index)}`}
-              >
-                <img
-                  src={image}
-                  alt={`Portfolio ${index + 1}`}
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 brightness-95 group-hover:brightness-105"
-                  loading="lazy"
-                  onError={(e) => {
-                    e.currentTarget.style.backgroundColor = '#000';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10 opacity-70 group-hover:opacity-50 transition-all duration-700"></div>
-                <div className="absolute inset-0 ring-1 ring-white/10 rounded-xl md:rounded-2xl lg:rounded-3xl"></div>
-              </div>
-            );
-          })}
+      {/* Masonry-style Grid matching reference image */}
+      <div className="absolute inset-0 p-1 md:p-2">
+        {/* Mobile: 2 columns */}
+        <div className="md:hidden grid grid-cols-2 gap-1 h-full">
+          {/* Column 1 - Mobile */}
+          <div className="flex flex-col gap-1">
+            <div className="relative group overflow-hidden rounded-lg h-[35vh]">
+              <img src={portfolioImages[0]} alt="Portfolio 1" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-lg h-[25vh]">
+              <img src={portfolioImages[1]} alt="Portfolio 2" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-lg h-[30vh]">
+              <img src={portfolioImages[2]} alt="Portfolio 3" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+          </div>
+          
+          {/* Column 2 - Mobile */}
+          <div className="flex flex-col gap-1">
+            <div className="relative group overflow-hidden rounded-lg h-[30vh]">
+              <img src={portfolioImages[3]} alt="Portfolio 4" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-lg h-[40vh]">
+              <img src={portfolioImages[4]} alt="Portfolio 5" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-lg h-[20vh]">
+              <img src={portfolioImages[5]} alt="Portfolio 6" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/50 z-10"></div>
-
-      {/* Central Logo */}
-      <div className="absolute inset-0 flex items-center justify-center z-20">
-        <div className="text-center animate-fade-in px-4">
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
-              alt="J Logo" 
-              className="w-48 sm:w-60 md:w-80 lg:w-96 xl:w-[28rem] 2xl:w-[32rem] mx-auto filter drop-shadow-2xl brightness-105 hover:brightness-110 transition-all duration-700 hover:scale-105"
-              style={{ imageRendering: 'crisp-edges' }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-transparent rounded-full blur-2xl"></div>
-            <div className="absolute -inset-4 bg-gradient-to-r from-photo-red/20 via-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse-subtle"></div>
+        {/* Desktop: 3 columns */}
+        <div className="hidden md:grid grid-cols-3 gap-2 h-full">
+          {/* Column 1 - Desktop */}
+          <div className="flex flex-col gap-2">
+            <div className="relative group overflow-hidden rounded-xl h-[45vh]">
+              <img src={portfolioImages[0]} alt="Portfolio 1" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-xl h-[30vh]">
+              <img src={portfolioImages[1]} alt="Portfolio 2" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-xl h-[20vh]">
+              <img src={portfolioImages[2]} alt="Portfolio 3" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+          </div>
+          
+          {/* Column 2 - Desktop (with logo overlay area) */}
+          <div className="flex flex-col gap-2">
+            <div className="relative group overflow-hidden rounded-xl h-[25vh]">
+              <img src={portfolioImages[3]} alt="Portfolio 4" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-xl h-[50vh]">
+              <img src={portfolioImages[4]} alt="Portfolio 5" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-500"></div>
+              {/* Logo overlay area */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
+                  alt="J Logo" 
+                  className="w-32 md:w-40 lg:w-48 filter drop-shadow-2xl opacity-90"
+                />
+              </div>
+            </div>
+            <div className="relative group overflow-hidden rounded-xl h-[20vh]">
+              <img src={portfolioImages[5]} alt="Portfolio 6" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+          </div>
+          
+          {/* Column 3 - Desktop */}
+          <div className="flex flex-col gap-2">
+            <div className="relative group overflow-hidden rounded-xl h-[35vh]">
+              <img src={portfolioImages[6]} alt="Portfolio 7" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-xl h-[40vh]">
+              <img src={portfolioImages[7]} alt="Portfolio 8" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
+            <div className="relative group overflow-hidden rounded-xl h-[20vh]">
+              <img src={portfolioImages[8]} alt="Portfolio 9" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Floating elements */}
-      <div className="absolute top-20 left-4 md:left-20 w-16 md:w-32 h-16 md:h-32 bg-gradient-to-br from-photo-red/20 to-purple-400/20 rounded-full blur-xl animate-float"></div>
-      <div className="absolute bottom-32 right-4 md:right-32 w-12 md:w-24 h-12 md:h-24 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '-2s' }}></div>
-      <div className="absolute top-1/2 left-2 md:left-10 w-8 md:w-16 h-8 md:h-16 bg-gradient-to-br from-yellow-400/20 to-red-400/20 rounded-full blur-xl animate-float" style={{ animationDelay: '-4s' }}></div>
+      {/* Mobile Logo - Centered overlay */}
+      <div className="md:hidden absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+        <img 
+          src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
+          alt="J Logo" 
+          className="w-32 sm:w-40 filter drop-shadow-2xl opacity-90"
+        />
+      </div>
+
     </section>
   );
 };
