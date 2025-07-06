@@ -28,13 +28,23 @@ const AboutPreview = () => {
             </h2>
             <div className="w-32 h-px bg-gradient-to-r from-photo-red to-transparent mb-16"></div>
             
-            <p className="font-light text-xl md:text-2xl text-gray-300 leading-relaxed mb-10 tracking-wide">
-              A visionary photographer and creative entrepreneur based in the United States, renowned for his captivating imagery and client-first approach. With years of hands-on experience in fashion, beauty, and lifestyle photography, Jeff has become a trusted name in the industry—recognized for delivering high-quality, emotionally compelling visuals that consistently leave clients amazed.
-            </p>
-            
-            <p className="font-light text-xl md:text-2xl text-gray-300 leading-relaxed mb-16 tracking-wide">
-              Located in Providence, RI area, USA, specializing in fashion, beauty, editorial, lifestyle, and portrait photography.
-            </p>
+            <div className="space-y-6 font-light text-xl md:text-2xl text-gray-300 leading-relaxed mb-16 tracking-wide">
+              <p>
+                A visionary photographer and creative entrepreneur based in the United States, renowned for his captivating imagery and client-first approach. With years of hands-on experience in fashion, beauty, and lifestyle photography, Jeff has become a trusted name in the industry—recognized for delivering high-quality, emotionally compelling visuals that consistently leave clients amazed.
+              </p>
+              
+              <p>
+                Passionate about highlighting the glamour, strength, and individuality of every subject, Jeff's work has graced top fashion shows in Providence, Rhode Island, where he currently resides and operates. His artistic eye and attention to detail make him a go-to photographer for models, brands, agencies, and individuals seeking to tell their story through powerful visuals.
+              </p>
+              
+              <p>
+                Specializing in fashion, beauty, editorial, lifestyle, and portrait photography, Jeff takes pride in understanding his clients' vision and turning it into timeless art. His clients not only value his technical skill but also his warm energy, professionalism, and commitment to excellence.
+              </p>
+              
+              <p>
+                Whether in front of the lens or behind it, Jeff is dedicated to creating meaningful moments. He believes, "A well-captured image represents a moment in time that lives on forever."
+              </p>
+            </div>
             
             <Link 
               to="/about" 
