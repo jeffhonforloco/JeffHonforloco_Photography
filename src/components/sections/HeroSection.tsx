@@ -97,7 +97,7 @@ const HeroSection = () => {
           <img 
             src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
             alt="J Logo" 
-            className="w-48 md:w-64 lg:w-80 mx-auto filter drop-shadow-2xl opacity-95 hover:opacity-100 transition-opacity duration-500"
+            className="w-64 md:w-80 lg:w-96 xl:w-[28rem] mx-auto filter drop-shadow-2xl opacity-95 hover:opacity-100 transition-opacity duration-500"
           />
         </div>
       </div>
