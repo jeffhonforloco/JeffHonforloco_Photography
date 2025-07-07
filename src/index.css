@@ -257,6 +257,8 @@
 .animate-slide-seamless {
   animation: slideSeamless 80s linear infinite;
   will-change: transform;
+  transform: translateZ(0);
+  contain: layout style paint;
 }
 
 /* Enhanced bright theme animations and styles */
@@ -296,15 +298,30 @@
   }
 }
 
-/* Performance optimizations */
+/* Enhanced Performance optimizations */
 img {
   max-width: 100%;
   height: auto;
+  image-rendering: -webkit-optimize-contrast;
   image-rendering: optimizeQuality;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  will-change: auto;
+  contain: layout style paint;
+}
+
+/* Critical resource hints */
+link[rel="preload"] {
+  as: image;
+  fetchpriority: high;
+}
+
+/* Lazy loading optimization */
+img[loading="lazy"] {
+  content-visibility: auto;
+  contain-intrinsic-size: 400px 600px;
 }
 
 /* Will-change for animations */
