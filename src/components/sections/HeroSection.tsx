@@ -1,4 +1,6 @@
 
+import { HeroImageGrid, HeroContent } from './hero';
+
 const HeroSection = () => {
   const portfolioImages = [
     '/lovable-uploads/cd3eb066-6ffe-4e1e-9613-a1b067806092.png',
@@ -29,171 +31,15 @@ const HeroSection = () => {
       {/* Hidden SEO content */}
       <h1 className="sr-only">Jeff Honforloco Photography - Luxury Fashion & Beauty Photographer | Nationwide Bookings NYC, LA, Miami, Chicago</h1>
       
-      {/* Masonry-style Grid matching reference image */}
-      <div className="absolute inset-0 p-2 md:p-3">
-        {/* Mobile: 2 columns */}
-        <div className="md:hidden grid grid-cols-2 gap-3 h-full">
-          {/* Column 1 - Mobile */}
-          <div className="flex flex-col gap-3 animate-slide-seamless">
-            {col1Images.map((image, index) => (
-              <div key={`mobile-col1-${index}`} className="relative overflow-hidden flex-shrink-0">
-                <img 
-                  src={image} 
-                  alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover" 
-                  loading={index < 2 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="400"
-                  height="600"
-                />
-                <div className="absolute inset-0 bg-black/20"></div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Column 2 - Mobile */}
-          <div className="flex flex-col gap-3 animate-slide-seamless" style={{ animationDelay: '-20s' }}>
-            {col2Images.map((image, index) => (
-              <div key={`mobile-col2-${index}`} className="relative overflow-hidden flex-shrink-0">
-                <img 
-                  src={image} 
-                  alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover" 
-                  loading={index < 2 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="400"
-                  height="600"
-                />
-                <div className="absolute inset-0 bg-black/20"></div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Masonry-style Grid */}
+      <HeroImageGrid 
+        col1Images={col1Images}
+        col2Images={col2Images}
+        col3Images={col3Images}
+      />
 
-        {/* Desktop: 3 columns */}
-        <div className="hidden md:grid grid-cols-3 gap-4 h-full">
-          {/* Column 1 - Desktop */}
-          <div className="flex flex-col gap-4 animate-slide-seamless">
-            {col1Images.map((image, index) => (
-              <div key={`desktop-col1-${index}`} className="relative overflow-hidden flex-shrink-0">
-                <img 
-                  src={image} 
-                  alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover" 
-                  loading={index < 3 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="400"
-                  height="600"
-                />
-                <div className="absolute inset-0 bg-black/20"></div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Column 2 - Desktop */}
-          <div className="flex flex-col gap-4 animate-slide-seamless" style={{ animationDelay: '-27s' }}>
-            {col2Images.map((image, index) => (
-              <div key={`desktop-col2-${index}`} className="relative overflow-hidden flex-shrink-0">
-                <img 
-                  src={image} 
-                  alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover" 
-                  loading={index < 3 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="400"
-                  height="600"
-                />
-                <div className="absolute inset-0 bg-black/30"></div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Column 3 - Desktop */}
-          <div className="flex flex-col gap-4 animate-slide-seamless" style={{ animationDelay: '-13s' }}>
-            {col3Images.map((image, index) => (
-              <div key={`desktop-col3-${index}`} className="relative overflow-hidden flex-shrink-0">
-                <img 
-                  src={image} 
-                  alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover" 
-                  loading={index < 3 ? "eager" : "lazy"}
-                  decoding="async"
-                  width="400"
-                  height="600"
-                />
-                <div className="absolute inset-0 bg-black/20"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Logo & Hero Text - Centered overlay */}
-      <div className="md:hidden absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-        <div className="text-center px-4">
-          <img 
-            src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
-            alt="Jeff Honforloco Photography Logo" 
-            className="w-80 sm:w-96 max-w-[85vw] h-auto filter drop-shadow-2xl brightness-150 contrast-125 mx-auto mb-6"
-          />
-          <div className="max-w-sm mx-auto">
-            <h2 className="font-playfair text-xl sm:text-2xl font-light text-white mb-4 tracking-wide leading-tight">
-              LUXURY FASHION & BEAUTY PHOTOGRAPHY
-            </h2>
-            <p className="font-inter text-xs sm:text-sm text-gray-200 mb-6 leading-relaxed">
-              Nationwide bookings for high-end brands, celebrities & models
-            </p>
-            <div className="flex flex-row gap-2 justify-center pointer-events-auto">
-              <a 
-                href="/contact" 
-                className="bg-photo-red hover:bg-photo-red-hover text-white px-4 py-2 font-medium tracking-wide uppercase text-xs transition-all duration-300 hover:scale-105 rounded-md shadow-xl"
-              >
-                Book Session
-              </a>
-              <a 
-                href="/portfolio" 
-                className="border border-white/80 text-white hover:bg-white/10 px-4 py-2 font-medium tracking-wide uppercase text-xs transition-all duration-300 hover:scale-105 rounded-md backdrop-blur-sm"
-              >
-                View Portfolio
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Desktop Logo & Hero Text - Static centered overlay */}
-      <div className="hidden md:flex absolute inset-0 items-center justify-center z-20 pointer-events-none">
-        <div className="text-center">
-          <img 
-            src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
-            alt="Jeff Honforloco Photography Logo" 
-            className="w-[28rem] lg:w-[32rem] xl:w-[36rem] 2xl:w-[40rem] filter drop-shadow-2xl brightness-150 contrast-125 mx-auto mb-8"
-          />
-          <div className="max-w-4xl mx-auto px-8">
-            <h2 className="font-playfair text-3xl lg:text-4xl xl:text-5xl font-light text-white mb-6 tracking-wider leading-tight">
-              LUXURY FASHION & BEAUTY PHOTOGRAPHY
-            </h2>
-            <p className="font-inter text-lg lg:text-xl text-gray-200 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Nationwide bookings for high-end brands, celebrities & models
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto">
-              <a 
-                href="/contact" 
-                className="bg-photo-red hover:bg-photo-red-hover text-white px-8 py-4 font-semibold tracking-wider uppercase text-sm transition-all duration-300 hover:scale-105 rounded-lg shadow-2xl"
-              >
-                Book Your Session
-              </a>
-              <a 
-                href="/portfolio" 
-                className="border-2 border-white/80 text-white hover:bg-white/10 px-8 py-4 font-semibold tracking-wider uppercase text-sm transition-all duration-300 hover:scale-105 rounded-lg backdrop-blur-sm"
-              >
-                View Portfolio
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {/* Hero Content Overlay */}
+      <HeroContent />
     </section>
   );
 };
