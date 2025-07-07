@@ -35,18 +35,18 @@ const HeroSection = () => {
           {/* Column 1 - Mobile */}
           <div className="flex flex-col gap-3 animate-slide-seamless">
             {seamlessImages.filter((_, index) => index % 2 === 0).map((image, index) => (
-              <div key={`mobile-col1-${index}`} className="relative group overflow-hidden flex-shrink-0">
+              <div key={`mobile-col1-${index}`} className="relative overflow-hidden flex-shrink-0">
                 <img 
                   src={image} 
                   alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  className="w-full h-auto object-cover" 
                   loading={index < 2 ? "eager" : "lazy"}
                   decoding="async"
                   fetchPriority={index < 2 ? "high" : "low"}
                   width="400"
                   height="600"
                 />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-black/20"></div>
               </div>
             ))}
           </div>
@@ -54,18 +54,18 @@ const HeroSection = () => {
           {/* Column 2 - Mobile */}
           <div className="flex flex-col gap-3 animate-slide-seamless" style={{ animationDelay: '-20s' }}>
             {seamlessImages.filter((_, index) => index % 2 === 1).map((image, index) => (
-              <div key={`mobile-col2-${index}`} className="relative group overflow-hidden flex-shrink-0">
+              <div key={`mobile-col2-${index}`} className="relative overflow-hidden flex-shrink-0">
                 <img 
                   src={image} 
                   alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  className="w-full h-auto object-cover" 
                   loading={index < 2 ? "eager" : "lazy"}
                   decoding="async"
                   fetchPriority={index < 2 ? "high" : "low"}
                   width="400"
                   height="600"
                 />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-black/20"></div>
               </div>
             ))}
           </div>
@@ -76,18 +76,18 @@ const HeroSection = () => {
           {/* Column 1 - Desktop */}
           <div className="flex flex-col gap-4 animate-slide-seamless">
             {seamlessImages.filter((_, index) => index % 3 === 0).map((image, index) => (
-              <div key={`desktop-col1-${index}`} className="relative group overflow-hidden flex-shrink-0">
+              <div key={`desktop-col1-${index}`} className="relative overflow-hidden flex-shrink-0">
                 <img 
                   src={image} 
                   alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  className="w-full h-auto object-cover" 
                   loading={index < 3 ? "eager" : "lazy"}
                   decoding="async"
                   fetchPriority={index < 3 ? "high" : "low"}
                   width="400"
                   height="600"
                 />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-black/20"></div>
               </div>
             ))}
           </div>
@@ -95,18 +95,18 @@ const HeroSection = () => {
           {/* Column 2 - Desktop */}
           <div className="flex flex-col gap-4 animate-slide-seamless" style={{ animationDelay: '-27s' }}>
             {seamlessImages.filter((_, index) => index % 3 === 1).map((image, index) => (
-              <div key={`desktop-col2-${index}`} className="relative group overflow-hidden flex-shrink-0">
+              <div key={`desktop-col2-${index}`} className="relative overflow-hidden flex-shrink-0">
                 <img 
                   src={image} 
                   alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  className="w-full h-auto object-cover" 
                   loading={index < 3 ? "eager" : "lazy"}
                   decoding="async"
                   fetchPriority={index < 3 ? "high" : "low"}
                   width="400"
                   height="600"
                 />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-black/30"></div>
               </div>
             ))}
           </div>
@@ -114,18 +114,18 @@ const HeroSection = () => {
           {/* Column 3 - Desktop */}
           <div className="flex flex-col gap-4 animate-slide-seamless" style={{ animationDelay: '-13s' }}>
             {seamlessImages.filter((_, index) => index % 3 === 2).map((image, index) => (
-              <div key={`desktop-col3-${index}`} className="relative group overflow-hidden flex-shrink-0">
+              <div key={`desktop-col3-${index}`} className="relative overflow-hidden flex-shrink-0">
                 <img 
                   src={image} 
                   alt={`Jeff Honforloco Portfolio ${(index % portfolioImages.length) + 1} - Fashion Beauty Photography`} 
-                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  className="w-full h-auto object-cover" 
                   loading={index < 3 ? "eager" : "lazy"}
                   decoding="async"
                   fetchPriority={index < 3 ? "high" : "low"}
                   width="400"
                   height="600"
                 />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-black/20"></div>
               </div>
             ))}
           </div>
