@@ -27,6 +27,7 @@ const HeroSection = () => {
     <section className="relative min-h-screen overflow-hidden bg-black">
       {/* Hidden SEO content */}
       <h1 className="sr-only">Jeff Honforloco Photography - Fashion & Beauty Photographer Providence RI</h1>
+      
       {/* Masonry-style Grid matching reference image */}
       <div className="absolute inset-0 p-2 md:p-3">
         {/* Mobile: 2 columns */}
@@ -131,13 +132,15 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Mobile Logo - Centered overlay */}
+      {/* Mobile Logo - Perfectly centered overlay */}
       <div className="md:hidden absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-        <img 
-          src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
-          alt="J Logo" 
-          className="w-72 sm:w-80 filter drop-shadow-2xl brightness-150 contrast-125"
-        />
+        <div className="flex items-center justify-center w-full h-full">
+          <img 
+            src="/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" 
+            alt="J Logo" 
+            className="w-72 sm:w-80 max-w-[80vw] h-auto filter drop-shadow-2xl brightness-150 contrast-125"
+          />
+        </div>
       </div>
 
       {/* Desktop Logo - Static centered overlay */}
