@@ -1,7 +1,11 @@
 
-import { HeroImageGrid, HeroContent } from './hero';
+import { HeroSlider, HeroContent } from './hero';
+import { useState } from 'react';
+import { LayoutGrid, Play } from 'lucide-react';
 
 const HeroSection = () => {
+  const [viewMode, setViewMode] = useState<'slider' | 'grid'>('slider');
+  
   const portfolioImages = [
     '/lovable-uploads/cd3eb066-6ffe-4e1e-9613-a1b067806092.png',
     '/lovable-uploads/060e27c9-b2d8-4f33-b575-794287894fd6.png',
@@ -21,22 +25,64 @@ const HeroSection = () => {
     '/lovable-uploads/c279306c-86cb-49fe-a393-c5330888db34.png'
   ];
 
-  // Create optimized image arrays for different columns to prevent duplicates
-  const col1Images = [...portfolioImages.slice(0, 6), ...portfolioImages.slice(0, 6)];
-  const col2Images = [...portfolioImages.slice(6, 12), ...portfolioImages.slice(6, 12)];
-  const col3Images = [...portfolioImages.slice(12), ...portfolioImages.slice(0, 4), ...portfolioImages.slice(12), ...portfolioImages.slice(0, 4)];
-
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
       {/* Hidden SEO content */}
       <h1 className="sr-only">Jeff Honforloco Photography - Luxury Fashion & Beauty Photographer | Nationwide Bookings NYC, LA, Miami, Chicago</h1>
       
-      {/* Masonry-style Grid */}
-      <HeroImageGrid 
-        col1Images={col1Images}
-        col2Images={col2Images}
-        col3Images={col3Images}
-      />
+      {/* View Toggle */}
+      <div className="absolute top-4 right-4 z-40 flex gap-2">
+        <button
+          onClick={() => setViewMode('slider')}
+          className={`p-3 rounded-full transition-all duration-300 ${
+            viewMode === 'slider' 
+              ? 'bg-photo-red text-white' 
+              : 'bg-black/50 text-white/70 hover:text-white hover:bg-black/70'
+          }`}
+          aria-label="Slider view"
+        >
+          <Play className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => setViewMode('grid')}
+          className={`p-3 rounded-full transition-all duration-300 ${
+            viewMode === 'grid' 
+              ? 'bg-photo-red text-white' 
+              : 'bg-black/50 text-white/70 hover:text-white hover:bg-black/70'
+          }`}
+          aria-label="Grid view"
+        >
+          <LayoutGrid className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Hero Slider - Lindsay Adler Style */}
+      {viewMode === 'slider' && (
+        <HeroSlider images={portfolioImages} />
+      )}
+
+      {/* Mosaic Grid - Previous Style */}
+      {viewMode === 'grid' && (
+        <div className="absolute inset-0 p-1 md:p-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-2 h-full overflow-hidden">
+            {portfolioImages.slice(0, 9).map((image, index) => (
+              <div key={index} className={`relative overflow-hidden ${
+                index === 0 ? 'col-span-2 row-span-2' : 
+                index === 4 ? 'md:col-span-1 md:row-span-2' : ''
+              }`}>
+                <img 
+                  src={image} 
+                  alt={`Jeff Honforloco Portfolio ${index + 1} - Fashion Beauty Photography`} 
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105" 
+                  loading={index < 3 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-black/10 hover:bg-black/20 transition-all duration-500"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Hero Content Overlay */}
       <HeroContent />
