@@ -1,0 +1,21 @@
+{
+  "name": "Jeff Honforloco Photography",
+  "short_name": "JH Photography",
+  "description": "World's Premier Luxury Fashion & Beauty Photographer",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#DC2626",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["photography", "fashion", "beauty", "luxury"],
+  "icons": [
+    {
+      "src": "/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

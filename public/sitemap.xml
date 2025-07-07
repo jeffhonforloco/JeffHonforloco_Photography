@@ -56,12 +56,12 @@
     <priority>0.8</priority>
   </url>
   
-  <!-- Motion/Video Portfolio -->
+  <!-- Glamour Portfolio -->
   <url>
-    <loc>https://jeffhonforlocophotos.com/portfolio/motion</loc>
+    <loc>https://jeffhonforlocophotos.com/portfolio/glamour-photography</loc>
     <lastmod>2025-01-07</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   
   <!-- Contact Page -->
@@ -74,7 +74,7 @@
   
   <!-- SEO Blog Articles -->
   <url>
-    <loc>https://jeffhonforlocophotos.com/journal/how-to-prepare-beauty-photography-session-nyc</loc>
+    <loc>https://jeffhonforlocophotos.com/journal/how-to-prepare-beauty-photography-session</loc>
     <lastmod>2025-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -95,7 +95,7 @@
   </url>
   
   <url>
-    <loc>https://jeffhonforlocophotos.com/journal/celebrity-photographer-secrets-stunning-portraits</loc>
+    <loc>https://jeffhonforlocophotos.com/journal/professional-photographer-secrets-stunning-portraits</loc>
     <lastmod>2025-01-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

@@ -1,14 +1,34 @@
-
+# Security Policy
 User-agent: *
-Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: *.json$
+Disallow: /*?*utm_source=
+Disallow: /*?*session_id=
 
 # High-priority SEO pages for enhanced crawling
 Allow: /portfolio/luxury-fashion-photography-nyc
 Allow: /portfolio/luxury-beauty-photography-nationwide  
 Allow: /portfolio/editorial-photography-magazines
 Allow: /portfolio/celebrity-lifestyle-photography
-Allow: /journal/how-to-prepare-beauty-photography-session-nyc
+Allow: /portfolio/glamour-photography
+Allow: /journal/how-to-prepare-beauty-photography-session
+Allow: /journal/professional-photographer-secrets-stunning-portraits
 Allow: /journal/best-editorial-photography-ideas-personal-brands
+Allow: /journal/luxury-fashion-photography-trends-2025
+
+# Location pages
+Allow: /location/nyc
+Allow: /location/la
+Allow: /location/miami
+Allow: /location/paris
+Allow: /location/london
+Allow: /location/italy
+Allow: /location/lagos
+Allow: /location/switzerland
+Allow: /location/malta
+Allow: /location/monaco
 
 # Sitemap
 Sitemap: https://jeffhonforlocophotos.com/sitemap.xml
@@ -16,12 +36,13 @@ Sitemap: https://jeffhonforlocophotos.com/sitemap.xml
 # Allow crawling of images
 Allow: /lovable-uploads/
 
-# Respectful crawl guidelines  
+# Performance optimization
 Crawl-delay: 1
 
 # Allow all major search engines
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Bingbot
 Allow: /
@@ -30,6 +51,12 @@ User-agent: Slurp
 Allow: /
 
 User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Baiduspider
 Allow: /
 
 # Social media crawlers for rich previews
@@ -46,4 +73,7 @@ User-agent: WhatsApp
 Allow: /
 
 User-agent: Pinterest
+Allow: /
+
+User-agent: TelegramBot
 Allow: /
