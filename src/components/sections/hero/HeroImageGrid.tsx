@@ -55,7 +55,7 @@ const HeroImageGrid = () => {
         </div>
         
         {/* Column 2 - Mobile */}
-        <div className="flex flex-col gap-3 animate-slide-fast" style={{ animationDelay: '-15s' }}>
+        <div className="flex flex-col gap-3 animate-slide-fast" style={{ animationDelay: '-7s' }}>
           {col2Images.map((image, index) => 
             renderImage(image, index, 'mobile-col2')
           )}
@@ -72,14 +72,14 @@ const HeroImageGrid = () => {
         </div>
         
         {/* Column 2 - Desktop */}
-        <div className="flex flex-col gap-4 animate-slide-medium" style={{ animationDelay: '-20s' }}>
+        <div className="flex flex-col gap-4 animate-slide-medium" style={{ animationDelay: '-8s' }}>
           {col2Images.map((image, index) => 
             renderImage(image, index, 'desktop-col2', true)
           )}
         </div>
         
         {/* Column 3 - Desktop */}
-        <div className="flex flex-col gap-4 animate-slide-medium" style={{ animationDelay: '-10s' }}>
+        <div className="flex flex-col gap-4 animate-slide-medium" style={{ animationDelay: '-16s' }}>
           {col3Images.map((image, index) => 
             renderImage(image, index, 'desktop-col3', true)
           )}

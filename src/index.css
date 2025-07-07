@@ -263,14 +263,14 @@
 
 /* Faster animation variants for better performance */
 .animate-slide-fast {
-  animation: slideSeamless 40s linear infinite;
+  animation: slideSeamless 20s linear infinite;
   will-change: transform;
   transform: translateZ(0);
   contain: layout style paint;
 }
 
 .animate-slide-medium {
-  animation: slideSeamless 60s linear infinite;
+  animation: slideSeamless 25s linear infinite;
   will-change: transform;
   transform: translateZ(0);
   contain: layout style paint;
