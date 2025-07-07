@@ -3,7 +3,6 @@ const HeroSection = () => {
   const portfolioImages = [
     '/lovable-uploads/cd3eb066-6ffe-4e1e-9613-a1b067806092.png',
     '/lovable-uploads/060e27c9-b2d8-4f33-b575-794287894fd6.png',
-    '/lovable-uploads/3d6135c5-bcb6-4b62-b41e-d24c20e4c726.png',
     '/lovable-uploads/1bb36c8a-ad7c-469a-bc03-92b007c271c3.png',
     '/lovable-uploads/5f1a4833-8606-47d0-8677-805cd81b2558.png',
     '/lovable-uploads/c345b4c2-442d-4dc1-bf20-2c1856ad9e11.png',
