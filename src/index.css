@@ -261,18 +261,18 @@
   contain: layout style paint;
 }
 
-/* Faster animation variants for better performance */
-.animate-slide-fast {
-  animation: slideSeamless 20s linear infinite;
+/* Optimized smooth animations for better performance */
+.animate-slide-smooth {
+  animation: slideSeamless 30s linear infinite;
   will-change: transform;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   contain: layout style paint;
 }
 
-.animate-slide-medium {
-  animation: slideSeamless 25s linear infinite;
+.animate-slide-elegant {
+  animation: slideSeamless 45s linear infinite;
   will-change: transform;
-  transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
   contain: layout style paint;
 }
 
@@ -348,8 +348,8 @@ img[loading="lazy"] {
 
 /* Will-change for animations */
 .animate-slide-up-continuous, 
-.animate-slide-fast, 
-.animate-slide-medium, 
+.animate-slide-smooth, 
+.animate-slide-elegant, 
 .animate-slide-seamless {
   will-change: transform;
 }

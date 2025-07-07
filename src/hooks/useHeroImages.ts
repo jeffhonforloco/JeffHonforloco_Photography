@@ -1,10 +1,10 @@
 import { portfolioImages } from '../data/hero-images';
 
 export const useHeroImages = () => {
-  // Create optimized image arrays for different columns to prevent duplicates
-  const col1Images = [...portfolioImages.slice(0, 6), ...portfolioImages.slice(0, 6)];
-  const col2Images = [...portfolioImages.slice(6, 12), ...portfolioImages.slice(6, 12)];
-  const col3Images = [...portfolioImages.slice(12), ...portfolioImages.slice(0, 4), ...portfolioImages.slice(12), ...portfolioImages.slice(0, 4)];
+  // Reduce duplicates for better performance - only double the arrays instead of more
+  const col1Images = [...portfolioImages.slice(0, 8)];
+  const col2Images = [...portfolioImages.slice(8, 16)];
+  const col3Images = [...portfolioImages.slice(0, 8)];
 
   return {
     portfolioImages,
