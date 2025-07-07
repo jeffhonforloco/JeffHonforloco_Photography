@@ -42,9 +42,6 @@ const Portfolio = () => {
     <Layout>
       {/* SEO Header Section */}
       <section className="pt-32 pb-12 bg-black">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto"></div>
-        </div>
       </section>
 
       <div className="min-h-screen bg-black">
