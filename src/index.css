@@ -261,6 +261,21 @@
   contain: layout style paint;
 }
 
+/* Faster animation variants for better performance */
+.animate-slide-fast {
+  animation: slideSeamless 40s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout style paint;
+}
+
+.animate-slide-medium {
+  animation: slideSeamless 60s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout style paint;
+}
+
 /* Enhanced bright theme animations and styles */
 @keyframes fade-in {
   0% {
@@ -312,6 +327,13 @@ img {
   contain: layout style paint;
 }
 
+/* Optimize images for hero section */
+.hero-image {
+  content-visibility: auto;
+  contain-intrinsic-size: 400px 600px;
+  image-rendering: crisp-edges;
+}
+
 /* Critical resource hints */
 link[rel="preload"] {
   as: image;
@@ -325,7 +347,10 @@ img[loading="lazy"] {
 }
 
 /* Will-change for animations */
-.animate-slide-up-continuous {
+.animate-slide-up-continuous, 
+.animate-slide-fast, 
+.animate-slide-medium, 
+.animate-slide-seamless {
   will-change: transform;
 }
 
