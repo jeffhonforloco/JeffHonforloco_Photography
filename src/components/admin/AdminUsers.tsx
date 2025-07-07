@@ -28,7 +28,7 @@ const AdminUsers = () => {
     {
       id: '1',
       name: 'Jeff Honforloco',
-      email: 'jeff@jeffhonforloco.com',
+      email: 'jeff@jeffhonforlocophotos.com',
       role: 'admin',
       status: 'active',
       avatar: '/lovable-uploads/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png',
@@ -39,7 +39,7 @@ const AdminUsers = () => {
     {
       id: '2',
       name: 'Sarah Editor',
-      email: 'sarah@jeffhonforloco.com',
+      email: 'sarah@jeffhonforlocophotos.com',
       role: 'editor',
       status: 'active',
       createdAt: '2024-01-10',
@@ -49,7 +49,7 @@ const AdminUsers = () => {
     {
       id: '3',
       name: 'Mike Assistant',
-      email: 'mike@jeffhonforloco.com',
+      email: 'mike@jeffhonforlocophotos.com',
       role: 'editor',
       status: 'inactive',
       createdAt: '2024-01-15',

@@ -18,7 +18,7 @@ const AdminSettings = () => {
     siteName: 'Jeff Honforloco Photography',
     siteDescription: 'Professional portrait, fashion, and editorial photography',
     siteUrl: 'https://jeffhonforloco.com',
-    contactEmail: 'info@jeffhonforloco.com',
+    contactEmail: 'info@jeffhonforlocophotos.com',
     maintenanceMode: false,
     allowRegistration: false
   });
