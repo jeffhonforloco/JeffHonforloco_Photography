@@ -2,13 +2,21 @@
 User-agent: *
 Allow: /
 
+# High-priority SEO pages for enhanced crawling
+Allow: /portfolio/luxury-fashion-photography-nyc
+Allow: /portfolio/luxury-beauty-photography-nationwide  
+Allow: /portfolio/editorial-photography-magazines
+Allow: /portfolio/celebrity-lifestyle-photography
+Allow: /journal/how-to-prepare-beauty-photography-session-nyc
+Allow: /journal/best-editorial-photography-ideas-personal-brands
+
 # Sitemap
 Sitemap: https://jeffhonforlocophotos.com/sitemap.xml
 
 # Allow crawling of images
 Allow: /lovable-uploads/
 
-# Specific crawl guidelines
+# Respectful crawl guidelines  
 Crawl-delay: 1
 
 # Allow all major search engines
@@ -24,10 +32,7 @@ Allow: /
 User-agent: DuckDuckBot
 Allow: /
 
-User-agent: Baiduspider
-Allow: /
-
-# Social media crawlers
+# Social media crawlers for rich previews
 User-agent: facebookexternalhit
 Allow: /
 
@@ -40,6 +45,5 @@ Allow: /
 User-agent: WhatsApp
 Allow: /
 
-# Pinterest
 User-agent: Pinterest
 Allow: /
