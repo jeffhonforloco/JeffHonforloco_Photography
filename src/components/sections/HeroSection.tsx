@@ -1,10 +1,7 @@
 
-import { HeroImageGrid, HeroContent, HeroSlider } from './hero';
-import { useState } from 'react';
+import { HeroImageGrid, HeroContent } from './hero';
 
 const HeroSection = () => {
-  const [showSlider, setShowSlider] = useState(false);
-  
   const portfolioImages = [
     '/lovable-uploads/cd3eb066-6ffe-4e1e-9613-a1b067806092.png',
     '/lovable-uploads/060e27c9-b2d8-4f33-b575-794287894fd6.png',
@@ -34,24 +31,12 @@ const HeroSection = () => {
       {/* Hidden SEO content */}
       <h1 className="sr-only">Jeff Honforloco Photography - Luxury Fashion & Beauty Photographer | Nationwide Bookings NYC, LA, Miami, Chicago</h1>
       
-      {/* Toggle Button */}
-      <button
-        onClick={() => setShowSlider(!showSlider)}
-        className="absolute top-4 right-4 z-50 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300"
-      >
-        {showSlider ? 'Grid View' : 'Slider View'}
-      </button>
-      
-      {/* Conditional rendering based on mode */}
-      {showSlider ? (
-        <HeroSlider images={portfolioImages} />
-      ) : (
-        <HeroImageGrid 
-          col1Images={col1Images}
-          col2Images={col2Images}
-          col3Images={col3Images}
-        />
-      )}
+      {/* Masonry-style Grid */}
+      <HeroImageGrid 
+        col1Images={col1Images}
+        col2Images={col2Images}
+        col3Images={col3Images}
+      />
 
       {/* Hero Content Overlay */}
       <HeroContent />
