@@ -1,7 +1,10 @@
 
-import { HeroContent, HeroSlider } from './hero';
+import { HeroImageGrid, HeroContent, HeroSlider } from './hero';
+import { useState } from 'react';
 
 const HeroSection = () => {
+  const [showSlider, setShowSlider] = useState(false);
+  
   const portfolioImages = [
     '/lovable-uploads/cd3eb066-6ffe-4e1e-9613-a1b067806092.png',
     '/lovable-uploads/060e27c9-b2d8-4f33-b575-794287894fd6.png',
@@ -21,13 +24,34 @@ const HeroSection = () => {
     '/lovable-uploads/c279306c-86cb-49fe-a393-c5330888db34.png'
   ];
 
+  // Create optimized image arrays for different columns to prevent duplicates
+  const col1Images = [...portfolioImages.slice(0, 6), ...portfolioImages.slice(0, 6)];
+  const col2Images = [...portfolioImages.slice(6, 12), ...portfolioImages.slice(6, 12)];
+  const col3Images = [...portfolioImages.slice(12), ...portfolioImages.slice(0, 4), ...portfolioImages.slice(12), ...portfolioImages.slice(0, 4)];
+
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
       {/* Hidden SEO content */}
       <h1 className="sr-only">Jeff Honforloco Photography - Luxury Fashion & Beauty Photographer | Nationwide Bookings NYC, LA, Miami, Chicago</h1>
       
-      {/* Continuous Auto Slider */}
-      <HeroSlider images={portfolioImages} />
+      {/* Toggle Button */}
+      <button
+        onClick={() => setShowSlider(!showSlider)}
+        className="absolute top-4 right-4 z-50 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300"
+      >
+        {showSlider ? 'Grid View' : 'Slider View'}
+      </button>
+      
+      {/* Conditional rendering based on mode */}
+      {showSlider ? (
+        <HeroSlider images={portfolioImages} />
+      ) : (
+        <HeroImageGrid 
+          col1Images={col1Images}
+          col2Images={col2Images}
+          col3Images={col3Images}
+        />
+      )}
 
       {/* Hero Content Overlay */}
       <HeroContent />
