@@ -29,7 +29,13 @@ const HeroSection = () => {
           <div className="flex flex-col gap-3 animate-slide-up-continuous">
             {portfolioImages.filter((_, index) => index % 2 === 0).map((image, index) => (
               <div key={`mobile-col1-${index}`} className="relative group overflow-hidden flex-shrink-0">
-                <img src={image} alt={`Portfolio ${index + 1}`} className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" />
+                <img 
+                  src={image} 
+                  alt={`Portfolio ${index + 1}`} 
+                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
               </div>
             ))}
@@ -39,7 +45,13 @@ const HeroSection = () => {
           <div className="flex flex-col gap-3 animate-slide-up-continuous" style={{ animationDelay: '-15s' }}>
             {portfolioImages.filter((_, index) => index % 2 === 1).map((image, index) => (
               <div key={`mobile-col2-${index}`} className="relative group overflow-hidden flex-shrink-0">
-                <img src={image} alt={`Portfolio ${index + 1}`} className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" />
+                <img 
+                  src={image} 
+                  alt={`Portfolio ${index + 1}`} 
+                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  loading={index < 2 ? "eager" : "lazy"}
+                  decoding="async"
+                />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
               </div>
             ))}
@@ -52,7 +64,13 @@ const HeroSection = () => {
           <div className="flex flex-col gap-4 animate-slide-up-continuous">
             {portfolioImages.filter((_, index) => index % 3 === 0).map((image, index) => (
               <div key={`desktop-col1-${index}`} className="relative group overflow-hidden flex-shrink-0">
-                <img src={image} alt={`Portfolio ${index + 1}`} className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" />
+                <img 
+                  src={image} 
+                  alt={`Portfolio ${index + 1}`} 
+                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  loading={index < 3 ? "eager" : "lazy"}
+                  decoding="async"
+                />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
               </div>
             ))}
@@ -62,7 +80,13 @@ const HeroSection = () => {
           <div className="flex flex-col gap-4 animate-slide-up-continuous" style={{ animationDelay: '-20s' }}>
             {portfolioImages.filter((_, index) => index % 3 === 1).map((image, index) => (
               <div key={`desktop-col2-${index}`} className="relative group overflow-hidden flex-shrink-0">
-                <img src={image} alt={`Portfolio ${index + 1}`} className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" />
+                <img 
+                  src={image} 
+                  alt={`Portfolio ${index + 1}`} 
+                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  loading={index < 3 ? "eager" : "lazy"}
+                  decoding="async"
+                />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-500"></div>
               </div>
             ))}
@@ -72,7 +96,13 @@ const HeroSection = () => {
           <div className="flex flex-col gap-4 animate-slide-up-continuous" style={{ animationDelay: '-10s' }}>
             {portfolioImages.filter((_, index) => index % 3 === 2).map((image, index) => (
               <div key={`desktop-col3-${index}`} className="relative group overflow-hidden flex-shrink-0">
-                <img src={image} alt={`Portfolio ${index + 1}`} className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" />
+                <img 
+                  src={image} 
+                  alt={`Portfolio ${index + 1}`} 
+                  className="w-full h-auto object-cover transition-all duration-500 group-hover:scale-105" 
+                  loading={index < 3 ? "eager" : "lazy"}
+                  decoding="async"
+                />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-500"></div>
               </div>
             ))}
