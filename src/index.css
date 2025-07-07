@@ -261,19 +261,14 @@
   contain: layout style paint;
 }
 
-/* Optimized smooth animations for better performance */
-.animate-slide-smooth {
-  animation: slideSeamless 30s linear infinite;
+/* Optimized animations for better performance */
+.animate-slide-optimized {
+  animation: slideSeamless 50s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
   contain: layout style paint;
-}
-
-.animate-slide-elegant {
-  animation: slideSeamless 45s linear infinite;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  contain: layout style paint;
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
 /* Enhanced bright theme animations and styles */
@@ -331,7 +326,15 @@ img {
 .hero-image {
   content-visibility: auto;
   contain-intrinsic-size: 400px 600px;
-  image-rendering: crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  transition: opacity 0.3s ease-out;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.hero-image-container {
+  contain: layout style paint;
+  will-change: auto;
 }
 
 /* Critical resource hints */
@@ -347,9 +350,7 @@ img[loading="lazy"] {
 }
 
 /* Will-change for animations */
-.animate-slide-up-continuous, 
-.animate-slide-smooth, 
-.animate-slide-elegant, 
+.animate-slide-optimized,
 .animate-slide-seamless {
   will-change: transform;
 }
