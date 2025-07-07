@@ -43,12 +43,6 @@ const Portfolio = () => {
       {/* SEO Header Section */}
       <section className="pt-32 pb-12 bg-black">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-light text-white mb-8 tracking-wide">
-            Luxury Photography Portfolio
-          </h1>
-          <p className="text-gray-300 text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed mb-12">
-            Award-winning fashion, beauty, editorial and celebrity photography. Nationwide availability for luxury brands and high-profile clients across NYC, LA, Miami, Chicago, and Atlanta.
-          </p>
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto"></div>
         </div>
       </section>
