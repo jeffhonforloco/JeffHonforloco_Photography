@@ -20,7 +20,7 @@ const HeroImageGrid = ({ col1Images, col2Images, col3Images }: HeroImageGridProp
     const desktopRefs = [desktopCol1Ref, desktopCol2Ref, desktopCol3Ref];
     let animationId: number;
     let currentPosition = 0;
-    const speed = 0.2; // pixels per frame
+    const speed = 0.4; // pixels per frame
     
     const animate = () => {
       if (direction === 'up') {
