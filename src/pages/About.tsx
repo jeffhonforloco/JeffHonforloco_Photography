@@ -24,63 +24,56 @@ const About = () => {
 
   return (
     <Layout>
-      {/* Main Hero Section - Image First */}
+      {/* Main Hero Section - Image First Layout */}
       <section className="min-h-screen bg-photo-black text-white pt-20 md:pt-24">
-        <div className="max-w-8xl mx-auto px-8 md:px-16 py-20 md:py-32">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center min-h-[70vh]">
-            {/* Left Column - Image (Mobile: Top, Desktop: Left) */}
-            <div className="order-1 lg:order-1 lg:pr-12">
-              <div className="relative">
-                {/* Main Image Container with Red Border */}
-                <div className="relative bg-gradient-to-br from-photo-red/20 to-photo-red/5 p-1 rounded-lg">
-                  <div className="bg-black rounded-lg overflow-hidden">
-                    <img
-                      src="/lovable-uploads/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png"
-                      alt={contentData.personal.name}
-                      className="w-full aspect-[4/5] object-cover rounded-lg"
-                    />
-                  </div>
-                </div>
-                
-                {/* Decorative Elements */}
-                <div className="absolute -top-4 -left-4 w-20 h-20 border-2 border-photo-red/30 rounded-full"></div>
-                <div className="absolute -bottom-6 -right-6 w-16 h-16 bg-photo-red/20 rounded-lg rotate-45"></div>
-              </div>
-            </div>
-
-            {/* Right Column - Text Content (Mobile: Bottom, Desktop: Right) */}
-            <div className="order-2 lg:order-2 lg:pl-12">
-              <h1 className="font-bold text-5xl md:text-6xl lg:text-7xl leading-tight mb-8 tracking-tight">
+        <div className="max-w-7xl mx-auto px-8 md:px-16 py-20 md:py-32">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start min-h-[80vh]">
+            {/* Left Column - Text Content */}
+            <div className="order-2 lg:order-1">
+              <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-8 tracking-wide">
                 PHOTOGRAPHER,<br />
-                CREATIVE,<br />
-                <span className="text-photo-red">AND ENTREPRENEUR</span>
+                DIRECTOR,<br />
+                <span className="text-photo-red font-normal">AND ENTREPRENEUR</span>
               </h1>
               
-              <div className="space-y-6 text-gray-300 text-lg leading-relaxed max-w-2xl">
+              <div className="space-y-6 font-inter text-gray-300 text-base md:text-lg leading-relaxed max-w-xl">
                 <p>
-                  A visionary photographer and creative entrepreneur based in the United States, renowned for his captivating imagery and client-first approach. With years of hands-on experience in fashion, beauty, and lifestyle photography, Jeff has become a trusted name in the industry—recognized for delivering high-quality, emotionally compelling visuals that consistently leave clients amazed.
+                  Specializing in fashion and beauty photography, Jeff is an award-winning photographer and creative entrepreneur based in Providence, Rhode Island. He has worked with top fashion shows and is known for his signature clean, bold, and graphic style.
                 </p>
                 
                 <p>
-                  Passionate about highlighting the glamour, strength, and individuality of every subject, Jeff's work has graced top fashion shows in Providence, Rhode Island, where he currently resides and operates. His artistic eye and attention to detail make him a go-to photographer for models, brands, agencies, and individuals seeking to tell their story through powerful visuals.
+                  Driven by his passion to be a visual problem solver and his love for creative collaboration, he utilizes his best-in-class crew and production resources to push boundaries and lift his commissioned and personal work.
                 </p>
                 
                 <p>
-                  Specializing in fashion, beauty, editorial, lifestyle, and portrait photography, Jeff takes pride in understanding his clients' vision and turning it into timeless art. His clients not only value his technical skill but also his warm energy, professionalism, and commitment to excellence.
+                  With years of hands-on experience in fashion, beauty, and lifestyle photography, Jeff has become a trusted name in the industry—recognized for delivering high-quality, emotionally compelling visuals that consistently leave clients amazed.
                 </p>
                 
                 <p>
-                  Whether in front of the lens or behind it, Jeff is dedicated to creating meaningful moments. He believes, "A well-captured image represents a moment in time that lives on forever."
+                  His artistic eye and attention to detail make him a go-to photographer for models, brands, agencies, and individuals seeking to tell their story through powerful visuals. Whether in front of the lens or behind it, Jeff is dedicated to creating meaningful moments.
                 </p>
               </div>
               
               <div className="mt-12 pt-8 border-t border-gray-700">
-                <blockquote className="italic text-xl text-gray-400 font-light">
+                <blockquote className="font-playfair italic text-xl text-gray-400 font-light">
                   "{contentData.personal.quote}"
                 </blockquote>
-                <cite className="block mt-4 text-sm text-gray-500 not-italic">
+                <cite className="block mt-4 text-sm text-gray-500 not-italic font-inter">
                   — {contentData.personal.name}
                 </cite>
+              </div>
+            </div>
+
+            {/* Right Column - Featured Image */}
+            <div className="order-1 lg:order-2">
+              <div className="relative w-full">
+                <div className="aspect-[3/4] lg:aspect-[4/5] overflow-hidden bg-gradient-to-br from-photo-red/10 to-transparent">
+                  <img
+                    src="/lovable-uploads/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png"
+                    alt={contentData.personal.name}
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
               </div>
             </div>
           </div>
