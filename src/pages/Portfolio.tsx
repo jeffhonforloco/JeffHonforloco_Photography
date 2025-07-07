@@ -13,9 +13,17 @@ const Portfolio = () => {
       keywords: 'luxury fashion photographer NYC, high-end fashion photography, fashion week photographer, celebrity fashion shoots'
     },
     {
+      title: 'Glamour',
+      slug: 'glamour-photography',
+      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      href: '/portfolio/glamour-photography',
+      description: 'Sophisticated glamour photography capturing elegance, allure, and timeless beauty with dramatic lighting and styling.',
+      keywords: 'glamour photographer, sophisticated portraits, dramatic lighting, elegant photography'
+    },
+    {
       title: 'Beauty Photography', 
       slug: 'luxury-beauty-photography-nationwide',
-      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       href: '/portfolio/luxury-beauty-photography-nationwide',
       description: 'Premium beauty and cosmetic photography for luxury brands, featuring sophisticated lighting and flawless execution.',
       keywords: 'luxury beauty photographer, cosmetic photography, beauty campaign photographer, high-end beauty shoots'
@@ -23,7 +31,7 @@ const Portfolio = () => {
     {
       title: 'Editorial Photography',
       slug: 'editorial-photography-magazines',
-      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 
+      image: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 
       href: '/portfolio/editorial-photography-magazines',
       description: 'Magazine-quality editorial photography for publications, brands, and storytelling campaigns that captivate audiences.',
       keywords: 'editorial photographer, magazine photographer, commercial editorial photography, brand storytelling'
@@ -59,12 +67,14 @@ const Portfolio = () => {
                 />
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <h2 className="text-white text-lg font-light tracking-wider text-center uppercase px-4">
+                  <h2 className="text-white text-sm font-light tracking-wider text-center uppercase px-2">
                     {category.title}
                   </h2>
                 </div>
               </Link>
             ))}
+            {/* Add empty div if odd number to balance grid */}
+            {portfolioCategories.length % 2 !== 0 && <div></div>}
           </div>
 
           {/* Desktop Grid - 4 columns uniform */}
