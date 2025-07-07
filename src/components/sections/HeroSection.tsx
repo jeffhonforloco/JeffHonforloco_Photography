@@ -1,16 +1,15 @@
 
 const HeroSection = () => {
   const portfolioImages = [
-    '/lovable-uploads/86a54898-0663-4d33-9cc9-a793f168d0ab.png',
-    '/lovable-uploads/47c04841-2b95-4229-8bea-7e1c4925bafb.png',
-    '/lovable-uploads/1a35b5b2-6090-4718-9833-79a270346b20.png',
-    '/lovable-uploads/91b16668-debd-4e7b-9fab-e6200abfaa53.png',
-    '/lovable-uploads/2688f2e4-7158-4784-bdc4-2d84ff3a124d.png',
-    '/lovable-uploads/e302a6bd-9a35-4c62-924e-5f14e4e2d241.png',
-    '/lovable-uploads/cc3dde2a-3f8c-4c40-b4b7-33cc0fd118e0.png',
-    '/lovable-uploads/09ac1697-3757-47bf-84fa-5d922e1f1779.png',
-    '/lovable-uploads/3ffed44f-cebf-4d6d-ba06-86e21b470903.png',
-    '/lovable-uploads/37f4ae80-0bd4-4eae-8c84-a252aa263a64.png'
+    '/lovable-uploads/cd3eb066-6ffe-4e1e-9613-a1b067806092.png',
+    '/lovable-uploads/060e27c9-b2d8-4f33-b575-794287894fd6.png',
+    '/lovable-uploads/3d6135c5-bcb6-4b62-b41e-d24c20e4c726.png',
+    '/lovable-uploads/1bb36c8a-ad7c-469a-bc03-92b007c271c3.png',
+    '/lovable-uploads/5f1a4833-8606-47d0-8677-805cd81b2558.png',
+    '/lovable-uploads/c345b4c2-442d-4dc1-bf20-2c1856ad9e11.png',
+    '/lovable-uploads/0987daa0-e6fd-4914-b820-b8b235e70983.png',
+    '/lovable-uploads/f36a817e-cd75-4d0b-a900-ce69f01e6afb.png',
+    '/lovable-uploads/1290de24-fbc4-4577-a048-fea0e3630a36.png'
   ];
 
   return (
