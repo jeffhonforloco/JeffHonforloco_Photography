@@ -69,7 +69,7 @@ const HeroImageGrid = ({ col1Images, col2Images, col3Images }: HeroImageGridProp
       <div className="md:hidden grid grid-cols-2 gap-1 h-full overflow-hidden">
         <div className="overflow-hidden">
           <div ref={mobileCol1Ref} className="flex flex-col gap-1" style={{ willChange: 'transform' }}>
-            {[...col1Images.slice(0, 8), ...col1Images.slice(0, 8)].map((image, index) => (
+            {[...col1Images, ...col1Images].map((image, index) => (
               <div key={`mobile-col1-${index}`} className="relative overflow-hidden aspect-[3/4] flex-shrink-0">
                 <img 
                   src={image} 
@@ -88,7 +88,7 @@ const HeroImageGrid = ({ col1Images, col2Images, col3Images }: HeroImageGridProp
         
         <div className="overflow-hidden">
           <div ref={mobileCol2Ref} className="flex flex-col gap-1" style={{ willChange: 'transform' }}>
-            {[...col2Images.slice(0, 8), ...col2Images.slice(0, 8)].map((image, index) => (
+            {[...col2Images, ...col2Images].map((image, index) => (
               <div key={`mobile-col2-${index}`} className="relative overflow-hidden aspect-[3/4] flex-shrink-0">
                 <img 
                   src={image} 
@@ -110,7 +110,7 @@ const HeroImageGrid = ({ col1Images, col2Images, col3Images }: HeroImageGridProp
       <div className="hidden md:grid grid-cols-3 gap-2 h-full overflow-hidden">
         <div className="overflow-hidden">
           <div ref={desktopCol1Ref} className="flex flex-col gap-2" style={{ willChange: 'transform' }}>
-            {[...col1Images.slice(0, 6), ...col1Images.slice(0, 6)].map((image, index) => (
+            {[...col1Images, ...col1Images].map((image, index) => (
               <div key={`desktop-col1-${index}`} className={`relative overflow-hidden flex-shrink-0 ${index % 3 === 0 ? 'aspect-[3/5]' : index % 3 === 1 ? 'aspect-[3/4]' : 'aspect-[3/3]'}`}>
                 <img 
                   src={image} 
@@ -129,7 +129,7 @@ const HeroImageGrid = ({ col1Images, col2Images, col3Images }: HeroImageGridProp
         
         <div className="overflow-hidden">
           <div ref={desktopCol2Ref} className="flex flex-col gap-2" style={{ willChange: 'transform' }}>
-            {[...col2Images.slice(0, 6), ...col2Images.slice(0, 6)].map((image, index) => (
+            {[...col2Images, ...col2Images].map((image, index) => (
               <div key={`desktop-col2-${index}`} className={`relative overflow-hidden flex-shrink-0 ${index % 3 === 0 ? 'aspect-[3/4]' : index % 3 === 1 ? 'aspect-[3/5]' : 'aspect-[3/3]'}`}>
                 <img 
                   src={image} 
@@ -148,7 +148,7 @@ const HeroImageGrid = ({ col1Images, col2Images, col3Images }: HeroImageGridProp
         
         <div className="overflow-hidden">
           <div ref={desktopCol3Ref} className="flex flex-col gap-2" style={{ willChange: 'transform' }}>
-            {[...col3Images.slice(0, 6), ...col3Images.slice(0, 6)].map((image, index) => (
+            {[...col3Images, ...col3Images].map((image, index) => (
               <div key={`desktop-col3-${index}`} className={`relative overflow-hidden flex-shrink-0 ${index % 3 === 0 ? 'aspect-[3/3]' : index % 3 === 1 ? 'aspect-[3/4]' : 'aspect-[3/5]'}`}>
                 <img 
                   src={image} 
