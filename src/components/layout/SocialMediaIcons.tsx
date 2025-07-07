@@ -23,7 +23,7 @@ const SocialMediaIcons = ({ variant }: SocialMediaIconsProps) => {
     return (
       <div className="hidden md:flex items-center space-x-3">
         {socialLinks.map(({ Icon, href }, index) => (
-          <a key={index} href={href} className="text-white/70 hover:text-white transition-all duration-300 hover:scale-125 transform">
+          <a key={index} href={href} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-all duration-300 hover:scale-125 transform">
             <Icon className="w-7 h-7" />
           </a>
         ))}
@@ -35,7 +35,7 @@ const SocialMediaIcons = ({ variant }: SocialMediaIconsProps) => {
     return (
       <div className="md:hidden flex items-center space-x-2">
         {socialLinks.map(({ Icon, href }, index) => (
-          <a key={index} href={href} className="text-white/70 hover:text-white transition-all duration-300 hover:scale-125 transform">
+          <a key={index} href={href} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-all duration-300 hover:scale-125 transform">
             <Icon className="w-6 h-6" />
           </a>
         ))}
@@ -47,7 +47,7 @@ const SocialMediaIcons = ({ variant }: SocialMediaIconsProps) => {
     return (
       <div className="mt-8 flex items-center space-x-4">
         {socialLinks.map(({ Icon, href }, index) => (
-          <a key={index} href={href} className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 hover:scale-125 transform">
+          <a key={index} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all duration-300 hover:scale-125 transform">
             <Icon className="w-4 h-4" />
           </a>
         ))}
