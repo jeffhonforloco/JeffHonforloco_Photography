@@ -263,7 +263,7 @@
 
 /* Optimized animations for better performance */
 .animate-slide-optimized {
-  animation: slideSeamless 15s linear infinite;
+  animation: slideSeamless 30s linear infinite;
   will-change: transform;
   transform: translate3d(0, 0, 0);
   contain: layout style paint;
