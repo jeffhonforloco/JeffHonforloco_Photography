@@ -36,7 +36,7 @@ const HeroImageGrid = () => {
           )}
         </div>
         
-        <div className="flex flex-col gap-3 animate-slide-optimized" style={{ animationDelay: '-13s' }}>
+        <div className="flex flex-col gap-3 animate-slide-optimized">
           {col2Images.map((image, index) => 
             renderImage(image, index, 'mobile-col2')
           )}
@@ -51,13 +51,13 @@ const HeroImageGrid = () => {
           )}
         </div>
         
-        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-13s' }}>
+        <div className="flex flex-col gap-4 animate-slide-optimized">
           {col2Images.map((image, index) => 
             renderImage(image, index, 'desktop-col2')
           )}
         </div>
         
-        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-27s' }}>
+        <div className="flex flex-col gap-4 animate-slide-optimized">
           {col3Images.map((image, index) => 
             renderImage(image, index, 'desktop-col3')
           )}
