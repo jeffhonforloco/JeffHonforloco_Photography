@@ -8,6 +8,21 @@ interface DefaultPortfolioProps {
 }
 
 const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps) => {
+  // Fashion page specific images
+  const fashionImages = [
+    { src: '/lovable-uploads/2c5c9feb-d64a-4aef-8a8f-befaa483c3b9.png', alt: 'Fashion Photography', caption: 'LUXURY FASHION' },
+    { src: '/lovable-uploads/b8d7af04-86fd-40a8-b960-3797187fa27c.png', alt: 'Fashion Photography', caption: 'EVENING WEAR' },
+    { src: '/lovable-uploads/378e6920-c0d7-4bf9-85b7-6094238a8a9e.png', alt: 'Fashion Photography', caption: 'GLAMOUR COLLECTION' },
+    { src: '/lovable-uploads/8fba258d-35bd-4852-9e00-2f58fa836046.png', alt: 'Fashion Photography', caption: 'DESIGNER COLLECTION' },
+    { src: '/lovable-uploads/3e678cfc-4a4a-49e7-b36d-922d97afa616.png', alt: 'Fashion Photography', caption: 'HAUTE COUTURE' },
+    { src: '/lovable-uploads/239d878c-3190-41aa-8c43-e21ba98f8ac0.png', alt: 'Fashion Photography', caption: 'EDITORIAL STYLE' },
+    { src: '/lovable-uploads/240d3762-7b5f-4cef-bec9-82ae136256b7.png', alt: 'Fashion Photography', caption: 'MONOCHROME ELEGANCE' },
+    { src: '/lovable-uploads/f3678f5a-0d65-447d-a666-681414ba5683.png', alt: 'Fashion Photography', caption: 'SOPHISTICATED GLAMOUR' },
+    { src: '/lovable-uploads/1b3d1966-a116-4938-9368-5094259e1fe6.png', alt: 'Fashion Photography', caption: 'FORMAL COUTURE' },
+    { src: '/lovable-uploads/fe3059c7-202d-4437-8785-42cc1fc2cab4.png', alt: 'Fashion Photography', caption: 'CONTEMPORARY STYLE' }
+  ];
+
+  const displayImages = title === 'FASHION' ? fashionImages : images;
   return (
     <Layout>
       <div className="pt-24 pb-12 bg-black min-h-screen">
@@ -32,7 +47,7 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
 
           {/* Portfolio Grid - 2 columns with overlay text */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {images.map((image, index) => (
+            {displayImages.map((image, index) => (
               <div key={index} className="relative group overflow-hidden aspect-[4/5] cursor-pointer">
                 <img
                   src={image.src}
