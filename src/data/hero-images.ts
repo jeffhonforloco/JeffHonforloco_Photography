@@ -31,26 +31,5 @@ export const portfolioImages: string[] = [
   '/lovable-uploads/3566a61b-2d58-4e4a-920f-b2f011f69289.png',
   '/lovable-uploads/3773cab4-5d54-45b9-befe-7e8b70874496.png',
   '/lovable-uploads/37f4ae80-0bd4-4eae-8c84-a252aa263a64.png',
-  '/lovable-uploads/3b2350e8-72d9-4325-bd13-a5b6ceec335f.png',
-  
-  // Additional beauty and glamour images for 30+ total
-  '/lovable-uploads/35e9a46e-e427-4bac-a68b-dbbd510572a3.png',
-  '/lovable-uploads/ffaad10e-ef84-4236-bc74-370ddacc394b.png',
-  '/lovable-uploads/9da2302c-328a-4b71-a77c-3bab8685cdc3.png',
-  '/lovable-uploads/7fc7338e-58f3-461a-aa6a-a7592f9ce82c.png',
-  '/lovable-uploads/221ec5df-4792-4bc0-a0e4-a5d59ba23319.png',
-  '/lovable-uploads/80de2833-dbec-48e6-a25a-c8779bd528cd.png',
-  '/lovable-uploads/270d66ab-2bac-4d01-9396-368e98145c5a.png',
-  '/lovable-uploads/a279f373-675a-45d0-8695-6c986446600f.png',
-  '/lovable-uploads/0999eeeb-51de-4779-bde5-250d4e16b9fd.png',
-  '/lovable-uploads/d4d5f4a0-6d58-4861-8b26-16493d507bd1.png',
-  '/lovable-uploads/45760ff2-ca5e-4f96-94f9-07c481485952.png',
-  '/lovable-uploads/87926666-b0fe-4e8e-ae84-c3199a40c517.png',
-  '/lovable-uploads/170f8ef5-0e2a-4371-812b-bc064ba01440.png',
-  '/lovable-uploads/299addc7-e4cd-4359-9057-9164326e1dd5.png',
-  '/lovable-uploads/c9fe7ba2-c11c-4358-9066-cf360c369068.png',
-  '/lovable-uploads/53f863ad-ee66-47ea-b006-979e266b08f7.png',
-  '/lovable-uploads/fa74ddee-b244-4d85-b441-0850dc46b2d1.png',
-  '/lovable-uploads/b619139d-759f-401b-adcc-f446f57056bf.png',
-  '/lovable-uploads/c3d87a16-d73a-4a42-81af-7e612f058c7a.png'
+  '/lovable-uploads/3b2350e8-72d9-4325-bd13-a5b6ceec335f.png'
 ];
