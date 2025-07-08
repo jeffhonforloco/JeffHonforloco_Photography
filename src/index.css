@@ -247,10 +247,11 @@
 /* Enhanced seamless infinite scroll animation with pause-reverse pattern */
 @keyframes slideSeamless {
   0% { transform: translateY(0); }
-  45% { transform: translateY(-50%); }
-  50% { transform: translateY(-50%); } /* Pause at end */
-  95% { transform: translateY(0); }
-  100% { transform: translateY(0); } /* Pause at start */
+  47% { transform: translateY(-50%); }
+  50% { transform: translateY(-50%); } /* Pause at bottom */
+  53% { transform: translateY(-50%); }
+  97% { transform: translateY(0); }
+  100% { transform: translateY(0); } /* Pause at top */
 }
 
 .animate-slide-up-continuous {
@@ -266,7 +267,7 @@
 
 /* Optimized infinite scroll animation like lindsayadlerphotography.com */
 .animate-slide-optimized {
-  animation: slideSeamless 60s ease-in-out infinite;
+  animation: slideSeamless 50s ease-in-out infinite;
   transform: translateZ(0);
   contain: layout;
 }
