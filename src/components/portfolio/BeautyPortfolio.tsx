@@ -27,10 +27,10 @@ const BeautyPortfolio = ({ images }: BeautyPortfolioProps) => {
           </h1>
         </div>
 
-        {/* Full-width simple 4-column grid - original image ratios */}
-        <div className="pt-32 grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-2">
+        {/* Full-width masonry layout - no gaps between images */}
+        <div className="pt-32 columns-2 md:columns-4 gap-1 md:gap-2 space-y-1 md:space-y-2">
           {images.map((image, index) => (
-            <div key={index} className="relative group overflow-hidden cursor-pointer">
+            <div key={index} className="relative group overflow-hidden cursor-pointer break-inside-avoid mb-1 md:mb-2">
               <img
                 src={image.src}
                 alt={image.alt}
