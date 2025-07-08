@@ -163,14 +163,14 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
             </h1>
           </div>
 
-          {/* Portfolio Grid - 2 columns clean layout */}
-          <div className="grid grid-cols-2 gap-3 md:gap-6">
+          {/* Portfolio Grid - Masonry column layout like Lindsay Adler */}
+          <div className="columns-1 md:columns-2 gap-4 md:gap-6 space-y-4 md:space-y-6">
             {displayImages.map((image, index) => (
-              <div key={index} className="relative group overflow-hidden aspect-[4/5] cursor-pointer">
+              <div key={index} className="relative group overflow-hidden cursor-pointer break-inside-avoid mb-4 md:mb-6">
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
               </div>

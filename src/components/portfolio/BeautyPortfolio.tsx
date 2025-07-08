@@ -28,15 +28,16 @@ const BeautyPortfolio = ({ images }: BeautyPortfolioProps) => {
             </h1>
           </div>
 
-          {/* Image Grid - Responsive grid matching other portfolios */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+          {/* Image Grid - Masonry column layout like Lindsay Adler */}
+          <div className="columns-1 md:columns-2 gap-4 md:gap-6 space-y-4 md:space-y-6">
             {images.map((image, index) => (
-              <div key={index} className="aspect-[3/4] overflow-hidden">
+              <div key={index} className="relative group overflow-hidden cursor-pointer break-inside-avoid mb-4 md:mb-6">
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
               </div>
             ))}
           </div>
