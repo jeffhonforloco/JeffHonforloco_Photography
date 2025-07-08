@@ -7,7 +7,7 @@ const Portfolio = () => {
     {
       title: 'Fashion',
       slug: 'luxury-fashion-photography-nyc',
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: '/lovable-uploads/9cac59de-27c1-4b0a-8c2b-1d8333486e54.png',
       href: '/portfolio/luxury-fashion-photography-nyc',
       description: 'High-end fashion photography for luxury brands, fashion weeks, and celebrity campaigns across NYC, LA, and major fashion capitals.',
       keywords: 'luxury fashion photographer NYC, high-end fashion photography, fashion week photographer, celebrity fashion shoots'
