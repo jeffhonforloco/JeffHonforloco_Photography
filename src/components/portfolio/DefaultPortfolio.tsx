@@ -162,14 +162,14 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
           </h1>
         </div>
 
-        {/* Full-width simple 4-column grid - EXACTLY like Lindsay Adler */}
+        {/* Full-width simple 4-column grid - original image ratios */}
         <div className="pt-32 grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-2">
           {displayImages.map((image, index) => (
-            <div key={index} className="relative group overflow-hidden cursor-pointer aspect-square">
+            <div key={index} className="relative group overflow-hidden cursor-pointer">
               <img
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
             </div>
