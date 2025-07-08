@@ -261,9 +261,9 @@
   contain: layout style paint;
 }
 
-/* Smooth continuous animation like Lindsay Adler's site */
+/* Slower smooth animation matching Lindsay Adler's timing */
 .animate-slide-optimized {
-  animation: slideSeamless 60s linear infinite;
+  animation: slideSeamless 120s linear infinite;
   transform: translateZ(0);
   contain: layout;
 }
