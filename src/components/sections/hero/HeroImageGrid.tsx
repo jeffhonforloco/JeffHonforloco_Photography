@@ -1,78 +1,27 @@
 import { useHeroImages } from '../../../hooks/useHeroImages';
-import { useRef, useEffect, useCallback } from 'react';
 
 const HeroImageGrid = () => {
-  const { portfolioImages, col1Images, col2Images, col3Images } = useHeroImages();
-  const loadedImagesRef = useRef<Set<string>>(new Set());
-  const observerRef = useRef<IntersectionObserver | null>(null);
-
-  // Single shared intersection observer for better performance
-  const setupLazyLoading = useCallback(() => {
-    if (observerRef.current) observerRef.current.disconnect();
-    
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const img = entry.target as HTMLImageElement;
-          if (img.dataset.src && !loadedImagesRef.current.has(img.dataset.src)) {
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
-            loadedImagesRef.current.add(img.src);
-            observerRef.current?.unobserve(img);
-          }
-        }
-      });
-    }, { 
-      rootMargin: '100px',
-      threshold: 0.1
-    });
-  }, []);
-
-  // Optimized image preloading
-  useEffect(() => {
-    // Preload only first 3 critical images
-    const criticalImages = portfolioImages.slice(0, 3);
-    criticalImages.forEach((src) => {
-      const img = new Image();
-      img.onload = () => loadedImagesRef.current.add(src);
-      img.src = src;
-    });
-
-    setupLazyLoading();
-    
-    return () => {
-      observerRef.current?.disconnect();
-    };
-  }, [portfolioImages, setupLazyLoading]);
-
-  const imgRef = useCallback((node: HTMLImageElement | null) => {
-    if (node && observerRef.current) {
-      observerRef.current.observe(node);
-    }
-  }, []);
+  const { col1Images, col2Images, col3Images } = useHeroImages();
 
   const renderImage = (image: string, index: number, columnPrefix: string) => {
-    const isCritical = index < 6; // Increase critical images for better loading
-    const isLoaded = loadedImagesRef.current.has(image);
-    
     return (
       <div 
         key={`${columnPrefix}-${index}`} 
         className="relative overflow-hidden flex-shrink-0 hero-image-container"
       >
         <img 
-          ref={!isCritical ? imgRef : undefined}
-          src={image} // Always set src to ensure images load
+          src={image}
           alt={`Portfolio ${index + 1}`} 
-          className="hero-image w-full h-auto object-cover opacity-100"
-          loading={isCritical ? "eager" : "lazy"}
-          decoding="async"
+          className="hero-image w-full h-auto object-cover"
+          loading="eager"
           width="400"
           height="600"
-          onLoad={() => loadedImagesRef.current.add(image)}
           onError={(e) => {
-            console.log('Image failed to load:', image);
-            e.currentTarget.style.display = 'none';
+            console.error('Image failed to load:', image);
+            e.currentTarget.style.opacity = '0.1';
+          }}
+          onLoad={() => {
+            console.log('Image loaded successfully:', image);
           }}
         />
       </div>
@@ -89,7 +38,7 @@ const HeroImageGrid = () => {
           )}
         </div>
         
-        <div className="flex flex-col gap-3 animate-slide-optimized" style={{ animationDelay: '-15s' }}>
+        <div className="flex flex-col gap-3 animate-slide-optimized" style={{ animationDelay: '-20s' }}>
           {col2Images.map((image, index) => 
             renderImage(image, index, 'mobile-col2')
           )}
@@ -104,13 +53,13 @@ const HeroImageGrid = () => {
           )}
         </div>
         
-        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-20s' }}>
+        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-15s' }}>
           {col2Images.map((image, index) => 
             renderImage(image, index, 'desktop-col2')
           )}
         </div>
         
-        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-40s' }}>
+        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-30s' }}>
           {col3Images.map((image, index) => 
             renderImage(image, index, 'desktop-col3')
           )}
