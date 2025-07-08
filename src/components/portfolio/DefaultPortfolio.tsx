@@ -162,35 +162,18 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
           </h1>
         </div>
 
-        {/* Full-width masonry grid - EXACTLY like Lindsay Adler */}
-        <div className="pt-32 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-1 md:gap-2 auto-rows-max">
-          {displayImages.map((image, index) => {
-            // Create varying sizes like Lindsay's actual layout
-            const getSizeClass = (index: number) => {
-              const patterns = [
-                'col-span-1 row-span-1', // Small
-                'md:col-span-2 md:row-span-2', // Medium  
-                'col-span-1 row-span-1', // Small
-                'col-span-1 row-span-1', // Small
-                'md:col-span-1 md:row-span-2', // Tall
-                'md:col-span-2 md:row-span-1', // Wide
-                'col-span-1 row-span-1', // Small
-                'md:col-span-1 md:row-span-1', // Medium
-              ];
-              return patterns[index % patterns.length] || 'col-span-1 row-span-1';
-            };
-            
-            return (
-              <div key={index} className={`relative group overflow-hidden cursor-pointer ${getSizeClass(index)}`}>
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="w-full h-full object-cover min-h-[150px] md:min-h-[200px] lg:min-h-[300px] transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
-              </div>
-            );
-          })}
+        {/* Full-width simple 4-column grid - EXACTLY like Lindsay Adler */}
+        <div className="pt-32 grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-2">
+          {displayImages.map((image, index) => (
+            <div key={index} className="relative group overflow-hidden cursor-pointer aspect-square">
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
+            </div>
+          ))}
         </div>
 
         {/* Copyright Notice - Fixed at bottom */}
