@@ -29,7 +29,7 @@ const Portfolio = () => {
       keywords: 'luxury beauty photographer, cosmetic photography, beauty campaign photographer, high-end beauty shoots'
     },
     {
-      title: 'Editorial Photography',
+      title: 'Editorial',
       slug: 'editorial-photography-magazines',
       image: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', 
       href: '/portfolio/editorial-photography-magazines',
