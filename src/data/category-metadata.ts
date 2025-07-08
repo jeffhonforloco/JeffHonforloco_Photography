@@ -1,15 +1,16 @@
 export const categoryTitles = {
-  'luxury-fashion-photography-nyc': '',
-  'luxury-beauty-photography-nationwide': 'Luxury Beauty Photography',
-  'editorial-photography-magazines': 'Editorial Photography',
-  'celebrity-lifestyle-photography': 'Celebrity & Lifestyle Photography',
+  'luxury-fashion-photography-nyc': 'FASHION',
+  'glamour-photography': 'GLAMOUR',
+  'luxury-beauty-photography-nationwide': 'BEAUTY',
+  'editorial-photography-magazines': 'EDITORIAL',
+  'celebrity-lifestyle-photography': 'LIFESTYLE',
   // Legacy support
-  beauty: 'Beauty Photography',
-  fashion: 'Fashion Photography',
-  editorial: 'Editorial Photography',
-  glamour: 'Glamour Photography',
-  lifestyle: 'Lifestyle Photography',
-  motion: 'Motion & Video'
+  beauty: 'BEAUTY',
+  fashion: 'FASHION',
+  editorial: 'EDITORIAL',
+  glamour: 'GLAMOUR',
+  lifestyle: 'LIFESTYLE',
+  motion: 'MOTION'
 };
 
 export const categoryDescriptions = {
