@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLayout from '../components/admin/AdminLayout';
 import AdminDashboard from '../components/admin/AdminDashboard';
@@ -12,21 +12,48 @@ import AdminContacts from '../components/admin/AdminContacts';
 import AdminSettings from '../components/admin/AdminSettings';
 import AdminUsers from '../components/admin/AdminUsers';
 import AdminLogin from '../components/admin/AdminLogin';
+import { authSecurity } from '../lib/auth-security';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('adminAuth') === 'true';
+    return authSecurity.isAuthenticated();
   });
+
+  // Check authentication status periodically
+  useEffect(() => {
+    const checkAuth = () => {
+      const authStatus = authSecurity.isAuthenticated();
+      if (authStatus !== isAuthenticated) {
+        setIsAuthenticated(authStatus);
+      }
+    };
+
+    // Check authentication every 30 seconds
+    const interval = setInterval(checkAuth, 30000);
+    
+    // Check on focus/visibility change
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        checkAuth();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isAuthenticated]);
 
   const handleLogin = (success: boolean) => {
     if (success) {
-      localStorage.setItem('adminAuth', 'true');
       setIsAuthenticated(true);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminAuth');
+    authSecurity.logout();
     setIsAuthenticated(false);
   };
 
