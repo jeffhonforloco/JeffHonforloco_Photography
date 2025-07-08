@@ -45,7 +45,7 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
             </h1>
           </div>
 
-          {/* Portfolio Grid - 2 columns with overlay text */}
+          {/* Portfolio Grid - 2 columns clean layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {displayImages.map((image, index) => (
               <div key={index} className="relative group overflow-hidden aspect-[4/5] cursor-pointer">
@@ -54,16 +54,7 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
                   alt={image.alt}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-300"></div>
-                
-                {/* Overlay Text */}
-                <div className="absolute inset-0 flex items-end p-6">
-                  <div className="text-white">
-                    <h3 className="text-xl md:text-2xl font-light tracking-wider uppercase">
-                      {image.caption || `Project ${index + 1}`}
-                    </h3>
-                  </div>
-                </div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
               </div>
             ))}
           </div>
