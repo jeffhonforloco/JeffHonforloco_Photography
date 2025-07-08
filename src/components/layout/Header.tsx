@@ -56,6 +56,12 @@ const Header = () => {
             {/* Desktop Social Media Icons */}
             <SocialMediaIcons variant="desktop" />
 
+            {/* Mobile Navigation */}
+            <MobileNavigation
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+              onShareClick={handleShareClick}
+            />
           </div>
         </div>
       </div>
