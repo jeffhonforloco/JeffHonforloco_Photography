@@ -1,9 +1,9 @@
 export const portfolioImages = {
   beauty: [
     {
-      src: '/lovable-uploads/08c64276-3665-4346-a637-ca41acc6c602.png',
-      alt: 'Glamorous Beauty Cover',
-      caption: 'High-fashion beauty with metallic shimmer and classic red lips'
+      src: '/lovable-uploads/35e9a46e-e427-4bac-a68b-dbbd510572a3.png',
+      alt: 'Dramatic Red Beauty',
+      caption: 'Bold red monochrome beauty with satin gloves'
     },
     {
       src: '/lovable-uploads/ffaad10e-ef84-4236-bc74-370ddacc394b.png',
