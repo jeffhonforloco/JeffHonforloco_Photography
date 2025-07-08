@@ -29,9 +29,9 @@ const Header = () => {
       isScrolled ? 'bg-black/95 backdrop-blur-md py-4' : 'bg-transparent py-6'
     }`}>
       <div className="max-w-8xl mx-auto px-4 md:px-8 lg:px-16">
-        <div className="flex justify-center items-center relative">
-          {/* Left side - Logo positioned at far edge */}
-          <div className="absolute left-0 flex items-center">
+        <div className="flex justify-between items-center">
+          {/* Left side - Logo or empty space */}
+          <div className="flex items-center min-w-0 flex-1 md:flex-initial">
             {/* Logo - Only show on non-homepage */}
             {location.pathname !== '/' && (
               <Link to="/" className="flex items-center hover:opacity-80 transition-opacity duration-300">
@@ -51,8 +51,8 @@ const Header = () => {
             onShareClick={handleShareClick}
           />
 
-          {/* Right side - Social Media Icons and Mobile Menu positioned at far edge */}
-          <div className="absolute right-0 flex items-center">
+          {/* Right side - Social Media Icons and Mobile Menu */}
+          <div className="flex items-center justify-end min-w-0 flex-1 md:flex-initial md:absolute md:right-4 lg:right-8 xl:right-16">
             {/* Desktop Social Media Icons */}
             <SocialMediaIcons variant="desktop" />
 
