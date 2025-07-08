@@ -261,12 +261,11 @@
   contain: layout style paint;
 }
 
-/* Optimized animations for better performance */
+/* Optimized infinite scroll animation like lindsayadlerphotography.com */
 .animate-slide-optimized {
-  animation: slideSeamless 30s linear infinite;
+  animation: slideSeamless 40s linear infinite;
   transform: translateZ(0);
   contain: layout;
-  content-visibility: auto;
 }
 
 /* Enhanced bright theme animations and styles */
