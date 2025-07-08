@@ -163,24 +163,24 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
             </h1>
           </div>
 
-          {/* Portfolio Grid - Large masonry layout exactly like Lindsay Adler */}
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-3 auto-rows-max">
+          {/* Portfolio Grid - MASSIVE layout exactly like Lindsay Adler */}
+          <div className="grid grid-cols-2 md:grid-cols-12 gap-1 md:gap-2 auto-rows-max">
             {displayImages.map((image, index) => {
-              // Create much larger, more varied sizing like Lindsay Adler's actual layout
+              // Create MUCH larger sizing to match Lindsay Adler's massive scale
               const getSizeClass = (index: number) => {
                 const patterns = [
-                  'md:col-span-2 md:row-span-2', // Large square
-                  'md:col-span-3 md:row-span-3', // Very large center piece (like the main image)
-                  'md:col-span-2 md:row-span-1', // Wide rectangle
-                  'md:col-span-1 md:row-span-2', // Tall rectangle
-                  'md:col-span-2 md:row-span-2', // Large square
-                  'md:col-span-2 md:row-span-1', // Wide rectangle
-                  'md:col-span-1 md:row-span-1', // Small square
-                  'md:col-span-2 md:row-span-3', // Very tall
-                  'md:col-span-3 md:row-span-2', // Very wide
-                  'md:col-span-1 md:row-span-1', // Small square
+                  'md:col-span-3 md:row-span-3', // Large
+                  'md:col-span-6 md:row-span-4', // MASSIVE center piece (like Lindsay's main image)
+                  'md:col-span-3 md:row-span-2', // Large rectangle
+                  'md:col-span-3 md:row-span-3', // Large square
+                  'md:col-span-4 md:row-span-3', // Very large
+                  'md:col-span-3 md:row-span-2', // Large rectangle
+                  'md:col-span-2 md:row-span-2', // Medium
+                  'md:col-span-4 md:row-span-4', // MASSIVE
+                  'md:col-span-5 md:row-span-3', // Very large wide
+                  'md:col-span-3 md:row-span-3', // Large square
                 ];
-                return patterns[index % patterns.length] || 'md:col-span-2 md:row-span-2';
+                return patterns[index % patterns.length] || 'md:col-span-4 md:row-span-3';
               };
               
               return (
@@ -188,7 +188,7 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-full object-cover min-h-[150px] md:min-h-[250px] transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover min-h-[200px] md:min-h-[400px] transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
                 </div>
