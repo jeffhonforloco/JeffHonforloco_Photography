@@ -18,7 +18,9 @@ const SocialMediaIcons = ({ variant }: SocialMediaIconsProps) => {
     },
     { 
       Icon: ({ className }: { className: string }) => (
-        <img src="/lovable-uploads/5a60bf0e-6e49-4d51-8166-23e29f649d84.png" alt="YouPic" className={className} />
+        <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+          <path d="M3 3h3v18H3V3zm15 0h3v18h-3V3zM9 7l3 5 3-5h2l-4 6.5V19h-2v-5.5L7 7h2z"/>
+        </svg>
       ), 
       href: "https://youpic.com/jeffhonforlocophotos" 
     },
