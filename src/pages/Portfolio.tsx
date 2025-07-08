@@ -37,7 +37,7 @@ const Portfolio = () => {
       keywords: 'editorial photographer, magazine photographer, commercial editorial photography, brand storytelling'
     },
     {
-      title: 'Celebrity & Lifestyle',
+      title: 'Lifestyle',
       slug: 'celebrity-lifestyle-photography',
       image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       href: '/portfolio/celebrity-lifestyle-photography',
