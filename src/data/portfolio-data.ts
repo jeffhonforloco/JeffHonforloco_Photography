@@ -1,56 +1,6 @@
 export const portfolioImages = {
   beauty: [
     {
-      src: '/lovable-uploads/fc28b095-8088-4cce-a86f-541d6febaf86.png',
-      alt: 'Natural Beauty Portrait',
-      caption: 'Luminous natural beauty with warm golden tones'
-    },
-    {
-      src: '/lovable-uploads/912d6d9c-e13f-42fe-8c9a-d5856be2a415.png',
-      alt: 'Editorial Beauty with Green Accent',
-      caption: 'Bold editorial beauty featuring vibrant green liner'
-    },
-    {
-      src: '/lovable-uploads/cb8752d5-fe3f-42d7-9622-18e35c9246ac.png',
-      alt: 'Glamorous Beauty Portrait',
-      caption: 'Sophisticated glamour with rich burgundy tones'
-    },
-    {
-      src: '/lovable-uploads/e389849f-bd51-4a3e-9216-8caae91b3918.png',
-      alt: 'Dramatic Beauty Look',
-      caption: 'Striking beauty with dramatic lashes and glossy lips'
-    },
-    {
-      src: '/lovable-uploads/6eca5484-b022-4c34-8f5e-3f72e00faa0e.png',
-      alt: 'Luxury Beauty Portrait',
-      caption: 'Luxurious beauty with statement jewelry and nails'
-    },
-    {
-      src: '/lovable-uploads/b580c5bf-f009-493f-b7a9-929c0c5d451d.png',
-      alt: 'Contemporary Beauty',
-      caption: 'Modern beauty with sultry smokey eyes'
-    },
-    {
-      src: '/lovable-uploads/ecbcbd53-9cdd-4cf2-8b68-7ff06c3d41fe.png',
-      alt: 'Artistic Beauty Look',
-      caption: 'Creative beauty with blue shimmer and red lips'
-    },
-    {
-      src: '/lovable-uploads/efc5e7d1-a1bd-4aae-8d8e-a080b6534e21.png',
-      alt: 'High Fashion Beauty',
-      caption: 'Editorial beauty with metallic blue eyeshadow'
-    },
-    {
-      src: '/lovable-uploads/91897e71-3ba4-4556-8ea2-90b283f282a1.png',
-      alt: 'Classic Beauty Portrait',
-      caption: 'Timeless beauty with warm coral tones'
-    },
-    {
-      src: '/lovable-uploads/866a8725-5cf5-417a-bd5f-acce3532066a.png',
-      alt: 'Floral Beauty Concept',
-      caption: 'Creative beauty with sunflower accents'
-    },
-    {
       src: '/lovable-uploads/35e9a46e-e427-4bac-a68b-dbbd510572a3.png',
       alt: 'Dramatic Red Beauty',
       caption: 'Bold red monochrome beauty with satin gloves'
@@ -99,6 +49,56 @@ export const portfolioImages = {
       src: '/lovable-uploads/8495ca3f-5792-435a-864c-99c380bd088c.png',
       alt: 'Contemporary Beauty Portrait',
       caption: 'Modern beauty with blue accents and glossy finish'
+    },
+    {
+      src: '/lovable-uploads/fc28b095-8088-4cce-a86f-541d6febaf86.png',
+      alt: 'Natural Beauty Portrait',
+      caption: 'Luminous natural beauty with warm golden tones'
+    },
+    {
+      src: '/lovable-uploads/912d6d9c-e13f-42fe-8c9a-d5856be2a415.png',
+      alt: 'Editorial Beauty with Green Accent',
+      caption: 'Bold editorial beauty featuring vibrant green liner'
+    },
+    {
+      src: '/lovable-uploads/cb8752d5-fe3f-42d7-9622-18e35c9246ac.png',
+      alt: 'Glamorous Beauty Portrait',
+      caption: 'Sophisticated glamour with rich burgundy tones'
+    },
+    {
+      src: '/lovable-uploads/e389849f-bd51-4a3e-9216-8caae91b3918.png',
+      alt: 'Dramatic Beauty Look',
+      caption: 'Striking beauty with dramatic lashes and glossy lips'
+    },
+    {
+      src: '/lovable-uploads/6eca5484-b022-4c34-8f5e-3f72e00faa0e.png',
+      alt: 'Luxury Beauty Portrait',
+      caption: 'Luxurious beauty with statement jewelry and nails'
+    },
+    {
+      src: '/lovable-uploads/b580c5bf-f009-493f-b7a9-929c0c5d451d.png',
+      alt: 'Contemporary Beauty',
+      caption: 'Modern beauty with sultry smokey eyes'
+    },
+    {
+      src: '/lovable-uploads/ecbcbd53-9cdd-4cf2-8b68-7ff06c3d41fe.png',
+      alt: 'Artistic Beauty Look',
+      caption: 'Creative beauty with blue shimmer and red lips'
+    },
+    {
+      src: '/lovable-uploads/efc5e7d1-a1bd-4aae-8d8e-a080b6534e21.png',
+      alt: 'High Fashion Beauty',
+      caption: 'Editorial beauty with metallic blue eyeshadow'
+    },
+    {
+      src: '/lovable-uploads/91897e71-3ba4-4556-8ea2-90b283f282a1.png',
+      alt: 'Classic Beauty Portrait',
+      caption: 'Timeless beauty with warm coral tones'
+    },
+    {
+      src: '/lovable-uploads/866a8725-5cf5-417a-bd5f-acce3532066a.png',
+      alt: 'Floral Beauty Concept',
+      caption: 'Creative beauty with sunflower accents'
     }
   ],
   fashion: [
