@@ -23,7 +23,7 @@ const Portfolio = () => {
     {
       title: 'Beauty Photography', 
       slug: 'luxury-beauty-photography-nationwide',
-      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: '/lovable-uploads/08c64276-3665-4346-a637-ca41acc6c602.png',
       href: '/portfolio/luxury-beauty-photography-nationwide',
       description: 'Premium beauty and cosmetic photography for luxury brands, featuring sophisticated lighting and flawless execution.',
       keywords: 'luxury beauty photographer, cosmetic photography, beauty campaign photographer, high-end beauty shoots'
