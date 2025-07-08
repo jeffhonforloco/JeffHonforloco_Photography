@@ -1,69 +1,102 @@
 import { useHeroImages } from '../../../hooks/useHeroImages';
+import { useState, useEffect } from 'react';
 
 const HeroImageGrid = () => {
-  const { col1Images, col2Images, col3Images } = useHeroImages();
+  const { portfolioImages } = useHeroImages();
+  const [visibleImages, setVisibleImages] = useState<string[]>([]);
 
-  const renderImage = (image: string, index: number, columnPrefix: string) => {
-    return (
-      <div 
-        key={`${columnPrefix}-${index}`} 
-        className="relative overflow-hidden flex-shrink-0 hero-image-container"
-      >
-        <img 
-          src={image}
-          alt={`Portfolio ${index + 1}`} 
-          className="hero-image w-full h-auto object-cover"
-          loading="eager"
-          width="400"
-          height="600"
-          onError={(e) => {
-            console.error('Image failed to load:', image);
-            e.currentTarget.style.opacity = '0.1';
-          }}
-          onLoad={() => {
-            console.log('Image loaded successfully:', image);
-          }}
-        />
-      </div>
-    );
-  };
+  useEffect(() => {
+    // Show 6 random images from the collection for the mosaic
+    const shuffled = [...portfolioImages].sort(() => 0.5 - Math.random());
+    setVisibleImages(shuffled.slice(0, 6));
+  }, [portfolioImages]);
 
   return (
-    <div className="absolute inset-0 p-2 md:p-3">
-      {/* Mobile: 2 columns */}
-      <div className="md:hidden grid grid-cols-2 gap-3 h-full">
-        <div className="flex flex-col gap-3 animate-slide-optimized">
-          {col1Images.map((image, index) => 
-            renderImage(image, index, 'mobile-col1')
-          )}
-        </div>
-        
-        <div className="flex flex-col gap-3 animate-slide-optimized" style={{ animationDelay: '-20s' }}>
-          {col2Images.map((image, index) => 
-            renderImage(image, index, 'mobile-col2')
-          )}
-        </div>
+    <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-1 md:gap-2">
+      {/* Large featured image - top left */}
+      <div className="col-span-2 row-span-2 relative overflow-hidden">
+        {visibleImages[0] && (
+          <img 
+            src={visibleImages[0]}
+            alt="Featured Portfolio" 
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+            loading="eager"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300" />
       </div>
 
-      {/* Desktop: 3 columns */}
-      <div className="hidden md:grid grid-cols-3 gap-4 h-full">
-        <div className="flex flex-col gap-4 animate-slide-optimized">
-          {col1Images.map((image, index) => 
-            renderImage(image, index, 'desktop-col1')
-          )}
-        </div>
-        
-        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-15s' }}>
-          {col2Images.map((image, index) => 
-            renderImage(image, index, 'desktop-col2')
-          )}
-        </div>
-        
-        <div className="flex flex-col gap-4 animate-slide-optimized" style={{ animationDelay: '-30s' }}>
-          {col3Images.map((image, index) => 
-            renderImage(image, index, 'desktop-col3')
-          )}
-        </div>
+      {/* Top right image */}
+      <div className="col-span-2 row-span-1 relative overflow-hidden">
+        {visibleImages[1] && (
+          <img 
+            src={visibleImages[1]}
+            alt="Portfolio Image" 
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+            loading="eager"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300" />
+      </div>
+
+      {/* Middle right image */}
+      <div className="col-span-1 row-span-1 relative overflow-hidden">
+        {visibleImages[2] && (
+          <img 
+            src={visibleImages[2]}
+            alt="Portfolio Image" 
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300" />
+      </div>
+
+      {/* Another middle right image */}
+      <div className="col-span-1 row-span-1 relative overflow-hidden">
+        {visibleImages[3] && (
+          <img 
+            src={visibleImages[3]}
+            alt="Portfolio Image" 
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300" />
+      </div>
+
+      {/* Bottom left image */}
+      <div className="col-span-1 row-span-2 relative overflow-hidden">
+        {visibleImages[4] && (
+          <img 
+            src={visibleImages[4]}
+            alt="Portfolio Image" 
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300" />
+      </div>
+
+      {/* Bottom center image */}
+      <div className="col-span-1 row-span-2 relative overflow-hidden">
+        {visibleImages[5] && (
+          <img 
+            src={visibleImages[5]}
+            alt="Portfolio Image" 
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300" />
+      </div>
+
+      {/* Bottom right large image */}
+      <div className="col-span-2 row-span-2 relative overflow-hidden">
+        {visibleImages[0] && (
+          <img 
+            src={portfolioImages[(portfolioImages.indexOf(visibleImages[0]) + 6) % portfolioImages.length]}
+            alt="Portfolio Image" 
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/20 hover:bg-black/10 transition-colors duration-300" />
       </div>
     </div>
   );
