@@ -1,13 +1,13 @@
 import { portfolioImages } from '../data/hero-images';
 
 export const useHeroImages = () => {
-  // Create seamless infinite scroll by duplicating the 30 images
-  const duplicatedImages = [...portfolioImages, ...portfolioImages];
+  // Use original images without duplication to avoid visual duplicates
+  const images = portfolioImages;
   
-  // Distribute all 30 images evenly across 3 columns (10 each for desktop)
-  const col1Images = duplicatedImages.filter((_, index) => index % 3 === 0);
-  const col2Images = duplicatedImages.filter((_, index) => index % 3 === 1);
-  const col3Images = duplicatedImages.filter((_, index) => index % 3 === 2);
+  // Distribute 30 images across 3 columns (10 each for desktop)
+  const col1Images = images.filter((_, index) => index % 3 === 0);
+  const col2Images = images.filter((_, index) => index % 3 === 1);
+  const col3Images = images.filter((_, index) => index % 3 === 2);
 
   return {
     portfolioImages,
