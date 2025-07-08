@@ -206,7 +206,58 @@ export const portfolioImages = {
       caption: 'Editorial portrait with ornate floral and butterfly styling'
     }
   ],
-  lifestyle: [],
+  lifestyle: [
+    {
+      src: '/lovable-uploads/fa74ddee-b244-4d85-b441-0850dc46b2d1.png',
+      alt: 'Boho Style Lifestyle Portrait',
+      caption: 'Authentic lifestyle portrait with bohemian styling and natural outdoor setting'
+    },
+    {
+      src: '/lovable-uploads/b619139d-759f-401b-adcc-f446f57056bf.png',
+      alt: 'Desert Lifestyle Portrait',
+      caption: 'Black and white lifestyle portrait in natural desert landscape'
+    },
+    {
+      src: '/lovable-uploads/c3d87a16-d73a-4a42-81af-7e612f058c7a.png',
+      alt: 'Urban Lifestyle Portrait',
+      caption: 'Contemporary urban lifestyle portrait with golden hour lighting'
+    },
+    {
+      src: '/lovable-uploads/05feb32c-ea52-44e2-9b0b-7a9fe09133b9.png',
+      alt: 'Cultural Celebration Lifestyle',
+      caption: 'Authentic lifestyle photography celebrating cultural heritage and pride'
+    },
+    {
+      src: '/lovable-uploads/ac36fec2-4600-4871-b2f5-215d7734bb55.png',
+      alt: 'Traditional Lifestyle Portrait',
+      caption: 'Cultural lifestyle portrait with traditional styling and flag symbolism'
+    },
+    {
+      src: '/lovable-uploads/82096f60-a258-40e0-b035-0875c2d8ee1e.png',
+      alt: 'Beach Lifestyle Portrait',
+      caption: 'Vibrant beach lifestyle photography with colorful swimwear styling'
+    },
+    {
+      src: '/lovable-uploads/0f8a019d-5d63-4092-9f33-ae32020cd408.png',
+      alt: 'Beach Portrait Lifestyle',
+      caption: 'Natural lifestyle portrait with tropical jewelry and beach setting'
+    },
+    {
+      src: '/lovable-uploads/982dd484-d687-4982-b7ec-916b920c671a.png',
+      alt: 'Coastal Lifestyle Portrait',
+      caption: 'Elegant coastal lifestyle photography with nautical color palette'
+    },
+    {
+      src: '/lovable-uploads/5301ac3c-ba08-4bea-af8e-ebac21a56ec7.png',
+      alt: 'Beach Cover-up Lifestyle',
+      caption: 'Ethereal beach lifestyle portrait with flowing white cover-up'
+    },
+    {
+      src: '/lovable-uploads/d33ee507-6e6e-4f05-bbc5-c0470745579d.png',
+      alt: 'Ocean Lifestyle Portrait',
+      caption: 'Sensual ocean lifestyle photography with romantic lace styling'
+    }
+  ],
   motion: [
     {
       src: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
