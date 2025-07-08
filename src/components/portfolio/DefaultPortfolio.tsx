@@ -22,7 +22,7 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
     { src: '/lovable-uploads/fe3059c7-202d-4437-8785-42cc1fc2cab4.png', alt: 'Fashion Photography', caption: 'CONTEMPORARY STYLE' }
   ];
 
-  const displayImages = title === 'FASHION' ? fashionImages : images;
+  const displayImages = title === 'FASHION' || window.location.pathname.includes('luxury-fashion-photography-nyc') ? fashionImages : images;
   return (
     <Layout>
       <div className="pt-24 pb-12 bg-black min-h-screen">
