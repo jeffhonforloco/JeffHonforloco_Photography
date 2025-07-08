@@ -52,7 +52,7 @@ const HeroImageGrid = () => {
   }, []);
 
   const renderImage = (image: string, index: number, columnPrefix: string) => {
-    const isCritical = index < 3;
+    const isCritical = index < 6; // Increase critical images for better loading
     const isLoaded = loadedImagesRef.current.has(image);
     
     return (
@@ -62,18 +62,19 @@ const HeroImageGrid = () => {
       >
         <img 
           ref={!isCritical ? imgRef : undefined}
-          src={isCritical ? image : undefined}
-          data-src={!isCritical ? image : undefined}
-          alt={`Portfolio ${(index % portfolioImages.length) + 1}`} 
-          className={`hero-image w-full h-auto object-cover ${isLoaded || isCritical ? 'opacity-100' : 'opacity-20'}`}
+          src={image} // Always set src to ensure images load
+          alt={`Portfolio ${index + 1}`} 
+          className="hero-image w-full h-auto object-cover opacity-100"
           loading={isCritical ? "eager" : "lazy"}
           decoding="async"
           width="400"
           height="600"
+          onLoad={() => loadedImagesRef.current.add(image)}
+          onError={(e) => {
+            console.log('Image failed to load:', image);
+            e.currentTarget.style.display = 'none';
+          }}
         />
-        {(!isLoaded && !isCritical) && (
-          <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-muted animate-pulse" />
-        )}
       </div>
     );
   };
