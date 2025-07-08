@@ -226,25 +226,71 @@ const PortfolioCategory = () => {
     );
   }
 
+  // Special layout for beauty categories
+  if (currentCategory.includes('beauty')) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-black pt-20 pb-20">
+          <div className="max-w-6xl mx-auto px-4">
+            {/* Back to Portfolios Link */}
+            <div className="mb-8">
+              <a 
+                href="/portfolio" 
+                className="inline-flex items-center text-photo-red hover:text-photo-red-hover font-medium text-sm transition-colors duration-300"
+              >
+                ← Back to Portfolios
+              </a>
+            </div>
+
+            {/* Title */}
+            <div className="text-center mb-12">
+              <h1 className="font-playfair text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-wider">
+                LUXURY BEAUTY
+              </h1>
+            </div>
+
+            {/* Image Grid - 2x2 on mobile, responsive */}
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
+              {images.slice(0, 4).map((image, index) => (
+                <div key={index} className="aspect-[3/4] overflow-hidden">
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Website URL */}
+            <div className="text-center mt-12">
+              <p className="text-gray-400 text-sm">
+                jeffhonforloco.com
+              </p>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
-      {/* SEO Header Section - Hidden for beauty category */}
-      {!currentCategory.includes('beauty') && (
-        <section className="pt-32 pb-12 bg-black">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light text-white mb-6 tracking-wide">
-              {title}
-            </h1>
-            <p className="text-gray-300 text-lg md:text-xl max-w-4xl mx-auto leading-relaxed mb-8">
-              {description}
-            </p>
-            <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto"></div>
-          </div>
-        </section>
-      )}
+      {/* SEO Header Section */}
+      <section className="pt-32 pb-12 bg-black">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light text-white mb-6 tracking-wide">
+            {title}
+          </h1>
+          <p className="text-gray-300 text-lg md:text-xl max-w-4xl mx-auto leading-relaxed mb-8">
+            {description}
+          </p>
+          <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto"></div>
+        </div>
+      </section>
 
       {/* Portfolio Gallery Section */}
-      <section className={`${currentCategory.includes('beauty') ? 'pt-20' : 'py-12'} section-padding`}>
+      <section className="py-12 section-padding">
         <div className="max-w-7xl mx-auto">
           {/* Image Gallery */}
           <ImageGallery images={images} className="animate-scale-in" />
