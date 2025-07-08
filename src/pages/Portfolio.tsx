@@ -15,7 +15,7 @@ const Portfolio = () => {
     {
       title: 'Glamour',
       slug: 'glamour-photography',
-      image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: '/lovable-uploads/7c6c25d5-48ef-4f79-8369-b5edab7ddc85.png',
       href: '/portfolio/glamour-photography',
       description: 'Sophisticated glamour photography capturing elegance, allure, and timeless beauty with dramatic lighting and styling.',
       keywords: 'glamour photographer, sophisticated portraits, dramatic lighting, elegant photography'
