@@ -214,7 +214,6 @@
 
 @keyframes slideUp {
   0% { transform: translateY(100%); }
-  50% { transform: translateY(-10%); }
   100% { transform: translateY(0%); }
 }
 
@@ -236,7 +235,7 @@
 }
 
 .animate-slide-up {
-  animation: slideUp linear infinite;
+  animation: slideUp 1s ease-out;
 }
 
 @keyframes slideUpContinuous {
@@ -365,6 +364,18 @@ link[rel="preload"] {
 img[loading="lazy"] {
   content-visibility: auto;
   contain-intrinsic-size: 400px 600px;
+}
+
+/* Optimized journal slider animations */
+.journal-slider-item {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+.journal-slider-item.active {
+  will-change: opacity;
 }
 
 /* Optimized animations - performance focused */

@@ -77,8 +77,8 @@ const Journal = () => {
           {blogData.posts.map((post: BlogPost, index: number) => (
             <div
               key={post.id}
-              className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-                index === currentSlide ? 'opacity-100 z-20' : 'opacity-0 z-10'
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out journal-slider-item ${
+                index === currentSlide ? 'opacity-100 z-20 active' : 'opacity-0 z-10'
               }`}
             >
               {/* Background Image */}
@@ -86,7 +86,11 @@ const Journal = () => {
                 <img
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover hero-image"
+                  style={{
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden'
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
               </div>
