@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Layout from '../Layout';
+import LazyImage from '../common/LazyImage';
 
 interface DefaultPortfolioProps {
   title: string;
@@ -14,7 +15,7 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
         {/* Back to Portfolios Link - Fixed position */}
         <div className="fixed top-24 left-4 z-10">
           <Link 
-            to="/portfolio" 
+            to="/portfolios" 
             className="inline-flex items-center text-photo-red hover:text-white transition-colors duration-300 text-lg bg-black/80 backdrop-blur px-3 py-1 rounded"
           >
             <span className="mr-2">←</span>
@@ -33,7 +34,7 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
         <div className="pt-32 columns-2 md:columns-4 gap-1 md:gap-2 space-y-1 md:space-y-2">
           {images.map((image, index) => (
             <div key={index} className="relative group overflow-hidden cursor-pointer break-inside-avoid mb-1 md:mb-2">
-              <img
+              <LazyImage
                 src={image.src}
                 alt={image.alt}
                 className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"

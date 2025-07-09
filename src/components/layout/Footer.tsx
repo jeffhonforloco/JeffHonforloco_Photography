@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'Portfolio', href: '/portfolio' },
+    { name: 'Portfolio', href: '/portfolios' },
     { name: 'Journal', href: '/journal' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },

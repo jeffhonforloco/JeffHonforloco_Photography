@@ -6,6 +6,12 @@ import FeaturedWork from '../components/sections/FeaturedWork';
 import AboutPreview from '../components/sections/AboutPreview';
 import Recognition from '../components/sections/Recognition';
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 // Location data for SEO optimization
 const locationData = {
   'nyc': {
@@ -180,7 +186,7 @@ const LocationLanding = () => {
                 Book in {locationInfo.name}
               </a>
               <a 
-                href="/portfolio" 
+                href="/portfolios" 
                 className="border-2 border-white/80 text-white hover:bg-white/10 px-8 py-4 font-semibold tracking-wider uppercase text-sm transition-all duration-300 hover:scale-105 rounded-lg backdrop-blur-sm"
               >
                 View Portfolio

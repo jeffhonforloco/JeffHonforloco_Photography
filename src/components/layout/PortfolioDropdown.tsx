@@ -9,11 +9,11 @@ interface PortfolioDropdownProps {
 
 const PortfolioDropdown = ({ isOpen, onMouseEnter, onMouseLeave, onClose }: PortfolioDropdownProps) => {
   const portfolioCategories = [
-    { name: 'Beauty', href: '/portfolio/beauty' },
-    { name: 'Fashion', href: '/portfolio/fashion' },
-    { name: 'Editorial', href: '/portfolio/editorial' },
-    { name: 'Glamour', href: '/portfolio/glamour' },
-    { name: 'Lifestyle', href: '/portfolio/lifestyle' },
+    { name: 'Beauty', href: '/portfolios/beauty' },
+    { name: 'Fashion', href: '/portfolios/fashion' },
+    { name: 'Editorial', href: '/portfolios/editorial' },
+    { name: 'Glamour', href: '/portfolios/glamour' },
+    { name: 'Lifestyle', href: '/portfolios/lifestyle' },
   ];
 
   return (

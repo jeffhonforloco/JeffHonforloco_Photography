@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {

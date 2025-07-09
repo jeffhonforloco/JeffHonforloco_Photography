@@ -86,6 +86,15 @@ export const trackBookingIntent = (source: string, location?: string) => {
 };
 
 // Analytics component for route tracking
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+    fbq?: (...args: any[]) => void;
+    _fbq?: any;
+    dataLayer?: any[];
+  }
+}
+
 const Analytics = () => {
   const location = useLocation();
 
@@ -119,29 +128,29 @@ const Analytics = () => {
 
         // Initialize Facebook Pixel
         if (config.facebookPixel.enabled && config.facebookPixel.pixelId !== 'FB_PIXEL_ID') {
-          (function(f: Window & { fbq?: { callMethod?: (...args: unknown[]) => void; queue?: unknown[]; loaded?: boolean; version?: string; push?: unknown; _fbq?: unknown }; _fbq?: unknown }, b: Document, e: string, v: string) {
-            if (f.fbq) return;
-            const n = f.fbq = function(...args: unknown[]) {
-              if (n.callMethod) {
-                n.callMethod(...args);
-              } else {
-                n.queue?.push(args);
-              }
-            };
-            if (!f._fbq) f._fbq = n;
-            n.push = n;
-            n.loaded = true;
-            n.version = '2.0';
-            n.queue = [];
-            const t = b.createElement(e) as HTMLScriptElement;
-            t.async = true;
-            t.src = v;
-            const s = b.getElementsByTagName(e)[0];
-            s.parentNode?.insertBefore(t, s);
-          })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+          // Facebook Pixel code
+          const fbq = function(...args: any[]) {
+            const fbInstance = window.fbq as any;
+            if (fbInstance && fbInstance.callMethod) {
+              fbInstance.callMethod.apply(fbInstance, args);
+            } else {
+              (fbInstance.queue = fbInstance.queue || []).push(args);
+            }
+          };
+          window.fbq = fbq as any;
+          if (!window._fbq) window._fbq = fbq;
+          (window.fbq as any).push = fbq;
+          (window.fbq as any).loaded = true;
+          (window.fbq as any).version = '2.0';
+          (window.fbq as any).queue = [];
+          
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+          document.head.appendChild(script);
 
-          (window as { fbq?: (action: string, ...args: unknown[]) => void }).fbq?.('init', config.facebookPixel.pixelId);
-          (window as { fbq?: (action: string, ...args: unknown[]) => void }).fbq?.('track', 'PageView');
+          window.fbq?.('init', config.facebookPixel.pixelId);
+          window.fbq?.('track', 'PageView');
         }
       })
       .catch(error => console.error('Failed to load analytics config:', error));

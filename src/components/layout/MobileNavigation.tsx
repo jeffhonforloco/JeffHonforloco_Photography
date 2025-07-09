@@ -12,16 +12,16 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
   const location = useLocation();
 
   const navigation = [
-    { name: 'Portfolios', href: '/portfolio' },
+    { name: 'Portfolios', href: '/portfolios' },
     { name: 'About', href: '/about' },
     { name: 'Journal', href: '/journal' },
-    { name: 'Motion', href: '/portfolio/motion' },
+    { name: 'Motion', href: '/portfolios/motion' },
     { name: 'Contact', href: '/contact' },
   ];
 
   const isActive = (path: string) => {
     return location.pathname === path || 
-           (path === '/portfolio' && location.pathname.startsWith('/portfolio')) ||
+           (path === '/portfolios' && location.pathname.startsWith('/portfolios')) ||
            (path === '/journal' && location.pathname.startsWith('/journal'));
   };
 

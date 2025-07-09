@@ -40,8 +40,8 @@ const App = () => (
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              <Route path="/portfolio/:category" element={<PortfolioCategory />} />
+              <Route path="/portfolios" element={<Portfolio />} />
+              <Route path="/portfolios/:category" element={<PortfolioCategory />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/journal/:slug" element={<JournalArticle />} />
               <Route path="/about" element={<About />} />
