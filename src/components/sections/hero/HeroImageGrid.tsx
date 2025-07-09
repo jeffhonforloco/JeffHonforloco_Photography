@@ -32,13 +32,13 @@ const HeroImageGrid = () => {
     <div className="absolute inset-0 p-2 md:p-3">
       {/* Mobile: 2 columns */}
       <div className="md:hidden grid grid-cols-2 gap-3 h-full">
-        <div className="flex flex-col gap-3 animate-slide-optimized">
+        <div className="flex flex-col gap-3 animate-slide-col1">
           {col1Images.map((image, index) => 
             renderImage(image, index, 'mobile-col1')
           )}
         </div>
         
-        <div className="flex flex-col gap-3 animate-slide-optimized">
+        <div className="flex flex-col gap-3 animate-slide-col2">
           {col2Images.map((image, index) => 
             renderImage(image, index, 'mobile-col2')
           )}
@@ -47,19 +47,19 @@ const HeroImageGrid = () => {
 
       {/* Desktop: 3 columns */}
       <div className="hidden md:grid grid-cols-3 gap-4 h-full">
-        <div className="flex flex-col gap-4 animate-slide-optimized">
+        <div className="flex flex-col gap-4 animate-slide-col1">
           {col1Images.map((image, index) => 
             renderImage(image, index, 'desktop-col1')
           )}
         </div>
         
-        <div className="flex flex-col gap-4 animate-slide-optimized">
+        <div className="flex flex-col gap-4 animate-slide-col2">
           {col2Images.map((image, index) => 
             renderImage(image, index, 'desktop-col2')
           )}
         </div>
         
-        <div className="flex flex-col gap-4 animate-slide-optimized">
+        <div className="flex flex-col gap-4 animate-slide-col3">
           {col3Images.map((image, index) => 
             renderImage(image, index, 'desktop-col3')
           )}
