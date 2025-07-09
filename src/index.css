@@ -243,10 +243,15 @@
   to { transform: translateY(-100%); }
 }
 
-/* Smooth continuous upward scroll like lindsayadlerphotography.com */
-@keyframes slideSeamless {
+/* Smooth, stable continuous upward scroll - optimized for stability */
+@keyframes slideStable {
   0% { transform: translateY(0); }
-  100% { transform: translateY(-100%); }
+  100% { transform: translateY(-50%); }
+}
+
+@keyframes slideStableMobile {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
 }
 
 .animate-slide-up-continuous {
@@ -254,17 +259,74 @@
 }
 
 .animate-slide-seamless {
-  animation: slideSeamless 80s linear infinite;
-  will-change: transform;
-  transform: translateZ(0);
-  contain: layout style paint;
+  animation: slideStable 60s linear infinite;
+  backface-visibility: hidden;
+  contain: layout;
 }
 
-/* Slower smooth animation matching Lindsay Adler's timing */
+/* Stable optimized animation - removed conflicting transforms */
 .animate-slide-optimized {
-  animation: slideSeamless 120s linear infinite;
-  transform: translateZ(0);
+  animation: slideStable 80s linear infinite;
+  backface-visibility: hidden;
   contain: layout;
+}
+
+/* Mobile-optimized slower animation for stability */
+@media (max-width: 768px) {
+  .animate-slide-optimized {
+    animation: slideStableMobile 100s linear infinite;
+  }
+  
+  .animate-slide-seamless {
+    animation: slideStableMobile 80s linear infinite;
+  }
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-optimized,
+  .animate-slide-seamless {
+    animation: none;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered animation delays for natural column movement */
+.animate-slide-col1 {
+  animation: slideStable 80s linear infinite;
+  backface-visibility: hidden;
+  contain: layout;
+}
+
+.animate-slide-col2 {
+  animation: slideStable 85s linear infinite;
+  animation-delay: -20s;
+  backface-visibility: hidden;
+  contain: layout;
+}
+
+.animate-slide-col3 {
+  animation: slideStable 90s linear infinite;
+  animation-delay: -40s;
+  backface-visibility: hidden;
+  contain: layout;
+}
+
+/* Mobile staggered animations */
+@media (max-width: 768px) {
+  .animate-slide-col1 {
+    animation: slideStableMobile 100s linear infinite;
+  }
+  
+  .animate-slide-col2 {
+    animation: slideStableMobile 105s linear infinite;
+    animation-delay: -25s;
+  }
+  
+  .animate-slide-col3 {
+    animation: slideStableMobile 110s linear infinite;
+    animation-delay: -50s;
+  }
 }
 
 /* Enhanced bright theme animations and styles */
@@ -312,8 +374,6 @@ img {
   image-rendering: optimizeQuality;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
   will-change: auto;
   contain: layout style paint;
   
@@ -322,10 +382,6 @@ img {
   -moz-user-select: none;
   user-select: none;
   pointer-events: none;
-  
-  /* Memory optimization */
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
 }
 
 /* Optimize images for hero section */
@@ -335,11 +391,6 @@ img {
   image-rendering: -webkit-optimize-contrast;
   transition: opacity 0.2s ease-out;
   backface-visibility: hidden;
-  transform: translateZ(0);
-  
-  /* Critical performance improvements */
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
@@ -378,17 +429,15 @@ img[loading="lazy"] {
   will-change: opacity;
 }
 
-/* Optimized animations - performance focused */
+/* Optimized animations - performance focused - cleaned up transforms */
 .animate-slide-optimized,
 .animate-slide-seamless {
-  /* GPU acceleration for smoother animations */
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
+  /* GPU acceleration for smoother animations - only use translate3d when not animating */
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   
   /* Reduce layout recalculations */
-  contain: layout style;
+  contain: layout;
   isolation: isolate;
 }
 
