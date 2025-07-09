@@ -49,69 +49,63 @@ const Portfolio = () => {
 
   return (
     <Layout>
-      {/* Main Portfolio Grid */}
-      <div className="min-h-screen bg-black pt-24">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          
-          {/* Mobile Grid - 2 columns */}
-          <div className="grid grid-cols-2 md:hidden gap-3">
-            {portfolioCategories.map((category, index) => (
-              <Link 
-                key={index}
-                to={category.href} 
-                className="relative group overflow-hidden aspect-square"
-              >
-                <LazyImage
-                  src={category.image}
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                  fetchPriority="high"
-                />
-                <div className="absolute inset-0 bg-black/40"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <h2 className="text-white text-sm font-light tracking-wider text-center uppercase px-2">
+      {/* Full-Page Portfolio Grid */}
+      <div className="min-h-screen bg-black">
+        {/* Mobile Grid - 2 columns full screen */}
+        <div className="grid grid-cols-2 md:hidden min-h-screen">
+          {portfolioCategories.map((category, index) => (
+            <Link 
+              key={index}
+              to={category.href} 
+              className="relative group overflow-hidden"
+            >
+              <LazyImage
+                src={category.image}
+                alt={category.title}
+                className="w-full h-full object-cover"
+                fetchPriority="high"
+              />
+              <div className="absolute inset-0 bg-black/30"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h2 className="text-white text-lg md:text-xl font-bold tracking-wide text-center uppercase px-4">
+                  {category.title}
+                </h2>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Desktop Grid - 4 columns full screen */}
+        <div className="hidden md:grid grid-cols-4 min-h-screen">
+          {portfolioCategories.map((category, index) => (
+            <Link 
+              key={index}
+              to={category.href} 
+              className="relative group overflow-hidden hover:scale-105 transition-transform duration-500"
+            >
+              <LazyImage
+                src={category.image}
+                alt={category.title}
+                className="w-full h-full object-cover"
+                fetchPriority="high"
+              />
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-300"></div>
+              <div className="absolute inset-0 flex items-center justify-center p-8">
+                <div className="text-center">
+                  <h2 className="text-white text-3xl xl:text-4xl 2xl:text-5xl font-bold tracking-wider uppercase">
                     {category.title}
                   </h2>
                 </div>
-              </Link>
-            ))}
-            {/* Add empty div if odd number to balance grid */}
-            {portfolioCategories.length % 2 !== 0 && <div></div>}
-          </div>
+              </div>
+            </Link>
+          ))}
+        </div>
 
-          {/* Desktop Grid - 4 columns uniform */}
-          <div className="hidden md:grid grid-cols-4 gap-4">
-            {portfolioCategories.map((category, index) => (
-              <Link 
-                key={index}
-                to={category.href} 
-                className="relative group overflow-hidden aspect-square hover:scale-105 transition-transform duration-500"
-              >
-                <LazyImage
-                  src={category.image}
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                  fetchPriority="high"
-                />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all duration-300"></div>
-                <div className="absolute inset-0 flex items-center justify-center p-6">
-                  <div className="text-center">
-                    <h2 className="text-white text-2xl xl:text-3xl font-light tracking-wider uppercase mb-3">
-                      {category.title}
-                    </h2>
-                    <div className="w-16 h-px bg-white/60 mx-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {/* Copyright Notice */}
-          <div className="text-center mt-16 pb-8">
-            <p className="text-white/60 text-sm tracking-wide">
-              © 2025 Jeff Honforloco Photography. All rights reserved.
-            </p>
-          </div>
+        {/* Copyright Notice - Fixed at bottom */}
+        <div className="fixed bottom-4 left-0 right-0 text-center z-10">
+          <p className="text-white/60 text-sm tracking-wide bg-black/80 backdrop-blur inline-block px-4 py-2 rounded">
+            © 2025 Jeff Honforloco Photography. All rights reserved.
+          </p>
         </div>
       </div>
     </Layout>
