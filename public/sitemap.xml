@@ -21,45 +21,59 @@
   
   <!-- Portfolio Main Page -->
   <url>
-    <loc>https://jeffhonforlocophotos.com/portfolio</loc>
-    <lastmod>2025-01-07</lastmod>
+    <loc>https://jeffhonforlocophotos.com/portfolios</loc>
+    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
-  <!-- SEO-Optimized Portfolio Categories -->
+  <!-- Book Page -->
   <url>
-    <loc>https://jeffhonforlocophotos.com/portfolio/luxury-fashion-photography-nyc</loc>
-    <lastmod>2025-01-07</lastmod>
+    <loc>https://jeffhonforlocophotos.com/book</loc>
+    <lastmod>2025-07-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Portfolio Categories -->
+  <url>
+    <loc>https://jeffhonforlocophotos.com/portfolios/beauty</loc>
+    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://jeffhonforlocophotos.com/portfolio/luxury-beauty-photography-nationwide</loc>
-    <lastmod>2025-01-07</lastmod>
+    <loc>https://jeffhonforlocophotos.com/portfolios/fashion</loc>
+    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://jeffhonforlocophotos.com/portfolio/editorial-photography-magazines</loc>
-    <lastmod>2025-01-07</lastmod>
+    <loc>https://jeffhonforlocophotos.com/portfolios/editorial</loc>
+    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://jeffhonforlocophotos.com/portfolio/celebrity-lifestyle-photography</loc>
-    <lastmod>2025-01-07</lastmod>
+    <loc>https://jeffhonforlocophotos.com/portfolios/lifestyle</loc>
+    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
-  <!-- Glamour Portfolio -->
   <url>
-    <loc>https://jeffhonforlocophotos.com/portfolio/glamour-photography</loc>
-    <lastmod>2025-01-07</lastmod>
+    <loc>https://jeffhonforlocophotos.com/portfolios/glamour</loc>
+    <lastmod>2025-07-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://jeffhonforlocophotos.com/portfolios/motion</loc>
+    <lastmod>2025-07-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
