@@ -20,6 +20,7 @@ const LocationLanding = lazy(() => import("./pages/LocationLanding"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Book = lazy(() => import("./pages/Book"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 
 // Loading component
 const LoadingFallback = () => (
@@ -51,6 +52,7 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/book" element={<Book />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               {/* Location-specific landing pages */}
               <Route path="/location/:location" element={<LocationLanding />} />
               {/* Legacy location routes for SEO */}

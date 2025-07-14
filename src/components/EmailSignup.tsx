@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { useEmailAutomation } from '@/hooks/useEmailAutomation';
+import { useAnalytics } from '@/hooks/useAnalytics';
 
 interface EmailFormData {
   email: string;
@@ -12,28 +14,25 @@ const EmailSignup = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<EmailFormData>();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { addLead } = useEmailAutomation();
+  const { trackEmailSignup } = useAnalytics();
 
   const onSubmit = async (data: EmailFormData) => {
     setIsLoading(true);
     
     try {
-      // For now, store in localStorage until Supabase is connected
-      const existingEmails = JSON.parse(localStorage.getItem('emailSignups') || '[]');
-      const newSignup = {
-        email: data.email,
-        timestamp: new Date().toISOString()
-      };
+      const success = addLead(data.email, 'website');
       
-      if (!existingEmails.find((signup: any) => signup.email === data.email)) {
-        existingEmails.push(newSignup);
-        localStorage.setItem('emailSignups', JSON.stringify(existingEmails));
+      if (success) {
+        // Track analytics
+        trackEmailSignup(data.email, 'homepage_signup');
+        
+        reset();
+        toast({
+          title: "Welcome aboard! ✨",
+          description: "You're now part of Jeff's exclusive community. Check your email for a special welcome gift!",
+        });
       }
-      
-      reset();
-      toast({
-        title: "Welcome aboard! ✨",
-        description: "You're now part of Jeff's exclusive community. Check your email for a special welcome gift!",
-      });
     } catch (error) {
       toast({
         title: "Oops! Something went wrong",
