@@ -42,6 +42,53 @@ const SEO = ({
     }
   };
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What kind of photography does Jeff Honforloco specialize in?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Jeff focuses on fashion, beauty, editorial, and lifestyle photography with luxury brand campaigns and celebrity shoots."
+        }
+      },
+      {
+        "@type": "Question", 
+        "name": "Where is Jeff Honforloco based?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Jeff operates primarily in NYC, LA, Miami, and travels internationally for luxury fashion and beauty shoots."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I book a session with Jeff Honforloco?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, booking inquiries for fashion, beauty, and editorial shoots are available through the website's contact page."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Jeff offer creative direction services?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Jeff provides full creative direction, styling consultation, and art direction for luxury fashion and beauty campaigns."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are digital and print licensing options available?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, clients can request both digital delivery and usage rights for commercial, editorial, and social media purposes."
+        }
+      }
+    ]
+  };
+
   return (
     <Helmet>
       <title>{fullTitle}</title>
@@ -68,6 +115,11 @@ const SEO = ({
       {/* Structured Data */}
       <script type="application/ld+json">
         {JSON.stringify(structuredData)}
+      </script>
+      
+      {/* FAQ Schema for AI Overview */}
+      <script type="application/ld+json">
+        {JSON.stringify(faqSchema)}
       </script>
     </Helmet>
   );
