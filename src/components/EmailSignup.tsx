@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useEmailAutomation } from '@/hooks/useEmailAutomation';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useEmailSequence } from '@/hooks/useEmailSequence';
+import { supabase } from '@/integrations/supabase/client';
 
 interface EmailFormData {
   email: string;
@@ -23,11 +24,20 @@ const EmailSignup = () => {
     setIsLoading(true);
     
     try {
-      // Add to both systems
-      const success = addLead(data.email, 'website');
-      await addEmailLead(data.email);
-      
-      if (success) {
+      // Send newsletter signup via edge function
+      const { data: result } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          type: 'newsletter',
+          name: data.email.split('@')[0], // Use part of email as name for newsletter
+          email: data.email
+        }
+      });
+
+      if (result?.success) {
+        // Add to local systems for tracking
+        addLead(data.email, 'website');
+        await addEmailLead(data.email);
+        
         // Track analytics
         trackEmailSignup(data.email, 'homepage_signup');
         
@@ -36,6 +46,8 @@ const EmailSignup = () => {
           title: "Check your inbox! 📩",
           description: "Your prep guide is on its way. Welcome to Jeff's exclusive community!",
         });
+      } else {
+        throw new Error(result?.error || 'Failed to send email');
       }
     } catch (error) {
       toast({

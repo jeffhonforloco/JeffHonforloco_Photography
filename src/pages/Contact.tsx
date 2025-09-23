@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
-import { triggerEmailSequence, calculateLeadScore, syncToCRM } from '../components/EmailAutomation';
 import { trackContactForm, trackBookingIntent } from '../components/Analytics';
+import { supabase } from '@/integrations/supabase/client';
 
 const Contact = () => {
   const [contentData, setContentData] = useState<ContentData | null>(null);
@@ -36,25 +36,33 @@ const Contact = () => {
     setIsLoading(true);
 
     try {
-      // Calculate lead score
-      const leadScore = calculateLeadScore(formData);
-      
       // Track analytics
       trackContactForm(formData);
       trackBookingIntent('contact_form', formData.location);
       
-      // Trigger email automation
-      await triggerEmailSequence(formData);
-      
-      // Sync to CRM
-      await syncToCRM(formData, leadScore);
-      
-      console.log('Form submitted with lead score:', leadScore);
-      
-      toast({
-        title: "Message sent successfully!",
-        description: "Thank you for your inquiry. You'll receive a confirmation email shortly and I'll get back to you within 24 hours.",
+      // Send email via Supabase edge function
+      const { data } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          type: 'contact',
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          service: formData.service,
+          budget: formData.budget,
+          projectDate: formData.projectDate,
+          location: formData.location
+        }
       });
+
+      if (data?.success) {
+        toast({
+          title: "Message sent successfully!",
+          description: "Thank you for your inquiry. You'll receive a confirmation email shortly and I'll get back to you within 24 hours.",
+        });
+      } else {
+        throw new Error(data?.error || 'Failed to send email');
+      }
       
       // Reset form
       setFormData({
