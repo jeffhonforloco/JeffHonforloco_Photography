@@ -37,7 +37,12 @@ const queryClient = new QueryClient();
 const App = () => {
   // Initialize image optimization on app load
   React.useEffect(() => {
-    initializeImageOptimization();
+    // Wait for DOM to be ready
+    const timer = setTimeout(() => {
+      initializeImageOptimization();
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   return (

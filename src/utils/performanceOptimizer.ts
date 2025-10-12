@@ -35,22 +35,30 @@ export const setupLazyLoading = (): void => {
 };
 
 export const optimizeImageFormats = (): void => {
-  // Check WebP support and optimize images
-  const canvas = document.createElement('canvas');
-  const webpSupported = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-  
-  if (webpSupported) {
-    const images = document.querySelectorAll('img');
-    images.forEach(img => {
-      if (!img.src.includes('webp') && !img.src.includes('?')) {
-        // Add WebP optimization parameters
-        const url = new URL(img.src);
-        url.searchParams.set('f', 'webp');
-        url.searchParams.set('q', '75');
-        url.searchParams.set('auto', 'format');
-        img.src = url.toString();
-      }
-    });
+  try {
+    // Check WebP support and optimize images
+    const canvas = document.createElement('canvas');
+    const webpSupported = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    
+    if (webpSupported) {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        try {
+          if (!img.src.includes('webp') && !img.src.includes('?') && img.src.startsWith('http')) {
+            // Add WebP optimization parameters
+            const url = new URL(img.src);
+            url.searchParams.set('f', 'webp');
+            url.searchParams.set('q', '75');
+            url.searchParams.set('auto', 'format');
+            img.src = url.toString();
+          }
+        } catch (urlError) {
+          // Skip images that can't be processed
+        }
+      });
+    }
+  } catch (error) {
+    // Silently handle WebP optimization errors
   }
 };
 
@@ -94,6 +102,11 @@ const generateResponsiveSrcSet = (src: string): string => {
 };
 
 export const initializeImageOptimization = (): void => {
+  // Check if DOM is ready
+  if (typeof document === 'undefined' || !document.body) {
+    return;
+  }
+
   // Run all optimizations with error handling
   try {
     optimizeImageLoading();
