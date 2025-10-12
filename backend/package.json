@@ -27,7 +27,7 @@
     "jsonwebtoken": "^9.0.2",
     "express-rate-limit": "^8.1.0",
     "express-validator": "^7.0.1",
-    "nodemailer": "^6.9.7",
+    "nodemailer": "^7.0.9",
     "sqlite3": "^5.1.6",
     "better-sqlite3": "^12.4.1",
     "multer": "^1.4.5-lts.1",
