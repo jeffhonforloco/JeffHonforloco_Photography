@@ -161,13 +161,7 @@ const BookingSystem: React.FC = () => {
         message: `Booking Request:
 Service: ${bookingData.serviceType}
 Package: ${bookingData.packageType}
-        Date: ${bookingData.selectedDate ? (() => {
-          try {
-            return format(bookingData.selectedDate, 'MMMM dd, yyyy');
-          } catch (e) {
-            return bookingData.selectedDate.toLocaleDateString();
-          }
-        })() : 'Not selected'}
+        Date: ${formatDate(bookingData.selectedDate, 'MMMM dd, yyyy')}
 Time: ${bookingData.selectedTime}
 Location: ${bookingData.location}
 Location Type: ${bookingData.locationType}
@@ -489,13 +483,7 @@ ${bookingData.message}`,
             </div>
             <div>
               <span className="font-semibold text-white">Date:</span>{' '}
-              {bookingData.selectedDate ? (() => {
-                try {
-                  return format(bookingData.selectedDate, 'MMMM dd, yyyy');
-                } catch (e) {
-                  return bookingData.selectedDate.toLocaleDateString();
-                }
-              })() : 'Not selected'}
+              {formatDate(bookingData.selectedDate, 'MMMM dd, yyyy')}
             </div>
             <div>
               <span className="font-semibold text-white">Time:</span> {bookingData.selectedTime || 'Not selected'}
