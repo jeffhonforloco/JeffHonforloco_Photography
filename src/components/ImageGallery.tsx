@@ -1,6 +1,7 @@
 
-import { useState } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import HighResImage from './common/HighResImage';
 
 interface ImageGalleryProps {
   images: Array<{
@@ -9,9 +10,11 @@ interface ImageGalleryProps {
     caption?: string;
   }>;
   className?: string;
+  enable4K?: boolean;
+  enable8K?: boolean;
 }
 
-const ImageGallery = ({ images, className = "" }: ImageGalleryProps) => {
+const ImageGallery = ({ images, className = "", enable4K = true, enable8K = false }: ImageGalleryProps) => {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const openLightbox = (index: number) => {
@@ -36,11 +39,19 @@ const ImageGallery = ({ images, className = "" }: ImageGalleryProps) => {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') nextImage();
-    if (e.key === 'ArrowLeft') prevImage();
-  };
+  // Keyboard navigation
+  useEffect(() => {
+    if (selectedImage === null) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [selectedImage]);
 
   return (
     <>
@@ -48,20 +59,22 @@ const ImageGallery = ({ images, className = "" }: ImageGalleryProps) => {
         {images.map((image, index) => (
           <div
             key={index}
-            className="portfolio-item animate-scale-in"
+            className="portfolio-item group relative overflow-hidden cursor-pointer animate-scale-in"
             style={{ animationDelay: `${index * 0.1}s` }}
             onClick={() => openLightbox(index)}
           >
-            <img
+            <HighResImage
               src={image.src}
               alt={image.alt}
-              className="w-full h-full object-cover image-hover-effect"
-              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              enable4K={enable4K}
+              enable8K={enable8K}
+              priority={index < 4} // Prioritize first 4 images
             />
-            <div className="image-overlay opacity-0 group-hover:opacity-100">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 border border-white rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="w-16 h-16 border-2 border-white rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                  <ZoomIn className="w-6 h-6 text-white" />
                 </div>
               </div>
             </div>
@@ -69,57 +82,74 @@ const ImageGallery = ({ images, className = "" }: ImageGalleryProps) => {
         ))}
       </div>
 
-      {/* Lightbox */}
+      {/* Enhanced Lightbox with High-Res Images */}
       {selectedImage !== null && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center"
-          onKeyDown={handleKeyPress}
-          tabIndex={0}
+          className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-sm flex items-center justify-center animate-fade-in"
+          onClick={closeLightbox}
         >
           {/* Close button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-8 right-8 text-white hover:text-photo-red z-20 transition-colors duration-300"
+            className="absolute top-8 right-8 text-white hover:text-photo-red z-20 transition-colors duration-300 p-2 hover:bg-white/10 rounded-full"
+            aria-label="Close lightbox"
           >
             <X size={32} />
           </button>
           
           {/* Navigation buttons */}
           <button
-            onClick={prevImage}
-            className="absolute left-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red z-20 transition-colors duration-300"
+            onClick={(e) => {
+              e.stopPropagation();
+              prevImage();
+            }}
+            className="absolute left-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red z-20 transition-colors duration-300 p-3 hover:bg-white/10 rounded-full"
+            aria-label="Previous image"
           >
             <ChevronLeft size={48} />
           </button>
           
           <button
-            onClick={nextImage}
-            className="absolute right-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red z-20 transition-colors duration-300"
+            onClick={(e) => {
+              e.stopPropagation();
+              nextImage();
+            }}
+            className="absolute right-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red z-20 transition-colors duration-300 p-3 hover:bg-white/10 rounded-full"
+            aria-label="Next image"
           >
             <ChevronRight size={48} />
           </button>
 
-          {/* Image container */}
-          <div className="w-full h-full flex items-center justify-center p-16">
-            <img
-              src={images[selectedImage].src}
-              alt={images[selectedImage].alt}
-              className="max-w-full max-h-full object-contain animate-scale-in"
-            />
+          {/* High-resolution image container */}
+          <div 
+            className="w-full h-full flex items-center justify-center p-8 md:p-16"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative max-w-[95vw] max-h-[95vh]">
+              <HighResImage
+                src={images[selectedImage].src}
+                alt={images[selectedImage].alt}
+                className="max-w-full max-h-[95vh] object-contain"
+                enable4K={enable4K}
+                enable8K={enable8K}
+                priority={true}
+                quality={95}
+              />
+            </div>
           </div>
 
           {/* Caption */}
           {images[selectedImage].caption && (
-            <div className="absolute bottom-8 left-8 right-8 text-center">
-              <p className="text-white font-light text-lg tracking-wide max-w-2xl mx-auto">
+            <div className="absolute bottom-8 left-8 right-8 text-center z-20">
+              <p className="text-white font-light text-lg tracking-wide max-w-2xl mx-auto bg-black/50 backdrop-blur-sm px-6 py-3 rounded-lg">
                 {images[selectedImage].caption}
               </p>
             </div>
           )}
 
           {/* Image counter */}
-          <div className="absolute top-8 left-8 text-white font-light tracking-wider">
-            <span className="text-photo-red">{selectedImage + 1}</span> / {images.length}
+          <div className="absolute top-8 left-8 text-white font-light tracking-wider z-20 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-lg">
+            <span className="text-photo-red font-semibold">{selectedImage + 1}</span> / {images.length}
           </div>
         </div>
       )}

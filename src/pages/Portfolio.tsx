@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Layout from '../components/Layout';
-import LazyImage from '../components/common/LazyImage';
+import HighResImage from '../components/common/HighResImage';
 
 const Portfolio = () => {
   const portfolioCategories = [
@@ -59,11 +59,13 @@ const Portfolio = () => {
               to={category.href} 
               className="relative group overflow-hidden"
             >
-              <LazyImage
+              <HighResImage
                 src={category.image}
                 alt={category.title}
                 className="w-full h-full object-cover"
-                fetchPriority="high"
+                priority={true}
+                enable4K={true}
+                quality={90}
               />
               <div className="absolute inset-0 bg-black/30"></div>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -83,11 +85,13 @@ const Portfolio = () => {
               to={category.href} 
               className="relative group overflow-hidden hover:scale-105 transition-transform duration-500"
             >
-              <LazyImage
+              <HighResImage
                 src={category.image}
                 alt={category.title}
                 className="w-full h-full object-cover"
-                fetchPriority="high"
+                priority={true}
+                enable4K={true}
+                quality={90}
               />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-300"></div>
               <div className="absolute inset-0 flex items-center justify-center p-8">

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Layout from '../Layout';
-import LazyImage from '../common/LazyImage';
+import HighResImage from '../common/HighResImage';
 
 interface DefaultPortfolioProps {
   title: string;
@@ -33,11 +33,18 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
         {/* Full-width masonry layout - no gaps between images */}
         <div className="pt-32 columns-2 md:columns-4 gap-1 md:gap-2 space-y-1 md:space-y-2">
           {images.map((image, index) => (
-            <div key={index} className="relative group overflow-hidden cursor-pointer break-inside-avoid mb-1 md:mb-2">
-              <LazyImage
+            <div 
+              key={index} 
+              className="relative group overflow-hidden cursor-pointer break-inside-avoid mb-1 md:mb-2 animate-fade-in"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              <HighResImage
                 src={image.src}
                 alt={image.alt}
-                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
+                enable4K={true}
+                quality={90}
+                priority={index < 8} // Prioritize first 8 images
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
             </div>

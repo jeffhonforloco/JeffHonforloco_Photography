@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { generateOptimizedUrl, generateSrcSet } from '@/utils/imageOptimization';
 
 interface LazyImageProps {
   src: string;
@@ -12,6 +13,8 @@ interface LazyImageProps {
   height?: string;
   sizes?: string;
   fetchPriority?: "high" | "low" | "auto";
+  enable4K?: boolean;
+  quality?: number;
 }
 
 const LazyImage: React.FC<LazyImageProps> = ({
@@ -25,7 +28,9 @@ const LazyImage: React.FC<LazyImageProps> = ({
   width,
   height,
   sizes,
-  fetchPriority
+  fetchPriority,
+  enable4K = true,
+  quality = 85
 }) => {
   const [imageSrc, setImageSrc] = useState<string>(placeholder);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -37,7 +42,8 @@ const LazyImage: React.FC<LazyImageProps> = ({
     
     // For high priority images, load immediately
     if (fetchPriority === "high") {
-      setImageSrc(src);
+      const optimizedSrc = generateOptimizedUrl(src, undefined, quality);
+      setImageSrc(optimizedSrc);
       return;
     }
     
@@ -45,14 +51,15 @@ const LazyImage: React.FC<LazyImageProps> = ({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setImageSrc(src);
+            const optimizedSrc = generateOptimizedUrl(src, undefined, quality);
+            setImageSrc(optimizedSrc);
             observer.unobserve(entry.target);
           }
         });
       },
       {
         threshold: 0.1,
-        rootMargin: '50px'
+        rootMargin: '100px' // Start loading earlier for smoother experience
       }
     );
 
@@ -65,7 +72,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
         observer.unobserve(imgElement);
       }
     };
-  }, [src, fetchPriority]);
+  }, [src, fetchPriority, quality]);
 
   const handleLoad = () => {
     setIsLoaded(true);
@@ -77,26 +84,37 @@ const LazyImage: React.FC<LazyImageProps> = ({
     if (onError) onError();
   };
 
+  // Generate responsive srcset for high-res support
+  const srcSet = generateSrcSet(src, quality, enable4K, false);
+  const sizesAttr = sizes || '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
+
   return (
-    <img
-      ref={imgRef}
-      src={imageSrc}
-      alt={alt}
-      className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-90'} transition-opacity duration-500`}
-      style={{
-        ...style,
-        contentVisibility: 'auto',
-        containIntrinsicSize: '400px 600px'
-      }}
-      onLoad={handleLoad}
-      onError={handleError}
-      loading={fetchPriority === "high" ? "eager" : "lazy"}
-      decoding="async"
-      width={width}
-      height={height}
-      sizes={sizes}
-      {...(fetchPriority && { fetchpriority: fetchPriority })}
-    />
+    <picture>
+      {/* WebP source for better compression */}
+      <source srcSet={srcSet} sizes={sizesAttr} type="image/webp" />
+      
+      {/* Fallback image */}
+      <img
+        ref={imgRef}
+        src={imageSrc}
+        srcSet={srcSet}
+        sizes={sizesAttr}
+        alt={alt}
+        className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-70'} transition-opacity duration-700 ease-out`}
+        style={{
+          ...style,
+          contentVisibility: 'auto',
+          containIntrinsicSize: '400px 600px'
+        }}
+        onLoad={handleLoad}
+        onError={handleError}
+        loading={fetchPriority === "high" ? "eager" : "lazy"}
+        decoding="async"
+        width={width}
+        height={height}
+        {...(fetchPriority && { fetchpriority: fetchPriority })}
+      />
+    </picture>
   );
 };
 
