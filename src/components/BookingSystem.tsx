@@ -112,6 +112,22 @@ const BookingSystem: React.FC = () => {
     budget: '',
   });
 
+  // Helper function to format dates safely
+  const formatDate = (date: Date | undefined, formatStr: string): string => {
+    if (!date) return 'Not selected';
+    try {
+      return format(date, formatStr);
+    } catch (e) {
+      // Fallback to native date formatting
+      if (formatStr === 'MMMM dd, yyyy') {
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      } else if (formatStr === 'yyyy-MM-dd') {
+        return date.toISOString().split('T')[0];
+      }
+      return date.toLocaleDateString();
+    }
+  };
+
   const updateBookingData = (field: keyof BookingData, value: any) => {
     setBookingData(prev => ({ ...prev, [field]: value }));
   };
@@ -160,13 +176,7 @@ Budget: ${bookingData.budget}
 ${bookingData.message}`,
         service_type: bookingData.serviceType,
         budget_range: bookingData.budget,
-        event_date: bookingData.selectedDate ? (() => {
-          try {
-            return format(bookingData.selectedDate, 'yyyy-MM-dd');
-          } catch (e) {
-            return bookingData.selectedDate.toISOString().split('T')[0];
-          }
-        })() : '',
+        event_date: formatDate(bookingData.selectedDate, 'yyyy-MM-dd') === 'Not selected' ? '' : formatDate(bookingData.selectedDate, 'yyyy-MM-dd'),
         location: bookingData.location
       });
 
