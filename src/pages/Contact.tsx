@@ -149,100 +149,147 @@ const Contact = () => {
           <div className="px-4 pb-12">
             <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
               {/* Name Input */}
-              <input
-                type="text"
-                name="name"
-                placeholder="Full Name *"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red focus:border-transparent rounded-lg"
-              />
-              
+              <div>
+                <label htmlFor="name-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                  Full Name <span className="text-photo-red">*</span>
+                </label>
+                <input
+                  id="name-mobile"
+                  type="text"
+                  name="name"
+                  placeholder="Enter your full name"
+                  required
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red focus:border-transparent rounded-lg"
+                />
+              </div>
+
               {/* Email and Phone Row */}
               <div className="grid grid-cols-1 gap-4">
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address *"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red focus:border-transparent rounded-lg"
-                />
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red focus:border-transparent rounded-lg"
-                />
+                <div>
+                  <label htmlFor="email-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                    Email Address <span className="text-photo-red">*</span>
+                  </label>
+                  <input
+                    id="email-mobile"
+                    type="email"
+                    name="email"
+                    placeholder="your@email.com"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red focus:border-transparent rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    id="phone-mobile"
+                    type="tel"
+                    name="phone"
+                    placeholder="(555) 123-4567"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red focus:border-transparent rounded-lg"
+                  />
+                </div>
               </div>
 
               {/* Project Details Row */}
               <div className="grid grid-cols-1 gap-4">
-                <select
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg appearance-none"
-                  required
-                >
-                  <option value="">Select Photography Service *</option>
-                  <option value="Luxury Fashion Photography">Luxury Fashion Photography</option>
-                  <option value="Beauty & Cosmetic Photography">Beauty & Cosmetic Photography</option>
-                  <option value="Editorial Photography">Editorial Photography</option>
-                  <option value="Celebrity & Portrait Photography">Celebrity & Portrait Photography</option>
-                  <option value="Brand Campaign Photography">Brand Campaign Photography</option>
-                  <option value="Custom Photography Project">Custom Photography Project</option>
-                </select>
-                
-                <input
-                  type="date"
-                  name="projectDate"
-                  placeholder="Preferred Date"
-                  value={formData.projectDate}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg"
-                />
+                <div>
+                  <label htmlFor="service-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                    Photography Service <span className="text-photo-red">*</span>
+                  </label>
+                  <select
+                    id="service-mobile"
+                    name="service"
+                    value={formData.service}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg appearance-none"
+                    required
+                  >
+                    <option value="">Select a service</option>
+                    <option value="Luxury Fashion Photography">Luxury Fashion Photography</option>
+                    <option value="Beauty & Cosmetic Photography">Beauty & Cosmetic Photography</option>
+                    <option value="Editorial Photography">Editorial Photography</option>
+                    <option value="Celebrity & Portrait Photography">Celebrity & Portrait Photography</option>
+                    <option value="Brand Campaign Photography">Brand Campaign Photography</option>
+                    <option value="Custom Photography Project">Custom Photography Project</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="projectDate-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                    Preferred Date
+                  </label>
+                  <input
+                    id="projectDate-mobile"
+                    type="date"
+                    name="projectDate"
+                    value={formData.projectDate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg"
+                  />
+                </div>
               </div>
-              
+
               <div className="grid grid-cols-1 gap-4">
-                <input
-                  type="text"
-                  name="location"
-                  placeholder="Preferred Location (NYC, LA, Miami, etc.)"
-                  value={formData.location}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg"
-                />
-                
-                <select
-                  name="budget"
-                  value={formData.budget}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg appearance-none"
-                >
-                  <option value="">Investment Range</option>
-                  <option value="$2,000 - $5,000">$2,000 - $5,000</option>
-                  <option value="$5,000 - $10,000">$5,000 - $10,000</option>
-                  <option value="$10,000 - $25,000">$10,000 - $25,000</option>
-                  <option value="$25,000+">$25,000+</option>
-                  <option value="Discuss in consultation">Discuss in consultation</option>
-                </select>
+                <div>
+                  <label htmlFor="location-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                    Preferred Location
+                  </label>
+                  <input
+                    id="location-mobile"
+                    type="text"
+                    name="location"
+                    placeholder="NYC, LA, Miami, etc."
+                    value={formData.location}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="budget-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                    Investment Range
+                  </label>
+                  <select
+                    id="budget-mobile"
+                    name="budget"
+                    value={formData.budget}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg appearance-none"
+                  >
+                    <option value="">Select a range</option>
+                    <option value="$2,000 - $5,000">$2,000 - $5,000</option>
+                    <option value="$5,000 - $10,000">$5,000 - $10,000</option>
+                    <option value="$10,000 - $25,000">$10,000 - $25,000</option>
+                    <option value="$25,000+">$25,000+</option>
+                    <option value="Discuss in consultation">Discuss in consultation</option>
+                  </select>
+                </div>
               </div>
 
               {/* Message Textarea */}
-              <textarea
-                name="message"
-                placeholder="Tell me about your vision, goals, and any specific requirements for your photography session..."
-                required
-                rows={5}
-                value={formData.message}
-                onChange={handleChange}
-                className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg resize-none"
-              />
+              <div>
+                <label htmlFor="message-mobile" className="block text-sm font-medium text-gray-300 mb-2">
+                  Project Details <span className="text-photo-red">*</span>
+                </label>
+                <textarea
+                  id="message-mobile"
+                  name="message"
+                  placeholder="Tell me about your vision, goals, and any specific requirements for your photography session..."
+                  required
+                  rows={5}
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-gray-900 text-white placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-photo-red rounded-lg resize-none"
+                />
+              </div>
 
               {/* Trust Signals */}
               <div className="bg-gray-900 border border-gray-700 p-4 rounded-lg">
