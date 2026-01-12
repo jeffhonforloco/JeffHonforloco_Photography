@@ -35,6 +35,8 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
           className="z-50 flex items-center justify-center"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
         >
           {isMenuOpen ? (
             <X className="w-6 h-6 text-white" />
@@ -45,10 +47,16 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
       </div>
 
       {/* Mobile Navigation Menu */}
-      <div className={`md:hidden absolute top-0 right-0 w-full h-screen bg-black/98 backdrop-blur-md transform transition-all duration-500 ${
-        isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        <div className="flex flex-col justify-center items-center h-full space-y-8">
+      <div
+        id="mobile-menu"
+        className={`md:hidden absolute top-0 right-0 w-full h-screen bg-black/98 backdrop-blur-md transform transition-all duration-500 ${
+          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!isMenuOpen}
+      >
+        <nav className="flex flex-col justify-center items-center h-full space-y-8" aria-label="Mobile navigation">
           {navigation.map((item, index) => (
             <Link
               key={item.name}
@@ -62,15 +70,24 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
               {item.name}
             </Link>
           ))}
-          <img 
-            src="/lovable-uploads/06e1e583-fc89-475d-bf22-b6d815ab75f0.png" 
-            alt="Share" 
-            className="w-6 h-6 filter brightness-0 invert hover:opacity-80 transition-all duration-300 cursor-pointer mt-8" 
-            onClick={onShareClick}
-          />
-          
+          <button
+            onClick={() => {
+              onShareClick();
+              setIsMenuOpen(false);
+            }}
+            className="mt-8 p-2 hover:opacity-80 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-photo-red rounded"
+            aria-label="Share this page"
+          >
+            <img
+              src="/lovable-uploads/06e1e583-fc89-475d-bf22-b6d815ab75f0.png"
+              alt=""
+              className="w-6 h-6 filter brightness-0 invert"
+              aria-hidden="true"
+            />
+          </button>
+
           <SocialMediaIcons variant="mobile-menu" />
-        </div>
+        </nav>
       </div>
     </>
   );
