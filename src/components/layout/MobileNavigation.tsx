@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import SocialMediaIcons from './SocialMediaIcons';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 
 interface MobileNavigationProps {
   isMenuOpen: boolean;
@@ -10,6 +11,7 @@ interface MobileNavigationProps {
 
 const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNavigationProps) => {
   const location = useLocation();
+  const focusTrapRef = useFocusTrap(isMenuOpen);
 
   const navigation = [
     { name: 'Portfolios', href: '/portfolios' },
@@ -48,6 +50,7 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
 
       {/* Mobile Navigation Menu */}
       <div
+        ref={focusTrapRef}
         id="mobile-menu"
         className={`md:hidden absolute top-0 right-0 w-full h-screen bg-black/98 backdrop-blur-md transform transition-all duration-500 ${
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
