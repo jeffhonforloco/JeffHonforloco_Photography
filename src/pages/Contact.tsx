@@ -58,7 +58,7 @@ const Contact = () => {
           description: "Thank you for your inquiry. You'll receive a confirmation email shortly and I'll get back to you within 24 hours.",
         });
       } else {
-        throw new Error(data?.error || 'Failed to send email');
+        throw new Error(result?.error || 'Failed to send email');
       }
       
       // Reset form

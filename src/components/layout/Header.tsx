@@ -25,9 +25,12 @@ const Header = () => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      isScrolled ? 'bg-black/95 backdrop-blur-md py-4' : 'bg-transparent py-6'
-    }`}>
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? 'bg-black/95 backdrop-blur-md py-4' : 'bg-transparent py-6'
+      }`}
+      aria-label="Main navigation"
+    >
       <div className="max-w-8xl mx-auto px-4 md:px-8 lg:px-16">
         <div className="flex justify-between items-center">
           {/* Left side - Logo or empty space */}

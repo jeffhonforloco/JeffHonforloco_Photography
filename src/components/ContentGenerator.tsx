@@ -364,7 +364,7 @@ Ready to create something extraordinary?
     });
   };
 
-  const useTemplate = (templateKey: string) => {
+  const applyTemplate = (templateKey: string) => {
     const generated = generateInstagramCarousel(templateKey);
     
     const newContent: ContentPiece = {
@@ -448,7 +448,7 @@ Ready to create something extraordinary?
                 <Button
                   variant="outline"
                   className="h-auto p-4 flex flex-col items-start space-y-2"
-                  onClick={() => useTemplate('model-prep')}
+                  onClick={() => applyTemplate('model-prep')}
                 >
                   <div className="font-medium">Model Prep Guide</div>
                   <div className="text-sm text-muted-foreground text-left">
@@ -459,7 +459,7 @@ Ready to create something extraordinary?
                 <Button
                   variant="outline"
                   className="h-auto p-4 flex flex-col items-start space-y-2"
-                  onClick={() => useTemplate('behind-scenes')}
+                  onClick={() => applyTemplate('behind-scenes')}
                 >
                   <div className="font-medium">Behind the Scenes</div>
                   <div className="text-sm text-muted-foreground text-left">
@@ -470,7 +470,7 @@ Ready to create something extraordinary?
                 <Button
                   variant="outline"
                   className="h-auto p-4 flex flex-col items-start space-y-2"
-                  onClick={() => useTemplate('styling-tips')}
+                  onClick={() => applyTemplate('styling-tips')}
                 >
                   <div className="font-medium">Styling Secrets</div>
                   <div className="text-sm text-muted-foreground text-left">

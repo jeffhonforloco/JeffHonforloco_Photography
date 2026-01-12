@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import HighResImage from './common/HighResImage';
 
@@ -19,25 +19,36 @@ const ImageGallery = ({ images, className = "", enable4K = true, enable8K = fals
 
   const openLightbox = (index: number) => {
     setSelectedImage(index);
-    document.body.style.overflow = 'hidden';
   };
 
   const closeLightbox = () => {
     setSelectedImage(null);
-    document.body.style.overflow = 'unset';
   };
 
-  const nextImage = () => {
+  // Handle body overflow when lightbox opens/closes
+  useEffect(() => {
+    if (selectedImage !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedImage]);
+
+  const nextImage = useCallback(() => {
     if (selectedImage !== null) {
       setSelectedImage((selectedImage + 1) % images.length);
     }
-  };
+  }, [selectedImage, images.length]);
 
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     if (selectedImage !== null) {
       setSelectedImage(selectedImage === 0 ? images.length - 1 : selectedImage - 1);
     }
-  };
+  }, [selectedImage, images.length]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -51,7 +62,7 @@ const ImageGallery = ({ images, className = "", enable4K = true, enable8K = fals
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [selectedImage]);
+  }, [selectedImage, nextImage, prevImage]);
 
   return (
     <>
