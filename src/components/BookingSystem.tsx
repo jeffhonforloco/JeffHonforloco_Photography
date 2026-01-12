@@ -128,7 +128,7 @@ const BookingSystem: React.FC = () => {
     }
   };
 
-  const updateBookingData = (field: keyof BookingData, value: any) => {
+  const updateBookingData = <K extends keyof BookingData>(field: K, value: BookingData[K]) => {
     setBookingData(prev => ({ ...prev, [field]: value }));
   };
 

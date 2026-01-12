@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { generateOptimizedUrl, generateSrcSet, generateSizes } from '../utils/imageOptimization';
 
 interface ImageOptimizerProps {
@@ -31,6 +31,50 @@ const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
 }) => {
   const imgRef = useRef<HTMLImageElement>(null);
 
+  const loadOptimizedImage = useCallback(() => {
+    const img = imgRef.current;
+    if (!img) return;
+
+    const optimizedSrc = generateOptimizedUrl(src, width, quality);
+    const srcSet = generateSrcSet(src, quality);
+    const sizesAttr = sizes || generateSizes();
+
+    // Create picture element for WebP support
+    const picture = document.createElement('picture');
+
+    // WebP source
+    const webpSource = document.createElement('source');
+    webpSource.srcSet = srcSet;
+    webpSource.sizes = sizesAttr;
+    webpSource.type = 'image/webp';
+    picture.appendChild(webpSource);
+
+    // Fallback image
+    const fallbackImg = document.createElement('img');
+    fallbackImg.src = optimizedSrc;
+    fallbackImg.srcSet = srcSet;
+    fallbackImg.sizes = sizesAttr;
+    fallbackImg.alt = alt;
+    fallbackImg.className = className || '';
+    fallbackImg.style.cssText = img.style.cssText;
+    fallbackImg.onload = onLoad;
+    fallbackImg.onerror = onError;
+
+    // Copy all props
+    Object.keys(props).forEach(key => {
+      if (key in fallbackImg) {
+        (fallbackImg as Record<string, unknown>)[key] = (props as Record<string, unknown>)[key];
+      }
+    });
+
+    picture.appendChild(fallbackImg);
+
+    // Replace the original img with optimized version
+    if (img.parentNode) {
+      img.parentNode.replaceChild(picture, img);
+    }
+  }, [src, width, quality, sizes, alt, className, onLoad, onError, props]);
+
   useEffect(() => {
     const img = imgRef.current;
     if (!img) return;
@@ -53,51 +97,7 @@ const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
       // Load immediately for priority images
       loadOptimizedImage();
     }
-  }, [priority]);
-
-  const loadOptimizedImage = () => {
-    const img = imgRef.current;
-    if (!img) return;
-
-    const optimizedSrc = generateOptimizedUrl(src, width, quality);
-    const srcSet = generateSrcSet(src, quality);
-    const sizesAttr = sizes || generateSizes();
-
-    // Create picture element for WebP support
-    const picture = document.createElement('picture');
-    
-    // WebP source
-    const webpSource = document.createElement('source');
-    webpSource.srcSet = srcSet;
-    webpSource.sizes = sizesAttr;
-    webpSource.type = 'image/webp';
-    picture.appendChild(webpSource);
-
-    // Fallback image
-    const fallbackImg = document.createElement('img');
-    fallbackImg.src = optimizedSrc;
-    fallbackImg.srcSet = srcSet;
-    fallbackImg.sizes = sizesAttr;
-    fallbackImg.alt = alt;
-    fallbackImg.className = className || '';
-    fallbackImg.style.cssText = img.style.cssText;
-    fallbackImg.onload = onLoad;
-    fallbackImg.onerror = onError;
-    
-    // Copy all props
-    Object.keys(props).forEach(key => {
-      if (key in fallbackImg) {
-        (fallbackImg as any)[key] = (props as any)[key];
-      }
-    });
-
-    picture.appendChild(fallbackImg);
-
-    // Replace the original img with optimized version
-    if (img.parentNode) {
-      img.parentNode.replaceChild(picture, img);
-    }
-  };
+  }, [priority, loadOptimizedImage]);
 
   return (
     <img
