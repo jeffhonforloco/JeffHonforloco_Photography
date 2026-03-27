@@ -322,7 +322,7 @@ jobs:
           echo "Please check the logs for errors"
       
       - name: Create deployment status
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const status = '${{ needs.deploy-railway.result }}' === 'success' && '${{ needs.deploy-vercel.result }}' === 'success' ? 'success' : 'failure';
