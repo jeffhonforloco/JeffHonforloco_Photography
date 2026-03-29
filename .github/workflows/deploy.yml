@@ -200,7 +200,7 @@ jobs:
           path: backend/
       
       - name: Deploy to DigitalOcean App Platform
-        uses: digitalocean/app_action@v1
+        uses: digitalocean/app_action@v2
         with:
           digitalocean_token: ${{ secrets.DIGITALOCEAN_TOKEN }}
           app_id: ${{ secrets.DIGITALOCEAN_APP_ID }}
