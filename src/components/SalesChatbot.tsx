@@ -193,10 +193,10 @@ export default function SalesChatbot() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3">
       {/* Chat window */}
       {isOpen && (
-        <div className="w-[390px] max-w-[calc(100vw-2rem)] bg-photo-black border border-photo-gray-700 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
+        <div className="w-[390px] max-w-[calc(100vw-2rem)] max-h-[calc(100dvh-96px)] bg-photo-black border border-photo-gray-700 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-in">
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 bg-photo-gray-900 border-b border-photo-gray-700">
             <div className="flex items-center gap-3">
@@ -235,7 +235,7 @@ export default function SalesChatbot() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[calc(100svh-360px)] sm:min-h-[340px] sm:max-h-[460px]">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[240px] max-h-[45vh] sm:min-h-[340px] sm:max-h-[460px]">
             {/* Static initial greeting */}
             <div className="flex justify-start">
               <div className="max-w-[88%] bg-photo-gray-800 text-photo-white rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed">
