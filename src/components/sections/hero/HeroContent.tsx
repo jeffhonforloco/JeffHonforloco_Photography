@@ -1,9 +1,9 @@
 const HeroContent = () => {
   return (
     <>
-      {/* Mobile hero content — text sits at bottom with local backdrop only */}
-      <div className="md:hidden absolute inset-0 flex flex-col items-center justify-end z-20 pointer-events-none px-6 pb-12">
-        <div className="flex flex-col items-center w-full" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 100%)', paddingTop: '4rem', paddingBottom: '0' }}>
+      {/* Mobile hero content — text sits at bottom, clear of the chatbot FAB */}
+      <div className="md:hidden absolute inset-0 flex flex-col items-center justify-end z-20 pointer-events-none px-6 pb-28">
+        <div className="flex flex-col items-center w-full pt-16">
           <img
             src="/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png"
             alt="Jeff Honforloco Photography"
@@ -35,10 +35,7 @@ const HeroContent = () => {
 
       {/* Desktop — text block bottom-left, local gradient only under the text */}
       <div className="hidden md:flex absolute inset-0 items-end z-20 pointer-events-none pb-12 lg:pb-16 pl-10 lg:pl-16 xl:pl-24">
-        <div
-          className="max-w-xl pr-16 pt-16"
-          style={{ background: 'linear-gradient(to top right, rgba(0,0,0,0.75) 0%, transparent 80%)' }}
-        >
+        <div className="max-w-xl pr-16 pt-16">
           <img
             src="/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png"
             alt="Jeff Honforloco Photography"
