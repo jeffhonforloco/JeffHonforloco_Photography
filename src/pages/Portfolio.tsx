@@ -1,75 +1,63 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 import Layout from '../components/Layout';
 import HighResImage from '../components/common/HighResImage';
 
-const Portfolio = () => {
-  const portfolioCategories = [
-    {
-      title: 'Fashion',
-      slug: 'fashion',
-      image: '/images/9cac59de-27c1-4b0a-8c2b-1d8333486e54.png',
-      href: '/portfolios/fashion',
-      description: 'High-end fashion photography for luxury brands, fashion weeks, and celebrity campaigns across NYC, LA, and major fashion capitals.',
-      keywords: 'luxury fashion photographer NYC, high-end fashion photography, fashion week photographer, celebrity fashion shoots'
-    },
-    {
-      title: 'Glamour',
-      slug: 'glamour',
-      image: '/images/7c6c25d5-48ef-4f79-8369-b5edab7ddc85.png',
-      href: '/portfolios/glamour',
-      description: 'Sophisticated glamour photography capturing elegance, allure, and timeless beauty with dramatic lighting and styling.',
-      keywords: 'glamour photographer, sophisticated portraits, dramatic lighting, elegant photography'
-    },
-    {
-      title: 'Beauty', 
-      slug: 'beauty',
-      image: '/images/08c64276-3665-4346-a637-ca41acc6c602.png',
-      href: '/portfolios/beauty',
-      description: 'Premium beauty and cosmetic photography for luxury brands, featuring sophisticated lighting and flawless execution.',
-      keywords: 'luxury beauty photographer, cosmetic photography, beauty campaign photographer, high-end beauty shoots'
-    },
-    {
-      title: 'Editorial',
-      slug: 'editorial',
-      image: '/images/67b5c2bf-d1a3-44e4-af56-212f23e37262.png', 
-      href: '/portfolios/editorial',
-      description: 'Magazine-quality editorial photography for publications, brands, and storytelling campaigns that captivate audiences.',
-      keywords: 'editorial photographer, magazine photographer, commercial editorial photography, brand storytelling'
-    },
-    {
-      title: 'Lifestyle',
-      slug: 'lifestyle',
-      image: '/images/bcd80ca3-d60c-4596-9a71-4b8602583ff7.png',
-      href: '/portfolios/lifestyle',
-      description: 'Exclusive celebrity and luxury lifestyle photography capturing authentic moments and sophisticated aesthetics.',
-      keywords: 'celebrity photographer, luxury lifestyle photography, exclusive portrait photography, high-profile clients'
-    }
-  ];
+const portfolioCategories = [
+  {
+    title: 'Fashion',
+    slug: 'fashion',
+    image: '/images/9cac59de-27c1-4b0a-8c2b-1d8333486e54.png',
+    href: '/portfolios/fashion',
+  },
+  {
+    title: 'Glamour',
+    slug: 'glamour',
+    image: '/images/7c6c25d5-48ef-4f79-8369-b5edab7ddc85.png',
+    href: '/portfolios/glamour',
+  },
+  {
+    title: 'Beauty',
+    slug: 'beauty',
+    image: '/images/08c64276-3665-4346-a637-ca41acc6c602.png',
+    href: '/portfolios/beauty',
+  },
+  {
+    title: 'Editorial',
+    slug: 'editorial',
+    image: '/images/67b5c2bf-d1a3-44e4-af56-212f23e37262.png',
+    href: '/portfolios/editorial',
+  },
+  {
+    title: 'Lifestyle',
+    slug: 'lifestyle',
+    image: '/images/bcd80ca3-d60c-4596-9a71-4b8602583ff7.png',
+    href: '/portfolios/lifestyle',
+  },
+];
 
+const Portfolio = () => {
   return (
     <Layout>
-      {/* Full-Page Portfolio Grid */}
       <div className="min-h-screen bg-black">
-        {/* Mobile Grid - 2 columns full screen */}
-        <div className="grid grid-cols-2 md:hidden min-h-screen">
+        {/* Single responsive grid — no duplicate mobile/desktop DOM */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 min-h-screen">
           {portfolioCategories.map((category, index) => (
-            <Link 
-              key={index}
-              to={category.href} 
+            <Link
+              key={category.slug}
+              to={category.href}
               className="relative group overflow-hidden"
             >
               <HighResImage
                 src={category.image}
-                alt={category.title}
-                className="w-full h-full object-cover"
-                priority={true}
-                enable4K={true}
-                quality={90}
+                alt={`${category.title} Photography by Jeff Honforloco`}
+                className="w-full h-full"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                priority={index < 2}
+                quality={80}
               />
-              <div className="absolute inset-0 bg-black/30"></div>
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/15 transition-colors duration-300" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <h2 className="text-white text-lg md:text-xl font-bold tracking-wide text-center uppercase px-4">
+                <h2 className="text-white text-lg lg:text-3xl xl:text-4xl font-bold tracking-wider uppercase text-center px-2">
                   {category.title}
                 </h2>
               </div>
@@ -77,38 +65,9 @@ const Portfolio = () => {
           ))}
         </div>
 
-        {/* Desktop Grid - 4 columns full screen */}
-        <div className="hidden md:grid grid-cols-4 min-h-screen">
-          {portfolioCategories.map((category, index) => (
-            <Link 
-              key={index}
-              to={category.href} 
-              className="relative group overflow-hidden hover:scale-105 transition-transform duration-500"
-            >
-              <HighResImage
-                src={category.image}
-                alt={category.title}
-                className="w-full h-full object-cover"
-                priority={true}
-                enable4K={true}
-                quality={90}
-              />
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-all duration-300"></div>
-              <div className="absolute inset-0 flex items-center justify-center p-8">
-                <div className="text-center">
-                  <h2 className="text-white text-3xl xl:text-4xl 2xl:text-5xl font-bold tracking-wider uppercase">
-                    {category.title}
-                  </h2>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Copyright Notice - Fixed at bottom */}
-        <div className="fixed bottom-4 left-0 right-0 text-center z-10">
+        <div className="fixed bottom-4 left-0 right-0 text-center z-10 pointer-events-none">
           <p className="text-white/60 text-sm tracking-wide bg-black/80 backdrop-blur inline-block px-4 py-2 rounded">
-            © 2026 Jeff Honforloco Photography. All rights reserved.
+            &copy; 2026 Jeff Honforloco Photography. All rights reserved.
           </p>
         </div>
       </div>

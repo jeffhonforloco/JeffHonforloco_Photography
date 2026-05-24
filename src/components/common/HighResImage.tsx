@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { generateOptimizedUrl, generateSrcSet } from '@/utils/imageOptimization';
+import { generateOptimizedUrl } from '@/utils/imageOptimization';
 
 interface HighResImageProps {
   src: string;
@@ -17,188 +17,124 @@ interface HighResImageProps {
   enable8K?: boolean;
 }
 
-/**
- * High-resolution image component with 4K/8K support
- * Features:
- * - Progressive loading with blur-up effect
- * - Responsive srcset with high-resolution options
- * - WebP/AVIF format support
- * - Lazy loading with intersection observer
- * - Smooth fade-in animation
- */
+const BASE_BREAKPOINTS = [400, 800, 1200, 1600, 1920];
+const BREAKPOINTS_4K = [...BASE_BREAKPOINTS, 2560, 3840];
+
 const HighResImage: React.FC<HighResImageProps> = ({
   src,
   alt,
   className = '',
   width,
   height,
-  quality = 90,
+  quality = 80,
   priority = false,
   sizes,
   style,
   onLoad,
   onError,
-  enable4K = true,
+  enable4K = false,
   enable8K = false,
-  ...props
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [lazyLoadedSrc, setLazyLoadedSrc] = useState<string>('');
+  const [isInView, setIsInView] = useState(priority);
   const imgRef = useRef<HTMLImageElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // For priority images, compute src synchronously — no setState needed
+  // Priority images: compute src synchronously — skip IntersectionObserver
   const prioritySrc = useMemo(
     () => (priority ? generateOptimizedUrl(src, width, quality) : null),
     [priority, src, width, quality]
   );
-  const currentSrc = prioritySrc ?? lazyLoadedSrc;
-
-  // Generate high-resolution srcset
-  const generateHighResSrcSet = (baseSrc: string): string => {
-    const breakpoints = [320, 640, 768, 1024, 1280, 1536, 1920];
-    
-    // Add 4K breakpoints (3840px)
-    if (enable4K) {
-      breakpoints.push(2560, 3840);
-    }
-    
-    // Add 8K breakpoints (7680px)
-    if (enable8K) {
-      breakpoints.push(5120, 7680);
-    }
-
-    return breakpoints
-      .map(size => {
-        const optimizedUrl = generateOptimizedUrl(baseSrc, size, quality);
-        return `${optimizedUrl} ${size}w`;
-      })
-      .join(', ');
-  };
-
-  // Generate sizes attribute for responsive images
-  const generateSizes = (): string => {
-    if (sizes) return sizes;
-    
-    // Default responsive sizes with high-res support
-    return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1920px) 33vw, (max-width: 3840px) 25vw, 20vw';
-  };
 
   useEffect(() => {
-    // Priority images are handled by the useMemo above — no effect needed
     if (priority) return;
 
-    const imgElement = imgRef.current;
-    if (!imgElement) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- safe fallback when ref not yet attached
-      setLazyLoadedSrc(generateOptimizedUrl(src, width, quality));
+    const el = imgRef.current;
+    if (!el) {
+      setIsInView(true);
       return;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setLazyLoadedSrc(generateOptimizedUrl(src, width, quality));
-            observer.disconnect();
-          }
-        });
+        if (entries[0].isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
       },
-      {
-        threshold: 0.01,
-        rootMargin: '100px'
-      }
+      { threshold: 0.01, rootMargin: '400px' }
     );
 
-    observer.observe(imgElement);
+    observer.observe(el);
     return () => observer.disconnect();
-  }, [src, width, quality, priority]);
+  }, [priority]);
 
-  const handleLoad = () => {
-    setIsLoaded(true);
-    if (onLoad) onLoad();
-  };
+  const breakpoints = enable4K || enable8K ? BREAKPOINTS_4K : BASE_BREAKPOINTS;
 
-  const handleError = () => {
-    setHasError(true);
-    if (onError) onError();
-  };
+  const buildSrcSet = (baseSrc: string): string =>
+    breakpoints
+      .map(size => `${generateOptimizedUrl(baseSrc, size, quality)} ${size}w`)
+      .join(', ');
 
-  // Generate low-quality placeholder (blur-up technique)
-  const placeholderSrc = generateOptimizedUrl(src, 20, 20);
+  const sizesAttr =
+    sizes ?? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
 
-  const srcSet = generateHighResSrcSet(src);
-  const sizesAttr = generateSizes();
-  const optimizedSrc = currentSrc || generateOptimizedUrl(src, width, quality);
-
+  const activeSrc = prioritySrc ?? (isInView ? generateOptimizedUrl(src, width, quality) : undefined);
+  const activeSrcSet = isInView ? buildSrcSet(src) : undefined;
 
   return (
     <div
-      ref={containerRef}
       className={`relative overflow-hidden ${className}`}
-      style={style}
+      style={{
+        containIntrinsicSize: width && height ? `${width}px ${height}px` : '400px 500px',
+        ...style,
+      }}
     >
-      {/* Low-quality placeholder for blur-up effect */}
-      {!isLoaded && !hasError && (
-        <img
-          src={placeholderSrc}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-50"
-          aria-hidden="true"
-          loading="eager"
-        />
-      )}
-
-      {/* Main high-resolution image */}
-      <picture>
-        {/* AVIF source (best compression) */}
-        <source
-          srcSet={srcSet.replace(/f=webp/g, 'f=avif')}
-          sizes={sizesAttr}
-          type="image/avif"
-        />
-        
-        {/* WebP source */}
-        <source
-          srcSet={srcSet}
-          sizes={sizesAttr}
-          type="image/webp"
-        />
-        
-        {/* Fallback image */}
-        <img
-          ref={imgRef}
-          src={optimizedSrc}
-          srcSet={srcSet}
-          sizes={sizesAttr}
-          alt={alt}
-          width={width}
-          height={height}
-          className={`
-            relative w-full h-full object-cover
-            transition-opacity duration-700 ease-out
-            ${isLoaded ? 'opacity-100' : 'opacity-0'}
-            ${hasError ? 'opacity-0' : ''}
-          `}
-          onLoad={handleLoad}
-          onError={handleError}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding="async"
-          fetchPriority={priority ? 'high' : 'auto'}
-          {...props}
-        />
-      </picture>
-
-      {/* Loading skeleton */}
+      {/* Skeleton shown until image loads */}
       {!isLoaded && !hasError && (
         <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black animate-pulse" />
       )}
 
-      {/* Error state */}
+      <picture>
+        {/* AVIF — best compression, picked by modern browsers first */}
+        {activeSrcSet && (
+          <source
+            srcSet={activeSrcSet.replace(/f=webp/g, 'f=avif')}
+            sizes={sizesAttr}
+            type="image/avif"
+          />
+        )}
+        {/* WebP fallback */}
+        {activeSrcSet && (
+          <source
+            srcSet={activeSrcSet}
+            sizes={sizesAttr}
+            type="image/webp"
+          />
+        )}
+
+        <img
+          ref={imgRef}
+          src={activeSrc}
+          srcSet={activeSrcSet}
+          sizes={activeSrcSet ? sizesAttr : undefined}
+          alt={alt}
+          width={width}
+          height={height}
+          className={`relative w-full h-full object-cover transition-opacity duration-700 ease-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          onLoad={() => { setIsLoaded(true); onLoad?.(); }}
+          onError={() => { setHasError(true); onError?.(); }}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
+        />
+      </picture>
+
       {hasError && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
-          <div className="text-gray-500 text-sm">Failed to load image</div>
+          <span className="text-gray-500 text-sm">Image unavailable</span>
         </div>
       )}
     </div>
