@@ -22,12 +22,25 @@ Paste and run the contents of `schema.sql`
 | `ADMIN_EMAIL` | info@jeffhonforlocophotos.com |
 | `ALLOWED_ORIGIN` | https://jeffhonforlocophotos.com |
 
-### 4. Deploy via GitHub Actions
+### 4. Deploy
+
+#### Option A — GitHub Actions (recommended)
 Add these secrets to your GitHub repo (Settings → Secrets → Actions):
 - `CLOUDFLARE_API_TOKEN` — from Cloudflare → My Profile → API Tokens → Edit Workers
 - `CLOUDFLARE_ACCOUNT_ID` — from Cloudflare sidebar
 
 Push any change to `workers/api/**` → GitHub Action auto-deploys.
+
+#### Option B — Cloudflare Dashboard CI
+Create a **Worker** project (not Pages) and connect it to GitHub with these settings:
+
+| Field | Value |
+|---|---|
+| Root directory | *(leave empty)* |
+| Build command | *(leave empty)* |
+| Deploy command | `cd workers/api && npm ci && npx wrangler deploy` |
+
+**Why**: wrangler 4.x auto-detects Vite when run from the repo root, causing a "Vite 5.x not supported" error. The `cd workers/api` prefix runs wrangler from the Worker subdirectory where there is no Vite config, so auto-detection is bypassed and it reads `wrangler.toml` correctly.
 
 ### 5. Create first admin account
 After Worker is deployed, POST to:
