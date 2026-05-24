@@ -11,4 +11,4 @@ crons = ["0 8 * * *"]
 [[d1_databases]]
 binding = "DB"
 database_name = "photography_db"
-database_id = "REPLACE_WITH_YOUR_D1_DB_ID"
+database_id = "02c3b8de-30af-4f83-adca-751813a6f242"
