@@ -1,17 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <!-- Black background -->
-  <rect width="64" height="64" fill="#000000"/>
-  <!-- JH initials — Georgia serif matches Playfair Display brand aesthetic -->
-  <text
-    x="32"
-    y="41"
-    font-family="Georgia, 'Palatino Linotype', 'Book Antiqua', Palatino, serif"
-    font-size="26"
-    font-weight="400"
-    fill="#ffffff"
-    text-anchor="middle"
-    letter-spacing="3"
-  >JH</text>
-  <!-- Red accent rule — matches brand --photo-red (#C8102E) -->
-  <rect x="19" y="49" width="26" height="1.5" fill="#C8102E"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#000"/>
+  <!-- vertical arm top -->
+  <rect x="31.2" y="3" width="1.6" height="16" fill="#fff"/>
+  <!-- vertical arm bottom -->
+  <rect x="31.2" y="27" width="1.6" height="19" fill="#fff"/>
+  <!-- horizontal arm left -->
+  <rect x="3" y="24.2" width="22" height="1.6" fill="#fff"/>
+  <!-- horizontal arm right -->
+  <rect x="39" y="24.2" width="22" height="1.6" fill="#fff"/>
+  <!-- center dot -->
+  <circle cx="32" cy="25" r="2.8" fill="#fff"/>
+  <!-- J top-left -->
+  <text x="14" y="22" font-family="Georgia,'Times New Roman',serif" font-size="17" fill="#fff" text-anchor="middle">J</text>
+  <!-- E top-right -->
+  <text x="50" y="22" font-family="Georgia,'Times New Roman',serif" font-size="17" fill="#fff" text-anchor="middle">E</text>
+  <!-- F bottom-left -->
+  <text x="14" y="46" font-family="Georgia,'Times New Roman',serif" font-size="17" fill="#fff" text-anchor="middle">F</text>
+  <!-- F bottom-right -->
+  <text x="50" y="46" font-family="Georgia,'Times New Roman',serif" font-size="17" fill="#fff" text-anchor="middle">F</text>
+  <!-- HONFORLOCO -->
+  <text x="32" y="57" font-family="Georgia,'Times New Roman',serif" font-size="4.5" fill="#fff" text-anchor="middle" letter-spacing="0.5">HONFORLOCO</text>
+  <!-- PHOTOGRAPHY -->
+  <text x="32" y="62" font-family="Georgia,'Times New Roman',serif" font-size="3" fill="#fff" text-anchor="middle" letter-spacing="1">PHOTOGRAPHY</text>
 </svg>
