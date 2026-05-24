@@ -1,17 +1,17 @@
-name: Deploy Journal Worker
+name: Deploy API Worker
 
 on:
   push:
     branches: [main, claude/practical-sagan-iJsUW]
     paths:
-      - 'workers/journal-cron/**'
+      - 'workers/api/**'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: workers/journal-cron
+        working-directory: workers/api
 
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: workers/journal-cron/package-lock.json
+          cache-dependency-path: workers/api/package-lock.json
 
       - name: Install dependencies
         run: npm install

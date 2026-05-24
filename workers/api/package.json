@@ -1,0 +1,20 @@
+{
+  "name": "api-jeffhonforloco",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create photography_db",
+    "db:migrate:remote": "wrangler d1 execute photography_db --file=schema.sql --remote",
+    "db:migrate:local": "wrangler d1 execute photography_db --file=schema.sql --local"
+  },
+  "dependencies": {
+    "hono": "^4.4.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240725.0",
+    "typescript": "^5.5.2",
+    "wrangler": "^3.60.0"
+  }
+}
