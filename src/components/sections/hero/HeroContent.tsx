@@ -18,7 +18,7 @@ const HeroContent = () => {
           </p>
           <div className="flex flex-row gap-3 pointer-events-auto mb-2">
             <a
-              href="/contact"
+              href="/book"
               className="bg-photo-red hover:bg-photo-red-hover text-white px-5 py-2.5 font-inter font-medium tracking-[0.18em] uppercase text-[10px] transition-colors duration-300"
             >
               Book Session
@@ -51,7 +51,7 @@ const HeroContent = () => {
           </p>
           <div className="flex flex-row gap-4 pointer-events-auto">
             <a
-              href="/contact"
+              href="/book"
               className="bg-photo-red hover:bg-photo-red-hover text-white px-7 py-3 font-inter font-medium tracking-[0.2em] uppercase text-xs transition-colors duration-300"
             >
               Book a Session
