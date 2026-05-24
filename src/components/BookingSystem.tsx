@@ -40,7 +40,7 @@ const SERVICE_TYPES = [
     description: 'Studio or mobile — individuals, teams & LinkedIn. We come to your office across RI, MA, ME & CT.',
     icon: Smartphone,
     duration: '1–3 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $649',
     isMobile: true,
   },
   {
@@ -49,7 +49,7 @@ const SERVICE_TYPES = [
     description: 'Elegant beauty portraits for personal brands and cosmetics',
     icon: Award,
     duration: '1–5 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $750',
     isMobile: false,
   },
   {
@@ -58,7 +58,7 @@ const SERVICE_TYPES = [
     description: 'For aspiring models, influencers, designers & luxury brands',
     icon: Camera,
     duration: '1–8 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $850',
     isMobile: false,
   },
   {
@@ -67,7 +67,7 @@ const SERVICE_TYPES = [
     description: 'Dramatic lighting, bold styling, unforgettable portraits',
     icon: Camera,
     duration: '1–4 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $750',
     isMobile: false,
   },
   {
@@ -76,7 +76,7 @@ const SERVICE_TYPES = [
     description: 'Magazine-quality storytelling for publications & brands',
     icon: Camera,
     duration: '1–8 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $950',
     isMobile: false,
   },
   {
@@ -85,7 +85,7 @@ const SERVICE_TYPES = [
     description: 'Authentic moments — individuals, couples & families',
     icon: Users,
     duration: '1–4 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $650',
     isMobile: false,
   },
   {
@@ -94,7 +94,7 @@ const SERVICE_TYPES = [
     description: 'From intimate engagements to full-day celebrations across New England',
     icon: Award,
     duration: '1.5–10 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $850',
     isMobile: false,
   },
   {
@@ -103,7 +103,7 @@ const SERVICE_TYPES = [
     description: 'Sweet sixteens, galas, corporate events & milestones',
     icon: Users,
     duration: '2–8 hours',
-    startingPrice: 'From $499',
+    startingPrice: 'From $799',
     isMobile: false,
   },
   {
@@ -111,8 +111,8 @@ const SERVICE_TYPES = [
     name: 'Real Estate Photography',
     description: 'Mobile shoots — we come to the property across RI, MA, ME & CT',
     icon: Smartphone,
-    duration: '2–4 hours',
-    startingPrice: 'From $499',
+    duration: 'Up to 3 hours',
+    startingPrice: 'From $650',
     isMobile: true,
   },
   {
@@ -120,8 +120,8 @@ const SERVICE_TYPES = [
     name: 'Motion Video',
     description: 'Social reels to full brand productions — in partnership with urs79.com',
     icon: Film,
-    duration: '1+ day',
-    startingPrice: 'From $499',
+    duration: '2–4 hr shoot+',
+    startingPrice: 'From $1,500',
     isMobile: false,
     isMotion: true,
   },
@@ -131,26 +131,26 @@ const PACKAGE_TYPES = [
   {
     id: 'starter',
     name: 'Starter',
-    price: 'From $499',
-    features: ['1-hour session', '10–15 edited images', 'Online gallery delivery'],
+    price: 'From $649',
+    features: ['1-hour session', '6–8 edited images', 'Online gallery delivery'],
   },
   {
     id: 'standard',
     name: 'Standard',
-    price: 'From $799',
-    features: ['2–3 hour session', '20–30 edited images', 'Advanced retouching', 'Multiple looks'],
+    price: 'From $1,100',
+    features: ['2–3 hour session', '10–12 edited images', 'Advanced retouching', 'Multiple looks'],
   },
   {
     id: 'premium',
     name: 'Premium',
-    price: 'From $1,500',
-    features: ['4–6 hour session', '50+ edited images', 'Full retouching', 'Creative direction'],
+    price: 'From $2,000',
+    features: ['4+ hour session', '12–18 edited images', 'Full retouching', 'Creative direction'],
   },
   {
     id: 'custom',
     name: 'Custom / Full Campaign',
     price: 'Quote on request',
-    features: ['Full day+', '100+ images', 'Full production team', 'Location scouting', 'Motion video add-on available'],
+    features: ['Full day+', '20–35+ images', 'Full production team', 'Location scouting', 'Motion video add-on available'],
   },
 ];
 
@@ -476,10 +476,10 @@ ${bookingData.message}`,
               <SelectValue placeholder="Select budget" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="$499 - $799">$499 – $799 (Starter)</SelectItem>
-              <SelectItem value="$800 - $1,500">$800 – $1,500 (Standard)</SelectItem>
-              <SelectItem value="$1,500 - $3,000">$1,500 – $3,000 (Premium)</SelectItem>
-              <SelectItem value="$3,000 - $7,000">$3,000 – $7,000 (Full Campaign)</SelectItem>
+              <SelectItem value="$649 - $1,100">$649 – $1,100 (Starter)</SelectItem>
+              <SelectItem value="$1,100 - $2,200">$1,100 – $2,200 (Standard)</SelectItem>
+              <SelectItem value="$2,200 - $4,000">$2,200 – $4,000 (Premium)</SelectItem>
+              <SelectItem value="$4,000 - $7,000">$4,000 – $7,000 (Full Campaign)</SelectItem>
               <SelectItem value="$7,000+">$7,000+ (Luxury / Full Production)</SelectItem>
               <SelectItem value="Discuss in consultation">Let's talk — I have a budget in mind</SelectItem>
             </SelectContent>

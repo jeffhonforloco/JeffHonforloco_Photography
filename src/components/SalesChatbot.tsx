@@ -23,7 +23,7 @@ const STORAGE_KEY = "jhp_chat_v2";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 const INITIAL_GREETING =
-  "Hey! I'm the studio AI for Jeff Honforloco Photography — serving Rhode Island, Massachusetts, Maine & Connecticut. Sessions start at $499 and we customize everything. What are you planning?";
+  "Hey! I'm the studio AI for Jeff Honforloco Photography — serving Rhode Island, Massachusetts, Maine & Connecticut. Sessions start at $649 and we customize everything. What are you planning?";
 
 const SERVICE_CHIPS = [
   { label: "Headshots", icon: "📸" },
@@ -345,7 +345,7 @@ export default function SalesChatbot() {
               href="/pricing"
               className="flex items-center justify-between px-4 py-2 text-xs text-photo-gray-400 hover:text-photo-white hover:bg-photo-gray-800 transition-colors group border-b border-photo-gray-800"
             >
-              <span>See all packages — starting at $499</span>
+              <span>See all packages — starting at $649</span>
               <span className="text-photo-red group-hover:translate-x-0.5 transition-transform">→</span>
             </a>
             <a
