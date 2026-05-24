@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Analytics from "./components/Analytics";
 import PerformanceMonitor from "./components/PerformanceMonitor";
 import ErrorBoundary from "./components/common/ErrorBoundary";
+import SalesChatbot from "./components/SalesChatbot";
 import { initializeImageOptimization } from "./utils/performanceOptimizer";
 
 // Lazy load all pages for better performance
@@ -57,6 +58,7 @@ const App = () => {
           <BrowserRouter>
             <Analytics />
             <PerformanceMonitor />
+            <SalesChatbot />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
