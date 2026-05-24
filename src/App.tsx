@@ -25,6 +25,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const Book = lazy(() => import("./pages/Book"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
+const Pricing = lazy(() => import("./pages/Pricing"));
 
 // Loading component
 const LoadingFallback = () => (
@@ -72,6 +73,7 @@ const App = () => {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/book" element={<Book />} />
+                <Route path="/pricing" element={<Pricing />} />
                 <Route path="/prep-guide" element={<PrepGuidePage />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -88,6 +90,11 @@ const App = () => {
                 <Route path="/switzerland" element={<LocationLanding />} />
                 <Route path="/malta" element={<LocationLanding />} />
                 <Route path="/monaco" element={<LocationLanding />} />
+                {/* New England location routes */}
+                <Route path="/rhode-island" element={<LocationLanding />} />
+                <Route path="/massachusetts" element={<LocationLanding />} />
+                <Route path="/maine" element={<LocationLanding />} />
+                <Route path="/connecticut" element={<LocationLanding />} />
                 {/* Admin Panel */}
                 <Route path="/admin/*" element={<Admin />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, Camera } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Camera, CheckCircle } from "lucide-react";
+import { apiService } from "@/lib/api-service";
 
 interface Message {
   role: "user" | "assistant";
@@ -22,17 +23,18 @@ const STORAGE_KEY = "jhp_chat_v2";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 const INITIAL_GREETING =
-  "Hey! I'm the studio AI for Jeff Honforloco Photography. Whether it's your wedding, corporate branding, office headshots, graduation portraits, sweet sixteen, real estate shoot, or a major creative campaign — Jeff elevates every moment. What project are you planning?";
+  "Hey! I'm the studio AI for Jeff Honforloco Photography — serving Rhode Island, Massachusetts, Maine & Connecticut. Sessions start at $499 and we customize everything. What are you planning?";
 
 const SERVICE_CHIPS = [
+  { label: "Headshots", icon: "📸" },
   { label: "Wedding", icon: "💍" },
   { label: "Engagement", icon: "💕" },
-  { label: "Corporate Branding", icon: "🏢" },
-  { label: "Office Headshots", icon: "📸" },
-  { label: "Graduation", icon: "🎓" },
   { label: "Sweet Sixteen", icon: "🎉" },
+  { label: "Beauty / Fashion", icon: "✨" },
   { label: "Real Estate", icon: "🏠" },
+  { label: "Motion Video", icon: "🎬" },
   { label: "Corporate Event", icon: "🎯" },
+  { label: "Discuss Pricing", icon: "💰" },
 ] as const;
 
 function loadSession(): Message[] {
@@ -69,6 +71,8 @@ export default function SalesChatbot() {
   const [hasUnread, setHasUnread] = useState(true);
   const [showChips, setShowChips] = useState(true);
   const [proactiveLabel, setProactiveLabel] = useState<string | null>(null);
+  const [quoteSubmitted, setQuoteSubmitted] = useState(false);
+  const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -189,7 +193,50 @@ export default function SalesChatbot() {
   function clearSession() {
     setMessages([]);
     setShowChips(true);
+    setQuoteSubmitted(false);
     localStorage.removeItem(STORAGE_KEY);
+  }
+
+  async function submitQuoteToJeff() {
+    if (messages.length === 0 || isSubmittingQuote) return;
+    setIsSubmittingQuote(true);
+    const conversationText = messages
+      .map((m) => `${m.role === "user" ? "Client" : "Studio AI"}: ${m.content}`)
+      .join("\n\n");
+    try {
+      await apiService.sendContactEmail({
+        full_name: "Chat Inquiry — Pending Jeff Approval",
+        email: import.meta.env.VITE_CONTACT_EMAIL as string ?? "jeffhonforloco@gmail.com",
+        phone: "",
+        message: `[CUSTOM QUOTE REQUEST — AI NEGOTIATION]\n\nA client negotiated a custom package via the studio chatbot and is requesting Jeff's approval.\n\n--- CONVERSATION ---\n${conversationText}\n\n--- END CONVERSATION ---\n\nPlease review and contact the client directly to confirm pricing.`,
+        service_type: "Custom Quote",
+        budget_range: "AI Negotiated",
+        event_date: "",
+        location: "New England",
+      });
+      setQuoteSubmitted(true);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "Your custom quote request has been sent to Jeff for final approval. He'll review the details and reach out within 24 hours to confirm your package. 🎉",
+          timestamp: Date.now(),
+        },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "I couldn't send the request right now. Please email Jeff directly at info@jeffhonforlocophotos.com — mention you chatted with the studio AI.",
+          timestamp: Date.now(),
+        },
+      ]);
+    } finally {
+      setIsSubmittingQuote(false);
+    }
   }
 
   return (
@@ -292,16 +339,50 @@ export default function SalesChatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick book link */}
-          <a
-            href="/book"
-            className="flex items-center justify-between px-4 py-2.5 border-t border-photo-gray-800 bg-photo-gray-900 text-xs text-photo-gray-400 hover:text-photo-white hover:bg-photo-gray-800 transition-colors group"
-          >
-            <span>Ready to book? Go straight to the booking form</span>
-            <span className="text-photo-red group-hover:translate-x-0.5 transition-transform">
-              →
-            </span>
-          </a>
+          {/* Quick links row */}
+          <div className="border-t border-photo-gray-800 bg-photo-gray-900">
+            <a
+              href="/pricing"
+              className="flex items-center justify-between px-4 py-2 text-xs text-photo-gray-400 hover:text-photo-white hover:bg-photo-gray-800 transition-colors group border-b border-photo-gray-800"
+            >
+              <span>See all packages — starting at $499</span>
+              <span className="text-photo-red group-hover:translate-x-0.5 transition-transform">→</span>
+            </a>
+            <a
+              href="/book"
+              className="flex items-center justify-between px-4 py-2 text-xs text-photo-gray-400 hover:text-photo-white hover:bg-photo-gray-800 transition-colors group"
+            >
+              <span>Ready to book? Go straight to the booking form</span>
+              <span className="text-photo-red group-hover:translate-x-0.5 transition-transform">→</span>
+            </a>
+          </div>
+
+          {/* Send to Jeff for approval — appears after 4+ messages if not yet submitted */}
+          {messages.length >= 4 && !quoteSubmitted && (
+            <div className="px-3 pt-2 border-t border-photo-gray-700 bg-photo-gray-900">
+              <button
+                onClick={submitQuoteToJeff}
+                disabled={isSubmittingQuote}
+                className="w-full flex items-center justify-center gap-2 bg-photo-red/10 hover:bg-photo-red/20 border border-photo-red/30 hover:border-photo-red text-photo-red text-xs px-3 py-2 rounded-xl transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+              >
+                {isSubmittingQuote ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <CheckCircle size={13} />
+                )}
+                {isSubmittingQuote ? "Sending to Jeff…" : "Send This Quote to Jeff for Final Approval"}
+              </button>
+            </div>
+          )}
+
+          {quoteSubmitted && (
+            <div className="px-3 pt-2 border-t border-photo-gray-700 bg-photo-gray-900">
+              <div className="w-full flex items-center justify-center gap-2 bg-green-500/10 border border-green-500/20 text-green-400 text-xs px-3 py-2 rounded-xl mb-2">
+                <CheckCircle size={13} />
+                Quote sent — Jeff will follow up within 24 hours
+              </div>
+            </div>
+          )}
 
           {/* Input */}
           <div className="p-3 border-t border-photo-gray-700 bg-photo-gray-900">

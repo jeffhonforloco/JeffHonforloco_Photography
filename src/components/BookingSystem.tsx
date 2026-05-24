@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, Clock, Camera, Users, Award, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Mail, MapPin } from 'lucide-react';
+import { CheckCircle, Clock, Camera, Users, Award, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Mail, MapPin, Smartphone, Film } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { apiService } from '@/lib/api-service';
 import { trackBookingIntent } from '@/components/Analytics';
@@ -35,65 +35,122 @@ const BOOKING_STEPS = [
 
 const SERVICE_TYPES = [
   {
-    id: 'fashion',
-    name: 'Luxury Fashion',
-    description: 'High-end fashion for luxury brands, fashion weeks & celebrity campaigns',
-    icon: Camera,
-    duration: '4–8 hours',
-    startingPrice: '$5,000',
+    id: 'headshots',
+    name: 'Headshots & Portraits',
+    description: 'Studio or mobile — individuals, teams & LinkedIn. We come to your office across RI, MA, ME & CT.',
+    icon: Smartphone,
+    duration: '1–3 hours',
+    startingPrice: 'From $499',
+    isMobile: true,
   },
   {
     id: 'beauty',
-    name: 'Beauty & Cosmetic',
-    description: 'Premium beauty photography for luxury brands',
+    name: 'Beauty Photography',
+    description: 'Elegant beauty portraits for personal brands and cosmetics',
     icon: Award,
-    duration: '3–6 hours',
-    startingPrice: '$4,000',
+    duration: '1–5 hours',
+    startingPrice: 'From $499',
+    isMobile: false,
+  },
+  {
+    id: 'fashion',
+    name: 'Fashion Photography',
+    description: 'For aspiring models, influencers, designers & luxury brands',
+    icon: Camera,
+    duration: '1–8 hours',
+    startingPrice: 'From $499',
+    isMobile: false,
+  },
+  {
+    id: 'glamour',
+    name: 'Glamour Photography',
+    description: 'Dramatic lighting, bold styling, unforgettable portraits',
+    icon: Camera,
+    duration: '1–4 hours',
+    startingPrice: 'From $499',
+    isMobile: false,
   },
   {
     id: 'editorial',
-    name: 'Editorial',
-    description: 'Magazine-quality editorial for publications and brands',
+    name: 'Editorial Photography',
+    description: 'Magazine-quality storytelling for publications & brands',
     icon: Camera,
-    duration: '4–8 hours',
-    startingPrice: '$5,000',
+    duration: '1–8 hours',
+    startingPrice: 'From $499',
+    isMobile: false,
   },
   {
-    id: 'portrait',
-    name: 'Celebrity & Portrait',
-    description: 'Exclusive celebrity and luxury lifestyle photography',
+    id: 'lifestyle',
+    name: 'Lifestyle Photography',
+    description: 'Authentic moments — individuals, couples & families',
     icon: Users,
-    duration: '2–4 hours',
-    startingPrice: '$3,000',
+    duration: '1–4 hours',
+    startingPrice: 'From $499',
+    isMobile: false,
   },
   {
-    id: 'brand',
-    name: 'Brand Campaign',
-    description: 'Custom brand campaign photography tailored to your vision',
+    id: 'wedding',
+    name: 'Wedding & Engagements',
+    description: 'From intimate engagements to full-day celebrations across New England',
     icon: Award,
-    duration: '6–10 hours',
-    startingPrice: '$7,000',
+    duration: '1.5–10 hours',
+    startingPrice: 'From $499',
+    isMobile: false,
+  },
+  {
+    id: 'events',
+    name: 'Events & Celebrations',
+    description: 'Sweet sixteens, galas, corporate events & milestones',
+    icon: Users,
+    duration: '2–8 hours',
+    startingPrice: 'From $499',
+    isMobile: false,
+  },
+  {
+    id: 'real-estate',
+    name: 'Real Estate Photography',
+    description: 'Mobile shoots — we come to the property across RI, MA, ME & CT',
+    icon: Smartphone,
+    duration: '2–4 hours',
+    startingPrice: 'From $499',
+    isMobile: true,
+  },
+  {
+    id: 'motion',
+    name: 'Motion Video',
+    description: 'Social reels to full brand productions — in partnership with urs79.com',
+    icon: Film,
+    duration: '1+ day',
+    startingPrice: 'From $499',
+    isMobile: false,
+    isMotion: true,
   },
 ];
 
 const PACKAGE_TYPES = [
   {
-    id: 'essential',
-    name: 'Essential',
-    price: 'From $2,000',
-    features: ['2–3 hour session', '20 edited images', 'Basic retouching'],
+    id: 'starter',
+    name: 'Starter',
+    price: 'From $499',
+    features: ['1-hour session', '10–15 edited images', 'Online gallery delivery'],
+  },
+  {
+    id: 'standard',
+    name: 'Standard',
+    price: 'From $799',
+    features: ['2–3 hour session', '20–30 edited images', 'Advanced retouching', 'Multiple looks'],
   },
   {
     id: 'premium',
     name: 'Premium',
-    price: 'From $5,000',
-    features: ['4–6 hour session', '50 edited images', 'Advanced retouching', 'Hair & makeup included'],
+    price: 'From $1,500',
+    features: ['4–6 hour session', '50+ edited images', 'Full retouching', 'Creative direction'],
   },
   {
-    id: 'luxury',
-    name: 'Luxury',
-    price: 'From $10,000',
-    features: ['Full day session', '100+ edited images', 'Premium retouching', 'Full team', 'Location scouting'],
+    id: 'custom',
+    name: 'Custom / Full Campaign',
+    price: 'Quote on request',
+    features: ['Full day+', '100+ images', 'Full production team', 'Location scouting', 'Motion video add-on available'],
   },
 ];
 
@@ -241,6 +298,18 @@ ${bookingData.message}`,
                 <CardDescription className="text-gray-400 text-sm">{service.description}</CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {service.isMobile && (
+                    <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-[10px] px-2 py-0.5">
+                      <Smartphone className="w-2.5 h-2.5" /> Mobile
+                    </span>
+                  )}
+                  {service.isMotion && (
+                    <span className="inline-flex items-center gap-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-[10px] px-2 py-0.5">
+                      <Film className="w-2.5 h-2.5" /> urs79.com
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
@@ -407,11 +476,12 @@ ${bookingData.message}`,
               <SelectValue placeholder="Select budget" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="$2,000 - $5,000">$2,000 – $5,000</SelectItem>
-              <SelectItem value="$5,000 - $10,000">$5,000 – $10,000</SelectItem>
-              <SelectItem value="$10,000 - $25,000">$10,000 – $25,000</SelectItem>
-              <SelectItem value="$25,000+">$25,000+</SelectItem>
-              <SelectItem value="Discuss in consultation">Discuss in consultation</SelectItem>
+              <SelectItem value="$499 - $799">$499 – $799 (Starter)</SelectItem>
+              <SelectItem value="$800 - $1,500">$800 – $1,500 (Standard)</SelectItem>
+              <SelectItem value="$1,500 - $3,000">$1,500 – $3,000 (Premium)</SelectItem>
+              <SelectItem value="$3,000 - $7,000">$3,000 – $7,000 (Full Campaign)</SelectItem>
+              <SelectItem value="$7,000+">$7,000+ (Luxury / Full Production)</SelectItem>
+              <SelectItem value="Discuss in consultation">Let's talk — I have a budget in mind</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -443,11 +513,12 @@ ${bookingData.message}`,
         <Label htmlFor="location" className="text-white mb-2 block">City / Location *</Label>
         <Input
           id="location"
-          placeholder="e.g., New York City, Los Angeles, Miami"
+          placeholder="e.g., Providence RI · Boston MA · Portland ME · Hartford CT"
           value={bookingData.location}
           onChange={(e) => updateBookingData('location', e.target.value)}
           className="bg-gray-900 border-gray-700 text-white"
         />
+        <p className="text-gray-500 text-xs mt-1.5">We serve RI · MA · ME · CT — mobile shoots available across all 4 states</p>
       </div>
 
       <div>
