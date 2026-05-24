@@ -6,7 +6,7 @@ const PREVIEW_CATEGORIES = [
     icon: '📸',
     name: 'Headshots & Portraits',
     teaser: 'Studio or mobile — individuals & teams',
-    startingAt: '$499',
+    startingAt: '$649',
     highlight: 'Mobile to your office across New England',
     isMobile: true,
   },
@@ -14,14 +14,14 @@ const PREVIEW_CATEGORIES = [
     icon: '💍',
     name: 'Weddings & Events',
     teaser: 'Engagements, celebrations & milestones',
-    startingAt: '$499',
-    highlight: 'Engagement sessions from $499',
+    startingAt: '$799',
+    highlight: 'Engagement sessions from $850',
   },
   {
     icon: '✨',
     name: 'Beauty, Fashion & Glamour',
     teaser: 'Editorial portraits & brand content',
-    startingAt: '$499',
+    startingAt: '$750',
     highlight: '1-hour starter sessions available',
   },
   {
@@ -46,8 +46,8 @@ const PricingPreview = () => {
             <span className="text-sm text-photo-red font-medium">Simple, Honest Pricing</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Every Session Starts at{' '}
-            <span className="text-photo-red">$499</span>
+            Photography Starting at{' '}
+            <span className="text-photo-red">$649</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             No hidden fees. No gatekeeping. Pick a session that works for your budget and
