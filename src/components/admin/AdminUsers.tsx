@@ -31,7 +31,7 @@ const AdminUsers = () => {
       email: 'jeff@jeffhonforlocophotos.com',
       role: 'admin',
       status: 'active',
-      avatar: '/lovable-uploads/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png',
+      avatar: '/images/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png',
       createdAt: '2024-01-01',
       lastActive: '2024-01-20',
       permissions: ['all']

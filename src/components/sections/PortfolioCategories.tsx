@@ -11,7 +11,7 @@ const PortfolioCategories = () => {
     },
     {
       title: 'Beauty Photography',
-      image: '/lovable-uploads/08c64276-3665-4346-a637-ca41acc6c602.png',
+      image: '/images/08c64276-3665-4346-a637-ca41acc6c602.png',
       href: '/portfolio/luxury-beauty-photography-nationwide',
       description: 'Premium beauty and cosmetic photography for luxury brands'
     },

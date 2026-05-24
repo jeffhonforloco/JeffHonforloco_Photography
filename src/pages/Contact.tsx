@@ -137,7 +137,7 @@ const Contact = () => {
             {/* Portrait Image - Mobile */}
             <div className="relative max-w-xs mx-auto mb-8">
               <img
-                src="/lovable-uploads/a1c7a9f7-09e2-44b4-9dbb-d807b674060c.png"
+                src="/images/a1c7a9f7-09e2-44b4-9dbb-d807b674060c.png"
                 alt="Jeff Honforloco - Luxury Fashion & Beauty Photographer"
                 className="w-full aspect-[3/4] object-cover"
               />
@@ -533,7 +533,7 @@ const Contact = () => {
                 <div className="relative lg:ml-8">
                   <div className="relative max-w-md mx-auto lg:mx-0 mb-8">
                     <img
-                      src="/lovable-uploads/a1c7a9f7-09e2-44b4-9dbb-d807b674060c.png"
+                      src="/images/a1c7a9f7-09e2-44b4-9dbb-d807b674060c.png"
                       alt="Jeff Honforloco - Luxury Fashion & Beauty Photographer"
                       className="w-full aspect-[4/5] object-cover rounded-lg"
                     />

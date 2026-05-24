@@ -69,7 +69,7 @@ const About = () => {
               <div className="relative w-full">
                 <div className="aspect-[3/4] lg:aspect-[4/5] overflow-hidden bg-gradient-to-br from-photo-red/10 to-transparent">
                   <img
-                    src="/lovable-uploads/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png"
+                    src="/images/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png"
                     alt={contentData.personal.name}
                     className="w-full h-full object-cover object-center"
                   />

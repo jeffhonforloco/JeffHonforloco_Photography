@@ -34,7 +34,7 @@ Allow: /location/monaco
 Sitemap: https://jeffhonforlocophotos.com/sitemap.xml
 
 # Allow crawling of images
-Allow: /lovable-uploads/
+Allow: /images/
 
 # Performance optimization
 Crawl-delay: 1
