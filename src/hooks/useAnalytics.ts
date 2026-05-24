@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 
 interface AnalyticsEvent {
   id: string;
   event: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   timestamp: string;
   page: string;
   userAgent: string;
@@ -26,82 +26,56 @@ interface AnalyticsData {
   averageSessionDuration: number;
 }
 
+const loadEventsFromStorage = (): AnalyticsEvent[] => {
+  try {
+    return JSON.parse(localStorage.getItem('analytics_events') || '[]');
+  } catch {
+    return [];
+  }
+};
+
+const loadPageViewsFromStorage = (): PageView[] => {
+  try {
+    return JSON.parse(localStorage.getItem('analytics_pageviews') || '[]');
+  } catch {
+    return [];
+  }
+};
+
 export const useAnalytics = () => {
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
-    events: [],
-    pageViews: [],
-    uniqueVisitors: 0,
-    totalPageViews: 0,
-    bounceRate: 0,
-    averageSessionDuration: 0
-  });
+  const [events, setEvents] = useState<AnalyticsEvent[]>(loadEventsFromStorage);
+  const [pageViews, setPageViews] = useState<PageView[]>(loadPageViewsFromStorage);
 
-  useEffect(() => {
-    loadAnalyticsData();
-    calculateMetrics();
-  }, []);
-
-  const loadAnalyticsData = () => {
-    try {
-      const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
-      const pageViews = JSON.parse(localStorage.getItem('analytics_pageviews') || '[]');
-      
-      setAnalyticsData(prev => ({
-        ...prev,
-        events,
-        pageViews
-      }));
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('Error loading analytics data:', error);
-      }
-    }
-  };
-
-  const calculateMetrics = () => {
-    const pageViews = JSON.parse(localStorage.getItem('analytics_pageviews') || '[]');
-    const events = JSON.parse(localStorage.getItem('analytics_events') || '[]');
-    
-    // Calculate unique visitors (simplified - in production use proper session tracking)
-    const uniqueVisitors = new Set(
-      pageViews.map((pv: PageView) => pv.userAgent + pv.referrer)
-    ).size;
-    
+  const analyticsData = useMemo((): AnalyticsData => {
+    const uniqueVisitors = new Set(pageViews.map(pv => pv.userAgent + pv.referrer)).size;
     const totalPageViews = pageViews.length;
-    
-    // Simple bounce rate calculation (visitors with only 1 page view)
-    const visitorSessions = pageViews.reduce((acc: Record<string, number>, pv: PageView) => {
+
+    const visitorSessions = pageViews.reduce((acc: Record<string, number>, pv) => {
       const key = pv.userAgent + pv.referrer;
       acc[key] = (acc[key] || 0) + 1;
       return acc;
     }, {});
-    
     const bouncedSessions = Object.values(visitorSessions).filter(count => count === 1).length;
     const bounceRate = uniqueVisitors > 0 ? Math.round((bouncedSessions / uniqueVisitors) * 100) : 0;
-    
-    // Calculate average session duration from actual data
-    const sessionDurations = pageViews.map((pv: PageView) => {
-      const startTime = new Date(pv.timestamp).getTime();
-      const endTime = startTime + (pv.sessionDuration || 0);
-      return endTime - startTime;
-    });
-    
-    const averageSessionDuration = sessionDurations.length > 0 
-      ? Math.floor(sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length / 1000 / 60) // Convert to minutes
-      : 0;
-    
-    setAnalyticsData(prev => ({
-      ...prev,
+
+    return {
+      events,
+      pageViews,
       uniqueVisitors,
       totalPageViews,
       bounceRate,
-      averageSessionDuration
-    }));
+      averageSessionDuration: 0,
+    };
+  }, [events, pageViews]);
+
+  const loadAnalyticsData = () => {
+    setEvents(loadEventsFromStorage());
+    setPageViews(loadPageViewsFromStorage());
   };
 
-  const trackEvent = (event: string, properties: Record<string, any> = {}) => {
+  const trackEvent = (event: string, properties: Record<string, unknown> = {}) => {
     const newEvent: AnalyticsEvent = {
-      id: `event_${Date.now()}_${Math.random()}`,
+      id: crypto.randomUUID(),
       event,
       properties,
       timestamp: new Date().toISOString(),
@@ -110,15 +84,9 @@ export const useAnalytics = () => {
       referrer: document.referrer
     };
 
-    const existingEvents = JSON.parse(localStorage.getItem('analytics_events') || '[]');
-    const updatedEvents = [newEvent, ...existingEvents].slice(0, 1000); // Keep last 1000 events
-    
+    const updatedEvents = [newEvent, ...events].slice(0, 1000);
     localStorage.setItem('analytics_events', JSON.stringify(updatedEvents));
-    
-    setAnalyticsData(prev => ({
-      ...prev,
-      events: updatedEvents
-    }));
+    setEvents(updatedEvents);
   };
 
   const trackPageView = (page?: string) => {
@@ -129,18 +97,9 @@ export const useAnalytics = () => {
       userAgent: navigator.userAgent
     };
 
-    const existingPageViews = JSON.parse(localStorage.getItem('analytics_pageviews') || '[]');
-    const updatedPageViews = [pageView, ...existingPageViews].slice(0, 1000); // Keep last 1000 page views
-    
+    const updatedPageViews = [pageView, ...pageViews].slice(0, 1000);
     localStorage.setItem('analytics_pageviews', JSON.stringify(updatedPageViews));
-    
-    setAnalyticsData(prev => ({
-      ...prev,
-      pageViews: updatedPageViews,
-      totalPageViews: updatedPageViews.length
-    }));
-
-    calculateMetrics();
+    setPageViews(updatedPageViews);
   };
 
   const trackEmailSignup = (email: string, source: string) => {
@@ -159,7 +118,7 @@ export const useAnalytics = () => {
     });
   };
 
-  const trackContactFormSubmit = (formData: Record<string, any>) => {
+  const trackContactFormSubmit = (formData: Record<string, unknown>) => {
     trackEvent('contact_form_submit', {
       ...formData,
       page: window.location.pathname
@@ -273,6 +232,7 @@ export const useAnalytics = () => {
     getPopularPages,
     getTopReferrers,
     getAnalyticsByDateRange,
-    exportAnalytics
+    exportAnalytics,
+    loadAnalyticsData,
   };
 };

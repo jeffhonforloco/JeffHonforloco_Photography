@@ -3,12 +3,35 @@ import { Link } from 'react-router-dom';
 import { Clock, ArrowRight, Calendar, Tag } from 'lucide-react';
 import Layout from '../components/Layout';
 import { BlogData, BlogPost } from '@/types/content';
+import { apiService } from '@/lib/api-service';
+import { toast } from '@/components/ui/use-toast';
 
 const Journal = () => {
   const [blogData, setBlogData] = useState<BlogData | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    setNewsletterLoading(true);
+    try {
+      const result = await apiService.sendNewsletterSignup(newsletterEmail);
+      if (result.success) {
+        setNewsletterEmail('');
+        toast({ title: "Subscribed!", description: "Welcome to Jeff's community. Check your inbox for exclusive tips." });
+      } else {
+        throw new Error(result.error || 'Failed to subscribe');
+      }
+    } catch {
+      toast({ title: "Error", description: "Failed to subscribe. Please try again.", variant: "destructive" });
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetch('/data/blog-posts.json')
@@ -332,19 +355,26 @@ const Journal = () => {
             </p>
 
             <div className="max-w-md mx-auto">
-              <div className="flex flex-col sm:flex-row gap-4">
+              <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4">
                 <input
                   type="email"
                   placeholder="Enter your email address"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
+                  required
                   className="flex-1 px-6 py-4 bg-gray-800 border border-gray-700 text-white placeholder-gray-400 rounded-full focus:border-photo-red focus:outline-none focus:ring-2 focus:ring-photo-red/20 transition-all duration-300"
                 />
-                <button className="group px-8 py-4 bg-photo-red text-white font-semibold rounded-full hover:bg-photo-red-hover transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-photo-red/25 whitespace-nowrap">
+                <button
+                  type="submit"
+                  disabled={newsletterLoading}
+                  className="group px-8 py-4 bg-photo-red text-white font-semibold rounded-full hover:bg-photo-red-hover transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-photo-red/25 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
                   <span className="flex items-center">
-                    Subscribe
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    {newsletterLoading ? 'Subscribing...' : 'Subscribe'}
+                    {!newsletterLoading && <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />}
                   </span>
                 </button>
-              </div>
+              </form>
               <p className="text-gray-500 text-sm mt-4">
                 No spam, unsubscribe at any time. Privacy policy applies.
               </p>

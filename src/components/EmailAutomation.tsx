@@ -85,26 +85,28 @@ export const triggerEmailSequence = async (formData: ContactFormData) => {
       priority: 'urgent'
     });
 
-    console.log('Email sequence triggered successfully');
   } catch (error) {
-    console.error('Email automation error:', error);
+    if (import.meta.env.DEV) {
+      console.error('Email automation error:', error);
+    }
   }
 };
 
+interface EmailPayload {
+  to: string;
+  subject: string;
+  template: string;
+  variables: Record<string, unknown>;
+  priority?: string;
+  scheduleAfter?: string;
+}
+
 // Mock email functions (replace with actual email service)
-const sendEmail = async (emailData: any) => {
-  // This would integrate with your email service (SendGrid, Mailchimp, etc.)
-  console.log('Sending email:', emailData);
-  
-  // Simulate API call
+const sendEmail = async (_emailData: EmailPayload) => {
   return new Promise(resolve => setTimeout(resolve, 1000));
 };
 
-const scheduleEmail = async (emailData: any) => {
-  // This would integrate with your email automation service
-  console.log('Scheduling email:', emailData);
-  
-  // Simulate API call
+const scheduleEmail = async (_emailData: EmailPayload) => {
   return new Promise(resolve => setTimeout(resolve, 500));
 };
 

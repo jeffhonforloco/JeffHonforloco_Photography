@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
@@ -36,11 +36,7 @@ const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const token = localStorage.getItem('adminToken');
       if (!token) {
@@ -76,7 +72,11 @@ const AdminLayout: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const handleLogout = async () => {
     try {
@@ -213,7 +213,7 @@ const AdminLayout: React.FC = () => {
   );
 };
 
-const SidebarContent: React.FC<{ navigation: Array<{ name: string; href: string; icon: any }> }> = ({ navigation }) => {
+const SidebarContent: React.FC<{ navigation: Array<{ name: string; href: string; icon: React.ElementType }> }> = ({ navigation }) => {
   const location = useLocation();
 
   return (
@@ -226,9 +226,9 @@ const SidebarContent: React.FC<{ navigation: Array<{ name: string; href: string;
           {navigation.map((item) => {
             const isActive = location.pathname === item.href;
             return (
-              <a
+              <Link
                 key={item.name}
-                href={item.href}
+                to={item.href}
                 className={`${
                   isActive
                     ? 'bg-gray-100 text-gray-900'
@@ -241,7 +241,7 @@ const SidebarContent: React.FC<{ navigation: Array<{ name: string; href: string;
                   } mr-3 flex-shrink-0 h-6 w-6`}
                 />
                 {item.name}
-              </a>
+              </Link>
             );
           })}
         </nav>

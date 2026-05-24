@@ -15,6 +15,10 @@ import { extractYouTubeId, isYouTubeUrl, getYouTubeThumbnail } from '@/lib/youtu
 import VideoPlayer from '../VideoPlayer';
 import { MotionItem } from '@/types/content';
 
+interface MotionItemWithId extends MotionItem {
+  id: string;
+}
+
 const AdminMotion = () => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +45,7 @@ const AdminMotion = () => {
     localStorage.setItem('motionItems', JSON.stringify(allItems));
   };
 
-  const [selectedItem, setSelectedItem] = useState<MotionItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<MotionItemWithId | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     src: '',
@@ -58,7 +62,7 @@ const AdminMotion = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleEdit = (item: MotionItem, index: number) => {
-    setSelectedItem({ ...item, id: index.toString() } as any);
+    setSelectedItem({ ...item, id: index.toString() });
     setFormData({
       src: item.src,
       alt: item.alt,
@@ -191,12 +195,12 @@ const AdminMotion = () => {
       // Update existing item
       setMotionItems(items =>
         items.map((item, index) =>
-          index.toString() === (selectedItem as any).id ? itemData : item
+          index.toString() === selectedItem?.id ? itemData : item
         )
       );
       saveToStorage(
         motionItems.map((item, index) =>
-          index.toString() === (selectedItem as any).id ? itemData : item
+          index.toString() === selectedItem?.id ? itemData : item
         ), 
         behindLensVideo
       );

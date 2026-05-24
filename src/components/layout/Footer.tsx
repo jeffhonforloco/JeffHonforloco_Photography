@@ -39,7 +39,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-16 pt-8 text-center">
           <p className="text-gray-500 font-light tracking-wide">
-            © 2025 Jeff Honforloco Photography. All rights reserved.
+            © 2026 Jeff Honforloco Photography. All rights reserved.
           </p>
         </div>
       </div>

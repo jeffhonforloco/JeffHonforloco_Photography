@@ -71,7 +71,18 @@ const AdminPortfolio: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    filterImages();
+    let filtered = portfolioImages;
+    if (searchTerm) {
+      filtered = filtered.filter(image =>
+        image.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        image.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        image.category.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    if (categoryFilter !== 'all') {
+      filtered = filtered.filter(image => image.category === categoryFilter);
+    }
+    setFilteredImages(filtered);
   }, [portfolioImages, searchTerm, categoryFilter]);
 
   const fetchPortfolioImages = async () => {

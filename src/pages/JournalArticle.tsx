@@ -3,12 +3,17 @@ import { useParams, Link } from 'react-router-dom';
 import { Calendar, Clock, ArrowLeft, ArrowRight, Tag, Share2 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { BlogData, BlogPost } from '@/types/content';
+import { apiService } from '@/lib/api-service';
+import { toast } from '@/components/ui/use-toast';
 
 const JournalArticle = () => {
   const { slug } = useParams();
   const [blogData, setBlogData] = useState<BlogData | null>(null);
   const [article, setArticle] = useState<BlogPost | null>(null);
+  const [notFound, setNotFound] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState<BlogPost[]>([]);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
 
   useEffect(() => {
     fetch('/data/blog-posts.json')
@@ -16,18 +21,54 @@ const JournalArticle = () => {
       .then(data => {
         setBlogData(data);
         const foundArticle = data.posts.find((post: BlogPost) => post.id === slug);
-        setArticle(foundArticle);
-        
-        // Get related articles (same category, excluding current)
         if (foundArticle) {
+          setArticle(foundArticle);
           const related = data.posts
             .filter((post: BlogPost) => post.id !== slug && post.category === foundArticle.category)
             .slice(0, 3);
           setRelatedArticles(related);
+        } else {
+          setNotFound(true);
         }
       })
       .catch(error => console.error('Error loading article:', error));
   }, [slug]);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    setNewsletterLoading(true);
+    try {
+      const result = await apiService.sendNewsletterSignup(newsletterEmail);
+      if (result.success) {
+        setNewsletterEmail('');
+        toast({ title: "Subscribed!", description: "You'll receive our latest articles and tips." });
+      } else {
+        throw new Error(result.error || 'Failed to subscribe');
+      }
+    } catch {
+      toast({ title: "Error", description: "Failed to subscribe. Please try again.", variant: "destructive" });
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
+
+  if (notFound) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-white mb-4">Article Not Found</h1>
+            <p className="text-gray-400 mb-6">The article you're looking for doesn't exist.</p>
+            <Link to="/journal" className="inline-flex items-center px-6 py-3 bg-photo-red text-white rounded-full hover:bg-photo-red-hover transition-colors">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Journal
+            </Link>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!article) {
     return (
@@ -383,16 +424,23 @@ const JournalArticle = () => {
           <p className="text-gray-300 text-lg mb-8 leading-relaxed">
             Subscribe to get the latest photography tips and techniques delivered to your inbox.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
               type="email"
               placeholder="Enter your email"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              required
               className="flex-1 px-6 py-3 bg-gray-800 border border-gray-700 text-white placeholder-gray-400 rounded-full focus:border-photo-red focus:outline-none"
             />
-            <button className="px-8 py-3 bg-photo-red text-white font-semibold rounded-full hover:bg-photo-red-hover transition-all duration-300">
-              Subscribe
+            <button
+              type="submit"
+              disabled={newsletterLoading}
+              className="px-8 py-3 bg-photo-red text-white font-semibold rounded-full hover:bg-photo-red-hover transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {newsletterLoading ? 'Subscribing...' : 'Subscribe'}
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </Layout>

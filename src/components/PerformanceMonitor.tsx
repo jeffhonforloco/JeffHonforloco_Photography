@@ -39,9 +39,9 @@ export const PerformanceMonitor = () => {
           } else if (entry.entryType === 'largest-contentful-paint') {
             metrics.largestContentfulPaint = entry.startTime;
           } else if (entry.entryType === 'layout-shift') {
-            metrics.cumulativeLayoutShift += (entry as any).value;
+            metrics.cumulativeLayoutShift += (entry as PerformanceEntry & { value: number }).value;
           } else if (entry.entryType === 'first-input') {
-            metrics.firstInputDelay = (entry as any).processingStart - entry.startTime;
+            metrics.firstInputDelay = (entry as PerformanceEntry & { processingStart: number }).processingStart - entry.startTime;
           }
         }
 

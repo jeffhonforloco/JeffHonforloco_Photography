@@ -128,8 +128,8 @@ const Contact = () => {
                   <span>100+ Clients</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4 text-photo-red" />
-                  <span>100+ Clients</span>
+                  <Clock className="w-4 h-4 text-photo-red" />
+                  <span>24hr Response</span>
                 </div>
               </div>
             </div>
@@ -577,7 +577,7 @@ const Contact = () => {
         {/* Copyright Notice */}
         <div className="text-center pb-8 px-8">
           <p className="text-gray-500 text-sm">
-            © 2025 Jeff Honforloco Photography. All rights reserved.
+            © 2026 Jeff Honforloco Photography. All rights reserved.
           </p>
         </div>
       </div>

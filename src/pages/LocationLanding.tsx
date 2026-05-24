@@ -8,7 +8,7 @@ import Recognition from '../components/sections/Recognition';
 
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
