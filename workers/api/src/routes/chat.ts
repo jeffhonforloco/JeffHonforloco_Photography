@@ -52,7 +52,8 @@ chat.post('/', async (c) => {
   if (!res.ok) {
     const err = await res.text();
     console.error('Anthropic error:', res.status, err);
-    return c.json({ message: "Sorry, I'm having a quick technical issue! You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast." });
+    // Temporary: expose error details so we can diagnose
+    return c.json({ message: `[DEBUG] Anthropic ${res.status}: ${err}` });
   }
 
   const data = await res.json<{ content: { type: string; text: string }[] }>();
