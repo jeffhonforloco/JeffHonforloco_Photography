@@ -71,7 +71,18 @@ const AdminContacts: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    filterContacts();
+    let filtered = contacts;
+    if (searchTerm) {
+      filtered = filtered.filter(contact =>
+        contact.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        contact.message.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(contact => contact.status === statusFilter);
+    }
+    setFilteredContacts(filtered);
   }, [contacts, searchTerm, statusFilter]);
 
   const fetchContacts = async () => {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { generateOptimizedUrl, generateSrcSet } from '@/utils/imageOptimization';
 
 interface HighResImageProps {
@@ -44,9 +44,16 @@ const HighResImage: React.FC<HighResImageProps> = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState<string>('');
+  const [lazyLoadedSrc, setLazyLoadedSrc] = useState<string>('');
   const imgRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // For priority images, compute src synchronously — no setState needed
+  const prioritySrc = useMemo(
+    () => (priority ? generateOptimizedUrl(src, width, quality) : null),
+    [priority, src, width, quality]
+  );
+  const currentSrc = prioritySrc ?? lazyLoadedSrc;
 
   // Generate high-resolution srcset
   const generateHighResSrcSet = (baseSrc: string): string => {
@@ -79,44 +86,33 @@ const HighResImage: React.FC<HighResImageProps> = ({
   };
 
   useEffect(() => {
-    // For priority images, load immediately
-    if (priority) {
-      const optimizedSrc = generateOptimizedUrl(src, width, quality);
-      setCurrentSrc(optimizedSrc);
-      return;
-    }
+    // Priority images are handled by the useMemo above — no effect needed
+    if (priority) return;
 
-    // For lazy loading, wait for the image element to be available
     const imgElement = imgRef.current;
     if (!imgElement) {
-      // If element not ready, set a fallback src
-      const optimizedSrc = generateOptimizedUrl(src, width, quality);
-      setCurrentSrc(optimizedSrc);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- safe fallback when ref not yet attached
+      setLazyLoadedSrc(generateOptimizedUrl(src, width, quality));
       return;
     }
 
-    // Lazy load with intersection observer
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const optimizedSrc = generateOptimizedUrl(src, width, quality);
-            setCurrentSrc(optimizedSrc);
+            setLazyLoadedSrc(generateOptimizedUrl(src, width, quality));
             observer.disconnect();
           }
         });
       },
       {
         threshold: 0.01,
-        rootMargin: '100px' // Start loading before image enters viewport
+        rootMargin: '100px'
       }
     );
 
     observer.observe(imgElement);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [src, width, quality, priority]);
 
   const handleLoad = () => {
@@ -135,6 +131,7 @@ const HighResImage: React.FC<HighResImageProps> = ({
   const srcSet = generateHighResSrcSet(src);
   const sizesAttr = generateSizes();
   const optimizedSrc = currentSrc || generateOptimizedUrl(src, width, quality);
+
 
   return (
     <div

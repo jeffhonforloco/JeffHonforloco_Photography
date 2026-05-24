@@ -2,6 +2,7 @@
 // This service handles all API communication with the backend
 
 interface ContactEmailRequest {
+  type?: string;
   full_name: string;
   email: string;
   phone?: string;
@@ -16,7 +17,7 @@ interface ApiResponse {
   success: boolean;
   message?: string;
   error?: string;
-  data?: any;
+  data?: unknown;
 }
 
 class ApiService {

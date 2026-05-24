@@ -40,7 +40,7 @@ const handler = async (req: Request): Promise<Response> => {
         subject: `New ${type} inquiry from ${name}`,
         html: generateEmailHtml({ type, name, email, phone, message, service, budget, projectDate, location }),
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Fallback to verified Gmail if domain verification fails
       emailToJeff = await resend.emails.send({
         from: "Photography Website <noreply@resend.dev>",
@@ -75,11 +75,11 @@ const handler = async (req: Request): Promise<Response> => {
         },
       }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in send-contact-email function:", error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         success: false 
       }),
       {

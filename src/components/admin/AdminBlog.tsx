@@ -73,7 +73,18 @@ const AdminBlog: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    filterPosts();
+    let filtered = blogPosts;
+    if (searchTerm) {
+      filtered = filtered.filter(post =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(post => post.status === statusFilter);
+    }
+    setFilteredPosts(filtered);
   }, [blogPosts, searchTerm, statusFilter]);
 
   const fetchBlogPosts = async () => {

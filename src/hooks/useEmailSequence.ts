@@ -14,8 +14,15 @@ interface EmailSequence {
 }
 
 export const useEmailSequence = () => {
-  const [leads, setLeads] = useState<EmailLead[]>([]);
-  const [pendingEmails, setPendingEmails] = useState<any[]>([]);
+  const [leads, setLeads] = useState<EmailLead[]>(() => {
+    try {
+      const stored = localStorage.getItem('email_leads');
+      return stored ? (JSON.parse(stored) as EmailLead[]) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [pendingEmails, setPendingEmails] = useState<EmailLead[]>([]);
 
   // Email sequence configuration
   const emailSequence: EmailSequence[] = [
@@ -23,14 +30,6 @@ export const useEmailSequence = () => {
     { templateName: 'behindScenes', delayDays: 2, sent: false },
     { templateName: 'bookingOffer', delayDays: 5, sent: false }
   ];
-
-  // Load leads from localStorage
-  useEffect(() => {
-    const storedLeads = localStorage.getItem('email_leads');
-    if (storedLeads) {
-      setLeads(JSON.parse(storedLeads));
-    }
-  }, []);
 
   // Save leads to localStorage
   const saveLeads = (newLeads: EmailLead[]) => {

@@ -108,7 +108,7 @@ const Portfolio = () => {
         {/* Copyright Notice - Fixed at bottom */}
         <div className="fixed bottom-4 left-0 right-0 text-center z-10">
           <p className="text-white/60 text-sm tracking-wide bg-black/80 backdrop-blur inline-block px-4 py-2 rounded">
-            © 2025 Jeff Honforloco Photography. All rights reserved.
+            © 2026 Jeff Honforloco Photography. All rights reserved.
           </p>
         </div>
       </div>

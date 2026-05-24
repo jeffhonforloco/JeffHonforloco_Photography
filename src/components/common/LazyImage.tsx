@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { generateOptimizedUrl, generateSrcSet } from '@/utils/imageOptimization';
 
 interface LazyImageProps {
@@ -32,34 +32,34 @@ const LazyImage: React.FC<LazyImageProps> = ({
   enable4K = true,
   quality = 85
 }) => {
-  const [imageSrc, setImageSrc] = useState<string>(placeholder);
+  // For high-priority images compute src synchronously — no setState needed
+  const prioritySrc = useMemo(
+    () => (fetchPriority === 'high' ? generateOptimizedUrl(src, undefined, quality) : null),
+    [fetchPriority, src, quality]
+  );
+  const [lazyLoadedSrc, setLazyLoadedSrc] = useState<string>(placeholder);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+  const imageSrc = prioritySrc ?? lazyLoadedSrc;
 
   useEffect(() => {
+    if (fetchPriority === 'high') return;
+
     const imgElement = imgRef.current;
-    
-    // For high priority images, load immediately
-    if (fetchPriority === "high") {
-      const optimizedSrc = generateOptimizedUrl(src, undefined, quality);
-      setImageSrc(optimizedSrc);
-      return;
-    }
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const optimizedSrc = generateOptimizedUrl(src, undefined, quality);
-            setImageSrc(optimizedSrc);
+            setLazyLoadedSrc(generateOptimizedUrl(src, undefined, quality));
             observer.unobserve(entry.target);
           }
         });
       },
       {
         threshold: 0.1,
-        rootMargin: '100px' // Start loading earlier for smoother experience
+        rootMargin: '100px'
       }
     );
 

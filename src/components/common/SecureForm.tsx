@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { inputValidator, ValidationResult } from '../../lib/input-validation';
 import { Alert, AlertDescription } from '../ui/alert';
 import { AlertTriangle } from 'lucide-react';
@@ -20,15 +20,9 @@ export const SecureForm: React.FC<SecureFormProps> = ({
   rateLimitKey = 'default',
   className = ''
 }) => {
-  const [csrfToken, setCsrfToken] = useState<string>('');
+  const [csrfToken] = useState<string>(() => inputValidator.generateCSRFToken());
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [rateLimitExceeded, setRateLimitExceeded] = useState(false);
-
-  // Generate CSRF token on mount
-  useEffect(() => {
-    const token = inputValidator.generateCSRFToken();
-    setCsrfToken(token);
-  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

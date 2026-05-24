@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,11 +62,7 @@ const AdminSettings: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
@@ -88,7 +84,11 @@ const AdminSettings: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- reads settings only for merging
+
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
 
   const saveSettings = async () => {
     try {
@@ -124,7 +124,7 @@ const AdminSettings: React.FC = () => {
     }
   };
 
-  const handleInputChange = (field: keyof SiteSettings, value: any) => {
+  const handleInputChange = (field: keyof SiteSettings, value: string | boolean) => {
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
 interface AnalyticsConfig {
@@ -17,10 +17,18 @@ interface AnalyticsConfig {
   };
 }
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+    fbq?: (...args: unknown[]) => void;
+    _fbq?: unknown;
+    dataLayer?: unknown[];
+  }
+}
+
 // Enhanced analytics tracking
 export const trackEvent = (eventName: string, parameters: Record<string, unknown> = {}) => {
-  // Google Analytics 4
-  if (typeof window !== 'undefined' && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
+  if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', eventName, {
       ...parameters,
       timestamp: new Date().toISOString(),
@@ -30,13 +38,11 @@ export const trackEvent = (eventName: string, parameters: Record<string, unknown
     });
   }
 
-  // Facebook Pixel
-  if (typeof window !== 'undefined' && (window as { fbq?: (action: string, event: string, params?: Record<string, unknown>) => void }).fbq) {
+  if (typeof window !== 'undefined' && window.fbq) {
     window.fbq('track', eventName, parameters);
   }
 
-  // Console logging for development
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.log('Analytics Event:', eventName, parameters);
   }
 };
@@ -86,37 +92,28 @@ export const trackBookingIntent = (source: string, location?: string) => {
 };
 
 // Analytics component for route tracking
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-    fbq?: (...args: any[]) => void;
-    _fbq?: any;
-    dataLayer?: any[];
-  }
-}
-
 const Analytics = () => {
   const location = useLocation();
+  const trackingIdRef = useRef<string>('');
 
   useEffect(() => {
-    // Load analytics configuration
     fetch('/data/analytics-config.json')
       .then(response => response.json())
       .then((config: AnalyticsConfig) => {
-        // Initialize Google Analytics
         if (config.googleAnalytics.enabled && config.googleAnalytics.trackingId !== 'GA_MEASUREMENT_ID') {
+          trackingIdRef.current = config.googleAnalytics.trackingId;
+
           const script = document.createElement('script');
           script.async = true;
           script.src = `https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics.trackingId}`;
           document.head.appendChild(script);
 
-          (window as { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void }).dataLayer = 
-            (window as { dataLayer?: unknown[] }).dataLayer || [];
+          window.dataLayer = window.dataLayer || [];
           function gtag(...args: unknown[]) {
-            ((window as { dataLayer: unknown[] }).dataLayer).push(args);
+            window.dataLayer!.push(args);
           }
-          (window as { gtag: typeof gtag }).gtag = gtag;
-          
+          window.gtag = gtag;
+
           gtag('js', new Date());
           gtag('config', config.googleAnalytics.trackingId, {
             page_title: document.title,
@@ -126,31 +123,31 @@ const Analytics = () => {
           });
         }
 
-        // Initialize Facebook Pixel
         if (config.facebookPixel.enabled && config.facebookPixel.pixelId !== 'FB_PIXEL_ID') {
-          // Facebook Pixel code
-          const fbq = function(...args: any[]) {
-            const fbInstance = window.fbq as any;
-            if (fbInstance && fbInstance.callMethod) {
-              fbInstance.callMethod.apply(fbInstance, args);
+          const fbqFn = (...args: unknown[]) => {
+            const fb = window.fbq as ((...a: unknown[]) => void) & {
+              callMethod?: (...a: unknown[]) => void;
+              queue?: unknown[];
+              push?: (...a: unknown[]) => void;
+              loaded?: boolean;
+              version?: string;
+            };
+            if (fb?.callMethod) {
+              fb.callMethod(...args);
             } else {
-              (fbInstance.queue = fbInstance.queue || []).push(args);
+              (fb.queue = fb.queue || []).push(args);
             }
           };
-          window.fbq = fbq as any;
-          if (!window._fbq) window._fbq = fbq;
-          (window.fbq as any).push = fbq;
-          (window.fbq as any).loaded = true;
-          (window.fbq as any).version = '2.0';
-          (window.fbq as any).queue = [];
-          
+          window.fbq = fbqFn;
+          if (!window._fbq) window._fbq = fbqFn;
+
           const script = document.createElement('script');
           script.async = true;
           script.src = 'https://connect.facebook.net/en_US/fbevents.js';
           document.head.appendChild(script);
 
-          window.fbq?.('init', config.facebookPixel.pixelId);
-          window.fbq?.('track', 'PageView');
+          window.fbq('init', config.facebookPixel.pixelId);
+          window.fbq('track', 'PageView');
         }
       })
       .catch(error => console.error('Failed to load analytics config:', error));
@@ -159,18 +156,16 @@ const Analytics = () => {
   // Track route changes
   useEffect(() => {
     const currentPath = location.pathname;
-    
-    // Track page views
-    if (typeof window !== 'undefined' && (window as { gtag?: (...args: unknown[]) => void }).gtag) {
-      window.gtag('config', 'GA_MEASUREMENT_ID', {
+
+    if (window.gtag && trackingIdRef.current) {
+      window.gtag('config', trackingIdRef.current, {
         page_path: currentPath,
         page_title: document.title,
         page_location: window.location.href
       });
     }
 
-    // Track specific page types
-    if (currentPath.startsWith('/portfolio/')) {
+    if (currentPath.startsWith('/portfolios/')) {
       const category = currentPath.split('/')[2];
       trackPortfolioView(category);
     } else if (currentPath.startsWith('/journal/')) {
@@ -182,7 +177,7 @@ const Analytics = () => {
     }
   }, [location]);
 
-  return null; // This component doesn't render anything
+  return null;
 };
 
 export default Analytics;
