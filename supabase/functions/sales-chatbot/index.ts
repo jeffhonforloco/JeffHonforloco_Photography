@@ -152,7 +152,7 @@ async function sendLeadNotification(lead: LeadData): Promise<void> {
     },
     body: JSON.stringify({
       from: "Photography Website <noreply@resend.dev>",
-      to: ["jeffhonforloco@gmail.com"],
+      to: ["info@jeffhonforlocophotos.com"],
       subject: `${status.emoji} ${status.label} Lead: ${lead.name} — ${service}`,
       html: `<!DOCTYPE html>
 <html>

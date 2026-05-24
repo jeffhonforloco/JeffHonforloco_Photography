@@ -206,7 +206,7 @@ export default function SalesChatbot() {
     try {
       await apiService.sendContactEmail({
         full_name: "Chat Inquiry — Pending Jeff Approval",
-        email: import.meta.env.VITE_CONTACT_EMAIL as string ?? "jeffhonforloco@gmail.com",
+        email: import.meta.env.VITE_CONTACT_EMAIL as string ?? "info@jeffhonforlocophotos.com",
         phone: "",
         message: `[CUSTOM QUOTE REQUEST — AI NEGOTIATION]\n\nA client negotiated a custom package via the studio chatbot and is requesting Jeff's approval.\n\n--- CONVERSATION ---\n${conversationText}\n\n--- END CONVERSATION ---\n\nPlease review and contact the client directly to confirm pricing.`,
         service_type: "Custom Quote",
