@@ -8,6 +8,7 @@ import emailRoutes     from './routes/email';
 import blogRoutes      from './routes/blog';
 import portfolioRoutes from './routes/portfolio';
 import adminRoutes     from './routes/admin';
+import chatRoutes      from './routes/chat';
 
 const app = new Hono<AppEnv>();
 
@@ -27,6 +28,7 @@ app.route('/api/v1/email',     emailRoutes);
 app.route('/api/v1/blog',      blogRoutes);
 app.route('/api/v1/portfolio', portfolioRoutes);
 app.route('/api/v1/admin',     adminRoutes);
+app.route('/api/v1/chat',      chatRoutes);
 
 // 404 fallback
 app.notFound((c) => c.json({ error: 'Not found' }, 404));
