@@ -28,7 +28,7 @@ const PREVIEW_CATEGORIES = [
     icon: '🎬',
     name: 'Motion Video',
     teaser: 'Social reels to full brand productions',
-    startingAt: '$499',
+    startingAt: '$1,500',
     highlight: 'In partnership with urs79.com',
     isMotion: true,
   },

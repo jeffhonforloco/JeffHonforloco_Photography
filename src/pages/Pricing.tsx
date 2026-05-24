@@ -448,8 +448,8 @@ const Pricing = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { label: 'Social Reel', price: 'From $499', icon: '📱' },
-                  { label: 'Brand Story', price: 'From $1,500', icon: '🎥' },
+                  { label: 'Social Reel', price: 'From $1,500', icon: '📱' },
+                  { label: 'Brand Story', price: 'From $3,500', icon: '🎥' },
                   { label: 'Photo + Video Bundle', price: 'Save 15%', icon: '📸' },
                   { label: 'Full Production', price: 'Custom', icon: '🎬' },
                 ].map((item, i) => (
