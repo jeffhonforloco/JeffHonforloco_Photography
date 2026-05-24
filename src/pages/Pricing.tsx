@@ -292,6 +292,21 @@ const Pricing = () => {
                   })}
                 </div>
 
+                {/* Universal extend note */}
+                <p className="mt-5 text-center text-gray-500 text-sm">
+                  Every package can be extended with additional hours or services —{' '}
+                  <button
+                    className="text-photo-red hover:underline"
+                    onClick={() => {
+                      const btn = document.querySelector<HTMLButtonElement>('[aria-label="Chat with Jeff\'s studio"]');
+                      btn?.click();
+                    }}
+                  >
+                    chat with us
+                  </button>{' '}
+                  to customize.
+                </p>
+
                 {/* Volume note for mobile/headshot categories */}
                 {current.volumeNote && (
                   <div className="mt-8 p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl flex items-start gap-3">
@@ -448,8 +463,8 @@ const Pricing = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { label: 'Social Reel', price: 'From $499', icon: '📱' },
-                  { label: 'Brand Story', price: 'From $1,500', icon: '🎥' },
+                  { label: 'Social Reel', price: 'From $1,500', icon: '📱' },
+                  { label: 'Brand Story', price: 'From $3,500', icon: '🎥' },
                   { label: 'Photo + Video Bundle', price: 'Save 15%', icon: '📸' },
                   { label: 'Full Production', price: 'Custom', icon: '🎬' },
                 ].map((item, i) => (
