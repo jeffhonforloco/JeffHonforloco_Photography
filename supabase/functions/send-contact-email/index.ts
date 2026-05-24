@@ -296,7 +296,7 @@ const handler = async (req: Request): Promise<Response> => {
     } catch {
       const fallback = await resend.emails.send({
         from: "Photography Website <noreply@resend.dev>",
-        to: ["jeffhonforloco@gmail.com"],
+        to: ["info@jeffhonforlocophotos.com"],
         subject: `[FB] New ${service ?? type} inquiry from ${name}`,
         html: generateJeffNotificationHtml(requestData, score),
       });
