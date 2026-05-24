@@ -39,7 +39,7 @@ const Header = () => {
             {location.pathname !== '/' && (
               <Link to="/" className="flex items-center hover:opacity-80 transition-opacity duration-300">
                 <img 
-                  src="/lovable-uploads/f17266df-16a1-4edd-8581-23b10bdb2eda.png" 
+                  src="/images/f17266df-16a1-4edd-8581-23b10bdb2eda.png" 
                   alt="J Logo" 
                   className="h-12 sm:h-14 md:h-12 lg:h-14 w-auto object-contain"
                 />

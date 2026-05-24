@@ -243,90 +243,106 @@
   to { transform: translateY(-100%); }
 }
 
-/* Smooth, stable continuous upward scroll - optimized for stability */
-@keyframes slideStable {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-66.67%); }
-}
-
-@keyframes slideStableMobile {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-66.67%); }
+/*
+ * Seamless infinite scroll: images are doubled (2×).
+ * At exactly -50% the visible content is identical to 0%,
+ * so the loop reset is invisible — no blink or flash.
+ */
+@keyframes slideSeamless {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
 }
 
 .animate-slide-up-continuous {
-  animation: slideUpContinuous 40s linear infinite;
+  animation: slideSeamless 40s linear infinite;
 }
 
 .animate-slide-seamless {
-  animation: slideStable 60s linear infinite;
+  animation: slideSeamless 60s linear infinite;
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  contain: layout;
 }
 
-/* Stable optimized animation - removed conflicting transforms */
 .animate-slide-optimized {
-  animation: slideStable 80s linear infinite;
+  animation: slideSeamless 80s linear infinite;
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  contain: layout;
 }
 
-/* Mobile-optimized slower animation for stability */
+/* Staggered column animations — different durations + negative delays
+   give natural offset without any visible loop point */
+.hero-col-1 {
+  animation: slideSeamless 80s linear infinite;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.hero-col-2 {
+  animation: slideSeamless 85s linear infinite;
+  animation-delay: -20s;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.hero-col-3 {
+  animation: slideSeamless 90s linear infinite;
+  animation-delay: -40s;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* Keep legacy class names working */
+.animate-slide-col1 { animation: slideSeamless 80s linear infinite; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.animate-slide-col2 { animation: slideSeamless 85s linear infinite; animation-delay: -20s; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.animate-slide-col3 { animation: slideSeamless 90s linear infinite; animation-delay: -40s; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+
+/* Mobile: slow down for stability */
 @media (max-width: 768px) {
-  .animate-slide-optimized {
-    animation: slideStableMobile 100s linear infinite;
-  }
-  
-  .animate-slide-seamless {
-    animation: slideStableMobile 80s linear infinite;
-  }
+  .hero-col-1 { animation-duration: 100s; }
+  .hero-col-2 { animation-duration: 105s; animation-delay: -25s; }
+  .hero-col-3 { animation-duration: 110s; animation-delay: -50s; }
+  .animate-slide-col1 { animation-duration: 100s; }
+  .animate-slide-col2 { animation-duration: 105s; animation-delay: -25s; }
+  .animate-slide-col3 { animation-duration: 110s; animation-delay: -50s; }
 }
 
 /* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  .animate-slide-optimized,
-  .animate-slide-seamless {
+  .hero-col-1, .hero-col-2, .hero-col-3,
+  .animate-slide-col1, .animate-slide-col2, .animate-slide-col3,
+  .animate-slide-optimized, .animate-slide-seamless {
     animation: none;
     transform: translateY(0);
   }
 }
 
-/* Staggered animation delays for natural column movement */
-.animate-slide-col1 {
-  animation: slideStable 80s linear infinite;
-  backface-visibility: hidden;
-  contain: layout;
+/* Hero grid wrapper: editorial mask fades images into pure black
+   at top and bottom — removes hard edges for a magazine-like look */
+.hero-grid-wrapper {
+  background: #000;
 }
 
-.animate-slide-col2 {
-  animation: slideStable 85s linear infinite;
-  animation-delay: -20s;
-  backface-visibility: hidden;
-  contain: layout;
-}
-
-.animate-slide-col3 {
-  animation: slideStable 90s linear infinite;
-  animation-delay: -40s;
-  backface-visibility: hidden;
-  contain: layout;
-}
-
-/* Mobile staggered animations */
-@media (max-width: 768px) {
-  .animate-slide-col1 {
-    animation: slideStableMobile 100s linear infinite;
-  }
-  
-  .animate-slide-col2 {
-    animation: slideStableMobile 105s linear infinite;
-    animation-delay: -25s;
-  }
-  
-  .animate-slide-col3 {
-    animation: slideStableMobile 110s linear infinite;
-    animation-delay: -50s;
-  }
+.hero-grid-mask {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 12%,
+    black 88%,
+    transparent 100%
+  );
 }
 
 /* Enhanced bright theme animations and styles */
@@ -430,15 +446,11 @@ img[loading="lazy"] {
   will-change: opacity;
 }
 
-/* Optimized animations - performance focused - cleaned up transforms */
+/* GPU-composited animation containers */
 .animate-slide-optimized,
 .animate-slide-seamless {
-  /* GPU acceleration for smoother animations - only use translate3d when not animating */
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  
-  /* Reduce layout recalculations */
-  contain: layout;
   isolation: isolate;
 }
 

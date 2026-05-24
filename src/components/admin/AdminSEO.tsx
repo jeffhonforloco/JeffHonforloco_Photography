@@ -23,10 +23,10 @@ const AdminSEO = () => {
   const [socialMedia, setSocialMedia] = useState({
     ogTitle: 'Jeff Honforloco Photography - World\'s Premier Luxury Fashion & Beauty Photographer | Global Elite Services',
     ogDescription: 'World-class luxury fashion, beauty & editorial photographer. Elite photography services for Fortune 500 brands, A-list celebrities & top models. Global availability across NYC, LA, Miami, Paris, London.',
-    ogImage: 'https://jeffhonforlocophotos.com/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
+    ogImage: 'https://jeffhonforlocophotos.com/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
     twitterTitle: 'Jeff Honforloco Photography - World\'s Premier Luxury Fashion & Beauty Photographer',
     twitterDescription: 'World-class luxury fashion, beauty & editorial photographer. Elite photography services for Fortune 500 brands, A-list celebrities & top models. Global availability.',
-    twitterImage: 'https://jeffhonforlocophotos.com/lovable-uploads/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
+    twitterImage: 'https://jeffhonforlocophotos.com/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
     twitterHandle: '@jeffhonforloco'
   });
 

@@ -8,7 +8,7 @@ const Portfolio = () => {
     {
       title: 'Fashion',
       slug: 'fashion',
-      image: '/lovable-uploads/9cac59de-27c1-4b0a-8c2b-1d8333486e54.png',
+      image: '/images/9cac59de-27c1-4b0a-8c2b-1d8333486e54.png',
       href: '/portfolios/fashion',
       description: 'High-end fashion photography for luxury brands, fashion weeks, and celebrity campaigns across NYC, LA, and major fashion capitals.',
       keywords: 'luxury fashion photographer NYC, high-end fashion photography, fashion week photographer, celebrity fashion shoots'
@@ -16,7 +16,7 @@ const Portfolio = () => {
     {
       title: 'Glamour',
       slug: 'glamour',
-      image: '/lovable-uploads/7c6c25d5-48ef-4f79-8369-b5edab7ddc85.png',
+      image: '/images/7c6c25d5-48ef-4f79-8369-b5edab7ddc85.png',
       href: '/portfolios/glamour',
       description: 'Sophisticated glamour photography capturing elegance, allure, and timeless beauty with dramatic lighting and styling.',
       keywords: 'glamour photographer, sophisticated portraits, dramatic lighting, elegant photography'
@@ -24,7 +24,7 @@ const Portfolio = () => {
     {
       title: 'Beauty', 
       slug: 'beauty',
-      image: '/lovable-uploads/08c64276-3665-4346-a637-ca41acc6c602.png',
+      image: '/images/08c64276-3665-4346-a637-ca41acc6c602.png',
       href: '/portfolios/beauty',
       description: 'Premium beauty and cosmetic photography for luxury brands, featuring sophisticated lighting and flawless execution.',
       keywords: 'luxury beauty photographer, cosmetic photography, beauty campaign photographer, high-end beauty shoots'
@@ -32,7 +32,7 @@ const Portfolio = () => {
     {
       title: 'Editorial',
       slug: 'editorial',
-      image: '/lovable-uploads/67b5c2bf-d1a3-44e4-af56-212f23e37262.png', 
+      image: '/images/67b5c2bf-d1a3-44e4-af56-212f23e37262.png', 
       href: '/portfolios/editorial',
       description: 'Magazine-quality editorial photography for publications, brands, and storytelling campaigns that captivate audiences.',
       keywords: 'editorial photographer, magazine photographer, commercial editorial photography, brand storytelling'
@@ -40,7 +40,7 @@ const Portfolio = () => {
     {
       title: 'Lifestyle',
       slug: 'lifestyle',
-      image: '/lovable-uploads/bcd80ca3-d60c-4596-9a71-4b8602583ff7.png',
+      image: '/images/bcd80ca3-d60c-4596-9a71-4b8602583ff7.png',
       href: '/portfolios/lifestyle',
       description: 'Exclusive celebrity and luxury lifestyle photography capturing authentic moments and sophisticated aesthetics.',
       keywords: 'celebrity photographer, luxury lifestyle photography, exclusive portrait photography, high-profile clients'
