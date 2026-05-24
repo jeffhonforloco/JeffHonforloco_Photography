@@ -12,8 +12,14 @@
   "categories": ["photography", "fashion", "beauty", "luxury"],
   "icons": [
     {
-      "src": "/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png",
-      "sizes": "512x512",
+      "src": "/favicon.ico",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/06e1e583-fc89-475d-bf22-b6d815ab75f0.png",
+      "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
     }
