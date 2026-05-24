@@ -382,44 +382,30 @@
   }
 }
 
-/* Enhanced Performance optimizations */
+/* Global image defaults */
 img {
   max-width: 100%;
   height: auto;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: optimizeQuality;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: auto;
-  contain: layout style paint;
-  
-  /* Modern image loading optimizations */
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   pointer-events: none;
 }
 
-/* Optimize images for hero section */
+/* Hero carousel images — no content-visibility, no opacity transition.
+   Both of those fight CSS translateY animation and cause per-image blinks. */
 .hero-image {
-  content-visibility: auto;
-  contain-intrinsic-size: 400px 600px;
   image-rendering: -webkit-optimize-contrast;
-  transition: opacity 0.2s ease-out;
   backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  
-  /* Image compression hints */
+  -webkit-backface-visibility: hidden;
   image-orientation: from-image;
   object-fit: cover;
   object-position: center;
+  display: block;
 }
 
 .hero-image-container {
-  contain: layout style paint;
-  will-change: auto;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: #111;
 }
 
 /* Critical resource hints */
@@ -428,11 +414,6 @@ link[rel="preload"] {
   fetchpriority: high;
 }
 
-/* Lazy loading optimization */
-img[loading="lazy"] {
-  content-visibility: auto;
-  contain-intrinsic-size: 400px 600px;
-}
 
 /* Optimized journal slider animations */
 .journal-slider-item {
