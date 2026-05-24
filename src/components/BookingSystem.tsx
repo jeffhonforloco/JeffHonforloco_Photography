@@ -7,9 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CheckCircle, Clock, Camera, Users, Award, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Mail, MapPin, Smartphone, Film } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
 import { apiService } from '@/lib/api-service';
 import { trackBookingIntent } from '@/components/Analytics';
+import { PRICING_CATEGORIES } from '@/data/pricing-data';
 import { format } from 'date-fns';
 
 interface BookingData {
@@ -37,7 +39,7 @@ const SERVICE_TYPES = [
   {
     id: 'headshots',
     name: 'Headshots & Portraits',
-    description: 'Studio or mobile — individuals, teams & LinkedIn. We come to your office across RI, MA, ME & CT.',
+    description: 'Studio or mobile — individuals, teams & LinkedIn. Available across the US.',
     icon: Smartphone,
     duration: '1–3 hours',
     startingPrice: 'From $649',
@@ -50,7 +52,6 @@ const SERVICE_TYPES = [
     icon: Award,
     duration: '1–5 hours',
     startingPrice: 'From $750',
-    isMobile: false,
   },
   {
     id: 'fashion',
@@ -59,7 +60,6 @@ const SERVICE_TYPES = [
     icon: Camera,
     duration: '1–8 hours',
     startingPrice: 'From $850',
-    isMobile: false,
   },
   {
     id: 'glamour',
@@ -68,7 +68,6 @@ const SERVICE_TYPES = [
     icon: Camera,
     duration: '1–4 hours',
     startingPrice: 'From $750',
-    isMobile: false,
   },
   {
     id: 'editorial',
@@ -77,7 +76,6 @@ const SERVICE_TYPES = [
     icon: Camera,
     duration: '1–8 hours',
     startingPrice: 'From $950',
-    isMobile: false,
   },
   {
     id: 'lifestyle',
@@ -86,16 +84,14 @@ const SERVICE_TYPES = [
     icon: Users,
     duration: '1–4 hours',
     startingPrice: 'From $650',
-    isMobile: false,
   },
   {
     id: 'wedding',
     name: 'Wedding & Engagements',
-    description: 'From intimate engagements to full-day celebrations across New England',
+    description: 'From intimate engagements to full-day celebrations — available across the US',
     icon: Award,
     duration: '1.5–10 hours',
     startingPrice: 'From $850',
-    isMobile: false,
   },
   {
     id: 'events',
@@ -104,12 +100,11 @@ const SERVICE_TYPES = [
     icon: Users,
     duration: '2–8 hours',
     startingPrice: 'From $799',
-    isMobile: false,
   },
   {
     id: 'real-estate',
     name: 'Real Estate Photography',
-    description: 'Mobile shoots — we come to the property across RI, MA, ME & CT',
+    description: 'Mobile shoots — we come to the property anywhere in the US',
     icon: Smartphone,
     duration: 'Up to 3 hours',
     startingPrice: 'From $650',
@@ -122,35 +117,7 @@ const SERVICE_TYPES = [
     icon: Film,
     duration: '2–4 hr shoot+',
     startingPrice: 'From $1,500',
-    isMobile: false,
     isMotion: true,
-  },
-];
-
-const PACKAGE_TYPES = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    price: 'From $649',
-    features: ['1-hour session', '6–8 edited images', 'Online gallery delivery'],
-  },
-  {
-    id: 'standard',
-    name: 'Standard',
-    price: 'From $1,100',
-    features: ['2–3 hour session', '10–12 edited images', 'Advanced retouching', 'Multiple looks'],
-  },
-  {
-    id: 'premium',
-    name: 'Premium',
-    price: 'From $2,000',
-    features: ['4+ hour session', '12–18 edited images', 'Full retouching', 'Creative direction'],
-  },
-  {
-    id: 'custom',
-    name: 'Custom / Full Campaign',
-    price: 'Quote on request',
-    features: ['Full day+', '20–35+ images', 'Full production team', 'Location scouting', 'Motion video add-on available'],
   },
 ];
 
@@ -265,107 +232,127 @@ ${bookingData.message}`,
     }
   };
 
-  // Step 1: Service + Package selection
-  const renderServiceSelection = () => (
-    <div className="space-y-8">
-      <div className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Choose Your Session</h2>
-        <p className="text-gray-400">Select a service type, then pick your package</p>
-      </div>
+  const renderServiceSelection = () => {
+    const selectedCategory = PRICING_CATEGORIES.find(c => c.id === bookingData.serviceType);
+    const isMotion = bookingData.serviceType === 'motion';
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {SERVICE_TYPES.map((service) => {
-          const Icon = service.icon;
-          const isSelected = bookingData.serviceType === service.id;
-          return (
-            <Card
-              key={service.id}
-              className={`cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
-                isSelected
-                  ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
-                  : 'bg-white/5 border-white/10 hover:border-white/30'
-              }`}
-              onClick={() => updateBookingData('serviceType', service.id)}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <Icon className="w-5 h-5 text-photo-red flex-shrink-0" />
-                    <CardTitle className="text-white text-base truncate">{service.name}</CardTitle>
-                  </div>
-                  {isSelected && <CheckCircle className="w-5 h-5 text-photo-red flex-shrink-0 ml-2" />}
-                </div>
-                <CardDescription className="text-gray-400 text-sm">{service.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex flex-wrap gap-1 mb-2">
-                  {service.isMobile && (
-                    <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-[10px] px-2 py-0.5">
-                      <Smartphone className="w-2.5 h-2.5" /> Mobile
-                    </span>
-                  )}
-                  {service.isMotion && (
-                    <span className="inline-flex items-center gap-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-[10px] px-2 py-0.5">
-                      <Film className="w-2.5 h-2.5" /> urs79.com
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {service.duration}
-                  </span>
-                  <span className="font-semibold text-photo-red">{service.startingPrice}</span>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
-      {bookingData.serviceType && (
-        <div>
-          <h3 className="text-lg font-semibold text-white mb-4">Select Your Package</h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            {PACKAGE_TYPES.map((pkg) => {
-              const isSelected = bookingData.packageType === pkg.id;
-              return (
-                <Card
-                  key={pkg.id}
-                  className={`cursor-pointer transition-all duration-200 ${
-                    isSelected
-                      ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
-                      : 'bg-white/5 border-white/10 hover:border-white/30'
-                  }`}
-                  onClick={() => updateBookingData('packageType', pkg.id)}
-                >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-white text-base">{pkg.name}</CardTitle>
-                      {isSelected && <CheckCircle className="w-4 h-4 text-photo-red" />}
-                    </div>
-                    <CardDescription className="text-photo-red font-semibold text-sm">{pkg.price}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <ul className="space-y-1.5">
-                      {pkg.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-xs text-gray-300">
-                          <CheckCircle className="w-3 h-3 text-photo-red flex-shrink-0" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+    return (
+      <div className="space-y-8">
+        <div className="text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Choose Your Session</h2>
+          <p className="text-gray-400">Select a service type, then pick your package</p>
         </div>
-      )}
-    </div>
-  );
 
-  // Step 2: Date & Time
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SERVICE_TYPES.map((service) => {
+            const Icon = service.icon;
+            const isSelected = bookingData.serviceType === service.id;
+            return (
+              <Card
+                key={service.id}
+                className={`cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
+                  isSelected
+                    ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
+                    : 'bg-white/5 border-white/10 hover:border-white/30'
+                }`}
+                onClick={() => {
+                  updateBookingData('serviceType', service.id);
+                  updateBookingData('packageType', '');
+                }}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <Icon className="w-5 h-5 text-photo-red flex-shrink-0" />
+                      <CardTitle className="text-white text-base truncate">{service.name}</CardTitle>
+                    </div>
+                    {isSelected && <CheckCircle className="w-5 h-5 text-photo-red flex-shrink-0 ml-2" />}
+                  </div>
+                  <CardDescription className="text-gray-400 text-sm">{service.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {'isMobile' in service && service.isMobile && (
+                      <span className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-[10px] px-2 py-0.5">
+                        <Smartphone className="w-2.5 h-2.5" /> Mobile
+                      </span>
+                    )}
+                    {'isMotion' in service && service.isMotion && (
+                      <span className="inline-flex items-center gap-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-[10px] px-2 py-0.5">
+                        <Film className="w-2.5 h-2.5" /> urs79.com
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {service.duration}
+                    </span>
+                    <span className="font-semibold text-photo-red">{service.startingPrice}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {selectedCategory && (
+          <div>
+            <h3 className="text-lg font-semibold text-white mb-4">Select Your Package</h3>
+            <div className="grid md:grid-cols-3 gap-4">
+              {selectedCategory.tiers.map((tier) => {
+                const isSelected = bookingData.packageType === tier.id;
+                return (
+                  <Card
+                    key={tier.id}
+                    className={`cursor-pointer transition-all duration-200 ${
+                      isSelected
+                        ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
+                        : 'bg-white/5 border-white/10 hover:border-white/30'
+                    }`}
+                    onClick={() => updateBookingData('packageType', tier.id)}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-white text-base">{tier.name}</CardTitle>
+                          {tier.badge && (
+                            <Badge className="bg-photo-red text-white text-[10px] mt-1">{tier.badge}</Badge>
+                          )}
+                        </div>
+                        {isSelected && <CheckCircle className="w-4 h-4 text-photo-red flex-shrink-0" />}
+                      </div>
+                      <p className="text-photo-red font-semibold text-sm mt-1">{tier.price}</p>
+                      <p className="text-gray-500 text-xs">
+                        {tier.duration}
+                        {!isMotion && tier.images ? ` · ${tier.images}` : ''}
+                      </p>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <ul className="space-y-1.5">
+                        {tier.deliverables.slice(0, 4).map((item, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-xs text-gray-300">
+                            <CheckCircle className="w-3 h-3 text-photo-red flex-shrink-0" />
+                            {item}
+                          </li>
+                        ))}
+                        {tier.deliverables.length > 4 && (
+                          <li className="text-gray-500 text-xs pl-5">
+                            +{tier.deliverables.length - 4} more included
+                          </li>
+                        )}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderDateTimeSelection = () => (
     <div className="space-y-8">
       <div className="text-center">
@@ -425,7 +412,6 @@ ${bookingData.message}`,
     </div>
   );
 
-  // Step 3: Details (contact + location combined)
   const renderDetails = () => (
     <div className="space-y-7">
       <div className="text-center">
@@ -513,12 +499,12 @@ ${bookingData.message}`,
         <Label htmlFor="location" className="text-white mb-2 block">City / Location *</Label>
         <Input
           id="location"
-          placeholder="e.g., Providence RI · Boston MA · Portland ME · Hartford CT"
+          placeholder="e.g., New York NY · Los Angeles CA · Chicago IL · Providence RI · Miami FL"
           value={bookingData.location}
           onChange={(e) => updateBookingData('location', e.target.value)}
           className="bg-gray-900 border-gray-700 text-white"
         />
-        <p className="text-gray-500 text-xs mt-1.5">We serve RI · MA · ME · CT — mobile shoots available across all 4 states</p>
+        <p className="text-gray-500 text-xs mt-1.5">Available across the US — we travel for the right project</p>
       </div>
 
       <div>
@@ -534,10 +520,11 @@ ${bookingData.message}`,
     </div>
   );
 
-  // Step 4: Confirmation
   const renderConfirmation = () => {
     const selectedService = SERVICE_TYPES.find((s) => s.id === bookingData.serviceType);
-    const selectedPackage = PACKAGE_TYPES.find((p) => p.id === bookingData.packageType);
+    const selectedTier = PRICING_CATEGORIES
+      .find(c => c.id === bookingData.serviceType)
+      ?.tiers.find(t => t.id === bookingData.packageType);
 
     return (
       <div className="space-y-8 text-center">
@@ -562,7 +549,11 @@ ${bookingData.message}`,
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Package</span>
-              <span className="text-white">{selectedPackage?.name}</span>
+              <span className="text-white">{selectedTier?.name ?? bookingData.packageType}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Price</span>
+              <span className="text-photo-red font-semibold">{selectedTier?.price ?? '—'}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Date</span>
@@ -593,22 +584,16 @@ ${bookingData.message}`,
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 1:
-        return renderServiceSelection();
-      case 2:
-        return renderDateTimeSelection();
-      case 3:
-        return renderDetails();
-      case 4:
-        return renderConfirmation();
-      default:
-        return null;
+      case 1: return renderServiceSelection();
+      case 2: return renderDateTimeSelection();
+      case 3: return renderDetails();
+      case 4: return renderConfirmation();
+      default: return null;
     }
   };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
-      {/* Progress Steps */}
       <div className="mb-10">
         <div className="flex items-center justify-between">
           {BOOKING_STEPS.map((step, index) => {
@@ -654,12 +639,10 @@ ${bookingData.message}`,
         )}
       </div>
 
-      {/* Step Content */}
       <Card className="bg-black/50 border-white/10 backdrop-blur-sm">
         <CardContent className="p-8">{renderStepContent()}</CardContent>
       </Card>
 
-      {/* Navigation */}
       {currentStep < 4 && (
         <div className="flex justify-between mt-6">
           <Button

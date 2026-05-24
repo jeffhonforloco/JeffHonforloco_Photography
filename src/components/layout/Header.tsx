@@ -31,7 +31,7 @@ const Header = () => {
       }`}
       aria-label="Main navigation"
     >
-      <div className="max-w-8xl mx-auto px-4 md:px-8 lg:px-16">
+      <div className="w-full px-3 md:px-5">
         <div className="flex justify-between items-center">
           {/* Left side - Logo or empty space */}
           <div className="flex items-center min-w-0 flex-1 md:flex-initial">

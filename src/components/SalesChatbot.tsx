@@ -23,7 +23,7 @@ const STORAGE_KEY = "jhp_chat_v2";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 const INITIAL_GREETING =
-  "Hey! I'm the studio AI for Jeff Honforloco Photography — serving Rhode Island, Massachusetts, Maine & Connecticut. Sessions start at $649 and we customize everything. What are you planning?";
+  "Hey! I'm the studio AI for Jeff Honforloco Photography — based in New England, available across the US, and we travel for the right project. Sessions start at $649 and we customize everything. What are you planning?";
 
 const SERVICE_CHIPS = [
   { label: "Headshots", icon: "📸" },
@@ -212,7 +212,7 @@ export default function SalesChatbot() {
         service_type: "Custom Quote",
         budget_range: "AI Negotiated",
         event_date: "",
-        location: "New England",
+        location: "United States",
       });
       setQuoteSubmitted(true);
       setMessages((prev) => [
