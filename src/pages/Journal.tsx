@@ -34,13 +34,29 @@ const Journal = () => {
   };
 
   useEffect(() => {
-    fetch('/data/blog-posts.json')
-      .then(response => response.json())
-      .then(data => {
+    const workerBase = import.meta.env.VITE_JOURNAL_API_URL as string | undefined;
+    const url = workerBase ? `${workerBase}/api/journal/posts` : '/data/blog-posts.json';
+
+    fetch(url)
+      .then(res => res.json())
+      .then((data: BlogData) => {
         setBlogData(data);
         setTimeout(() => setIsLoaded(true), 300);
       })
-      .catch(error => console.error('Error loading blog data:', error));
+      .catch(() => {
+        // Worker not yet deployed — fall back to static JSON
+        if (workerBase) {
+          fetch('/data/blog-posts.json')
+            .then(res => res.json())
+            .then((data: BlogData) => {
+              setBlogData(data);
+              setTimeout(() => setIsLoaded(true), 300);
+            })
+            .catch(() => setIsLoaded(true));
+        } else {
+          setIsLoaded(true);
+        }
+      });
   }, []);
 
   // Auto-slide functionality

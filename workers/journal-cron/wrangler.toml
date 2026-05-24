@@ -1,0 +1,14 @@
+name = "journal-cron"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[triggers]
+crons = ["0 8 * * *"]
+
+# After running: npx wrangler d1 create journal_db
+# paste the database_id output below
+[[d1_databases]]
+binding = "DB"
+database_name = "journal_db"
+database_id = "REPLACE_WITH_YOUR_D1_DB_ID"
