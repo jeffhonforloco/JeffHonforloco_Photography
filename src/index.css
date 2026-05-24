@@ -319,31 +319,6 @@
   }
 }
 
-/* Hero grid wrapper: editorial mask fades images into pure black
-   at top and bottom — removes hard edges for a magazine-like look */
-.hero-grid-wrapper {
-  background: #000;
-}
-
-.hero-grid-mask {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 6%,
-    black 94%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 6%,
-    black 94%,
-    transparent 100%
-  );
-}
 
 /* Enhanced bright theme animations and styles */
 @keyframes fade-in {

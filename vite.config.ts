@@ -14,38 +14,39 @@ export default defineConfig(() => ({
     },
   },
   build: {
-    // Optimize bundle size
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router-dom'],
-          ui: ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-accordion', '@radix-ui/react-tabs'],
+          // Core React — always needed, cache-stable
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          // Data fetching
           query: ['@tanstack/react-query'],
+          // Forms + validation — only loaded on form pages
           forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
-          crypto: ['crypto-js'],
-          carousel: ['embla-carousel-react'],
-          theme: ['next-themes'],
-        }
-      }
+          // Admin-only heavy deps — never on public pages
+          admin: ['crypto-js', 'recharts'],
+          // UI primitives — shared across pages
+          ui: [
+            'lucide-react',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-tabs',
+            '@radix-ui/react-tooltip',
+            '@radix-ui/react-select',
+            'next-themes',
+            'sonner',
+          ],
+        },
+      },
     },
-    // Enable CSS code splitting
     cssCodeSplit: true,
-    // Optimize assets - reduce inline threshold for better caching
-    assetsInlineLimit: 1024, // Reduced for better caching
-    // Disable source maps for production to reduce bundle size
+    assetsInlineLimit: 4096,       // inline tiny assets < 4kb to save a request
     sourcemap: false,
-    // Minimize bundle size with esbuild (default, no extra dependencies)
     minify: 'esbuild',
-    // Target modern browsers for better performance
-    target: 'es2020', // Updated for better performance
-    // Enable tree shaking
-    treeshake: true,
-    // Optimize chunk size
-    chunkSizeWarningLimit: 1000
+    target: 'es2020',
+    chunkSizeWarningLimit: 600,
   },
-  // Performance optimizations
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query', 'lucide-react']
-  }
+    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query'],
+  },
 }));

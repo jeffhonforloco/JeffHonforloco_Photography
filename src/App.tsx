@@ -32,17 +32,20 @@ const LoadingFallback = () => (
   </div>
 );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,   // 5 min — avoid redundant refetches
+      gcTime: 10 * 60 * 1000,     // 10 min — keep cache warm
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => {
-  // Initialize image optimization on app load
   React.useEffect(() => {
-    // Wait for DOM to be ready
-    const timer = setTimeout(() => {
-      initializeImageOptimization();
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    initializeImageOptimization();
   }, []);
 
   return (

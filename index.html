@@ -36,43 +36,28 @@
     <link rel="alternate" hreflang="en" href="https://jeffhonforlocophotos.com/" />
     <link rel="alternate" hreflang="x-default" href="https://jeffhonforlocophotos.com/" />
 
-    <!-- Performance optimizations -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
-    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+    <!-- Fonts: preconnect first, then async load with display=swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
-    <!-- Critical image preloads — logo + first hero images -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500;600&display=swap"></noscript>
+
+    <!-- Critical image preloads: logo + first visible hero images -->
     <link rel="preload" as="image" href="/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/2301434b-9540-429b-b183-c3f01e585450.png" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/fbeb876e-8eb3-40e4-8481-eb136e709b02.png" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/ae423683-fce8-4398-9f0a-df01c3ff0e83.png" fetchpriority="high" />
-    
-    <!-- Critical CSS inlining hint -->
-    <link rel="preload" as="style" href="/src/index.css" fetchpriority="high" />
-    
-    <!-- Resource hints for better loading -->
+
+    <!-- DNS prefetch for analytics (non-blocking) -->
     <link rel="dns-prefetch" href="//www.google-analytics.com" />
     <link rel="dns-prefetch" href="//www.googletagmanager.com" />
-    <link rel="prefetch" href="/portfolio" />
-    <link rel="prefetch" href="/about" />
+
+    <!-- Prefetch next-likely pages -->
+    <link rel="prefetch" href="/portfolios" />
     <link rel="prefetch" href="/contact" />
-    
-    <!-- Enhanced Performance hints -->
-    <link rel="dns-prefetch" href="//cdn.jsdelivr.net" />
-    <link rel="preconnect" href="//vitals.vercel-insights.com" />
+
     <meta name="theme-color" content="#C8102E" />
-    <meta name="color-scheme" content="dark light" />
-    
-    <!-- Core Web Vitals optimization -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width" />
-    
-    <!-- Performance timing -->
-    <meta name="performance-timing" content="mark-as-interactive" />
-    <link rel="modulepreload" href="/src/main.tsx" />
+    <meta name="color-scheme" content="dark" />
 
     <!-- Enhanced Open Graph -->
     <meta property="og:title" content="Jeff Honforloco Photography - World's Premier Luxury Fashion & Beauty Photographer | Global Elite Services" />
