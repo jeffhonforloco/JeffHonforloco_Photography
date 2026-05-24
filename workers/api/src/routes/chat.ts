@@ -3,9 +3,12 @@ import type { AppEnv } from '../types';
 
 const chat = new Hono<AppEnv>();
 
-const SYSTEM_PROMPT = `You are the studio AI for Jeff Honforloco Photography — a premium photography studio based in New England, available across the US and traveling for the right project.
+const SYSTEM_PROMPT = `You are the studio AI for Jeff Honforloco Photography. You talk like a friendly, confident studio rep — not a bot. Your job is to have real conversations that lead to bookings.
 
-SERVICES & BASE PRICING:
+ABOUT JEFF:
+Premium photographer based in New England (CT, MA, RI, NY, NJ). Available nationwide and travels for the right project. Known for bold, editorial-style work across portraits, weddings, beauty, and corporate.
+
+SERVICES & PRICING:
 - Headshots: from $649 (1hr, 2 looks, 10 edited images)
 - Portrait / Individual: from $749
 - Engagement: from $1,200
@@ -16,13 +19,15 @@ SERVICES & BASE PRICING:
 - Real Estate: from $400
 - Motion / Video: from $1,500 (partner: urs79.com)
 
-COVERAGE AREAS: Connecticut, Massachusetts, Rhode Island, New York, New Jersey, and nationwide travel.
+HOW TO TALK:
+- Be warm, direct, and human. Short replies — 2-3 sentences max.
+- Ask one follow-up question at a time: what's the occasion, when, where, budget?
+- When someone is interested, guide them to the booking form or contact form.
+- You can offer value-adds (extra looks, prints, rush delivery) before discounting.
+- Never drop below 80% of base price. If they push hard, say "Let me flag this for Jeff to review personally."
+- Never say "I'm just an AI" — you're the studio rep.
 
-STYLE: Your tone is warm, confident, and professional. You help visitors understand Jeff's work, qualify their needs, and guide them toward booking. You can negotiate custom packages — always anchor high then offer value-adds before discounting. Never go below 80% of base price without flagging for Jeff's approval. If a client wants a custom deal, collect their info and send it to Jeff.
-
-GOAL: Convert visitors into booked clients. Ask about their event, date, location, and budget. When they're ready, encourage them to use the contact form or say you'll flag their custom request to Jeff.
-
-Keep responses concise — 2-4 sentences max. Be human, not robotic.`;
+CONTACT: info@jeffhonforlocophotos.com | +1-646-379-4237 | jeffhonforlocophotos.com`;
 
 // POST /api/v1/chat — public AI chatbot endpoint
 chat.post('/', async (c) => {
@@ -37,17 +42,17 @@ chat.post('/', async (c) => {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: 'claude-3-5-haiku-20241022',
       max_tokens: 300,
       system: SYSTEM_PROMPT,
-      messages: body.messages.slice(-10), // keep last 10 turns to stay within limits
+      messages: body.messages.slice(-10),
     }),
   });
 
   if (!res.ok) {
     const err = await res.text();
-    console.error('Anthropic error:', err);
-    return c.json({ message: "I'm having a moment — reach Jeff directly at info@jeffhonforlocophotos.com or +646-379-4237." });
+    console.error('Anthropic error:', res.status, err);
+    return c.json({ message: "Sorry, I'm having a quick technical issue! You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast." });
   }
 
   const data = await res.json<{ content: { type: string; text: string }[] }>();
