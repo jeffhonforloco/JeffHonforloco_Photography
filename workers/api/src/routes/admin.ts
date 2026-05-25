@@ -52,39 +52,38 @@ admin.get('/analytics', requireAuth, async (c) => {
 
 // GET /api/v1/admin/config-check (auth required) — verify Worker secrets are configured
 admin.get('/config-check', requireAuth, async (c) => {
-  const hasAnthropicKey = Boolean(c.env.ANTHROPIC_API_KEY);
-  const hasResendKey    = Boolean(c.env.RESEND_API_KEY);
-  const hasJwtSecret    = Boolean(c.env.JWT_SECRET);
-  const hasAdminEmail   = Boolean(c.env.ADMIN_EMAIL);
+  const hasOpenAIKey  = Boolean(c.env.OPENAI_API_KEY);
+  const hasResendKey  = Boolean(c.env.RESEND_API_KEY);
+  const hasJwtSecret  = Boolean(c.env.JWT_SECRET);
+  const hasAdminEmail = Boolean(c.env.ADMIN_EMAIL);
 
-  let anthropicStatus = 'not_set';
-  if (hasAnthropicKey) {
+  let openaiStatus = 'not_set';
+  if (hasOpenAIKey) {
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': c.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
+          'Authorization': `Bearer ${c.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
+          model: 'gpt-4o-mini',
           max_tokens: 10,
           messages: [{ role: 'user', content: 'ping' }],
         }),
       });
-      anthropicStatus = res.ok ? 'ok' : `error_${res.status}`;
+      openaiStatus = res.ok ? 'ok' : `error_${res.status}`;
     } catch {
-      anthropicStatus = 'unreachable';
+      openaiStatus = 'unreachable';
     }
   }
 
   return c.json({
     secrets: {
-      ANTHROPIC_API_KEY: hasAnthropicKey ? anthropicStatus : 'not_set',
-      RESEND_API_KEY:    hasResendKey    ? 'set'           : 'not_set',
-      JWT_SECRET:        hasJwtSecret    ? 'set'           : 'not_set',
-      ADMIN_EMAIL:       hasAdminEmail   ? c.env.ADMIN_EMAIL : 'not_set',
+      OPENAI_API_KEY: hasOpenAIKey  ? openaiStatus    : 'not_set',
+      RESEND_API_KEY: hasResendKey  ? 'set'           : 'not_set',
+      JWT_SECRET:     hasJwtSecret  ? 'set'           : 'not_set',
+      ADMIN_EMAIL:    hasAdminEmail ? c.env.ADMIN_EMAIL : 'not_set',
     },
     note: 'Set missing secrets via: wrangler secret put SECRET_NAME — or Cloudflare Dashboard → Worker → Settings → Variables',
   });

@@ -118,14 +118,13 @@ function detectServiceType(text: string): string {
 
 // Retries once (after 1 s) on rate-limit or server errors so transient blips don't
 // surface the fallback message to real users. Auth/bad-request errors are not retried.
-async function callAnthropic(apiKey: string, payload: object): Promise<Response> {
-  const url = 'https://api.anthropic.com/v1/messages';
+async function callOpenAI(apiKey: string, payload: object): Promise<Response> {
+  const url = 'https://api.openai.com/v1/chat/completions';
   const init: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
+      'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify(payload),
   };
@@ -144,33 +143,32 @@ chat.get('/ping', async (c) => {
 
   // Direct-access checks — Object.entries() does NOT enumerate Cloudflare dashboard secrets
   const secrets = {
-    ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY ? env.ANTHROPIC_API_KEY.slice(0, 12) + '…' : 'NOT SET',
-    RESEND_API_KEY:    env.RESEND_API_KEY    ? env.RESEND_API_KEY.slice(0, 8)    + '…' : 'NOT SET',
-    JWT_SECRET:        env.JWT_SECRET        ? 'set'                                    : 'NOT SET',
-    ADMIN_EMAIL:       env.ADMIN_EMAIL       ? env.ADMIN_EMAIL                          : 'NOT SET',
+    OPENAI_API_KEY: env.OPENAI_API_KEY ? env.OPENAI_API_KEY.slice(0, 7) + '…' : 'NOT SET',
+    RESEND_API_KEY: env.RESEND_API_KEY ? env.RESEND_API_KEY.slice(0, 8) + '…' : 'NOT SET',
+    JWT_SECRET:     env.JWT_SECRET     ? 'set'                                 : 'NOT SET',
+    ADMIN_EMAIL:    env.ADMIN_EMAIL    ? env.ADMIN_EMAIL                       : 'NOT SET',
   };
 
-  if (!env.ANTHROPIC_API_KEY) {
-    return c.json({ ok: false, error: 'ANTHROPIC_API_KEY not set', secrets }, 500);
+  if (!env.OPENAI_API_KEY) {
+    return c.json({ ok: false, error: 'OPENAI_API_KEY not set', secrets }, 500);
   }
 
-  // Live test against Anthropic
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  // Live test against OpenAI
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
+      'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: 'gpt-4o-mini',
       max_tokens: 10,
       messages: [{ role: 'user', content: 'hi' }],
     }),
   });
 
   const raw = await res.text();
-  return c.json({ ok: res.ok, http_status: res.status, secrets, anthropic_response: raw.slice(0, 400) });
+  return c.json({ ok: res.ok, http_status: res.status, secrets, openai_response: raw.slice(0, 400) });
 });
 
 // POST /api/v1/chat — public AI chatbot endpoint
@@ -178,8 +176,8 @@ chat.post('/', async (c) => {
   const body = await c.req.json<{ messages: { role: string; content: string }[] }>();
   if (!body.messages?.length) return c.json({ error: 'messages required' }, 400);
 
-  if (!c.env.ANTHROPIC_API_KEY) {
-    console.error('[chat] ANTHROPIC_API_KEY is not set — configure it as a Worker secret in the Cloudflare dashboard');
+  if (!c.env.OPENAI_API_KEY) {
+    console.error('[chat] OPENAI_API_KEY is not set — configure it as a Worker secret in the Cloudflare dashboard');
     return c.json({
       message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
       leadCaptured: false,
@@ -187,19 +185,21 @@ chat.post('/', async (c) => {
     });
   }
 
-  const res = await callAnthropic(c.env.ANTHROPIC_API_KEY, {
-    model: 'claude-haiku-4-5-20251001',
+  const res = await callOpenAI(c.env.OPENAI_API_KEY, {
+    model: 'gpt-4o-mini',
     max_tokens: 400,
-    system: SYSTEM_PROMPT,
-    messages: body.messages.slice(-12).map(m => ({
-      role: m.role === 'user' ? 'user' : 'assistant',
-      content: m.content,
-    })),
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...body.messages.slice(-12).map(m => ({
+        role: m.role === 'user' ? 'user' : 'assistant',
+        content: m.content,
+      })),
+    ],
   });
 
   if (!res.ok) {
     const errSnippet = await res.text().catch(() => '');
-    console.error(`[chat] Anthropic API error ${res.status}: ${errSnippet.slice(0, 300)}`);
+    console.error(`[chat] OpenAI API error ${res.status}: ${errSnippet.slice(0, 300)}`);
     return c.json({
       message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
       leadCaptured: false,
@@ -207,8 +207,8 @@ chat.post('/', async (c) => {
     });
   }
 
-  const data = await res.json<{ content: { type: string; text: string }[] }>();
-  const rawMessage = data.content.find(b => b.type === 'text')?.text
+  const data = await res.json<{ choices: { message: { content: string } }[] }>();
+  const rawMessage = data.choices[0]?.message?.content
     ?? "I'm here to help — what are you planning?";
 
   // Extract structured markers from AI response
