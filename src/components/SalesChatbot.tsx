@@ -105,7 +105,15 @@ export default function SalesChatbot() {
     if (messages.length > 0) saveSession(messages);
   }, [messages]);
 
-  // Proactive notification after 15s if chat is still closed
+  // Auto-open chat after 3 seconds on a fresh session
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isOpenRef.current) setIsOpen(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []); // intentionally runs once on mount
+
+  // Proactive notification after 15s if user closed the chat
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isOpenRef.current) {
@@ -205,7 +213,7 @@ export default function SalesChatbot() {
     setShowChips(true);
     setQuoteSubmitted(false);
     setApprovalNeeded(false);
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
   }
 
   async function submitQuoteToJeff() {
