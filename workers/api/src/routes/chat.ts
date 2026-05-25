@@ -138,6 +138,35 @@ async function callAnthropic(apiKey: string, payload: object): Promise<Response>
   return res;
 }
 
+// GET /api/v1/chat/ping — temporary diagnostic: returns raw Anthropic status so we can see the exact error
+chat.get('/ping', async (c) => {
+  if (!c.env.ANTHROPIC_API_KEY) {
+    return c.json({ ok: false, diagnosis: 'ANTHROPIC_API_KEY secret is not set in this Worker' }, 500);
+  }
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': c.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 10,
+      messages: [{ role: 'user', content: 'hi' }],
+    }),
+  });
+
+  const raw = await res.text();
+  return c.json({
+    ok: res.ok,
+    http_status: res.status,
+    anthropic_response: raw.slice(0, 800),
+    key_prefix: c.env.ANTHROPIC_API_KEY.slice(0, 10) + '...',
+  });
+});
+
 // POST /api/v1/chat — public AI chatbot endpoint
 chat.post('/', async (c) => {
   const body = await c.req.json<{ messages: { role: string; content: string }[] }>();
