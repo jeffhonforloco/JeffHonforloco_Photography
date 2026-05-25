@@ -138,10 +138,27 @@ async function callAnthropic(apiKey: string, payload: object): Promise<Response>
   return res;
 }
 
-// GET /api/v1/chat/ping — temporary diagnostic: returns raw Anthropic status so we can see the exact error
+// GET /api/v1/chat/ping — diagnostic: shows exactly which secrets the Worker can see
 chat.get('/ping', async (c) => {
+  const env = c.env as unknown as Record<string, unknown>;
+
+  // List every string-type binding visible to this Worker (values hidden, just names + first 6 chars)
+  const visibleBindings: Record<string, string> = {};
+  for (const [k, v] of Object.entries(env)) {
+    if (typeof v === 'string' && v.length > 0) {
+      visibleBindings[k] = (v as string).slice(0, 6) + '…';
+    } else if (typeof v === 'object' && v !== null) {
+      visibleBindings[k] = '[object binding]';
+    }
+  }
+
   if (!c.env.ANTHROPIC_API_KEY) {
-    return c.json({ ok: false, diagnosis: 'ANTHROPIC_API_KEY secret is not set in this Worker' }, 500);
+    return c.json({
+      ok: false,
+      error: 'ANTHROPIC_API_KEY is NOT visible to this Worker',
+      visible_bindings: visibleBindings,
+      fix: 'In Cloudflare Dashboard go to Workers & Pages → api-jeffhonforloco-photography (the WORKER, not Pages) → Settings → Variables and Secrets → add ANTHROPIC_API_KEY as an encrypted secret',
+    }, 500);
   }
 
   const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -162,8 +179,9 @@ chat.get('/ping', async (c) => {
   return c.json({
     ok: res.ok,
     http_status: res.status,
-    anthropic_response: raw.slice(0, 800),
-    key_prefix: c.env.ANTHROPIC_API_KEY.slice(0, 10) + '...',
+    key_prefix: c.env.ANTHROPIC_API_KEY.slice(0, 14) + '…',
+    anthropic_response: raw.slice(0, 500),
+    visible_bindings: visibleBindings,
   });
 });
 
