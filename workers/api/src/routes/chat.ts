@@ -116,30 +116,46 @@ function detectServiceType(text: string): string {
   return 'Photography Inquiry';
 }
 
+// Retries once (after 1 s) on rate-limit or server errors so transient blips don't
+// surface the fallback message to real users. Auth/bad-request errors are not retried.
+async function callAnthropic(apiKey: string, payload: object): Promise<Response> {
+  const url = 'https://api.anthropic.com/v1/messages';
+  const init: RequestInit = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify(payload),
+  };
+
+  let res = await fetch(url, init);
+  if (!res.ok && (res.status === 429 || res.status >= 500)) {
+    await new Promise<void>((r) => setTimeout(r, 1000));
+    res = await fetch(url, init);
+  }
+  return res;
+}
+
 // POST /api/v1/chat — public AI chatbot endpoint
 chat.post('/', async (c) => {
   const body = await c.req.json<{ messages: { role: string; content: string }[] }>();
   if (!body.messages?.length) return c.json({ error: 'messages required' }, 400);
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': c.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-3-5-haiku-20241022',
-      max_tokens: 400,
-      system: SYSTEM_PROMPT,
-      messages: body.messages.slice(-12).map(m => ({
-        role: m.role === 'user' ? 'user' : 'assistant',
-        content: m.content,
-      })),
-    }),
+  const res = await callAnthropic(c.env.ANTHROPIC_API_KEY, {
+    model: 'claude-3-5-haiku-20241022',
+    max_tokens: 400,
+    system: SYSTEM_PROMPT,
+    messages: body.messages.slice(-12).map(m => ({
+      role: m.role === 'user' ? 'user' : 'assistant',
+      content: m.content,
+    })),
   });
 
   if (!res.ok) {
+    const errSnippet = await res.text().catch(() => '');
+    console.error(`[chat] Anthropic API error ${res.status}: ${errSnippet.slice(0, 300)}`);
     return c.json({
       message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
       leadCaptured: false,
