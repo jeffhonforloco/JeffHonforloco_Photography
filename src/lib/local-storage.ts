@@ -1,5 +1,4 @@
-// Local Storage Service to replace Supabase database operations
-// This service handles data persistence using localStorage and IndexedDB
+// Local Storage Service — client-side data persistence using localStorage and IndexedDB
 
 interface Contact {
   id: string;
