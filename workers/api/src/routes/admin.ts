@@ -50,6 +50,46 @@ admin.get('/analytics', requireAuth, async (c) => {
   return c.json({ period, byType: byType.results, daily: daily.results });
 });
 
+// GET /api/v1/admin/config-check (auth required) — verify Worker secrets are configured
+admin.get('/config-check', requireAuth, async (c) => {
+  const hasAnthropicKey = Boolean(c.env.ANTHROPIC_API_KEY);
+  const hasResendKey    = Boolean(c.env.RESEND_API_KEY);
+  const hasJwtSecret    = Boolean(c.env.JWT_SECRET);
+  const hasAdminEmail   = Boolean(c.env.ADMIN_EMAIL);
+
+  let anthropicStatus = 'not_set';
+  if (hasAnthropicKey) {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': c.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-3-5-haiku-20241022',
+          max_tokens: 10,
+          messages: [{ role: 'user', content: 'ping' }],
+        }),
+      });
+      anthropicStatus = res.ok ? 'ok' : `error_${res.status}`;
+    } catch {
+      anthropicStatus = 'unreachable';
+    }
+  }
+
+  return c.json({
+    secrets: {
+      ANTHROPIC_API_KEY: hasAnthropicKey ? anthropicStatus : 'not_set',
+      RESEND_API_KEY:    hasResendKey    ? 'set'           : 'not_set',
+      JWT_SECRET:        hasJwtSecret    ? 'set'           : 'not_set',
+      ADMIN_EMAIL:       hasAdminEmail   ? c.env.ADMIN_EMAIL : 'not_set',
+    },
+    note: 'Set missing secrets via: wrangler secret put SECRET_NAME — or Cloudflare Dashboard → Worker → Settings → Variables',
+  });
+});
+
 // GET /api/v1/admin/export/:type (auth required)
 admin.get('/export/:type', requireAuth, async (c) => {
   const type = c.req.param('type');

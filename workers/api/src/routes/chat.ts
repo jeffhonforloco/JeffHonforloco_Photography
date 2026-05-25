@@ -143,6 +143,15 @@ chat.post('/', async (c) => {
   const body = await c.req.json<{ messages: { role: string; content: string }[] }>();
   if (!body.messages?.length) return c.json({ error: 'messages required' }, 400);
 
+  if (!c.env.ANTHROPIC_API_KEY) {
+    console.error('[chat] ANTHROPIC_API_KEY is not set — configure it as a Worker secret in the Cloudflare dashboard');
+    return c.json({
+      message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
+      leadCaptured: false,
+      needsApproval: false,
+    });
+  }
+
   const res = await callAnthropic(c.env.ANTHROPIC_API_KEY, {
     model: 'claude-3-5-haiku-20241022',
     max_tokens: 400,
