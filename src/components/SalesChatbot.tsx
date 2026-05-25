@@ -28,6 +28,28 @@ const CHATBOT_URL: string | undefined =
 const STORAGE_KEY = "jhp_chat_v2";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
+function playChime() {
+  try {
+    const ctx = new AudioContext();
+    [[520, 0], [660, 0.18]].forEach(([freq, delay]) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + delay;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.28, t + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      osc.start(t);
+      osc.stop(t + 0.55);
+    });
+  } catch {
+    // AudioContext blocked by browser autoplay policy — skip silently
+  }
+}
+
 const INITIAL_GREETING =
   "Hey! I'm the studio AI for Jeff Honforloco Photography — based in New England, available across the US, and we travel for the right project. Sessions start at $649 and we customize everything. What are you planning?";
 
@@ -138,11 +160,12 @@ export default function SalesChatbot() {
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
   }, []); // intentionally runs once on mount
 
-  // Focus input and clear unread badge when opening
+  // Focus input, clear unread badge, and play chime when opening
   useEffect(() => {
     if (isOpen) {
       setHasUnread(false);
       setProactiveLabel(null);
+      playChime();
       setTimeout(() => inputRef.current?.focus(), 120);
     }
   }, [isOpen]);
