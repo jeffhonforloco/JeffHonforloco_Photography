@@ -138,34 +138,28 @@ async function callAnthropic(apiKey: string, payload: object): Promise<Response>
   return res;
 }
 
-// GET /api/v1/chat/ping — diagnostic: shows exactly which secrets the Worker can see
+// GET /api/v1/chat/ping — diagnostic: checks each known secret by direct access
 chat.get('/ping', async (c) => {
-  const env = c.env as unknown as Record<string, unknown>;
+  const env = c.env as unknown as Record<string, string>;
 
-  // List every string-type binding visible to this Worker (values hidden, just names + first 6 chars)
-  const visibleBindings: Record<string, string> = {};
-  for (const [k, v] of Object.entries(env)) {
-    if (typeof v === 'string' && v.length > 0) {
-      visibleBindings[k] = (v as string).slice(0, 6) + '…';
-    } else if (typeof v === 'object' && v !== null) {
-      visibleBindings[k] = '[object binding]';
-    }
+  // Direct-access checks — Object.entries() does NOT enumerate Cloudflare dashboard secrets
+  const secrets = {
+    ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY ? env.ANTHROPIC_API_KEY.slice(0, 12) + '…' : 'NOT SET',
+    RESEND_API_KEY:    env.RESEND_API_KEY    ? env.RESEND_API_KEY.slice(0, 8)    + '…' : 'NOT SET',
+    JWT_SECRET:        env.JWT_SECRET        ? 'set'                                    : 'NOT SET',
+    ADMIN_EMAIL:       env.ADMIN_EMAIL       ? env.ADMIN_EMAIL                          : 'NOT SET',
+  };
+
+  if (!env.ANTHROPIC_API_KEY) {
+    return c.json({ ok: false, error: 'ANTHROPIC_API_KEY not set', secrets }, 500);
   }
 
-  if (!c.env.ANTHROPIC_API_KEY) {
-    return c.json({
-      ok: false,
-      error: 'ANTHROPIC_API_KEY is NOT visible to this Worker',
-      visible_bindings: visibleBindings,
-      fix: 'In Cloudflare Dashboard go to Workers & Pages → api-jeffhonforloco-photography (the WORKER, not Pages) → Settings → Variables and Secrets → add ANTHROPIC_API_KEY as an encrypted secret',
-    }, 500);
-  }
-
+  // Live test against Anthropic
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': c.env.ANTHROPIC_API_KEY,
+      'x-api-key': env.ANTHROPIC_API_KEY,
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
@@ -176,13 +170,7 @@ chat.get('/ping', async (c) => {
   });
 
   const raw = await res.text();
-  return c.json({
-    ok: res.ok,
-    http_status: res.status,
-    key_prefix: c.env.ANTHROPIC_API_KEY.slice(0, 14) + '…',
-    anthropic_response: raw.slice(0, 500),
-    visible_bindings: visibleBindings,
-  });
+  return c.json({ ok: res.ok, http_status: res.status, secrets, anthropic_response: raw.slice(0, 400) });
 });
 
 // POST /api/v1/chat — public AI chatbot endpoint
