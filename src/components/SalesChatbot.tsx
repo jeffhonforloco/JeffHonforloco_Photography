@@ -45,11 +45,11 @@ const SERVICE_CHIPS = [
 
 function loadSession(): Message[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const session: StoredSession = JSON.parse(raw);
     if (Date.now() - session.savedAt > SESSION_TTL_MS) {
-      localStorage.removeItem(STORAGE_KEY);
+      sessionStorage.removeItem(STORAGE_KEY);
       return [];
     }
     return session.messages;
@@ -60,7 +60,7 @@ function loadSession(): Message[] {
 
 function saveSession(messages: Message[]): void {
   try {
-    localStorage.setItem(
+    sessionStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ messages, savedAt: Date.now() } satisfies StoredSession)
     );
