@@ -117,18 +117,7 @@ export default function SalesChatbot() {
   }, [isOpen]);
 
   // Pre-unlock AudioContext on the first user interaction so the auto-open timer can play sound
-  useEffect(() => {
-    const unlock = () => {
-      if (!audioCtxRef.current) {
-        try { audioCtxRef.current = new AudioContext(); } catch { /* not supported */ }
-      }
-      audioCtxRef.current?.resume().catch(() => {});
-    };
-    ['click', 'scroll', 'keydown', 'touchstart'].forEach(e => document.addEventListener(e, unlock, { once: true }));
-    return () => ['click', 'scroll', 'keydown', 'touchstart'].forEach(e => document.removeEventListener(e, unlock));
-  }, []);
-
-  // Restore session from localStorage on mount
+  // Restore session on mount
   useEffect(() => {
     const stored = loadSession();
     if (stored.length > 0) {
@@ -142,15 +131,29 @@ export default function SalesChatbot() {
     if (messages.length > 0) saveSession(messages);
   }, [messages]);
 
-  // Auto-open chat after 3 seconds on a fresh session
+  // Auto-open on the user's first click/touch (after 2 s min) — mousedown/touchend are
+  // qualifying user-activation events so AudioContext + sound are always allowed.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isOpenRef.current) {
-        playChime();
-        setIsOpen(true);
-      }
-    }, 3000);
-    return () => clearTimeout(timer);
+    const readyAt = Date.now() + 2000;
+    let triggered = false;
+
+    const openOnInteraction = (e: MouseEvent | TouchEvent) => {
+      if (triggered || isOpenRef.current) return;
+      if (Date.now() < readyAt) return;
+      // Skip if the user clicked a link, button, or form element
+      const target = e.target as HTMLElement;
+      if (target.closest('a, button, input, textarea, select')) return;
+      triggered = true;
+      playChime();
+      setIsOpen(true);
+    };
+
+    document.addEventListener('mousedown', openOnInteraction as EventListener);
+    document.addEventListener('touchend', openOnInteraction as EventListener);
+    return () => {
+      document.removeEventListener('mousedown', openOnInteraction as EventListener);
+      document.removeEventListener('touchend', openOnInteraction as EventListener);
+    };
   }, []); // intentionally runs once on mount
 
   // Proactive notification after 15s if user closed the chat
