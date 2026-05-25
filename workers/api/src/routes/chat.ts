@@ -153,7 +153,7 @@ chat.post('/', async (c) => {
   }
 
   const res = await callAnthropic(c.env.ANTHROPIC_API_KEY, {
-    model: 'claude-3-5-haiku-20241022',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 400,
     system: SYSTEM_PROMPT,
     messages: body.messages.slice(-12).map(m => ({
