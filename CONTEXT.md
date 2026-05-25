@@ -12,13 +12,13 @@ Site: jeffhonforlocophotos.com — personal photography portfolio & booking plat
 - Database: SQLite via `better-sqlite3` (backend local DB)
 - Cache: None
 - Queue: None
-- AI: None (Anthropic SDK not integrated; template placeholder only)
-- Auth: Custom JWT (`jsonwebtoken` + `bcryptjs`) in backend; admin credentials hashed via env vars on frontend
+- AI: Claude (via Cloudflare Worker `/api/v1/chat`) — AI sales chatbot + daily blog generation
+- Auth: Custom JWT in Cloudflare Worker (`workers/api/src/routes/auth.ts`); admin credentials hashed via env vars on frontend
 - Payments: None
 - File storage: Local (`multer` + `sharp` image processing in backend)
-- Cloud: Supabase (Edge Functions / Deno runtime for email); frontend deploy target: Vercel / Netlify
-- Functions: Supabase Edge Functions (`/supabase/functions/`)
-- Email: Resend API (via Supabase edge function); Nodemailer (backend fallback)
+- Cloud: Cloudflare Workers (`/workers/api/`) — all API, AI chatbot, email, and D1 database; frontend deploy target: Cloudflare Pages / Vercel / Netlify
+- Functions: Cloudflare Worker routes (`/workers/api/src/routes/`)
+- Email: Resend API (via Cloudflare Worker `/api/v1/email`)
 - CI/CD: GitHub Actions (`.github/`)
 
 ## Key Paths
@@ -36,7 +36,7 @@ Site: jeffhonforlocophotos.com — personal photography portfolio & booking plat
 /src/utils/           ← Performance & image optimization helpers
 /src/types/           ← TypeScript type definitions
 /backend/             ← Express API server (SQLite, JWT auth, image upload, nodemailer)
-/supabase/functions/  ← Supabase Edge Functions (send-contact-email via Resend)
+/workers/api/         ← Cloudflare Worker (Hono, D1, AI chatbot, email via Resend, JWT auth)
 /public/              ← Static assets, manifest, robots.txt, sitemap, SW
 ```
 
@@ -62,24 +62,28 @@ Site: jeffhonforlocophotos.com — personal photography portfolio & booking plat
 VITE_ADMIN_USERNAME
 VITE_ADMIN_PASSWORD_HASH
 VITE_ADMIN_SALT
-VITE_API_BASE_URL
+VITE_API_BASE_URL        ← Cloudflare Worker base: https://api-jeffhonforloco-photography.*.workers.dev/api/v1
+VITE_CHATBOT_URL         ← Cloudflare Worker chat: ${VITE_API_BASE_URL}/chat (derived automatically if omitted)
 VITE_GA_TRACKING_ID
 VITE_GTM_ID
-VITE_EMAIL_SERVICE_URL
 VITE_CONTACT_EMAIL
 VITE_CSRF_SECRET
 VITE_SESSION_SECRET
 VITE_DEBUG_MODE
 VITE_LOG_LEVEL
 
-# Supabase Edge Function
-RESEND_API_KEY
+# Cloudflare Worker Secrets (set in Dashboard → Worker → Settings → Variables, encrypted)
+ANTHROPIC_API_KEY        ← AI chatbot + daily blog generation
+RESEND_API_KEY           ← All outbound email
+JWT_SECRET               ← Admin auth tokens
+ADMIN_EMAIL              ← info@jeffhonforlocophotos.com
+ALLOWED_ORIGIN           ← https://jeffhonforlocophotos.com
 ```
 
 ## Critical Conventions
 - All pages are **lazy-loaded** (`React.lazy`) — keep page components as default exports
 - Admin is login-gated via hashed credentials in env vars (`auth-security.ts`); do not hard-code credentials
-- Contact/booking emails route through Supabase edge function (`send-contact-email`) using Resend; fallback to `jeffhonforloco@gmail.com` if domain unverified
+- Contact/booking emails route through Cloudflare Worker (`/api/v1/email/contact`) using Resend; all email logic lives in `workers/api/src/lib/email.ts`
 - Image optimization runs at startup via `initializeImageOptimization()` — do not remove this call from `App.tsx`
 - Use Tailwind utility classes; no hardcoded hex colors in component files
 - Form validation lives in `src/lib/input-validation.ts` — reuse it rather than duplicating logic
@@ -100,4 +104,4 @@ RESEND_API_KEY
 - Client testimonials section
 
 ## Last Updated
-2026-05-23 — Initial CONTEXT.md created from codebase audit
+2026-05-25 — Migrated to Cloudflare Workers; removed all Supabase references

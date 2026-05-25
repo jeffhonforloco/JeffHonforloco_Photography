@@ -1,8 +1,5 @@
 // Email automation utilities — imported by Contact.tsx and Book.tsx
-
-const EMAIL_SERVICE_URL = import.meta.env.VITE_EMAIL_SERVICE_URL as
-  | string
-  | undefined;
+import { apiService } from "@/lib/api-service";
 
 export interface ContactFormData {
   name: string;
@@ -92,40 +89,21 @@ export function calculateLeadScore(formData: ContactFormData): number {
   return Math.min(score, 100);
 }
 
-// Fire-and-forget call to the send-contact-email Supabase edge function
-async function callEmailService(
-  payload: Record<string, unknown>
-): Promise<void> {
-  if (!EMAIL_SERVICE_URL) return;
-  await fetch(EMAIL_SERVICE_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-}
-
 // Trigger immediate email notification + confirmation for a new inquiry
+// Routes through the Cloudflare Worker at /api/v1/email/contact via apiService
 export async function triggerEmailSequence(
   formData: ContactFormData
 ): Promise<void> {
-  const leadScore = calculateLeadScore(formData);
-
-  // Send notification to Jeff + confirmation to client via edge function
-  await callEmailService({
-    type: "contact",
-    name: formData.name,
+  await apiService.sendContactEmail({
+    full_name: formData.name,
     email: formData.email,
     phone: formData.phone,
-    service: formData.service,
-    budget: formData.budget,
-    projectDate: formData.projectDate,
+    service_type: formData.service,
+    budget_range: formData.budget,
+    event_date: formData.projectDate,
     location: formData.location,
     message: formData.message,
-    leadScore,
   });
-
-  // Follow-up emails (24h, 3d, 7d) require a scheduled job.
-  // Wire up a Supabase cron or Resend schedule when a scheduler is available.
 }
 
 // Structured lead data for CRM hand-off
