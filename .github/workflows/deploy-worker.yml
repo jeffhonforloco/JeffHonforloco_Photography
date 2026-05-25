@@ -2,7 +2,7 @@ name: Deploy API Worker
 
 on:
   push:
-    branches: [main, claude/practical-sagan-iJsUW]
+    branches: [main, claude/practical-sagan-iJsUW, claude/stoic-goldberg-ci6TC]
     paths:
       - 'workers/api/**'
 

@@ -1,0 +1,16 @@
+# Copy this file to .dev.vars for local Wrangler development (wrangler dev)
+# .dev.vars is gitignored — never commit real keys
+#
+# For the DEPLOYED worker, set each value as an encrypted secret:
+#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put RESEND_API_KEY
+#   wrangler secret put JWT_SECRET
+#   wrangler secret put ADMIN_EMAIL
+#
+# Or: Cloudflare Dashboard → Workers & Pages → your Worker → Settings → Variables → Add encrypted variable
+
+ANTHROPIC_API_KEY=sk-ant-...
+RESEND_API_KEY=re_...
+JWT_SECRET=change-me-to-a-long-random-string
+ADMIN_EMAIL=info@jeffhonforlocophotos.com
+ALLOWED_ORIGIN=http://localhost:5173
