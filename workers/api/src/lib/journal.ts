@@ -115,15 +115,15 @@ Exactly 5 Q&As. Each question as <h3>, each answer as <p>. Write answers that di
 Return ONLY valid JSON with no markdown fences and no trailing commas:
 {"title":"...","slug":"url-slug-here","excerpt":"...","tags":"tag1, tag2, tag3","content":"...","readTime":"X min read"}`;
 
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 3200, messages: [{ role: 'user', content: prompt }] }),
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ model: 'gpt-4o-mini', max_tokens: 3200, messages: [{ role: 'user', content: prompt }] }),
   });
 
-  if (!res.ok) throw new Error(`Anthropic error ${res.status}`);
-  const data = await res.json() as { content: Array<{ text: string }> };
-  const text = (data.content[0]?.text ?? '').replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
+  if (!res.ok) throw new Error(`OpenAI error ${res.status}`);
+  const data = await res.json() as { choices: Array<{ message: { content: string } }> };
+  const text = (data.choices[0]?.message?.content ?? '').replace(/^```json\s*/i, '').replace(/```\s*$/, '').trim();
   return JSON.parse(text) as GeneratedPost;
 }
 
@@ -134,7 +134,7 @@ export async function generateDailyPosts(env: Env): Promise<void> {
   for (const cat of CATEGORIES) {
     try {
       const [post, portfolioImage] = await Promise.all([
-        generatePost(env.ANTHROPIC_API_KEY, cat, date, angle),
+        generatePost(env.OPENAI_API_KEY, cat, date, angle),
         fetchPortfolioImage(env.DB, cat.name),
       ]);
 
