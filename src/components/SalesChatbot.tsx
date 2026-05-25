@@ -28,27 +28,6 @@ const CHATBOT_URL: string | undefined =
 const STORAGE_KEY = "jhp_chat_v2";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
-function playChime() {
-  try {
-    const ctx = new AudioContext();
-    [[520, 0], [660, 0.18]].forEach(([freq, delay]) => {
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const t = ctx.currentTime + delay;
-      gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.28, t + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
-      osc.start(t);
-      osc.stop(t + 0.55);
-    });
-  } catch {
-    // AudioContext blocked by browser autoplay policy — skip silently
-  }
-}
 
 const INITIAL_GREETING =
   "Hey! I'm the studio AI for Jeff Honforloco Photography — based in New England, available across the US, and we travel for the right project. Sessions start at $649 and we customize everything. What are you planning?";
@@ -107,11 +86,47 @@ export default function SalesChatbot() {
   const inputRef = useRef<HTMLInputElement>(null);
   const isOpenRef = useRef(false);
   const exitIntentFired = useRef(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Must be called synchronously inside a user-gesture handler (click/touch/key)
+  // so the browser allows AudioContext creation and playback.
+  function playChime() {
+    try {
+      if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
+      const ctx = audioCtxRef.current;
+      ([[520, 0], [660, 0.18]] as [number, number][]).forEach(([freq, delay]) => {
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const t = ctx.currentTime + delay;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.28, t + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+        osc.start(t);
+        osc.stop(t + 0.55);
+      });
+    } catch { /* skip silently */ }
+  }
 
   // Keep isOpenRef in sync for use inside event handler closures
   useEffect(() => {
     isOpenRef.current = isOpen;
   }, [isOpen]);
+
+  // Pre-unlock AudioContext on the first user interaction so the auto-open timer can play sound
+  useEffect(() => {
+    const unlock = () => {
+      if (!audioCtxRef.current) {
+        try { audioCtxRef.current = new AudioContext(); } catch { /* not supported */ }
+      }
+      audioCtxRef.current?.resume().catch(() => {});
+    };
+    ['click', 'scroll', 'keydown', 'touchstart'].forEach(e => document.addEventListener(e, unlock, { once: true }));
+    return () => ['click', 'scroll', 'keydown', 'touchstart'].forEach(e => document.removeEventListener(e, unlock));
+  }, []);
 
   // Restore session from localStorage on mount
   useEffect(() => {
@@ -130,7 +145,10 @@ export default function SalesChatbot() {
   // Auto-open chat after 3 seconds on a fresh session
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!isOpenRef.current) setIsOpen(true);
+      if (!isOpenRef.current) {
+        playChime();
+        setIsOpen(true);
+      }
     }, 3000);
     return () => clearTimeout(timer);
   }, []); // intentionally runs once on mount
@@ -153,6 +171,7 @@ export default function SalesChatbot() {
         exitIntentFired.current = true;
         setProactiveLabel("Wait — quick question about your project?");
         setHasUnread(true);
+        playChime();
         setIsOpen(true);
       }
     };
@@ -160,12 +179,11 @@ export default function SalesChatbot() {
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
   }, []); // intentionally runs once on mount
 
-  // Focus input, clear unread badge, and play chime when opening
+  // Focus input and clear unread badge when opening
   useEffect(() => {
     if (isOpen) {
       setHasUnread(false);
       setProactiveLabel(null);
-      playChime();
       setTimeout(() => inputRef.current?.focus(), 120);
     }
   }, [isOpen]);
@@ -485,7 +503,7 @@ export default function SalesChatbot() {
       {/* Proactive speech bubble */}
       {!isOpen && proactiveLabel && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => { playChime(); setIsOpen(true); }}
           className="bg-photo-gray-900 border border-photo-gray-700 hover:border-photo-red text-photo-white text-xs px-4 py-2.5 rounded-full shadow-lg transition-colors max-w-[260px] text-left"
         >
           {proactiveLabel}
@@ -494,7 +512,7 @@ export default function SalesChatbot() {
 
       {/* Floating action button */}
       <button
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => { const willOpen = !isOpen; if (willOpen) playChime(); setIsOpen(willOpen); }}
         className="relative bg-photo-red hover:bg-photo-red-hover text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
         aria-label={isOpen ? "Close chat" : "Chat with Jeff's studio"}
       >
