@@ -16,9 +16,15 @@ interface StoredSession {
 interface ChatResponse {
   message: string;
   leadCaptured?: boolean;
+  needsApproval?: boolean;
 }
 
-const CHATBOT_URL = import.meta.env.VITE_CHATBOT_URL as string | undefined;
+// Prefer explicit chatbot URL; fall back to API base URL if configured
+const CHATBOT_URL: string | undefined =
+  (import.meta.env.VITE_CHATBOT_URL as string | undefined) ||
+  (import.meta.env.VITE_API_BASE_URL
+    ? `${import.meta.env.VITE_API_BASE_URL}/chat`
+    : undefined);
 const STORAGE_KEY = "jhp_chat_v2";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -73,6 +79,7 @@ export default function SalesChatbot() {
   const [proactiveLabel, setProactiveLabel] = useState<string | null>(null);
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+  const [approvalNeeded, setApprovalNeeded] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -164,6 +171,9 @@ export default function SalesChatbot() {
         ...prev,
         { role: "assistant", content: data.message, timestamp: Date.now() },
       ]);
+      if (data.needsApproval && !quoteSubmitted) {
+        setApprovalNeeded(true);
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -194,6 +204,7 @@ export default function SalesChatbot() {
     setMessages([]);
     setShowChips(true);
     setQuoteSubmitted(false);
+    setApprovalNeeded(false);
     localStorage.removeItem(STORAGE_KEY);
   }
 
@@ -357,8 +368,26 @@ export default function SalesChatbot() {
             </a>
           </div>
 
-          {/* Send to Jeff for approval — appears after 4+ messages if not yet submitted */}
-          {messages.length >= 4 && !quoteSubmitted && (
+          {/* AI-triggered approval CTA — shown immediately when AI signals readiness */}
+          {approvalNeeded && !quoteSubmitted && (
+            <div className="px-3 pt-2 border-t border-photo-red/40 bg-photo-gray-900">
+              <button
+                onClick={submitQuoteToJeff}
+                disabled={isSubmittingQuote}
+                className="w-full flex items-center justify-center gap-2 bg-photo-red hover:bg-photo-red-hover text-white text-xs font-semibold px-3 py-2.5 rounded-xl transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-2 animate-pulse"
+              >
+                {isSubmittingQuote ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <CheckCircle size={13} />
+                )}
+                {isSubmittingQuote ? "Sending to Jeff…" : "⚡ Send to Jeff for Final Approval"}
+              </button>
+            </div>
+          )}
+
+          {/* Fallback approval CTA — appears after 4+ messages if AI hasn't already triggered it */}
+          {messages.length >= 4 && !approvalNeeded && !quoteSubmitted && (
             <div className="px-3 pt-2 border-t border-photo-gray-700 bg-photo-gray-900">
               <button
                 onClick={submitQuoteToJeff}
