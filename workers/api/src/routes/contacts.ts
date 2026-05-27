@@ -4,6 +4,9 @@ import type { AppEnv } from '../types';
 
 const contacts = new Hono<AppEnv>();
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const ALLOWED_STATUSES = new Set(['new', 'contacted', 'booked', 'closed']);
+
 // GET /api/v1/contacts — paginated, filterable (auth required)
 contacts.get('/', requireAuth, async (c) => {
   const page   = Math.max(1, Number(c.req.query('page') ?? 1));
@@ -47,6 +50,9 @@ contacts.post('/', async (c) => {
   if (!body.full_name || !body.email || !body.message) {
     return c.json({ error: 'full_name, email, message are required' }, 400);
   }
+  if (!EMAIL_RE.test(body.email)) {
+    return c.json({ error: 'Invalid email address' }, 400);
+  }
 
   const result = await c.env.DB.prepare(
     `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
@@ -67,6 +73,9 @@ contacts.get('/:id', requireAuth, async (c) => {
 // PUT /api/v1/contacts/:id (auth required)
 contacts.put('/:id', requireAuth, async (c) => {
   const { status, notes } = await c.req.json<{ status?: string; notes?: string }>();
+  if (status !== undefined && !ALLOWED_STATUSES.has(status)) {
+    return c.json({ error: `Invalid status. Allowed: ${[...ALLOWED_STATUSES].join(', ')}` }, 400);
+  }
   await c.env.DB.prepare(
     `UPDATE contacts SET status = COALESCE(?, status), notes = COALESCE(?, notes), updated_at = datetime('now') WHERE id = ?`
   ).bind(status ?? null, notes ?? null, c.req.param('id')).run();

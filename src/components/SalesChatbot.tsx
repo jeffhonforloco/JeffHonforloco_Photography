@@ -467,6 +467,7 @@ export default function SalesChatbot() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Tell me about your project..."
+                  maxLength={1000}
                   disabled={isLoading}
                   className="flex-1 bg-photo-gray-800 text-photo-white placeholder-photo-gray-500 border border-photo-gray-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-photo-red transition-colors disabled:opacity-50"
                 />

@@ -7,6 +7,15 @@ interface SendOptions {
 
 const FROM = 'Jeff Honforloco <info@jeffhonforlocophotos.com>';
 
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export async function sendEmail(apiKey: string, opts: SendOptions): Promise<boolean> {
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -21,20 +30,20 @@ export function contactNotificationHtml(data: {
   service_type?: string; budget_range?: string; event_date?: string; location?: string;
 }): string {
   return `
-    <h2>New Inquiry from ${data.full_name}</h2>
-    <p><strong>Email:</strong> ${data.email}</p>
-    ${data.phone ? `<p><strong>Phone:</strong> ${data.phone}</p>` : ''}
-    ${data.service_type ? `<p><strong>Service:</strong> ${data.service_type}</p>` : ''}
-    ${data.budget_range ? `<p><strong>Budget:</strong> ${data.budget_range}</p>` : ''}
-    ${data.event_date ? `<p><strong>Date:</strong> ${data.event_date}</p>` : ''}
-    ${data.location ? `<p><strong>Location:</strong> ${data.location}</p>` : ''}
-    <p><strong>Message:</strong></p><p>${data.message}</p>
+    <h2>New Inquiry from ${escapeHtml(data.full_name)}</h2>
+    <p><strong>Email:</strong> ${escapeHtml(data.email)}</p>
+    ${data.phone ? `<p><strong>Phone:</strong> ${escapeHtml(data.phone)}</p>` : ''}
+    ${data.service_type ? `<p><strong>Service:</strong> ${escapeHtml(data.service_type)}</p>` : ''}
+    ${data.budget_range ? `<p><strong>Budget:</strong> ${escapeHtml(data.budget_range)}</p>` : ''}
+    ${data.event_date ? `<p><strong>Date:</strong> ${escapeHtml(data.event_date)}</p>` : ''}
+    ${data.location ? `<p><strong>Location:</strong> ${escapeHtml(data.location)}</p>` : ''}
+    <p><strong>Message:</strong></p><p>${escapeHtml(data.message)}</p>
   `;
 }
 
 export function contactConfirmationHtml(name: string): string {
   return `
-    <h2>Thank you, ${name}!</h2>
+    <h2>Thank you, ${escapeHtml(name)}!</h2>
     <p>Your inquiry has been received. I personally respond to all messages within 24 hours.</p>
     <p>— Jeff Honforloco</p>
     <p><a href="https://jeffhonforlocophotos.com">jeffhonforlocophotos.com</a></p>
@@ -60,17 +69,16 @@ export function chatLeadNotificationHtml(data: {
     ? `<div style="background:#dc2626;color:#fff;padding:10px 18px;border-radius:6px;display:inline-block;margin-bottom:20px;font-weight:bold;font-size:15px;">⚡ NEEDS YOUR APPROVAL — Reply within a few hours to close this booking</div>`
     : `<div style="background:#16a34a;color:#fff;padding:10px 18px;border-radius:6px;display:inline-block;margin-bottom:20px;font-weight:bold;font-size:15px;">📧 New Lead Captured via Studio Chatbot</div>`;
 
-  const safeConversation = data.conversation
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  const safeConversation = escapeHtml(data.conversation);
+  const safeEmail = escapeHtml(data.email);
+  const safeServiceType = escapeHtml(data.serviceType);
 
   return `
     <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;color:#111;">
       ${badge}
       <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
-        <tr><td style="padding:8px 0;font-weight:bold;width:140px;">Lead Email:</td><td><a href="mailto:${data.email}" style="color:#dc2626;">${data.email}</a></td></tr>
-        <tr><td style="padding:8px 0;font-weight:bold;">Service:</td><td>${data.serviceType}</td></tr>
+        <tr><td style="padding:8px 0;font-weight:bold;width:140px;">Lead Email:</td><td><a href="mailto:${safeEmail}" style="color:#dc2626;">${safeEmail}</a></td></tr>
+        <tr><td style="padding:8px 0;font-weight:bold;">Service:</td><td>${safeServiceType}</td></tr>
         <tr><td style="padding:8px 0;font-weight:bold;">Status:</td><td>${data.needsApproval ? '⚡ Custom quote — awaiting your approval' : '✅ Lead captured — follow up to convert'}</td></tr>
       </table>
       ${data.needsApproval ? `<p style="color:#dc2626;font-weight:bold;font-size:14px;">The AI has negotiated to a point where Jeff's personal sign-off is needed. Reach out now to confirm the package and lock in the booking.</p>` : ''}
