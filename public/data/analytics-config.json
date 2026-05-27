@@ -1,8 +1,8 @@
 
 {
   "googleAnalytics": {
-    "trackingId": "GA_MEASUREMENT_ID",
-    "enabled": false
+    "trackingId": "G-4WKS5NEY42",
+    "enabled": true
   },
   "facebookPixel": {
     "pixelId": "FB_PIXEL_ID", 
