@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
-import { sendEmail, contactNotificationHtml, contactConfirmationHtml, newsletterWelcomeHtml } from '../lib/email';
+import { sendEmail, contactNotificationHtml, contactConfirmationHtml, newsletterWelcomeHtml, escapeHtml } from '../lib/email';
 import type { AppEnv } from '../types';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const email = new Hono<AppEnv>();
 
@@ -14,13 +16,21 @@ email.post('/contact', async (c) => {
   if (!body.full_name || !body.email || !body.message) {
     return c.json({ error: 'full_name, email, message are required' }, 400);
   }
+  if (!EMAIL_RE.test(body.email)) {
+    return c.json({ error: 'Invalid email address' }, 400);
+  }
 
   // Save to contacts table
-  await c.env.DB.prepare(
-    `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-  ).bind(body.full_name, body.email, body.phone ?? null, body.message,
-         body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
+  try {
+    await c.env.DB.prepare(
+      `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(body.full_name, body.email, body.phone ?? null, body.message,
+           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
+  } catch (err) {
+    console.error('[email/contact] DB insert failed:', err);
+    return c.json({ error: 'Failed to save inquiry' }, 500);
+  }
 
   // Send both emails concurrently
   const adminEmail = c.env.ADMIN_EMAIL || 'info@jeffhonforlocophotos.com';
@@ -45,18 +55,24 @@ email.post('/contact', async (c) => {
 email.post('/newsletter', async (c) => {
   const { email: emailAddr } = await c.req.json<{ email: string }>();
   if (!emailAddr) return c.json({ error: 'email required' }, 400);
+  if (!EMAIL_RE.test(emailAddr)) return c.json({ error: 'Invalid email address' }, 400);
 
   // Upsert subscriber
-  await c.env.DB.prepare(
-    `INSERT OR IGNORE INTO newsletter_subscribers (email) VALUES (?)`
-  ).bind(emailAddr).run();
+  try {
+    await c.env.DB.prepare(
+      `INSERT OR IGNORE INTO newsletter_subscribers (email) VALUES (?)`
+    ).bind(emailAddr).run();
+  } catch (err) {
+    console.error('[email/newsletter] DB insert failed:', err);
+    return c.json({ error: 'Failed to subscribe' }, 500);
+  }
 
   const adminEmail = c.env.ADMIN_EMAIL || 'info@jeffhonforlocophotos.com';
   await Promise.allSettled([
     sendEmail(c.env.RESEND_API_KEY, {
       to: adminEmail,
       subject: `New Newsletter Subscriber: ${emailAddr}`,
-      html: `<p>New subscriber: <strong>${emailAddr}</strong></p>`,
+      html: `<p>New subscriber: <strong>${escapeHtml(emailAddr)}</strong></p>`,
     }),
     sendEmail(c.env.RESEND_API_KEY, {
       to: emailAddr,

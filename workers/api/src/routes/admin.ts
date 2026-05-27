@@ -4,14 +4,27 @@ import type { AppEnv } from '../types';
 
 const admin = new Hono<AppEnv>();
 
-// POST /api/v1/analytics — track event (public)
+const EVENT_TYPE_RE = /^[a-zA-Z0-9_.:\-]{1,100}$/;
+
+function maskEmail(email: string): string {
+  const at = email.indexOf('@');
+  if (at < 0) return '***';
+  const local = email.slice(0, at);
+  return local.slice(0, Math.min(3, local.length)) + '***' + email.slice(at);
+}
+
+// POST /api/v1/analytics — track event (public, validated)
 admin.post('/analytics', async (c) => {
   const body = await c.req.json<{ event_type: string; event_data?: string }>();
   if (!body.event_type) return c.json({ error: 'event_type required' }, 400);
+  if (!EVENT_TYPE_RE.test(body.event_type)) return c.json({ error: 'Invalid event_type' }, 400);
+
+  const eventData = body.event_data ? body.event_data.slice(0, 1000) : null;
+
   await c.env.DB.prepare(
     `INSERT INTO analytics (event_type, event_data, user_agent, ip_address, referrer) VALUES (?, ?, ?, ?, ?)`
   ).bind(
-    body.event_type, body.event_data ?? null,
+    body.event_type, eventData,
     c.req.header('User-Agent') ?? null,
     c.req.header('CF-Connecting-IP') ?? null,
     c.req.header('Referer') ?? null,
@@ -83,7 +96,7 @@ admin.get('/config-check', requireAuth, async (c) => {
       OPENAI_API_KEY: hasOpenAIKey  ? openaiStatus    : 'not_set',
       RESEND_API_KEY: hasResendKey  ? 'set'           : 'not_set',
       JWT_SECRET:     hasJwtSecret  ? 'set'           : 'not_set',
-      ADMIN_EMAIL:    hasAdminEmail ? c.env.ADMIN_EMAIL : 'not_set',
+      ADMIN_EMAIL:    hasAdminEmail ? maskEmail(c.env.ADMIN_EMAIL) : 'not_set',
     },
     note: 'Set missing secrets via: wrangler secret put SECRET_NAME — or Cloudflare Dashboard → Worker → Settings → Variables',
   });

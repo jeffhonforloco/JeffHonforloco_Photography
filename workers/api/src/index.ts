@@ -12,9 +12,9 @@ import chatRoutes      from './routes/chat';
 
 const app = new Hono<AppEnv>();
 
-// CORS — allow Pages origin or * if not configured
+// CORS — allow Pages origin; fail secure to known production domain, never wildcard
 app.use('*', async (c, next) => {
-  const origin = c.env.ALLOWED_ORIGIN || '*';
+  const origin = c.env.ALLOWED_ORIGIN || 'https://jeffhonforlocophotos.com';
   return cors({ origin, allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] })(c, next);
 });
 

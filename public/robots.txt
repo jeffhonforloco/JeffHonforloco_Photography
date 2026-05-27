@@ -1,65 +1,53 @@
-# Security Policy
+# JeffHonforloco Photography — robots.txt
+
 User-agent: *
-Disallow: /admin/
-Disallow: /api/
+Disallow: /admin
 Disallow: /private/
-Disallow: *.json$
+Disallow: /data/
 Disallow: /*?*utm_source=
 Disallow: /*?*session_id=
-
-# High-priority SEO pages for enhanced crawling
-Allow: /portfolio/luxury-fashion-photography-nyc
-Allow: /portfolio/luxury-beauty-photography-nationwide  
-Allow: /portfolio/editorial-photography-magazines
-Allow: /portfolio/celebrity-lifestyle-photography
-Allow: /portfolio/glamour-photography
-Allow: /journal/how-to-prepare-beauty-photography-session
-Allow: /journal/professional-photographer-secrets-stunning-portraits
-Allow: /journal/best-editorial-photography-ideas-personal-brands
-Allow: /journal/luxury-fashion-photography-trends-2025
-
-# Location pages
-Allow: /location/nyc
-Allow: /location/la
-Allow: /location/miami
-Allow: /location/paris
-Allow: /location/london
-Allow: /location/italy
-Allow: /location/lagos
-Allow: /location/switzerland
-Allow: /location/malta
-Allow: /location/monaco
-
-# Sitemap
-Sitemap: https://jeffhonforlocophotos.com/sitemap.xml
-
-# Allow crawling of images
 Allow: /images/
-
-# Performance optimization
 Crawl-delay: 1
 
-# Allow all major search engines
+# Google — full access except blocked paths
 User-agent: Googlebot
+Disallow: /admin
+Disallow: /private/
+Disallow: /data/
 Allow: /
 Crawl-delay: 0
 
 User-agent: Bingbot
+Disallow: /admin
+Disallow: /private/
+Disallow: /data/
 Allow: /
 
 User-agent: Slurp
+Disallow: /admin
+Disallow: /private/
+Disallow: /data/
 Allow: /
 
 User-agent: DuckDuckBot
+Disallow: /admin
+Disallow: /private/
+Disallow: /data/
 Allow: /
 
 User-agent: Yandex
+Disallow: /admin
+Disallow: /private/
+Disallow: /data/
 Allow: /
 
 User-agent: Baiduspider
+Disallow: /admin
+Disallow: /private/
+Disallow: /data/
 Allow: /
 
-# Social media crawlers for rich previews
+# Social media crawlers — full access for rich previews
 User-agent: facebookexternalhit
 Allow: /
 
@@ -77,3 +65,5 @@ Allow: /
 
 User-agent: TelegramBot
 Allow: /
+
+Sitemap: https://jeffhonforlocophotos.com/sitemap.xml
