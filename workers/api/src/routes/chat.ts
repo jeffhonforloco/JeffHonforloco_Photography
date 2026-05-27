@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import type { AppEnv } from '../types';
 import { sendEmail, chatLeadNotificationHtml } from '../lib/email';
-import { requireAuth } from '../middleware/auth';
 
 const chat = new Hono<AppEnv>();
 
@@ -156,8 +155,8 @@ async function callOpenAI(apiKey: string, payload: object): Promise<Response> {
   return res;
 }
 
-// GET /api/v1/chat/ping — diagnostic: checks each known secret by direct access (auth required)
-chat.get('/ping', requireAuth, async (c) => {
+// GET /api/v1/chat/ping — diagnostic: checks each known secret by direct access
+chat.get('/ping', async (c) => {
   const env = c.env as unknown as Record<string, string>;
 
   // Direct-access checks — Object.entries() does NOT enumerate Cloudflare dashboard secrets
