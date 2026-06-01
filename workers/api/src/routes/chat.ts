@@ -179,7 +179,7 @@ chat.get('/ping', async (c) => {
       'Authorization': `Bearer ${env.SIREIQ_HF_TOKEN}`,
     },
     body: JSON.stringify({
-      model: 'mistralai/Mistral-7B-Instruct-v0.3',
+      model: 'meta-llama/Llama-3.1-8B-Instruct',
       max_tokens: 10,
       messages: [{ role: 'user', content: 'hi' }],
     }),
@@ -215,7 +215,7 @@ chat.post('/', async (c) => {
   }
 
   const res = await callHuggingFace(c.env.SIREIQ_HF_TOKEN, {
-    model: 'mistralai/Mistral-7B-Instruct-v0.3',
+    model: 'meta-llama/Llama-3.1-8B-Instruct',
     max_tokens: 400,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
