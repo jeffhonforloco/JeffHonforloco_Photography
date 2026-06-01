@@ -137,7 +137,7 @@ function detectServiceType(text: string): string {
 // Retries once (after 1 s) on rate-limit or server errors so transient blips don't
 // surface the fallback message to real users. Auth/bad-request errors are not retried.
 async function callHuggingFace(hfToken: string, payload: object): Promise<Response> {
-  const url = 'https://api-inference.huggingface.co/v1/chat/completions';
+  const url = 'https://router.huggingface.co/v1/chat/completions';
   const init: RequestInit = {
     method: 'POST',
     headers: {
@@ -172,7 +172,7 @@ chat.get('/ping', async (c) => {
   }
 
   // Live test against Hugging Face Inference API
-  const res = await fetch('https://api-inference.huggingface.co/v1/chat/completions', {
+  const res = await fetch('https://router.huggingface.co/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
