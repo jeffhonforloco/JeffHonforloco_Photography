@@ -42,7 +42,7 @@ const SERVICE_TYPES = [
     description: 'Studio or mobile — individuals, teams & LinkedIn. Available across the US.',
     icon: Smartphone,
     duration: '1–3 hours',
-    startingPrice: 'From $649',
+    startingPrice: 'From $499',
     isMobile: true,
   },
   {
@@ -51,7 +51,7 @@ const SERVICE_TYPES = [
     description: 'Elegant beauty portraits for personal brands and cosmetics',
     icon: Award,
     duration: '1–5 hours',
-    startingPrice: 'From $750',
+    startingPrice: 'From $499',
   },
   {
     id: 'fashion',
@@ -59,7 +59,7 @@ const SERVICE_TYPES = [
     description: 'For aspiring models, influencers, designers & luxury brands',
     icon: Camera,
     duration: '1–8 hours',
-    startingPrice: 'From $850',
+    startingPrice: 'From $499',
   },
   {
     id: 'glamour',
@@ -67,7 +67,7 @@ const SERVICE_TYPES = [
     description: 'Dramatic lighting, bold styling, unforgettable portraits',
     icon: Camera,
     duration: '1–4 hours',
-    startingPrice: 'From $750',
+    startingPrice: 'From $499',
   },
   {
     id: 'editorial',
@@ -75,7 +75,7 @@ const SERVICE_TYPES = [
     description: 'Magazine-quality storytelling for publications & brands',
     icon: Camera,
     duration: '1–8 hours',
-    startingPrice: 'From $950',
+    startingPrice: 'From $499',
   },
   {
     id: 'lifestyle',
@@ -83,7 +83,7 @@ const SERVICE_TYPES = [
     description: 'Authentic moments — individuals, couples & families',
     icon: Users,
     duration: '1–4 hours',
-    startingPrice: 'From $650',
+    startingPrice: 'From $499',
   },
   {
     id: 'wedding',
@@ -107,7 +107,7 @@ const SERVICE_TYPES = [
     description: 'Mobile shoots — we come to the property anywhere in the US',
     icon: Smartphone,
     duration: 'Up to 3 hours',
-    startingPrice: 'From $650',
+    startingPrice: 'From $499',
     isMobile: true,
   },
   {
@@ -462,7 +462,7 @@ ${bookingData.message}`,
               <SelectValue placeholder="Select budget" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="$649 - $1,100">$649 – $1,100 (Starter)</SelectItem>
+              <SelectItem value="$499 - $1,100">$499 – $1,100 (Starter)</SelectItem>
               <SelectItem value="$1,100 - $2,200">$1,100 – $2,200 (Standard)</SelectItem>
               <SelectItem value="$2,200 - $4,000">$2,200 – $4,000 (Premium)</SelectItem>
               <SelectItem value="$4,000 - $7,000">$4,000 – $7,000 (Full Campaign)</SelectItem>
