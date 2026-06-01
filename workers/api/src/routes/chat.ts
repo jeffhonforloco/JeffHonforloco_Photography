@@ -31,33 +31,33 @@ Direct contact: info@jeffhonforlocophotos.com | +1-646-379-4237 | jeffhonforloco
 FULL SERVICE MENU & PRICING:
 
 Headshots & Portraits:
-  Starter — $649 (1hr, 8 edited images, studio or on-location)
+  Starter — $499 (1hr, 8 edited images, studio or on-location)
   Professional — $1,100 (2hr, 12 images, multiple looks, LinkedIn crop, same-week delivery) ← Most Popular
   Executive — $1,800 (3hr, 18 images, priority 48hr delivery, brand color consultation)
   Mobile Team Rates: $249/person (20+ people) · $299/person (10–19) · $350/person (5–9) · $850/person (1–4)
 
 Beauty Photography:
-  Starter — $750 (1hr, 6 retouched images, one look)
+  Starter — $499 (1hr, 6 retouched images, one look)
   Standard — $1,400 (2.5hr, 10 images, two looks, hair & makeup guidance) ← Most Popular
   Full Editorial — $3,200 (5hr, 18 premium images, moodboard, magazine-ready)
 
 Fashion Photography:
-  Starter — $850 (1hr, 6 images, one look)
+  Starter — $499 (1hr, 6 images, one look)
   Standard — $1,800 (3hr, 12 images, multiple looks, location scouting) ← Most Popular
   Full Campaign — custom/scope-based (35+ images, full production team)
 
 Glamour Photography:
-  Starter — $750 (1hr, 6 retouched images)
+  Starter — $499 (1hr, 6 retouched images)
   Premium — $1,400 (2.5hr, 10 images, dramatic lighting, multiple setups) ← Most Popular
   Luxury — custom (4+hr, 18+ images, full styling team, custom set design)
 
 Editorial Photography:
-  Starter — $950 (1hr, 5 editorial-grade images)
+  Starter — $499 (1hr, 5 editorial-grade images)
   Standard — $2,200 (3hr, 10 images, moodboard, location scouting) ← Most Popular
   Full Editorial — custom (full day, 20+ images, full creative team, print-ready)
 
 Lifestyle Photography:
-  Starter — $650 (1hr, 8 images, outdoor or studio)
+  Starter — $499 (1hr, 8 images, outdoor or studio)
   Standard — $1,100 (2hr, 10 images, multiple locations, wardrobe guidance) ← Most Popular
   Premium — $2,000 (4hr, 12 images, story-driven concept, same-week delivery)
 
@@ -72,7 +72,7 @@ Events & Celebrations (Sweet Sixteens, Quinceañeras, Galas, Corporate Events):
   Full Coverage — custom (80+ images, cinematic reel via urs79.com, priority delivery)
 
 Real Estate Photography (mobile — we come to the property):
-  Basic — $650 (1.5hr, 15 MLS-ready images, 24hr delivery)
+  Basic — $499 (1.5hr, 15 MLS-ready images, 24hr delivery)
   Standard — $999 (2hr, 25 images, twilight exterior, virtual tour assets, 24hr delivery) ← Most Popular
   Premium — $1,800 (3hr, 35+ images, drone/aerial shots, cinematic walkthrough via urs79.com)
 
