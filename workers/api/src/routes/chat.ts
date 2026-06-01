@@ -136,13 +136,13 @@ function detectServiceType(text: string): string {
 
 // Retries once (after 1 s) on rate-limit or server errors so transient blips don't
 // surface the fallback message to real users. Auth/bad-request errors are not retried.
-async function callOpenAI(apiKey: string, payload: object): Promise<Response> {
-  const url = 'https://api.openai.com/v1/chat/completions';
+async function callHuggingFace(hfToken: string, payload: object): Promise<Response> {
+  const url = 'https://api-inference.huggingface.co/v1/chat/completions';
   const init: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
+      'Authorization': `Bearer ${hfToken}`,
     },
     body: JSON.stringify(payload),
   };
@@ -161,32 +161,32 @@ chat.get('/ping', async (c) => {
 
   // Direct-access checks — Object.entries() does NOT enumerate Cloudflare dashboard secrets
   const secrets = {
-    OPENAI_API_KEY: env.OPENAI_API_KEY ? env.OPENAI_API_KEY.slice(0, 7) + '…' : 'NOT SET',
-    RESEND_API_KEY: env.RESEND_API_KEY ? env.RESEND_API_KEY.slice(0, 8) + '…' : 'NOT SET',
-    JWT_SECRET:     env.JWT_SECRET     ? 'set'                                 : 'NOT SET',
-    ADMIN_EMAIL:    env.ADMIN_EMAIL    ? maskEmail(env.ADMIN_EMAIL)             : 'NOT SET',
+    SIREIQ_HF_TOKEN: env.SIREIQ_HF_TOKEN ? env.SIREIQ_HF_TOKEN.slice(0, 7) + '…' : 'NOT SET',
+    RESEND_API_KEY:  env.RESEND_API_KEY   ? env.RESEND_API_KEY.slice(0, 8) + '…'  : 'NOT SET',
+    JWT_SECRET:      env.JWT_SECRET       ? 'set'                                  : 'NOT SET',
+    ADMIN_EMAIL:     env.ADMIN_EMAIL      ? maskEmail(env.ADMIN_EMAIL)              : 'NOT SET',
   };
 
-  if (!env.OPENAI_API_KEY) {
-    return c.json({ ok: false, error: 'OPENAI_API_KEY not set', secrets }, 500);
+  if (!env.SIREIQ_HF_TOKEN) {
+    return c.json({ ok: false, error: 'SIREIQ_HF_TOKEN not set', secrets }, 500);
   }
 
-  // Live test against OpenAI
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  // Live test against Hugging Face Inference API
+  const res = await fetch('https://api-inference.huggingface.co/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${env.OPENAI_API_KEY}`,
+      'Authorization': `Bearer ${env.SIREIQ_HF_TOKEN}`,
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: 'mistralai/Mistral-7B-Instruct-v0.3',
       max_tokens: 10,
       messages: [{ role: 'user', content: 'hi' }],
     }),
   });
 
   const raw = await res.text();
-  return c.json({ ok: res.ok, http_status: res.status, secrets, openai_response: raw.slice(0, 400) });
+  return c.json({ ok: res.ok, http_status: res.status, secrets, hf_response: raw.slice(0, 400) });
 });
 
 // POST /api/v1/chat — public AI chatbot endpoint
@@ -205,8 +205,8 @@ chat.post('/', async (c) => {
 
   if (!safeMessages.length) return c.json({ error: 'messages required' }, 400);
 
-  if (!c.env.OPENAI_API_KEY) {
-    console.error('[chat] OPENAI_API_KEY is not set — configure it as a Worker secret in the Cloudflare dashboard');
+  if (!c.env.SIREIQ_HF_TOKEN) {
+    console.error('[chat] SIREIQ_HF_TOKEN is not set — configure it as a Worker secret in the Cloudflare dashboard');
     return c.json({
       message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
       leadCaptured: false,
@@ -214,8 +214,8 @@ chat.post('/', async (c) => {
     });
   }
 
-  const res = await callOpenAI(c.env.OPENAI_API_KEY, {
-    model: 'gpt-4o-mini',
+  const res = await callHuggingFace(c.env.SIREIQ_HF_TOKEN, {
+    model: 'mistralai/Mistral-7B-Instruct-v0.3',
     max_tokens: 400,
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },
@@ -225,7 +225,7 @@ chat.post('/', async (c) => {
 
   if (!res.ok) {
     const errSnippet = await res.text().catch(() => '');
-    console.error(`[chat] OpenAI API error ${res.status}: ${errSnippet.slice(0, 300)}`);
+    console.error(`[chat] HuggingFace API error ${res.status}: ${errSnippet.slice(0, 300)}`);
     return c.json({
       message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
       leadCaptured: false,
