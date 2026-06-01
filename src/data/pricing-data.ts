@@ -68,8 +68,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       {
         id: 'headshots-starter',
         name: 'Starter',
-        price: 'From $649',
-        priceNumeric: 649,
+        price: 'From $499',
+        priceNumeric: 499,
         duration: '1 hour',
         images: '8 edited images',
         deliverables: [
@@ -125,8 +125,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       {
         id: 'beauty-starter',
         name: 'Starter',
-        price: 'From $750',
-        priceNumeric: 750,
+        price: 'From $499',
+        priceNumeric: 499,
         duration: '1 hour',
         images: '6 edited images',
         deliverables: [
@@ -179,8 +179,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       {
         id: 'fashion-starter',
         name: 'Starter',
-        price: 'From $850',
-        priceNumeric: 850,
+        price: 'From $499',
+        priceNumeric: 499,
         duration: '1 hour',
         images: '6 edited images',
         deliverables: [
@@ -234,8 +234,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       {
         id: 'glamour-starter',
         name: 'Starter',
-        price: 'From $750',
-        priceNumeric: 750,
+        price: 'From $499',
+        priceNumeric: 499,
         duration: '1 hour',
         images: '6 edited images',
         deliverables: [
@@ -289,8 +289,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       {
         id: 'editorial-starter',
         name: 'Starter',
-        price: 'From $950',
-        priceNumeric: 950,
+        price: 'From $499',
+        priceNumeric: 499,
         duration: '1 hour',
         images: '5 edited images',
         deliverables: [
@@ -344,8 +344,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       {
         id: 'lifestyle-starter',
         name: 'Starter',
-        price: 'From $650',
-        priceNumeric: 650,
+        price: 'From $499',
+        priceNumeric: 499,
         duration: '1 hour',
         images: '8 edited images',
         deliverables: [
@@ -512,8 +512,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       {
         id: 're-basic',
         name: 'Basic',
-        price: 'From $650',
-        priceNumeric: 650,
+        price: 'From $499',
+        priceNumeric: 499,
         duration: 'Up to 1.5 hours',
         images: '15 edited images',
         deliverables: [

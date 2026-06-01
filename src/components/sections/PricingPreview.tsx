@@ -6,7 +6,7 @@ const PREVIEW_CATEGORIES = [
     icon: '📸',
     name: 'Headshots & Portraits',
     teaser: 'Studio or mobile — individuals & teams',
-    startingAt: '$649',
+    startingAt: '$499',
     highlight: 'Mobile to your office across New England',
     isMobile: true,
   },
@@ -21,7 +21,7 @@ const PREVIEW_CATEGORIES = [
     icon: '✨',
     name: 'Beauty, Fashion & Glamour',
     teaser: 'Editorial portraits & brand content',
-    startingAt: '$750',
+    startingAt: '$499',
     highlight: '1-hour starter sessions available',
   },
   {
@@ -47,7 +47,7 @@ const PricingPreview = () => {
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Photography Starting at{' '}
-            <span className="text-photo-red">$649</span>
+            <span className="text-photo-red">$499</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             No hidden fees. No gatekeeping. Pick a session that works for your budget and

@@ -32,7 +32,7 @@ const Pricing = () => {
     <Layout>
       <SEO
         title="Pricing — Jeff Honforloco Photography | Rhode Island · Massachusetts · Maine · Connecticut"
-        description="Clear, honest photography pricing starting from $649. Headshots, beauty, fashion, editorial, wedding, events, real estate & motion video across New England."
+        description="Clear, honest photography pricing starting from $499. Headshots, beauty, fashion, editorial, wedding, events, real estate & motion video across New England."
         url="/pricing"
       />
 
@@ -46,7 +46,7 @@ const Pricing = () => {
               <span className="text-sm text-photo-red font-medium">Transparent Pricing · No Surprises</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-5 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">
-              Photography<br />Starting at <span className="text-photo-red">$649</span>
+              Photography<br />Starting at <span className="text-photo-red">$499</span>
             </h1>
             <p className="text-xl text-gray-300 leading-relaxed mb-8">
               Every session is priced so anyone can start. Pick a category, choose a tier, or
