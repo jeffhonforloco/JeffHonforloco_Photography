@@ -13,19 +13,19 @@ const AdminSEO = () => {
   const { toast } = useToast();
   
   const [globalSEO, setGlobalSEO] = useState({
-    siteTitle: 'Jeff Honforloco Photography - World\'s Premier Luxury Fashion & Beauty Photographer | Global Elite Services',
-    siteDescription: 'World-class luxury fashion, beauty & editorial photographer. Elite photography services for Fortune 500 brands, A-list celebrities & top models. Global availability across NYC, LA, Miami, Paris, London.',
-    keywords: 'world\'s best luxury fashion photographer, elite beauty photographer NYC, top celebrity photographer Los Angeles, premier editorial photographer Miami, international fashion photographer Paris London, luxury brand photographer, A-list celebrity photography, Fortune 500 photography services',
+    siteTitle: 'Jeff Honforloco Photography - Fashion & Beauty Photographer | Global Services',
+    siteDescription: 'World-class fashion, beauty & editorial photographer. Photography services for Fortune 500 brands, A-list celebrities & top models. Global availability across NYC, LA, Miami, Paris, London.',
+    keywords: 'fashion photographer, elite beauty photographer NYC, top celebrity photographer Los Angeles, premier editorial photographer Miami, international fashion photographer Paris London, brand photographer, A-list celebrity photography, Fortune 500 photography services',
     canonicalUrl: 'https://jeffhonforlocophotos.com',
     robotsContent: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
   });
 
   const [socialMedia, setSocialMedia] = useState({
-    ogTitle: 'Jeff Honforloco Photography - World\'s Premier Luxury Fashion & Beauty Photographer | Global Elite Services',
-    ogDescription: 'World-class luxury fashion, beauty & editorial photographer. Elite photography services for Fortune 500 brands, A-list celebrities & top models. Global availability across NYC, LA, Miami, Paris, London.',
+    ogTitle: 'Jeff Honforloco Photography - Fashion & Beauty Photographer | Global Services',
+    ogDescription: 'World-class fashion, beauty & editorial photographer. Photography services for Fortune 500 brands, A-list celebrities & top models. Global availability across NYC, LA, Miami, Paris, London.',
     ogImage: 'https://jeffhonforlocophotos.com/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
-    twitterTitle: 'Jeff Honforloco Photography - World\'s Premier Luxury Fashion & Beauty Photographer',
-    twitterDescription: 'World-class luxury fashion, beauty & editorial photographer. Elite photography services for Fortune 500 brands, A-list celebrities & top models. Global availability.',
+    twitterTitle: 'Jeff Honforloco Photography - Fashion & Beauty Photographer',
+    twitterDescription: 'World-class fashion, beauty & editorial photographer. Photography services for Fortune 500 brands, A-list celebrities & top models. Global availability.',
     twitterImage: 'https://jeffhonforlocophotos.com/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
     twitterHandle: '@jeffhonforloco'
   });
@@ -41,19 +41,19 @@ const AdminSEO = () => {
   const [structuredData, setStructuredData] = useState({
     businessName: 'Jeff Honforloco',
     businessType: 'ProfessionalService',
-    jobTitle: 'World\'s Premier Luxury Fashion & Beauty Photographer',
-    description: 'World-class luxury fashion, beauty & editorial photographer serving Fortune 500 brands, A-list celebrities, and elite models. Global availability across major fashion capitals including NYC, LA, Miami, Paris, London, Monaco, and Switzerland.',
+    jobTitle: 'Fashion & Beauty Photographer',
+    description: 'World-class fashion, beauty & editorial photographer serving Fortune 500 brands, A-list celebrities, and elite models. Global availability across major fashion capitals including NYC, LA, Miami, Paris, London, Monaco, and Switzerland.',
     address: 'Providence, RI, US',
     serviceAreas: 'New York City, Los Angeles, Miami, Chicago, Atlanta, Paris, London, Monaco, Switzerland',
     priceRange: '$$$$',
-    services: 'Luxury Fashion Photography, Elite Beauty Photography, Editorial Photography, Celebrity Photography, Fashion Week Photography, Luxury Brand Campaigns'
+    services: 'Fashion Photography, Elite Beauty Photography, Editorial Photography, Celebrity Photography, Fashion Week Photography, Brand Campaigns'
   });
 
   const [pageSpecificSEO] = useState([
     {
       page: 'Homepage',
-      title: 'Current: Jeff Honforloco Photography - World\'s Premier Luxury Fashion & Beauty Photographer',
-      description: 'Current: World-class luxury fashion, beauty & editorial photographer...',
+      title: 'Current: Jeff Honforloco Photography - Fashion & Beauty Photographer',
+      description: 'Current: World-class fashion, beauty & editorial photographer...',
       status: 'Optimized',
       lastUpdated: '2024-01-20'
     },
@@ -74,7 +74,7 @@ const AdminSEO = () => {
     {
       page: 'Contact',
       title: 'Book Elite Fashion Photography Session | Jeff Honforloco',
-      description: 'Book your luxury fashion or beauty photography session...',
+      description: 'Book your fashion or beauty photography session...',
       status: 'Optimized',
       lastUpdated: '2024-01-19'
     }

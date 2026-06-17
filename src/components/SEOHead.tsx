@@ -44,7 +44,7 @@ export default function SEOHead() {
             "@type": "ProfessionalService",
             "name": "Jeff Honforloco Photography",
             "alternateName": "Jeff Honforloco",
-            "description": "Premier luxury fashion, beauty, wedding, corporate, and real estate photographer serving NYC, Los Angeles, Miami, and international clients. Specializing in editorial photography, brand campaigns, and high-end commercial photography.",
+            "description": "Premier fashion, beauty, wedding, corporate, and real estate photographer serving NYC, Los Angeles, Miami, and international clients. Specializing in editorial photography, brand campaigns, and high-end commercial photography.",
             "url": "https://www.jeffhonforlocophotos.com",
             "telephone": "+1-555-PHOTOS",
             "email": "hello@jeffhonforlocophotos.com",
@@ -119,7 +119,7 @@ export default function SEOHead() {
             "@type": "Person",
             "name": "Jeff Honforloco",
             "jobTitle": "Professional Photographer",
-            "description": "Award-winning luxury fashion, beauty, wedding, and commercial photographer with over 10 years of experience creating stunning visuals for top brands, celebrities, and discerning clients worldwide.",
+            "description": "Award-winning fashion, beauty, wedding, and commercial photographer with over 10 years of experience creating stunning visuals for top brands, celebrities, and discerning clients worldwide.",
             "url": "https://www.jeffhonforlocophotos.com",
             "image": "https://www.jeffhonforlocophotos.com/jeff-honforloco-headshot.jpg",
             "sameAs": [
@@ -163,7 +163,7 @@ export default function SEOHead() {
                 "name": "What types of photography does Jeff Honforloco specialize in?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Jeff Honforloco specializes in luxury fashion photography, beauty photography, wedding photography, corporate photography, real estate photography, editorial photography, brand photography, event photography, and commercial photography. He serves clients in NYC, Los Angeles, Miami, and internationally."
+                  "text": "Jeff Honforloco specializes in fashion photography, beauty photography, wedding photography, corporate photography, real estate photography, editorial photography, brand photography, event photography, and commercial photography. He serves clients in NYC, Los Angeles, Miami, and internationally."
                 }
               },
               {
@@ -171,7 +171,7 @@ export default function SEOHead() {
                 "name": "Where does Jeff Honforloco provide photography services?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Jeff Honforloco is based in New York City and provides professional photography services across NYC, Los Angeles, Miami, and travels internationally for luxury clients. He offers on-location and studio photography sessions."
+                  "text": "Jeff Honforloco is based in New York City and provides professional photography services across NYC, Los Angeles, Miami, and travels internationally for clients worldwide. He offers on-location and studio photography sessions."
                 }
               },
               {
@@ -187,7 +187,7 @@ export default function SEOHead() {
                 "name": "Does Jeff Honforloco offer wedding photography services?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes, Jeff Honforloco offers luxury wedding photography services with a focus on editorial-style wedding photography, capturing candid moments and creating artistic wedding portraits for discerning couples."
+                  "text": "Yes, Jeff Honforloco offers wedding photography services with a focus on editorial-style wedding photography, capturing candid moments and creating artistic wedding portraits for discerning couples."
                 }
               },
               {
@@ -195,7 +195,7 @@ export default function SEOHead() {
                 "name": "What makes Jeff Honforloco different from other photographers?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Jeff Honforloco combines technical expertise with artistic vision, specializing in luxury photography with over 10 years of experience. He provides full creative direction, works with top brands and celebrities, and delivers magazine-quality results for every client."
+                  "text": "Jeff Honforloco combines technical expertise with artistic vision, with over 10 years of photography experience. He provides full creative direction, works with top brands and celebrities, and delivers magazine-quality results for every client."
                 }
               },
               {
@@ -211,7 +211,7 @@ export default function SEOHead() {
                 "name": "What is included in a real estate photography session?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Jeff's real estate photography services include high-end property photography, architectural photography, luxury home photography, and commercial real estate photography with professional lighting and post-processing for maximum impact."
+                  "text": "Jeff's real estate photography services include high-end property photography, architectural photography, premium home photography, and commercial real estate photography with professional lighting and post-processing for maximum impact."
                 }
               },
               {
@@ -237,7 +237,7 @@ export default function SEOHead() {
             "name": "Jeff Honforloco Photography",
             "url": "https://www.jeffhonforlocophotos.com",
             "logo": "https://www.jeffhonforlocophotos.com/logo.png",
-            "description": "Premier luxury photography studio specializing in fashion, beauty, wedding, corporate, and real estate photography services across New York City, Los Angeles, Miami, and international locations.",
+            "description": "Premier photography studio specializing in fashion, beauty, wedding, corporate, and real estate photography services across New York City, Los Angeles, Miami, and international locations.",
             "contactPoint": {
               "@type": "ContactPoint",
               "telephone": "+1-555-PHOTOS",
