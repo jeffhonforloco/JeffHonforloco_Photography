@@ -139,6 +139,15 @@ const createTables = async () => {
     )
   `);
 
+  // Site settings table (key-value store for hero content, etc.)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
   // Analytics table
   db.exec(`
     CREATE TABLE IF NOT EXISTS analytics (

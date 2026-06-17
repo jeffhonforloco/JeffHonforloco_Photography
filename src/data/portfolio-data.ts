@@ -305,47 +305,5 @@ export const portfolioImages = {
       caption: 'Sensual ocean lifestyle photography with romantic lace styling'
     }
   ],
-  motion: [
-    {
-      src: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      alt: 'Beauty Motion Film',
-      caption: 'Cinematic beauty in motion',
-      isVideo: true,
-      featured: true
-    },
-    {
-      src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      alt: 'Sample YouTube Video',
-      caption: 'YouTube Integration Example',
-      isVideo: true,
-      isYouTube: true,
-      youTubeId: 'dQw4w9WgXcQ'
-    },
-    {
-      src: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      alt: 'Editorial Motion',
-      caption: 'Storytelling through motion',
-      isVideo: true
-    },
-    {
-      src: 'https://youtu.be/ScMzIvxBSi4',
-      alt: 'Another YouTube Sample',
-      caption: 'YouTube Short Link Example',
-      isVideo: true,
-      isYouTube: true,
-      youTubeId: 'ScMzIvxBSi4'
-    },
-    {
-      src: 'https://images.unsplash.com/photo-1574391884720-bbc0b76bffdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      alt: 'Lifestyle Motion',
-      caption: 'Authentic moments in motion',
-      isVideo: true
-    },
-    {
-      src: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      alt: 'Commercial Film',
-      caption: 'Professional motion content',
-      isVideo: true
-    }
-  ]
+  motion: []
 };
