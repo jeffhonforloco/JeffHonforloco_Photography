@@ -59,7 +59,7 @@ const AboutPreview = () => {
           <div className="relative">
             <div className="aspect-[4/5] overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src="/images/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png"
                 alt="Jeff Honforloco"
                 className="w-full h-full object-cover hover:scale-105 transition-all duration-1000"
               />
