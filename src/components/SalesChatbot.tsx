@@ -30,7 +30,7 @@ const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 
 const INITIAL_GREETING =
-  "Hey! I'm the studio AI for Jeff Honforloco Photography — based in New England, available across the US, and we travel for the right project. Sessions start at $499 and we customize everything. What are you planning?";
+  "Hi — I'm Jade, Jeff's studio concierge. I help match clients with the right session for their goals. What are you creating — is this for yourself, a brand, or an event?";
 
 const SERVICE_CHIPS = [
   { label: "Headshots", icon: "📸" },
@@ -303,7 +303,7 @@ export default function SalesChatbot() {
               </div>
               <div>
                 <p className="text-photo-white font-montserrat text-xs font-semibold tracking-widest uppercase leading-none">
-                  Jeff's Studio AI
+                  Jade · Studio Concierge
                 </p>
                 <p className="text-green-400 text-[10px] mt-0.5 leading-none">
                   Online · Replies instantly
