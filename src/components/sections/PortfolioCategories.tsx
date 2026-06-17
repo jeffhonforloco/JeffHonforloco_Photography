@@ -5,7 +5,7 @@ const PortfolioCategories = () => {
   const portfolioCategories = [
     {
       title: 'Fashion Photography',
-      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: '/images/IMG_7707.jpeg',
       href: '/portfolio/luxury-fashion-photography-nyc',
       description: 'High-end fashion photography for brands and fashion weeks'
     },
@@ -17,13 +17,13 @@ const PortfolioCategories = () => {
     },
     {
       title: 'Editorial Photography',
-      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: '/images/IMG_7671.jpeg',
       href: '/portfolio/editorial-photography-magazines',
       description: 'Magazine-quality editorial photography and brand storytelling'
     },
     {
       title: 'Celebrity & Lifestyle',
-      image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      image: '/images/IMG_7757.jpeg',
       href: '/portfolio/celebrity-lifestyle-photography',
       description: 'Exclusive celebrity and lifestyle photography'
     }
