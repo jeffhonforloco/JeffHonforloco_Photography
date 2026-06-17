@@ -18,9 +18,9 @@ const locationData = {
     name: 'New York City',
     region: 'New York',
     country: 'USA',
-    title: 'Luxury Fashion & Beauty Photographer NYC | Jeff Honforloco',
-    description: 'Premier luxury fashion and beauty photographer in New York City. High-end editorial photography for top brands, celebrities, and models in Manhattan.',
-    keywords: 'luxury fashion photographer NYC, beauty photographer New York, editorial photographer Manhattan, celebrity photographer NYC, high-end fashion photography New York',
+    title: 'Fashion & Beauty Photographer NYC | Jeff Honforloco',
+    description: 'Premier fashion and beauty photographer in New York City. High-end editorial photography for top brands, celebrities, and models in Manhattan.',
+    keywords: 'fashion photographer NYC, beauty photographer New York, editorial photographer Manhattan, celebrity photographer NYC, high-end fashion photography New York',
     localText: 'Serving the heart of fashion in New York City, from Manhattan studios to Brooklyn locations.',
     services: ['Fashion Week Photography', 'Beauty Campaigns', 'Editorial Shoots', 'Celebrity Portraits']
   },
@@ -29,8 +29,8 @@ const locationData = {
     region: 'California', 
     country: 'USA',
     title: 'Top Fashion & Beauty Photographer Los Angeles | Jeff Honforloco',
-    description: 'Award-winning luxury fashion and beauty photographer in Los Angeles. Premium photography services for Hollywood celebrities and luxury brands.',
-    keywords: 'fashion photographer Los Angeles, beauty photographer LA, celebrity photographer Hollywood, luxury photography California',
+    description: 'Award-winning fashion and beauty photographer in Los Angeles. Premium photography services for Hollywood celebrities and leading brands.',
+    keywords: 'fashion photographer Los Angeles, beauty photographer LA, celebrity photographer Hollywood, editorial photography California',
     localText: 'Capturing glamour and elegance across Los Angeles, from Hollywood studios to Malibu beaches.',
     services: ['Celebrity Photography', 'Fashion Campaigns', 'Beauty Editorials', 'Lifestyle Shoots']
   },
@@ -38,29 +38,29 @@ const locationData = {
     name: 'Miami',
     region: 'Florida',
     country: 'USA', 
-    title: 'Miami Luxury Fashion & Beauty Photographer | Jeff Honforloco',
-    description: 'Elite fashion and beauty photographer in Miami. Specializing in luxury brand photography with tropical elegance and international flair.',
-    keywords: 'fashion photographer Miami, beauty photographer Florida, luxury photography Miami Beach, editorial photographer South Beach',
+    title: 'Miami Fashion & Beauty Photographer | Jeff Honforloco',
+    description: 'Elite fashion and beauty photographer in Miami. Specializing in brand photography with tropical elegance and international flair.',
+    keywords: 'fashion photographer Miami, beauty photographer Florida, editorial photography Miami Beach, editorial photographer South Beach',
     localText: 'Bringing international sophistication to Miami\'s vibrant fashion scene.',
-    services: ['Resort Fashion Photography', 'Beauty Campaigns', 'International Editorial', 'Luxury Brand Photography']
+    services: ['Resort Fashion Photography', 'Beauty Campaigns', 'International Editorial', 'Brand Photography']
   },
   'paris': {
     name: 'Paris',
     region: 'Île-de-France',
     country: 'France',
-    title: 'Luxury Fashion Photographer Paris | Jeff Honforloco Photography',
-    description: 'International luxury fashion and beauty photographer available in Paris. Haute couture and editorial photography in the fashion capital of the world.',
-    keywords: 'fashion photographer Paris, luxury photographer France, haute couture photographer, editorial photographer Paris',
+    title: 'Fashion Photographer Paris | Jeff Honforloco Photography',
+    description: 'International fashion and beauty photographer available in Paris. Haute couture and editorial photography in the fashion capital of the world.',
+    keywords: 'fashion photographer Paris, photographer France, haute couture photographer, editorial photographer Paris',
     localText: 'Collaborating with Parisian elegance and haute couture excellence in the world\'s fashion capital.',
-    services: ['Haute Couture Photography', 'Fashion Week Paris', 'Luxury Editorial', 'International Campaigns']
+    services: ['Haute Couture Photography', 'Fashion Week Paris', 'Editorial Photography', 'International Campaigns']
   },
   'london': {
     name: 'London',
     region: 'England',
     country: 'United Kingdom',
     title: 'Elite Fashion & Beauty Photographer London | Jeff Honforloco',
-    description: 'Premier luxury fashion and beauty photographer serving London. International editorial and campaign photography for discerning brands.',
-    keywords: 'fashion photographer London, luxury photographer UK, beauty photographer England, editorial photographer London',
+    description: 'Premier fashion and beauty photographer serving London. International editorial and campaign photography for leading brands.',
+    keywords: 'fashion photographer London, photographer UK, beauty photographer England, editorial photographer London',
     localText: 'Delivering sophisticated photography services across London\'s dynamic fashion landscape.',
     services: ['Editorial Photography', 'Fashion Campaigns', 'Beauty Photography', 'International Projects']
   },
@@ -68,19 +68,19 @@ const locationData = {
     name: 'Italy',
     region: 'Multiple Regions',
     country: 'Italy',
-    title: 'Luxury Fashion Photographer Italy | Jeff Honforloco Photography',
-    description: 'International fashion and beauty photographer available throughout Italy. Milan fashion week and luxury brand photography services.',
-    keywords: 'fashion photographer Italy, luxury photographer Milan, beauty photographer Rome, Italian fashion photography',
-    localText: 'Capturing Italian elegance and luxury from Milan\'s fashion districts to Rome\'s timeless beauty.',
-    services: ['Milan Fashion Week', 'Luxury Brand Photography', 'Italian Editorial', 'International Campaigns']
+    title: 'Fashion Photographer Italy | Jeff Honforloco Photography',
+    description: 'International fashion and beauty photographer available throughout Italy. Milan fashion week and brand photography services.',
+    keywords: 'fashion photographer Italy, photographer Milan, beauty photographer Rome, Italian fashion photography',
+    localText: 'Capturing Italian elegance from Milan\'s fashion districts to Rome\'s timeless beauty.',
+    services: ['Milan Fashion Week', 'Brand Photography', 'Italian Editorial', 'International Campaigns']
   },
   'lagos': {
     name: 'Lagos',
     region: 'Lagos State',
     country: 'Nigeria',
     title: 'Premier Fashion & Beauty Photographer Lagos | Jeff Honforloco',
-    description: 'International luxury fashion and beauty photographer serving Lagos. Contemporary African fashion and beauty photography excellence.',
-    keywords: 'fashion photographer Lagos, luxury photographer Nigeria, beauty photographer West Africa, international photographer Lagos',
+    description: 'International fashion and beauty photographer serving Lagos. Contemporary African fashion and beauty photography excellence.',
+    keywords: 'fashion photographer Lagos, photographer Nigeria, beauty photographer West Africa, international photographer Lagos',
     localText: 'Celebrating African elegance and contemporary fashion in Lagos\'s vibrant creative scene.',
     services: ['African Fashion Photography', 'Beauty Campaigns', 'Contemporary Editorial', 'International Projects']
   },
@@ -88,31 +88,31 @@ const locationData = {
     name: 'Switzerland',
     region: 'Multiple Cantons',
     country: 'Switzerland',
-    title: 'Luxury Fashion Photographer Switzerland | Jeff Honforloco',
+    title: 'Fashion Photographer Switzerland | Jeff Honforloco',
     description: 'Elite international fashion and beauty photographer available in Switzerland. Premium photography services with Alpine elegance.',
-    keywords: 'fashion photographer Switzerland, luxury photographer Zurich, beauty photographer Geneva, Swiss fashion photography',
-    localText: 'Delivering refined photography services across Switzerland\'s luxury landscape.',
-    services: ['Luxury Brand Photography', 'Alpine Fashion Shoots', 'International Editorial', 'Premium Campaigns']
+    keywords: 'fashion photographer Switzerland, photographer Zurich, beauty photographer Geneva, Swiss fashion photography',
+    localText: 'Delivering refined photography services across Switzerland\'s Alpine landscape.',
+    services: ['Brand Photography', 'Alpine Fashion Shoots', 'International Editorial', 'Premium Campaigns']
   },
   'malta': {
     name: 'Malta',
     region: 'Malta',
     country: 'Malta',
     title: 'International Fashion Photographer Malta | Jeff Honforloco',
-    description: 'Luxury fashion and beauty photographer available in Malta. Mediterranean elegance meets international photography excellence.',
-    keywords: 'fashion photographer Malta, luxury photographer Mediterranean, beauty photographer Malta, international photographer Malta',
-    localText: 'Capturing Mediterranean beauty and luxury in Malta\'s stunning coastal settings.',
-    services: ['Mediterranean Fashion', 'Luxury Photography', 'International Editorial', 'Destination Shoots']
+    description: 'Fashion and beauty photographer available in Malta. Mediterranean elegance meets international photography excellence.',
+    keywords: 'fashion photographer Malta, photographer Mediterranean, beauty photographer Malta, international photographer Malta',
+    localText: 'Capturing Mediterranean beauty in Malta\'s stunning coastal settings.',
+    services: ['Mediterranean Fashion', 'Editorial Photography', 'International Editorial', 'Destination Shoots']
   },
   'monaco': {
     name: 'Monaco',
     region: 'Monaco',
     country: 'Monaco',
     title: 'Elite Fashion Photographer Monaco | Jeff Honforloco Photography',
-    description: 'Premier luxury fashion and beauty photographer in Monaco. Exclusive photography services for the world\'s most discerning clientele.',
-    keywords: 'fashion photographer Monaco, luxury photographer Monte Carlo, elite photographer Monaco, exclusive fashion photography',
-    localText: 'Serving Monaco\'s exclusive luxury market with unparalleled photography excellence.',
-    services: ['Exclusive Fashion Photography', 'Luxury Campaigns', 'Elite Portraits', 'International Projects']
+    description: 'Premier fashion and beauty photographer in Monaco. Exclusive photography services for the world\'s most discerning clientele.',
+    keywords: 'fashion photographer Monaco, photographer Monte Carlo, elite photographer Monaco, exclusive fashion photography',
+    localText: 'Serving Monaco\'s exclusive market with unparalleled photography excellence.',
+    services: ['Exclusive Fashion Photography', 'Premium Campaigns', 'Elite Portraits', 'International Projects']
   }
 };
 
@@ -166,7 +166,7 @@ const LocationLanding = () => {
         <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
           <div className="text-center bg-black/60 backdrop-blur-sm p-8 rounded-lg max-w-4xl mx-4">
             <h1 className="font-playfair text-4xl lg:text-6xl font-light text-white mb-4 tracking-wider">
-              Luxury Photography in {locationInfo.name}
+              Photography in {locationInfo.name}
             </h1>
             <p className="font-inter text-lg lg:text-xl text-gray-200 mb-6 leading-relaxed">
               {locationInfo.localText}

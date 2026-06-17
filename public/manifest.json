@@ -1,7 +1,7 @@
 {
   "name": "Jeff Honforloco Photography",
   "short_name": "JH Photography",
-  "description": "World's Premier Luxury Fashion & Beauty Photographer",
+  "description": "Fashion, Beauty & Editorial Photographer — Jeff Honforloco",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -9,7 +9,7 @@
   "orientation": "portrait",
   "scope": "/",
   "lang": "en-US",
-  "categories": ["photography", "fashion", "beauty", "luxury"],
+  "categories": ["photography", "fashion", "beauty", "editorial"],
   "icons": [
     {
       "src": "/favicon.svg",
