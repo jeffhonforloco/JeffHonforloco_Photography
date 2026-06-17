@@ -32,7 +32,7 @@ export const portfolioImages = {
     },
     {
       src: '/images/270d66ab-2bac-4d01-9396-368e98145c5a.png',
-      alt: 'Luxury Red Beauty',
+      alt: 'Red Beauty Editorial',
       caption: 'High-fashion beauty with red lips and statement jewelry'
     },
     {
@@ -72,8 +72,8 @@ export const portfolioImages = {
     },
     {
       src: '/images/6eca5484-b022-4c34-8f5e-3f72e00faa0e.png',
-      alt: 'Luxury Beauty Portrait',
-      caption: 'Luxurious beauty with statement jewelry and nails'
+      alt: 'Beauty Portrait',
+      caption: 'Beauty with statement jewelry and nails'
     },
     {
       src: '/images/b580c5bf-f009-493f-b7a9-929c0c5d451d.png',
@@ -112,7 +112,7 @@ export const portfolioImages = {
     { src: '/images/fa05c636-4d55-4c2f-b703-54c585db6b63.png', alt: 'Fashion Photography', caption: 'GOLDEN GLAMOUR' },
     { src: '/images/ee980b4e-6191-4a5e-9154-a0570d5a5cf7.png', alt: 'Fashion Photography', caption: 'VIBRANT STYLE' },
     { src: '/images/fa096df6-9e5b-4c94-b2eb-fcd21afd9464.png', alt: 'Fashion Photography', caption: 'WHITE ELEGANCE' },
-    { src: '/images/2c5c9feb-d64a-4aef-8a8f-befaa483c3b9.png', alt: 'Fashion Photography', caption: 'LUXURY FASHION' },
+    { src: '/images/2c5c9feb-d64a-4aef-8a8f-befaa483c3b9.png', alt: 'Fashion Photography', caption: 'EDITORIAL FASHION' },
     { src: '/images/b8d7af04-86fd-40a8-b960-3797187fa27c.png', alt: 'Fashion Photography', caption: 'EVENING WEAR' },
     { src: '/images/378e6920-c0d7-4bf9-85b7-6094238a8a9e.png', alt: 'Fashion Photography', caption: 'GLAMOUR COLLECTION' },
     { src: '/images/8fba258d-35bd-4852-9e00-2f58fa836046.png', alt: 'Fashion Photography', caption: 'DESIGNER COLLECTION' },
@@ -157,7 +157,7 @@ export const portfolioImages = {
     {
       src: '/images/4d7a433a-0a68-4156-9269-48a434439ea1.png',
       alt: 'Gold Jewelry Editorial',
-      caption: 'Luxury glamour with gold coin headpiece'
+      caption: 'Glamour with gold coin headpiece'
     },
     {
       src: '/images/d5e8e24b-1f18-406e-813d-6e1567ad8c05.png',

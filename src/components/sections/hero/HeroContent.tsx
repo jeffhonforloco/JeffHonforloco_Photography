@@ -11,7 +11,7 @@ const HeroContent = () => {
             fetchPriority="high"
           />
           <p className="font-inter text-[10px] tracking-[0.35em] text-white/80 uppercase mb-1 text-center">
-            Luxury Fashion &amp; Beauty
+            Fashion &amp; Beauty
           </p>
           <p className="font-inter text-[9px] tracking-[0.22em] text-white/55 uppercase mb-6 text-center">
             NYC · LA · Miami · Chicago · Global
@@ -44,7 +44,7 @@ const HeroContent = () => {
           />
           <div className="w-10 h-px bg-photo-red mb-4" aria-hidden="true" />
           <p className="font-inter text-xs tracking-[0.4em] text-white/80 uppercase mb-1">
-            Luxury Fashion &amp; Beauty Photography
+            Fashion &amp; Beauty Photography
           </p>
           <p className="font-inter text-[11px] tracking-[0.28em] text-white/55 uppercase mb-6">
             NYC &middot; Los Angeles &middot; Miami &middot; Chicago &middot; Global

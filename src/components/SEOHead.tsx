@@ -4,19 +4,19 @@ export default function SEOHead() {
   return (
     <Helmet>
       {/* Meta Tags */}
-      <title>Jeff Honforloco | Premier Fashion & Beauty Photographer NYC | Luxury Brand Photography</title>
+      <title>Jeff Honforloco | Fashion & Beauty Photographer NYC | Editorial & Brand Photography</title>
       <meta
         name="description"
-        content="Award-winning luxury fashion, beauty, wedding, and corporate photographer Jeff Honforloco. Professional photography services for brands, events, real estate, and editorial shoots across NYC, LA, Miami. Book your premium photoshoot today."
+        content="Award-winning fashion, beauty, wedding, and corporate photographer Jeff Honforloco. Professional photography services for brands, events, real estate, and editorial shoots across NYC, LA, Miami. Book your session today."
       />
-      <meta 
-        name="keywords" 
-        content="photographer, photography, fashion photographer, beauty photographer, wedding photographer, event photographer, brand photographer, luxury photographer, editorial photographer, corporate photographer, real estate photographer, NYC photographer, Los Angeles photographer, Miami photographer, professional photographer, commercial photographer, portrait photographer, lifestyle photographer, product photographer, headshot photographer, celebrity photographer, model photographer, photoshoot, brand photoshoot, fashion photoshoot, beauty photoshoot, wedding photography, event photography, corporate photography, real estate photography, luxury brand photography, editorial photography, commercial photography, professional photography services" 
+      <meta
+        name="keywords"
+        content="photographer, photography, fashion photographer, beauty photographer, wedding photographer, event photographer, brand photographer, editorial photographer, corporate photographer, real estate photographer, NYC photographer, Los Angeles photographer, Miami photographer, professional photographer, commercial photographer, portrait photographer, lifestyle photographer, product photographer, headshot photographer, celebrity photographer, model photographer, photoshoot, brand photoshoot, fashion photoshoot, beauty photoshoot, wedding photography, event photography, corporate photography, real estate photography, brand photography, editorial photography, commercial photography, professional photography services"
       />
       
       {/* Open Graph */}
-      <meta property="og:title" content="Jeff Honforloco | Premier Fashion & Beauty Photographer NYC | Luxury Brand Photography" />
-      <meta property="og:description" content="Award-winning luxury fashion, beauty, wedding, and corporate photographer. Professional photography services for brands, events, and editorial shoots across NYC, LA, Miami." />
+      <meta property="og:title" content="Jeff Honforloco | Fashion & Beauty Photographer NYC | Editorial & Brand Photography" />
+      <meta property="og:description" content="Award-winning fashion, beauty, wedding, and corporate photographer. Professional photography services for brands, events, and editorial shoots across NYC, LA, Miami." />
       <meta property="og:url" content="https://www.jeffhonforlocophotos.com" />
       <meta property="og:type" content="website" />
       <meta property="og:image" content="https://www.jeffhonforlocophotos.com/og-image.jpg" />
@@ -26,7 +26,7 @@ export default function SEOHead() {
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Jeff Honforloco | Premier Fashion & Beauty Photographer" />
-      <meta name="twitter:description" content="Award-winning luxury fashion, beauty, wedding, and corporate photographer serving NYC, LA, Miami and international clients." />
+      <meta name="twitter:description" content="Award-winning fashion, beauty, wedding, and corporate photographer serving NYC, LA, Miami and international clients." />
       <meta name="twitter:image" content="https://www.jeffhonforlocophotos.com/og-image.jpg" />
       
       {/* Additional Meta Tags */}

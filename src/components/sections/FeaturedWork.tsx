@@ -5,7 +5,7 @@ const FeaturedWork = () => {
       image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
       category: 'High-End Editorial',
       title: 'NYC Fashion Week Editorial',
-      description: 'Luxury editorial photography for fashion week campaigns'
+      description: 'Editorial photography for fashion week campaigns'
     },
     {
       image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
@@ -15,9 +15,9 @@ const FeaturedWork = () => {
     },
     {
       image: 'https://images.unsplash.com/photo-1534809027769-b00d750a6bac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      category: 'Luxury Beauty',
+      category: 'Beauty Editorial',
       title: 'Miami Beauty Campaign',
-      description: 'Premium beauty photography for luxury cosmetic brands'
+      description: 'Premium beauty photography for leading cosmetic brands'
     }
   ];
 
@@ -28,7 +28,7 @@ const FeaturedWork = () => {
       <div className="relative max-w-8xl mx-auto px-8 md:px-16">
         <div className="text-center mb-32">
           <h2 className="font-playfair text-6xl md:text-7xl lg:text-8xl font-extralight tracking-wide text-white mb-12 leading-[0.9]">
-            Luxury Portfolio
+            Featured Work
           </h2>
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto mb-12"></div>
           <p className="font-light text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed tracking-wide">

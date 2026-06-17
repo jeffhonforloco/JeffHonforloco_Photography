@@ -106,7 +106,7 @@ const Journal = () => {
       {/* SEO Header - Hidden but accessible for search engines */}
       <div className="sr-only">
         <h1>Photography Journal - Tips, Trends & Insights</h1>
-        <p>Professional photography blog featuring luxury fashion, beauty, and editorial photography tips. Expert photographer shares insights on techniques, client preparation, and industry trends.</p>
+        <p>Professional photography blog featuring fashion, beauty, and editorial photography tips. Expert photographer shares insights on techniques, client preparation, and industry trends.</p>
       </div>
       
       {/* Interactive Article Banner Slider */}

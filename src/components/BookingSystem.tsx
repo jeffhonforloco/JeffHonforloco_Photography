@@ -56,7 +56,7 @@ const SERVICE_TYPES = [
   {
     id: 'fashion',
     name: 'Fashion Photography',
-    description: 'For aspiring models, influencers, designers & luxury brands',
+    description: 'For aspiring models, influencers, designers & creative brands',
     icon: Camera,
     duration: '1–8 hours',
     startingPrice: 'From $499',
@@ -466,7 +466,7 @@ ${bookingData.message}`,
               <SelectItem value="$1,100 - $2,200">$1,100 – $2,200 (Standard)</SelectItem>
               <SelectItem value="$2,200 - $4,000">$2,200 – $4,000 (Premium)</SelectItem>
               <SelectItem value="$4,000 - $7,000">$4,000 – $7,000 (Full Campaign)</SelectItem>
-              <SelectItem value="$7,000+">$7,000+ (Luxury / Full Production)</SelectItem>
+              <SelectItem value="$7,000+">$7,000+ (Full Production / Custom)</SelectItem>
               <SelectItem value="Discuss in consultation">Let's talk — I have a budget in mind</SelectItem>
             </SelectContent>
           </Select>

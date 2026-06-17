@@ -9,7 +9,7 @@ interface SEOProps {
 }
 
 const SEO = ({
-  title = "Jeff Honforloco Photography - Luxury Beauty & Fashion Photography",
+  title = "Jeff Honforloco Photography - Fashion & Beauty Photography",
   description = "Professional beauty, fashion, and editorial photography for brands, creators, and models worldwide. Elevate your vision with Jeff Honforloco's artistic expertise.",
   image = "/og-default.jpg",
   url = "https://www.jeffhonforlocophotos.com",
@@ -51,7 +51,7 @@ const SEO = ({
         "name": "What kind of photography does Jeff Honforloco specialize in?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Jeff focuses on fashion, beauty, editorial, and lifestyle photography with luxury brand campaigns and celebrity shoots."
+          "text": "Jeff focuses on fashion, beauty, editorial, and lifestyle photography — brand campaigns, model portfolios, and celebrity shoots."
         }
       },
       {
@@ -59,7 +59,7 @@ const SEO = ({
         "name": "Where is Jeff Honforloco based?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Jeff operates primarily in NYC, LA, Miami, and travels internationally for luxury fashion and beauty shoots."
+          "text": "Jeff operates primarily in NYC, LA, Miami, and travels internationally for fashion and beauty shoots."
         }
       },
       {
@@ -75,7 +75,7 @@ const SEO = ({
         "name": "Does Jeff offer creative direction services?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, Jeff provides full creative direction, styling consultation, and art direction for luxury fashion and beauty campaigns."
+          "text": "Yes, Jeff provides full creative direction, styling consultation, and art direction for fashion and beauty campaigns."
         }
       },
       {
@@ -93,7 +93,7 @@ const SEO = ({
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      <meta name="keywords" content="photography, beauty photography, fashion photography, editorial photography, luxury photography, professional photographer, NYC photographer" />
+      <meta name="keywords" content="photography, beauty photography, fashion photography, editorial photography, editorial photography, professional photographer, NYC photographer" />
       
       {/* Open Graph */}
       <meta property="og:type" content={type} />

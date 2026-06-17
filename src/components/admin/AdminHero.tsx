@@ -13,7 +13,7 @@ const AdminHero = () => {
   
   const [heroSettings, setHeroSettings] = useState({
     mainLogo: '/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
-    heroTitle: 'LUXURY FASHION & BEAUTY PHOTOGRAPHY',
+    heroTitle: 'FASHION & BEAUTY PHOTOGRAPHY',
     heroSubtitle: 'Nationwide bookings for high-end brands, celebrities & models',
     primaryButtonText: 'Book Session',
     primaryButtonLink: '/contact',
