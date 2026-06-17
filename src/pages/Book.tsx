@@ -9,7 +9,7 @@ const Book = () => {
     <Layout>
       <SEO 
         title="Book Your Session - Jeff Honforloco Photography"
-        description="Ready to elevate your brand, campaign, or portfolio? Book a consultation with luxury photographer Jeff Honforloco."
+        description="Ready to elevate your brand, campaign, or portfolio? Book a consultation with photographer Jeff Honforloco."
         url="/book"
       />
       
@@ -25,7 +25,7 @@ const Book = () => {
               Let's Create Magic Together
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Book your luxury photography session in just a few simple steps. 
+              Book your session in just a few simple steps.
               Professional service, stunning results, unforgettable experience.
             </p>
           </div>
@@ -59,7 +59,7 @@ const Book = () => {
                   <div className="w-16 h-16 bg-photo-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Star className="w-8 h-8 text-photo-red" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 text-white">Luxury Experience</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-white">The Experience</h3>
                   <p className="text-gray-300 text-sm">Professional styling, lighting, and premium service throughout</p>
                 </CardContent>
               </Card>

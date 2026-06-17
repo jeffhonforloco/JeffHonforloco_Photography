@@ -112,11 +112,10 @@ const Contact = () => {
   return (
     <Layout>
       <div className="sr-only">
-        <h1>Book Luxury Fashion & Beauty Photography Sessions | Jeff Honforloco NYC</h1>
+        <h1>Book Fashion & Beauty Photography Sessions | Jeff Honforloco NYC</h1>
         <p>
           Book professional fashion, beauty, and editorial photography sessions. Available
-          nationwide with premium service in NYC, LA, Miami, Chicago. Contact for luxury
-          photography bookings.
+          nationwide with premium service in NYC, LA, Miami, Chicago.
         </p>
       </div>
 
@@ -125,7 +124,7 @@ const Contact = () => {
         <div className="pt-24 pb-12 lg:pt-32 lg:pb-16 px-4 lg:px-8">
           <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-playfair text-white mb-4 tracking-wide">
-              Book Your Luxury Session
+              Book Your Session
             </h1>
             <p className="text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Professional fashion, beauty &amp; editorial photography available nationwide.
@@ -224,7 +223,7 @@ const Contact = () => {
                         className={inputClass + ' appearance-none'}
                       >
                         <option value="">Select a service</option>
-                        <option value="Luxury Fashion Photography">Luxury Fashion Photography</option>
+                        <option value="Fashion Photography">Fashion Photography</option>
                         <option value="Beauty & Cosmetic Photography">Beauty &amp; Cosmetic Photography</option>
                         <option value="Editorial Photography">Editorial Photography</option>
                         <option value="Celebrity & Portrait Photography">Celebrity &amp; Portrait Photography</option>

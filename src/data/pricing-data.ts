@@ -173,7 +173,7 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
     id: 'fashion',
     slug: 'fashion',
     name: 'Fashion Photography',
-    tagline: 'For aspiring models, influencers, designers & luxury brands',
+    tagline: 'For aspiring models, influencers, designers & creative brands',
     icon: '👗',
     tiers: [
       {
@@ -262,8 +262,8 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
         ],
       },
       {
-        id: 'glamour-luxury',
-        name: 'Luxury',
+        id: 'glamour-signature',
+        name: 'Signature',
         price: 'Custom',
         priceNumeric: 4000,
         duration: '4+ hours',

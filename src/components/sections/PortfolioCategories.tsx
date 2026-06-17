@@ -7,13 +7,13 @@ const PortfolioCategories = () => {
       title: 'Fashion Photography',
       image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       href: '/portfolio/luxury-fashion-photography-nyc',
-      description: 'High-end fashion photography for luxury brands and fashion weeks'
+      description: 'High-end fashion photography for brands and fashion weeks'
     },
     {
       title: 'Beauty Photography',
       image: '/images/08c64276-3665-4346-a637-ca41acc6c602.png',
       href: '/portfolio/luxury-beauty-photography-nationwide',
-      description: 'Premium beauty and cosmetic photography for luxury brands'
+      description: 'Premium beauty and cosmetic photography for leading brands'
     },
     {
       title: 'Editorial Photography',
@@ -25,7 +25,7 @@ const PortfolioCategories = () => {
       title: 'Celebrity & Lifestyle',
       image: 'https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       href: '/portfolio/celebrity-lifestyle-photography',
-      description: 'Exclusive celebrity and luxury lifestyle photography'
+      description: 'Exclusive celebrity and lifestyle photography'
     }
   ];
 
@@ -36,7 +36,7 @@ const PortfolioCategories = () => {
       <div className="relative max-w-8xl mx-auto px-8 md:px-16">
         <div className="text-center mb-32">
           <h2 className="font-playfair text-6xl md:text-7xl lg:text-8xl font-extralight tracking-wide text-white mb-12 leading-[0.9]">
-            Luxury Portfolio
+            The Portfolio
           </h2>
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto mb-12"></div>
           <p className="font-light text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed tracking-wide">

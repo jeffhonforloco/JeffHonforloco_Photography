@@ -31,15 +31,15 @@ const AboutPreview = () => {
             
             <div className="space-y-6 font-light text-xl md:text-2xl text-gray-300 leading-relaxed mb-16 tracking-wide">
               <p>
-                Award-winning luxury fashion and beauty photographer available nationwide for high-end brands, celebrities, and models. With over 15 years of experience, Jeff has established himself as a premier choice for luxury photography across New York City, Los Angeles, Miami, Chicago, and Atlanta.
+                Award-winning fashion and beauty photographer available nationwide for leading brands, celebrities, and models. With over 15 years of experience, Jeff has established himself as a premier choice for editorial photography across New York City, Los Angeles, Miami, Chicago, and Atlanta.
               </p>
-              
+
               <p>
-                Specializing in high-end fashion photography, celebrity beauty campaigns, and editorial shoots, Jeff's work has graced fashion weeks and luxury brand campaigns. His artistic vision and commitment to excellence make him the go-to photographer for discerning clients seeking sophisticated, world-class imagery.
+                Specializing in high-end fashion photography, celebrity beauty campaigns, and editorial shoots, Jeff's work has graced fashion weeks and brand campaigns worldwide. His artistic vision and commitment to excellence make him the go-to photographer for clients seeking sophisticated, world-class imagery.
               </p>
-              
+
               <p>
-                From fashion week in NYC to celebrity campaigns in LA, luxury beauty shoots in Miami to editorial work in Chicago, Jeff delivers consistently exceptional results. His clientele includes top models, luxury brands, and entertainment industry professionals who trust his expertise for their most important campaigns.
+                From fashion week in NYC to celebrity campaigns in LA, beauty shoots in Miami to editorial work in Chicago, Jeff delivers consistently exceptional results. His clientele includes top models, leading brands, and entertainment industry professionals who trust his expertise for their most important campaigns.
               </p>
               
               <p>
