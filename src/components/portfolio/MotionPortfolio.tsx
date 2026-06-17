@@ -7,6 +7,16 @@ interface MotionPortfolioProps {
 }
 
 const MotionPortfolio = ({ motionData }: MotionPortfolioProps) => {
+  if (motionData.length === 0) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-black flex items-center justify-center">
+          <p className="text-white/40 text-xl tracking-widest uppercase">Motion Portfolio — Coming Soon</p>
+        </div>
+      </Layout>
+    );
+  }
+
   const featuredVideo = motionData.find(video => video.featured);
   const otherVideos = motionData.filter(video => !video.featured);
 

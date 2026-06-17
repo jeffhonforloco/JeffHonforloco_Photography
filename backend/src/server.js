@@ -17,6 +17,8 @@ import portfolioRoutes from './routes/portfolio.js';
 import emailRoutes from './routes/email.js';
 import adminRoutes from './routes/admin.js';
 import adminAuthRoutes from './routes/adminAuth.js';
+import settingsRoutes from './routes/settings.js';
+import uploadRoutes from './routes/upload.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -123,6 +125,8 @@ app.use(`${apiPrefix}/${apiVersion}/portfolio`, portfolioRoutes);
 app.use(`${apiPrefix}/${apiVersion}/email`, emailRoutes);
 app.use(`${apiPrefix}/${apiVersion}/admin`, adminRoutes);
 app.use(`${apiPrefix}/${apiVersion}/admin-auth`, adminAuthRoutes);
+app.use(`${apiPrefix}/${apiVersion}/settings`, settingsRoutes);
+app.use(`${apiPrefix}/${apiVersion}/upload`, uploadRoutes);
 
 // API documentation endpoint
 app.get(`${apiPrefix}/docs`, (req, res) => {

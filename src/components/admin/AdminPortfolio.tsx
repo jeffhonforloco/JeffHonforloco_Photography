@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,6 +65,8 @@ const AdminPortfolio: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<Partial<PortfolioImage>>({});
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchPortfolioImages();
@@ -102,7 +104,7 @@ const AdminPortfolio: React.FC = () => {
 
       const data = await response.json();
       if (data.success) {
-        setPortfolioImages(data.data);
+        setPortfolioImages(data.data.images ?? []);
       } else {
         throw new Error(data.message || 'Failed to fetch portfolio images');
       }
@@ -263,6 +265,30 @@ const AdminPortfolio: React.FC = () => {
       updatePortfolioImage(selectedImage.id, editForm);
     } else {
       createPortfolioImage(editForm);
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    try {
+      setUploading(true);
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch('/api/v1/upload', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setEditForm(prev => ({ ...prev, image_url: data.url }));
+      } else {
+        setError('Upload failed: ' + (data.message || 'Unknown error'));
+      }
+    } catch {
+      setError('Upload failed');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -444,13 +470,42 @@ const AdminPortfolio: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-500">Image URL</label>
-              <Input
-                value={editForm.image_url || ''}
-                onChange={(e) => setEditForm(prev => ({ ...prev, image_url: e.target.value }))}
-                placeholder="Enter image URL"
-                className="mt-1"
+              <label className="text-sm font-medium text-gray-500">Image</label>
+              <div className="flex gap-2 mt-1">
+                <Input
+                  value={editForm.image_url || ''}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, image_url: e.target.value }))}
+                  placeholder="Enter image URL or upload a file"
+                />
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={uploading}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {uploading
+                    ? <RefreshCw className="h-4 w-4 animate-spin" />
+                    : <Upload className="h-4 w-4" />}
+                </Button>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file);
+                  e.target.value = '';
+                }}
               />
+              {editForm.image_url && (
+                <img
+                  src={editForm.image_url}
+                  alt="Preview"
+                  className="mt-2 h-24 w-auto object-cover rounded-md"
+                />
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
