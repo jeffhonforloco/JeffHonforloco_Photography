@@ -526,57 +526,90 @@ ${bookingData.message}`,
       .find(c => c.id === bookingData.serviceType)
       ?.tiers.find(t => t.id === bookingData.packageType);
 
+    const nextSteps = [
+      {
+        step: '01',
+        title: 'Jeff Reviews Your Request',
+        subtitle: 'Within 24 hours',
+        description: 'Every inquiry is reviewed personally. Jeff looks at your vision, goals, and preferred date before reaching out.',
+      },
+      {
+        step: '02',
+        title: 'Creative Consult',
+        subtitle: 'Scheduled together',
+        description: 'You\'ll connect with Jeff to align on concept, location, wardrobe, and creative direction before the shoot.',
+      },
+      {
+        step: '03',
+        title: 'Shoot Day Confirmed',
+        subtitle: 'You\'re on the calendar',
+        description: 'Once everything is dialed in, your session date is locked and you\'ll receive a prep guide to get ready.',
+      },
+    ];
+
     return (
-      <div className="space-y-8 text-center">
-        <div>
-          <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="space-y-10">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-500" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">You're All Set!</h2>
-          <p className="text-gray-300 text-lg">
-            Your booking request has been submitted. We'll confirm within 24 hours.
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Request Submitted</h2>
+          <p className="text-gray-300 text-base max-w-md mx-auto">
+            You're in. A confirmation has been sent to <span className="text-white font-medium">{bookingData.email}</span>.
           </p>
         </div>
 
         <Card className="bg-white/5 border-white/10 text-left">
-          <CardHeader>
-            <CardTitle className="text-white text-lg">Booking Summary</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-white text-base tracking-wide uppercase text-xs font-semibold text-gray-500">Booking Summary</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="flex justify-between">
+          <CardContent className="space-y-3 text-sm pt-0">
+            <div className="flex justify-between border-b border-white/5 pb-3">
               <span className="text-gray-500">Service</span>
               <span className="text-white">{selectedService?.name}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between border-b border-white/5 pb-3">
               <span className="text-gray-500">Package</span>
               <span className="text-white">{selectedTier?.name ?? bookingData.packageType}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Price</span>
+            <div className="flex justify-between border-b border-white/5 pb-3">
+              <span className="text-gray-500">Investment</span>
               <span className="text-photo-red font-semibold">{selectedTier?.price ?? '—'}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Date</span>
-              <span className="text-white">{formatDate(bookingData.selectedDate, 'MMMM dd, yyyy')}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Time</span>
-              <span className="text-white">{bookingData.selectedTime}</span>
+            <div className="flex justify-between border-b border-white/5 pb-3">
+              <span className="text-gray-500">Requested Date</span>
+              <span className="text-white">{formatDate(bookingData.selectedDate, 'MMMM dd, yyyy')} · {bookingData.selectedTime}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Location</span>
               <span className="text-white">{bookingData.location}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Contact</span>
-              <span className="text-white">{bookingData.email}</span>
-            </div>
           </CardContent>
         </Card>
 
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
+        <div>
+          <p className="text-xs tracking-[0.3em] text-photo-red uppercase font-semibold mb-6">What Happens Next</p>
+          <div className="space-y-6">
+            {nextSteps.map((item) => (
+              <div key={item.step} className="flex gap-5">
+                <div className="flex-shrink-0">
+                  <span className="font-mono text-3xl font-extralight text-photo-red/40 leading-none">{item.step}</span>
+                </div>
+                <div>
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <p className="text-white font-medium text-base">{item.title}</p>
+                    <span className="text-photo-red text-xs">· {item.subtitle}</span>
+                  </div>
+                  <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 pt-2 border-t border-white/10">
           <Mail className="w-4 h-4" />
-          <span>Confirmation sent to {bookingData.email}</span>
+          <span>Confirmation email sent to {bookingData.email}</span>
         </div>
       </div>
     );

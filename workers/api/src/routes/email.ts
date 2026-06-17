@@ -43,8 +43,14 @@ email.post('/contact', async (c) => {
     }),
     sendEmail(c.env.RESEND_API_KEY, {
       to: body.email,
-      subject: 'We received your inquiry — Jeff Honforloco Photography',
-      html: contactConfirmationHtml(body.full_name),
+      subject: 'We received your request — Jeff Honforloco Photography',
+      html: contactConfirmationHtml({
+        name: body.full_name,
+        service_type: body.service_type,
+        event_date: body.event_date,
+        location: body.location,
+        budget_range: body.budget_range,
+      }),
     }),
   ]);
 
