@@ -246,6 +246,9 @@ export const portfolioImages = {
     }
   ],
   lifestyle: [
+    { src: '/images/headshot-client-2.jpeg', alt: 'Executive Headshot Navy Blazer', caption: 'Executive headshot — navy blazer' },
+    { src: '/images/headshot-client-1.jpeg', alt: 'Professional Headshot Black Tie', caption: 'Business headshot — black shirt and tie' },
+    { src: '/images/headshot-client-3.jpeg', alt: 'Corporate Headshot Purple Shirt', caption: 'Corporate portrait — warm and approachable' },
     { src: '/images/IMG_7713.jpeg', alt: 'Sunset Beach Lifestyle', caption: 'Golden hour on the rocks — coastal lifestyle' },
     { src: '/images/IMG_7757.jpeg', alt: 'Headshot Portrait White Blazer', caption: 'Joyful energy in white — personal brand portrait' },
     { src: '/images/IMG_7707.jpeg', alt: 'Curly Hair Pink Background Portrait', caption: 'Vibrant lifestyle portrait with natural curls' },

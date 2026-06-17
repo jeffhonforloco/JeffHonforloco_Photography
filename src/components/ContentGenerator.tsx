@@ -109,7 +109,7 @@ const ContentGenerator = () => {
         {
           slideNumber: 1,
           title: 'Styling Secrets',
-          content: '5 Styling Secrets That Transform Every Photo\n\nPro tips from luxury fashion shoots\n\n👗 Swipe to learn →',
+          content: '5 Styling Secrets That Transform Every Photo\n\nPro tips from editorial fashion shoots\n\n👗 Swipe to learn →',
           designNotes: 'Fashion-forward hero image'
         },
         {
@@ -150,7 +150,7 @@ const ContentGenerator = () => {
 
       return {
         title: template.title,
-        content: `# Instagram Carousel: ${template.title}\n\n${content}\n\n## Hashtag Suggestions:\n#JeffHonforloco #EditorialPhotography #LuxuryPhotography #BehindTheScenes #ModelPrep #FashionPhotography #BeautyPhotography #PhotographyTips #NYC #LuxuryLifestyle\n\n## Posting Schedule:\nBest times: Tuesday-Thursday, 11 AM or 7 PM EST\nUse Stories to tease the carousel 1 hour before posting.`
+        content: `# Instagram Carousel: ${template.title}\n\n${content}\n\n## Hashtag Suggestions:\n#JeffHonforloco #EditorialPhotography #FashionPhotography #BehindTheScenes #ModelPrep #BeautyPhotography #PhotographyTips #NYC #CreativeDirection\n\n## Posting Schedule:\nBest times: Tuesday-Thursday, 11 AM or 7 PM EST\nUse Stories to tease the carousel 1 hour before posting.`
       };
     }
 
@@ -194,7 +194,7 @@ const ContentGenerator = () => {
 
     return {
       title: topic || 'Custom Instagram Carousel',
-      content: `# Instagram Carousel: ${topic}\n\n${content}\n\n## Target Audience: ${targetAudience}\n\n## Hashtag Suggestions:\n#JeffHonforloco #Photography #LuxuryPhotography #Professional #Creative #${topic.replace(/\s+/g, '')}`
+      content: `# Instagram Carousel: ${topic}\n\n${content}\n\n## Target Audience: ${targetAudience}\n\n## Hashtag Suggestions:\n#JeffHonforloco #Photography #EditorialPhotography #Professional #Creative #${topic.replace(/\s+/g, '')}`
     };
   };
 
@@ -205,7 +205,7 @@ const ContentGenerator = () => {
 
 ## Introduction
 
-${topic} is a crucial aspect of professional photography that can make or break your final results. In this comprehensive guide, I'll share insights from years of luxury fashion and editorial photography experience.
+${topic} is a crucial aspect of professional photography that can make or break your final results. In this comprehensive guide, I'll share insights from years of fashion and editorial photography experience.
 
 ## Understanding the Fundamentals
 
@@ -243,7 +243,7 @@ Ready to bring your vision to life? [Contact me](/contact) to discuss your next 
 
 ---
 
-*Jeff Honforloco is a luxury fashion and editorial photographer based in New York, specializing in beauty, fashion, and lifestyle photography for top brands and publications.*`
+*Jeff Honforloco is a fashion and editorial photographer based in New York, specializing in beauty, fashion, and lifestyle photography for top brands and publications.*`
     };
   };
 
