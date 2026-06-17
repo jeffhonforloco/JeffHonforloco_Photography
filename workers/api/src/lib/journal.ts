@@ -2,11 +2,11 @@ import type { Env } from '../types';
 
 const CATEGORIES = [
   { name: 'Photography Tips & Techniques',             keywords: 'professional photography tips, portrait lighting, camera settings, studio setup, photography techniques' },
-  { name: 'Client Preparation & Session Insights',     keywords: 'how to prepare for a photoshoot, what to wear photoshoot, luxury photoshoot preparation, model prep guide' },
+  { name: 'Client Preparation & Session Insights',     keywords: 'how to prepare for a photoshoot, what to wear photoshoot, professional photoshoot preparation, model prep guide' },
   { name: 'Equipment Reviews & Recommendations',       keywords: 'best camera fashion photography, photography lighting equipment, mirrorless camera review, photography gear' },
-  { name: 'Industry Trends & News',                    keywords: 'fashion photography trends 2026, luxury brand photography, editorial photography trends, beauty photography' },
-  { name: 'Personal Projects & Artistic Explorations', keywords: 'luxury fashion photographer NYC, editorial photography inspiration, high-end photography portfolio NYC LA Miami' },
-  { name: 'Business & Marketing Advice',               keywords: 'photography business tips, attract luxury photography clients, photography pricing guide, grow photography business' },
+  { name: 'Industry Trends & News',                    keywords: 'fashion photography trends 2026, brand photography, editorial photography trends, beauty photography' },
+  { name: 'Personal Projects & Artistic Explorations', keywords: 'fashion photographer NYC, editorial photography inspiration, high-end photography portfolio NYC LA Miami' },
+  { name: 'Business & Marketing Advice',               keywords: 'photography business tips, attract high-end photography clients, photography pricing guide, grow photography business' },
 ] as const;
 
 // Fallback Unsplash images per category (used when no portfolio images exist in D1)
@@ -83,7 +83,7 @@ async function generatePost(
   date: string,
   angle: string,
 ): Promise<GeneratedPost> {
-  const prompt = `You are a content strategist and writer for Jeff Honforloco Photography (jeffhonforlocophotos.com). Jeff is a luxury fashion, beauty, and portrait photographer based in Providence, RI, serving clients in New York City, Los Angeles, Miami, and worldwide.
+  const prompt = `You are a content strategist and writer for Jeff Honforloco Photography (jeffhonforlocophotos.com). Jeff is a fashion, beauty, and portrait photographer based in Providence, RI, serving clients in New York City, Los Angeles, Miami, and worldwide.
 
 Write a high-quality, SEO-optimised blog article for the category: "${category.name}"
 Today's topic angle: ${angle}
