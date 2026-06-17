@@ -26,6 +26,7 @@ const Book = lazy(() => import("./pages/Book"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const Services = lazy(() => import("./pages/Services"));
 
 // Loading component
 const LoadingFallback = () => (
@@ -71,6 +72,7 @@ const App = () => {
                 <Route path="/journal" element={<Journal />} />
                 <Route path="/journal/:slug" element={<JournalArticle />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/book" element={<Book />} />
                 <Route path="/pricing" element={<Pricing />} />

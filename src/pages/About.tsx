@@ -1,197 +1,190 @@
-import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { ContentData } from '@/types/content';
+
+const stats = [
+  { value: '10+', label: 'Years Behind the Lens' },
+  { value: '500+', label: 'Sessions Delivered' },
+  { value: '5.0', label: 'Google Rating' },
+  { value: 'US & Intl', label: 'We Travel for the Right Project' },
+];
 
 const About = () => {
-  const [contentData, setContentData] = useState<ContentData | null>(null);
-
-  useEffect(() => {
-    fetch('/data/jeff-content.json')
-      .then(response => response.json())
-      .then(data => setContentData(data))
-      .catch(error => console.error('Error loading content:', error));
-  }, []);
-
-  if (!contentData) {
-    return (
-      <Layout>
-        <div className="py-20 section-padding">
-          <div className="text-center">Loading...</div>
-        </div>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
-      {/* Main Hero Section - Image First Layout */}
-      <section className="min-h-screen bg-photo-black text-white pt-20 md:pt-24">
-        <div className="max-w-7xl mx-auto px-8 md:px-16 py-20 md:py-32">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start min-h-[80vh]">
-            {/* Left Column - Text Content */}
-            <div className="order-2 lg:order-1">
-              <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-8 tracking-wide">
-                PHOTOGRAPHER,<br />
-                CREATIVE,<br />
-                <span className="text-photo-red font-normal">AND ENTREPRENEUR</span>
+      {/* Hero */}
+      <section className="min-h-screen bg-photo-black text-white pt-24 md:pt-28">
+        <div className="max-w-7xl mx-auto px-8 md:px-16 py-20 md:py-28">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+            {/* Left — Text */}
+            <div className="order-2 lg:order-1 lg:pt-8">
+              <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-6">About Jeff</p>
+              <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight tracking-wide text-white mb-10 leading-tight">
+                Photographer,<br />
+                Creative,<br />
+                <span className="text-photo-red">Entrepreneur.</span>
               </h1>
-              
-              <div className="space-y-6 font-inter text-gray-300 text-base md:text-lg leading-relaxed max-w-xl">
+
+              <div className="space-y-6 font-inter font-light text-gray-300 text-base md:text-lg leading-relaxed">
                 <p>
-                  A visionary photographer and creative entrepreneur based in the United States, renowned for his captivating imagery and client-first approach. With years of hands-on experience in fashion, beauty, and lifestyle photography, Jeff has become a trusted name in the industry—recognized for delivering high-quality, emotionally compelling visuals that consistently leave clients amazed.
+                  Jeff Honforloco is a fashion, beauty, and editorial photographer based in Providence, Rhode Island, with a client list that spans models, agencies, brands, and individuals across the United States and internationally.
                 </p>
-                
                 <p>
-                  Passionate about highlighting the glamour, strength, and individuality of every subject, Jeff's work has graced top fashion shows in Providence, Rhode Island, where he currently resides and operates. His artistic eye and attention to detail make him a go-to photographer for models, brands, agencies, and individuals seeking to tell their story through powerful visuals.
+                  His work is built on a single conviction: that every person has imagery waiting inside them — something that's true, powerful, and worth capturing on camera. Jeff's job is to find it. That means understanding your vision before the shoot, building the environment where you feel like yourself, and then making the picture that proves it.
                 </p>
-                
                 <p>
-                  Specializing in fashion, beauty, editorial, lifestyle, and portrait photography, Jeff takes pride in understanding his clients' vision and turning it into timeless art. His clients not only value his technical skill but also his warm energy, professionalism, and commitment to excellence.
+                  Over more than a decade, Jeff has photographed runway shows in Rhode Island, editorial campaigns for brands, beauty portraits for makeup artists, weddings across the country, and everything in between. He is known for his precision, his warmth on set, and for delivering images that clients describe as better than they imagined.
                 </p>
-                
                 <p>
-                  Whether in front of the lens or behind it, Jeff is dedicated to creating meaningful moments. He believes, "A well-captured image represents a moment in time that lives on forever."
+                  He is also a creative entrepreneur — working in partnership with urs79.com to extend the visual experience into motion content, and operating as a full-service creative studio for clients who need more than a photographer.
                 </p>
               </div>
-              
-              <div className="mt-12 pt-8 border-t border-gray-700">
-                <blockquote className="font-playfair italic text-xl text-gray-400 font-light">
-                  "A well-captured image represents a moment in time that is expressed infinitely"
-                </blockquote>
-                <cite className="block mt-4 text-sm text-gray-500 not-italic font-inter">
+
+              <blockquote className="mt-12 pt-10 border-t border-photo-gray-700">
+                <p className="font-playfair text-xl md:text-2xl italic font-light text-gray-300 leading-relaxed">
+                  "A well-captured image represents a moment in time that is expressed infinitely."
+                </p>
+                <cite className="block mt-4 font-inter text-sm text-gray-500 not-italic tracking-widest uppercase">
                   — Jeff Honforloco
                 </cite>
-              </div>
+              </blockquote>
             </div>
 
-            {/* Right Column - Featured Image */}
+            {/* Right — Image */}
             <div className="order-1 lg:order-2">
-              <div className="relative w-full">
-                <div className="aspect-[3/4] lg:aspect-[4/5] overflow-hidden bg-gradient-to-br from-photo-red/10 to-transparent">
+              <div className="relative">
+                <div className="aspect-[3/4] overflow-hidden">
                   <img
                     src="/images/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png"
-                    alt={contentData.personal.name}
+                    alt="Jeff Honforloco, photographer"
                     className="w-full h-full object-cover object-center"
                   />
                 </div>
+                <div className="absolute -bottom-4 -left-4 w-24 h-24 border border-photo-red/30" />
+                <div className="absolute -top-4 -right-4 w-24 h-24 border border-photo-red/30" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Video Section */}
-      <section className="py-20 md:py-32 bg-photo-gray-900">
-        <div className="max-w-6xl mx-auto px-8 md:px-16">
-          <div className="text-center mb-16">
-            <h2 className="font-bold text-4xl md:text-5xl text-white mb-6">
-              Behind the Lens
-            </h2>
-            <p className="text-gray-400 text-xl max-w-3xl mx-auto">
-              Get to know Jeff's creative process and philosophy behind his award-winning photography work.
-            </p>
-          </div>
-          
-          {(() => {
-            const motionItems = JSON.parse(localStorage.getItem('motionItems') || '[]');
-            const behindLensVideo = motionItems.find((item: { isBehindLens?: boolean }) => item.isBehindLens);
-            
-            if (behindLensVideo) {
-              return (
-                <div className="aspect-video bg-black rounded-lg overflow-hidden border border-photo-red/20">
-                  {behindLensVideo.isYouTube ? (
-                    <iframe
-                      width="100%"
-                      height="100%"
-                      src={`https://www.youtube.com/embed/${behindLensVideo.youTubeId}`}
-                      title={behindLensVideo.alt}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-full"
-                    />
-                  ) : (
-                    <video
-                      controls
-                      className="w-full h-full object-cover"
-                      poster={behindLensVideo.thumbnail}
-                    >
-                      <source src={behindLensVideo.src} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  )}
-                </div>
-              );
-            }
-            
-            return (
-              <div className="relative aspect-video bg-black rounded-lg overflow-hidden border border-photo-red/20">
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-photo-red/10 to-transparent">
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-photo-red/20 rounded-full flex items-center justify-center mb-4 mx-auto">
-                      <svg className="w-8 h-8 text-photo-red" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                    </div>
-                    <p className="text-gray-400">Featured Video Coming Soon</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section className="py-20 md:py-32 bg-photo-black">
-        <div className="max-w-6xl mx-auto px-8 md:px-16">
-          <div className="text-center mb-16">
-            <h2 className="font-bold text-4xl md:text-5xl text-white mb-6">
-              Services
-            </h2>
-            <div className="w-24 h-1 bg-photo-red mx-auto mb-8"></div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {contentData.services.map((service: string, index: number) => (
-              <div key={index} className="bg-photo-gray-900 p-8 rounded-lg hover:bg-photo-gray-800 transition-all duration-300 hover:transform hover:scale-105">
-                <h3 className="text-xl font-bold mb-4 text-photo-red capitalize">{service}</h3>
-                <p className="text-gray-400 leading-relaxed">
-                  Professional {service.toLowerCase()} services with artistic vision and technical excellence that brings your creative vision to life.
-                </p>
+      {/* Stats */}
+      <section className="py-20 bg-photo-gray-900 border-t border-photo-gray-800">
+        <div className="max-w-7xl mx-auto px-8 md:px-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="font-playfair text-4xl md:text-5xl font-extralight text-white mb-2">{stat.value}</p>
+                <p className="font-inter text-xs text-gray-500 tracking-widest uppercase leading-relaxed">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="py-20 md:py-32 bg-photo-gray-900">
-        <div className="text-center max-w-4xl mx-auto px-8 md:px-16">
-          <h2 className="font-bold text-4xl md:text-5xl text-white mb-8">
-            Let's Create Something <span className="text-photo-red">Amazing</span> Together
-          </h2>
-          <p className="text-gray-400 text-xl mb-12 leading-relaxed max-w-3xl mx-auto">
-            Ready to bring your creative vision to life? Whether you're looking for fashion photography, 
-            beauty shoots, or custom creative projects, let's collaborate to create something extraordinary.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <a href="/contact" className="bg-photo-red hover:bg-photo-red-hover text-white px-12 py-4 font-semibold tracking-wide uppercase text-sm transition-all duration-300 hover:scale-105 rounded-lg">
-              Start Your Project
-            </a>
-            <a href="/portfolio" className="border-2 border-photo-red text-photo-red hover:bg-photo-red hover:text-white px-12 py-4 font-semibold tracking-wide uppercase text-sm transition-all duration-300 hover:scale-105 rounded-lg">
-              View Portfolio
-            </a>
+      {/* Philosophy */}
+      <section className="py-32 md:py-40 bg-photo-black relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-photo-gray-900/20 to-photo-black" />
+        <div className="relative max-w-7xl mx-auto px-8 md:px-16">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div>
+              <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">The Approach</p>
+              <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-extralight tracking-wide text-white mb-8 leading-tight">
+                Vision First,<br />Camera Second.
+              </h2>
+              <div className="w-16 h-px bg-photo-red mb-10" />
+              <div className="space-y-5 font-inter font-light text-gray-300 text-base leading-relaxed">
+                <p>
+                  Jeff doesn't pick up the camera until he understands what you're trying to say. Every session starts with a conversation about purpose: what these images are for, who will see them, and what they need to make you feel.
+                </p>
+                <p>
+                  On set, the environment is calm and intentional. Jeff works quickly and quietly, adjusting light and direction in real time — so clients spend less time waiting and more time being photographed at their best.
+                </p>
+                <p>
+                  The result is a gallery that doesn't need to be explained. You'll know the moment you see it.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {[
+                { title: 'Before the Shoot', body: 'A creative consult where Jeff aligns on concept, location, wardrobe, and direction. No guessing.' },
+                { title: 'On Set', body: 'Professional, calm, and efficient. Jeff guides the session so you can focus on being in it.' },
+                { title: 'After Delivery', body: 'Gallery-ready, fully retouched images ready for whatever you create next.' },
+              ].map((item) => (
+                <div key={item.title} className="bg-photo-gray-900 border border-photo-gray-700 rounded-2xl p-8">
+                  <h3 className="font-playfair text-xl font-light text-white mb-3">{item.title}</h3>
+                  <p className="font-inter font-light text-gray-400 text-sm leading-relaxed">{item.body}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Copyright */}
-      <section className="py-8 bg-photo-black border-t border-photo-gray-800">
-        <div className="text-center">
-          <p className="text-gray-500 text-sm">
-            © 2025 Jeff Honforloco Photography. All rights reserved.
+      {/* Video — Behind the Lens */}
+      {(() => {
+        let behindLensVideo = null;
+        try {
+          const motionItems = JSON.parse(localStorage.getItem('motionItems') || '[]');
+          behindLensVideo = motionItems.find((item: { isBehindLens?: boolean }) => item.isBehindLens) ?? null;
+        } catch {}
+
+        if (!behindLensVideo) return null;
+
+        return (
+          <section className="py-20 md:py-32 bg-photo-gray-900">
+            <div className="max-w-6xl mx-auto px-8 md:px-16">
+              <div className="text-center mb-16">
+                <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">Process</p>
+                <h2 className="font-playfair text-4xl md:text-5xl font-extralight tracking-wide text-white">Behind the Lens</h2>
+              </div>
+              <div className="aspect-video bg-black rounded-2xl overflow-hidden border border-photo-gray-700">
+                {behindLensVideo.isYouTube ? (
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${behindLensVideo.youTubeId}`}
+                    title={behindLensVideo.alt}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <video controls className="w-full h-full object-cover" poster={behindLensVideo.thumbnail}>
+                    <source src={behindLensVideo.src} type="video/mp4" />
+                  </video>
+                )}
+              </div>
+            </div>
+          </section>
+        );
+      })()}
+
+      {/* CTA */}
+      <section className="py-32 bg-photo-black border-t border-photo-gray-800">
+        <div className="max-w-3xl mx-auto px-8 md:px-16 text-center">
+          <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">Work Together</p>
+          <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-extralight tracking-wide text-white mb-8 leading-tight">
+            Ready When You Are
+          </h2>
+          <p className="font-inter font-light text-gray-400 leading-relaxed mb-10 text-lg">
+            Book a session or view the full portfolio to see what's possible.
           </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/book"
+              className="inline-block bg-photo-red hover:bg-photo-red-hover text-white px-12 py-4 font-inter font-medium tracking-[0.2em] uppercase text-sm transition-all duration-300 hover:scale-105"
+            >
+              Book Your Session
+            </Link>
+            <Link
+              to="/portfolios"
+              className="inline-block border border-white/20 hover:border-white/50 text-white px-12 py-4 font-inter font-medium tracking-[0.2em] uppercase text-sm transition-all duration-300"
+            >
+              View Portfolio
+            </Link>
+          </div>
         </div>
       </section>
     </Layout>
