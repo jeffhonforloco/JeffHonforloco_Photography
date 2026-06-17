@@ -41,12 +41,77 @@ export function contactNotificationHtml(data: {
   `;
 }
 
-export function contactConfirmationHtml(name: string): string {
+export function contactConfirmationHtml(data: {
+  name: string;
+  service_type?: string;
+  event_date?: string;
+  location?: string;
+  budget_range?: string;
+}): string {
+  const { name, service_type, event_date, location, budget_range } = data;
+  const safeName = escapeHtml(name);
+
+  const detailRows = [
+    service_type ? `<tr><td style="padding:6px 0;color:#9ca3af;width:120px;">Service</td><td style="padding:6px 0;color:#f9fafb;">${escapeHtml(service_type)}</td></tr>` : '',
+    event_date   ? `<tr><td style="padding:6px 0;color:#9ca3af;">Requested Date</td><td style="padding:6px 0;color:#f9fafb;">${escapeHtml(event_date)}</td></tr>` : '',
+    location     ? `<tr><td style="padding:6px 0;color:#9ca3af;">Location</td><td style="padding:6px 0;color:#f9fafb;">${escapeHtml(location)}</td></tr>` : '',
+    budget_range ? `<tr><td style="padding:6px 0;color:#9ca3af;">Budget</td><td style="padding:6px 0;color:#f9fafb;">${escapeHtml(budget_range)}</td></tr>` : '',
+  ].filter(Boolean).join('');
+
   return `
-    <h2>Thank you, ${escapeHtml(name)}!</h2>
-    <p>Your inquiry has been received. I personally respond to all messages within 24 hours.</p>
-    <p>— Jeff Honforloco</p>
-    <p><a href="https://jeffhonforlocophotos.com">jeffhonforlocophotos.com</a></p>
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#f9fafb;padding:0;">
+
+      <div style="background:#111;padding:32px 40px;text-align:center;border-bottom:2px solid #dc2626;">
+        <p style="font-size:11px;letter-spacing:0.3em;color:#dc2626;text-transform:uppercase;margin:0 0 8px;">Jeff Honforloco Photography</p>
+        <h1 style="font-size:28px;font-weight:300;color:#fff;margin:0;">Your Request Is In</h1>
+      </div>
+
+      <div style="padding:40px;">
+        <p style="font-size:16px;color:#d1d5db;line-height:1.6;margin:0 0 24px;">
+          Hi ${safeName},<br><br>
+          Thank you for reaching out. I've received your booking request and will personally review it within <strong style="color:#fff;">24 hours</strong>.
+        </p>
+
+        ${detailRows ? `
+        <div style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:20px;margin-bottom:32px;">
+          <p style="font-size:11px;letter-spacing:0.25em;color:#dc2626;text-transform:uppercase;margin:0 0 12px;">Your Session Summary</p>
+          <table style="width:100%;border-collapse:collapse;">${detailRows}</table>
+        </div>` : ''}
+
+        <div style="margin-bottom:32px;">
+          <p style="font-size:11px;letter-spacing:0.25em;color:#dc2626;text-transform:uppercase;margin:0 0 16px;">What Happens Next</p>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;gap:16px;margin-bottom:20px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:#dc2626;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-align:center;line-height:28px;">1</div>
+              <div>
+                <p style="margin:0;color:#fff;font-size:14px;font-weight:600;">Jeff Reviews Your Request (within 24 hrs)</p>
+                <p style="margin:4px 0 0;color:#9ca3af;font-size:13px;">I personally look over every inquiry to understand your vision and goals.</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;margin-bottom:20px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:#dc2626;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-align:center;line-height:28px;">2</div>
+              <div>
+                <p style="margin:0;color:#fff;font-size:14px;font-weight:600;">Creative Consult Scheduled</p>
+                <p style="margin:4px 0 0;color:#9ca3af;font-size:13px;">We'll connect to align on concept, location, wardrobe, and creative direction before the shoot.</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:#dc2626;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-align:center;line-height:28px;">3</div>
+              <div>
+                <p style="margin:0;color:#fff;font-size:14px;font-weight:600;">Shoot Day Confirmed</p>
+                <p style="margin:4px 0 0;color:#9ca3af;font-size:13px;">Once everything is aligned, your session date is locked in and we're ready to create.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p style="color:#6b7280;font-size:13px;line-height:1.6;border-top:1px solid #222;padding-top:24px;margin:0;">
+          Questions in the meantime? Reply directly to this email or visit
+          <a href="https://jeffhonforlocophotos.com" style="color:#dc2626;">jeffhonforlocophotos.com</a><br><br>
+          — Jeff Honforloco
+        </p>
+      </div>
+    </div>
   `;
 }
 
