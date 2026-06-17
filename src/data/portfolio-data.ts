@@ -1,5 +1,11 @@
 export const portfolioImages = {
   beauty: [
+    { src: '/images/IMG_7653.jpeg', alt: 'Red Glove Beauty Editorial', caption: 'Split-light beauty with red satin gloves' },
+    { src: '/images/IMG_7670.jpeg', alt: 'Gold Eyeshadow Beauty', caption: 'Editorial beauty — gold shimmer and blue eyes' },
+    { src: '/images/IMG_7671.jpeg', alt: 'Blue Liner Beauty', caption: 'Striking beauty with electric blue liner and nails' },
+    { src: '/images/IMG_7673.jpeg', alt: 'Red Lip Smoky Eye', caption: 'Bold red lip with smoky eye editorial' },
+    { src: '/images/IMG_7706.jpeg', alt: 'Soft Beauty Portrait', caption: 'Natural beauty with warm coral tones' },
+    { src: '/images/IMG_7664.jpeg', alt: 'Red Hat Beauty Portrait', caption: 'Glamour beauty with wide-brim red hat' },
     {
       src: '/images/35e9a46e-e427-4bac-a68b-dbbd510572a3.png',
       alt: 'Dramatic Red Beauty',
@@ -102,6 +108,13 @@ export const portfolioImages = {
     }
   ],
   fashion: [
+    { src: '/images/IMG_7652.jpeg', alt: 'Red Sequin Gown Full Length', caption: 'FESTIVE GLAMOUR' },
+    { src: '/images/IMG_7658.jpeg', alt: 'Red Sequin Seated Editorial', caption: 'RED SEQUENCE' },
+    { src: '/images/IMG_7655.jpeg', alt: 'Black Sequin Mini Red Light', caption: 'NEON EDITORIAL' },
+    { src: '/images/IMG_7659.jpeg', alt: 'Red Hat Off-Shoulder Gown', caption: 'VINTAGE GLAMOUR' },
+    { src: '/images/IMG_7668.jpeg', alt: 'Red Ruffle Dress Editorial', caption: 'RED STATEMENT' },
+    { src: '/images/IMG_7700.jpeg', alt: 'Dark Portrait Natural Hair', caption: 'BOLD PORTRAIT' },
+    { src: '/images/IMG_7771.jpeg', alt: 'Neon Yellow Fashion Editorial', caption: 'EDITORIAL FASHION' },
     { src: '/images/8353fa23-da0a-4cdd-afad-c33e3622e179.png', alt: 'Fashion Photography', caption: 'FESTIVE ELEGANCE' },
     { src: '/images/3fc5d0bd-a575-4ac9-bab5-50b03bdf22c7.png', alt: 'Fashion Photography', caption: 'MODERN LUXURY' },
     { src: '/images/062059e1-5ef4-498c-b407-a160cca11bde.png', alt: 'Fashion Photography', caption: 'VINTAGE GLAMOUR' },
@@ -124,6 +137,11 @@ export const portfolioImages = {
     { src: '/images/fe3059c7-202d-4437-8785-42cc1fc2cab4.png', alt: 'Fashion Photography', caption: 'CONTEMPORARY STYLE' }
   ],
   glamour: [
+    { src: '/images/IMG_7656.jpeg', alt: 'Red Sequin Leaning Glamour', caption: 'Classic red sequin glamour' },
+    { src: '/images/IMG_7662.jpeg', alt: 'Red Sequin Portrait Close-up', caption: 'Intimate red sequin glamour' },
+    { src: '/images/IMG_7665.jpeg', alt: 'Red Gloves Moody Glamour', caption: 'Moody red glove editorial' },
+    { src: '/images/IMG_7721.jpeg', alt: 'Moody Lamp Editorial Glamour', caption: 'Dramatic hotel lamp editorial' },
+    { src: '/images/IMG_7834.jpeg', alt: 'Black and White Sparkle Glamour', caption: 'B&W glamour with sparkle backdrop' },
     {
       src: '/images/0999eeeb-51de-4779-bde5-250d4e16b9fd.png',
       alt: 'Red Hat Glamour Portrait',
@@ -228,6 +246,11 @@ export const portfolioImages = {
     }
   ],
   lifestyle: [
+    { src: '/images/IMG_7713.jpeg', alt: 'Sunset Beach Lifestyle', caption: 'Golden hour on the rocks — coastal lifestyle' },
+    { src: '/images/IMG_7757.jpeg', alt: 'Headshot Portrait White Blazer', caption: 'Joyful energy in white — personal brand portrait' },
+    { src: '/images/IMG_7707.jpeg', alt: 'Curly Hair Pink Background Portrait', caption: 'Vibrant lifestyle portrait with natural curls' },
+    { src: '/images/IMG_7794.jpeg', alt: 'Male Headshot Portrait', caption: 'Clean executive headshot' },
+    { src: '/images/IMG_7792.jpeg', alt: 'Moody Male Portrait Hat', caption: 'Moody dramatic portrait with hat' },
     {
       src: '/images/fa74ddee-b244-4d85-b441-0850dc46b2d1.png',
       alt: 'Boho Style Lifestyle Portrait',
