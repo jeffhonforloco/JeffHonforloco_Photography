@@ -2,22 +2,22 @@
 const FeaturedWork = () => {
   const featuredWork = [
     {
-      image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+      image: '/images/IMG_7671.jpeg',
       category: 'High-End Editorial',
-      title: 'NYC Fashion Week Editorial',
-      description: 'Editorial photography for fashion week campaigns'
+      title: 'Editorial Beauty',
+      description: 'Editorial beauty photography for campaigns and publications'
     },
     {
-      image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-      category: 'Celebrity Fashion',
-      title: 'LA Celebrity Campaign',
-      description: 'High-end fashion photography for celebrity brand partnerships'
+      image: '/images/IMG_7707.jpeg',
+      category: 'Fashion',
+      title: 'Fashion Campaign',
+      description: 'High-end fashion photography for brands and models'
     },
     {
-      image: 'https://images.unsplash.com/photo-1534809027769-b00d750a6bac?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+      image: '/images/IMG_7664.jpeg',
       category: 'Beauty Editorial',
-      title: 'Miami Beauty Campaign',
-      description: 'Premium beauty photography for leading cosmetic brands'
+      title: 'Beauty Portrait',
+      description: 'Premium beauty photography for cosmetic brands and artists'
     }
   ];
 
