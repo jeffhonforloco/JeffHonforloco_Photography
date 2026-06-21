@@ -6,7 +6,7 @@ const chat = new Hono<AppEnv>();
 
 const MAX_MSG_LEN = 2000;
 const MAX_HISTORY = 20;
-const CONTROL_RE = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
+const CONTROL_RE = new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, 'g');
 
 function sanitizeContent(content: string): string {
   return String(content).replace(CONTROL_RE, '').slice(0, MAX_MSG_LEN);
@@ -114,7 +114,7 @@ RESPONSE STYLE:
 - Never invent services or prices not listed above
 - If uncertain about scope or travel logistics: "Let me have Jeff confirm that detail personally — can I get your email?"`;
 
-const EMAIL_REGEX = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
+const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
 
 function detectServiceType(text: string): string {
   const t = text.toLowerCase();

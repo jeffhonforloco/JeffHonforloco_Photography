@@ -37,7 +37,9 @@ const HighResImage: React.FC<HighResImageProps> = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [isInView, setIsInView] = useState(priority);
+  const [isInView, setIsInView] = useState(
+    () => priority || typeof IntersectionObserver === 'undefined'
+  );
   const imgRef = useRef<HTMLImageElement>(null);
 
   // Priority images: compute src synchronously — skip IntersectionObserver
@@ -47,13 +49,10 @@ const HighResImage: React.FC<HighResImageProps> = ({
   );
 
   useEffect(() => {
-    if (priority) return;
+    if (priority || typeof IntersectionObserver === 'undefined') return;
 
     const el = imgRef.current;
-    if (!el) {
-      setIsInView(true);
-      return;
-    }
+    if (!el) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
