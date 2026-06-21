@@ -292,7 +292,7 @@ const AdminPortfolio: React.FC = () => {
     }
   };
 
-  const categories = ['beauty', 'fashion', 'glamour', 'editorial', 'lifestyle', 'motion'];
+  const categories = ['beauty', 'fashion', 'glamour', 'editorial', 'headshots', 'lifestyle', 'motion'];
 
   if (loading) {
     return (

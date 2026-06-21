@@ -6,6 +6,7 @@ export const categoryTitles = {
   'luxury-beauty-photography-nationwide': 'BEAUTY',
   'editorial-photography-magazines': 'EDITORIAL',
   'editorial': 'EDITORIAL',
+  'headshots': 'HEADSHOTS',
   'celebrity-lifestyle-photography': 'LIFESTYLE',
   'lifestyle': 'LIFESTYLE',
   // Legacy support
@@ -23,6 +24,7 @@ export const categoryDescriptions = {
   fashion: 'Contemporary fashion photography featuring bold styling, creative concepts, and innovative visual narratives.',
   editorial: 'Storytelling through sophisticated editorial and commercial work with artistic vision and technical excellence.',
   glamour: 'Sophisticated glamour photography with dramatic lighting, elegant styling, and captivating visual appeal.',
+  headshots: 'Professional headshots and personal-brand portraits for executives, creatives, teams, and talent.',
   lifestyle: 'Authentic lifestyle moments captured with artistic vision, showcasing real people in beautiful settings.',
   motion: 'Dynamic cinematography and motion content bringing stories to life through film and video production.'
 };
