@@ -28,6 +28,12 @@ const portfolioCategories = [
     href: '/portfolios/editorial',
   },
   {
+    title: 'Headshots',
+    slug: 'headshots',
+    image: '/images/headshot-client-2.jpeg',
+    href: '/portfolios/headshots',
+  },
+  {
     title: 'Lifestyle',
     slug: 'lifestyle',
     image: '/images/bcd80ca3-d60c-4596-9a71-4b8602583ff7.png',
@@ -40,7 +46,7 @@ const Portfolio = () => {
     <Layout>
       <div className="min-h-screen bg-black">
         {/* Single responsive grid — no duplicate mobile/desktop DOM */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 min-h-screen">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 min-h-screen">
           {portfolioCategories.map((category, index) => (
             <Link
               key={category.slug}

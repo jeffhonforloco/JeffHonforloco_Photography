@@ -13,6 +13,7 @@ const PortfolioDropdown = ({ isOpen, onMouseEnter, onMouseLeave, onClose }: Port
     { name: 'Fashion', href: '/portfolios/fashion' },
     { name: 'Editorial', href: '/portfolios/editorial' },
     { name: 'Glamour', href: '/portfolios/glamour' },
+    { name: 'Headshots', href: '/portfolios/headshots' },
     { name: 'Lifestyle', href: '/portfolios/lifestyle' },
   ];
 
