@@ -19,7 +19,7 @@ auth.post('/setup', async (c) => {
     `INSERT INTO users (username, email, password_hash, password_salt, role) VALUES (?, ?, ?, ?, 'admin')`
   ).bind(username, email, hash, salt).run();
 
-  return c.json({ ok: true, message: 'Admin account created' });
+  return c.json({ ok: true, success: true, message: 'Admin account created' });
 });
 
 // POST /api/v1/auth/login
@@ -42,7 +42,20 @@ auth.post('/login', async (c) => {
     signJWT(payload, c.env.JWT_SECRET, 7 * 86400),   // 7d
   ]);
 
-  return c.json({ accessToken, refreshToken, user: { id: user.id, username: user.username, email: user.email, role: user.role } });
+  const publicUser = { id: user.id, username: user.username, email: user.email, role: user.role };
+
+  return c.json({
+    success: true,
+    accessToken,
+    refreshToken,
+    user: publicUser,
+    data: {
+      token: accessToken,
+      accessToken,
+      refreshToken,
+      user: publicUser,
+    },
+  });
 });
 
 // POST /api/v1/auth/refresh
@@ -55,7 +68,7 @@ auth.post('/refresh', async (c) => {
   if (!payload) return c.json({ error: 'Invalid or expired refresh token' }, 401);
 
   const newToken = await signJWT({ id: payload.id, username: payload.username, role: payload.role }, c.env.JWT_SECRET, 86400);
-  return c.json({ accessToken: newToken });
+  return c.json({ success: true, accessToken: newToken, data: { token: newToken, accessToken: newToken } });
 });
 
 // GET /api/v1/auth/me
@@ -64,7 +77,16 @@ auth.get('/me', requireAuth, async (c) => {
     `SELECT id, username, email, role, created_at FROM users WHERE id = ?`
   ).bind(c.get('userId')).first();
   if (!user) return c.json({ error: 'Not found' }, 404);
-  return c.json(user);
+  return c.json({ success: true, user, data: { user } });
+});
+
+// GET /api/v1/auth/verify — legacy admin-panel compatibility alias
+auth.get('/verify', requireAuth, async (c) => {
+  const user = await c.env.DB.prepare(
+    `SELECT id, username, email, role, created_at FROM users WHERE id = ?`
+  ).bind(c.get('userId')).first();
+  if (!user) return c.json({ error: 'Not found' }, 404);
+  return c.json({ success: true, user, data: { user } });
 });
 
 // POST /api/v1/auth/change-password
@@ -85,10 +107,10 @@ auth.post('/change-password', requireAuth, async (c) => {
     `UPDATE users SET password_hash = ?, password_salt = ?, updated_at = datetime('now') WHERE id = ?`
   ).bind(hash, salt, c.get('userId')).run();
 
-  return c.json({ ok: true });
+  return c.json({ ok: true, success: true });
 });
 
 // POST /api/v1/auth/logout
-auth.post('/logout', requireAuth, (c) => c.json({ ok: true }));
+auth.post('/logout', requireAuth, (c) => c.json({ ok: true, success: true }));
 
 export default auth;

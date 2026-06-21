@@ -23,6 +23,7 @@ app.get('/health', (c) => c.json({ ok: true, ts: new Date().toISOString() }));
 
 // Routes
 app.route('/api/v1/auth',      authRoutes);
+app.route('/api/v1/admin-auth', authRoutes);
 app.route('/api/v1/contacts',  contactsRoutes);
 app.route('/api/v1/email',     emailRoutes);
 app.route('/api/v1/blog',      blogRoutes);

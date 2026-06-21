@@ -27,7 +27,14 @@ contacts.get('/', requireAuth, async (c) => {
       .bind(...params).first<{ n: number }>(),
   ]);
 
-  return c.json({ contacts: rows.results, total: total?.n ?? 0, page, limit });
+  return c.json({
+    success: true,
+    contacts: rows.results,
+    data: rows.results,
+    total: total?.n ?? 0,
+    page,
+    limit,
+  });
 });
 
 // GET /api/v1/contacts/stats — overview stats (auth required)
@@ -37,7 +44,13 @@ contacts.get('/stats', requireAuth, async (c) => {
     c.env.DB.prepare('SELECT status, COUNT(*) as n FROM contacts GROUP BY status').all(),
     c.env.DB.prepare('SELECT COUNT(*) as n FROM contacts WHERE created_at >= datetime("now", "-7 days")').first<{ n: number }>(),
   ]);
-  return c.json({ total: total?.n ?? 0, byStatus: byStatus.results, recentWeek: recent?.n ?? 0 });
+  return c.json({
+    success: true,
+    total: total?.n ?? 0,
+    byStatus: byStatus.results,
+    recentWeek: recent?.n ?? 0,
+    data: { total: total?.n ?? 0, byStatus: byStatus.results, recentWeek: recent?.n ?? 0 },
+  });
 });
 
 // POST /api/v1/contacts — create contact (public)
@@ -60,14 +73,14 @@ contacts.post('/', async (c) => {
   ).bind(body.full_name, body.email, body.phone ?? null, body.message,
          body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
 
-  return c.json({ ok: true, id: result.meta.last_row_id }, 201);
+  return c.json({ ok: true, success: true, id: result.meta.last_row_id, data: { id: result.meta.last_row_id } }, 201);
 });
 
 // GET /api/v1/contacts/:id (auth required)
 contacts.get('/:id', requireAuth, async (c) => {
   const row = await c.env.DB.prepare('SELECT * FROM contacts WHERE id = ?').bind(c.req.param('id')).first();
   if (!row) return c.json({ error: 'Not found' }, 404);
-  return c.json(row);
+  return c.json({ success: true, contact: row, data: row });
 });
 
 // PUT /api/v1/contacts/:id (auth required)
@@ -79,13 +92,13 @@ contacts.put('/:id', requireAuth, async (c) => {
   await c.env.DB.prepare(
     `UPDATE contacts SET status = COALESCE(?, status), notes = COALESCE(?, notes), updated_at = datetime('now') WHERE id = ?`
   ).bind(status ?? null, notes ?? null, c.req.param('id')).run();
-  return c.json({ ok: true });
+  return c.json({ ok: true, success: true });
 });
 
 // DELETE /api/v1/contacts/:id (auth required)
 contacts.delete('/:id', requireAuth, async (c) => {
   await c.env.DB.prepare('DELETE FROM contacts WHERE id = ?').bind(c.req.param('id')).run();
-  return c.json({ ok: true });
+  return c.json({ ok: true, success: true });
 });
 
 export default contacts;

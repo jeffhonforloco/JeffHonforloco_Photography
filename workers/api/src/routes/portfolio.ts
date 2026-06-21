@@ -22,7 +22,14 @@ portfolio.get('/', async (c) => {
       .bind(...params, limit, offset).all(),
     c.env.DB.prepare(`SELECT COUNT(*) as n FROM portfolio_images ${where}`).bind(...params).first<{ n: number }>(),
   ]);
-  return c.json({ images: rows.results, total: total?.n ?? 0, page, limit });
+  return c.json({
+    success: true,
+    images: rows.results,
+    data: { images: rows.results, total: total?.n ?? 0, page, limit },
+    total: total?.n ?? 0,
+    page,
+    limit,
+  });
 });
 
 // GET /api/v1/portfolio/featured
@@ -30,7 +37,7 @@ portfolio.get('/featured', async (c) => {
   const rows = await c.env.DB.prepare(
     `SELECT * FROM portfolio_images WHERE is_featured = 1 ORDER BY sort_order ASC LIMIT 20`
   ).all();
-  return c.json({ images: rows.results });
+  return c.json({ success: true, images: rows.results, data: { images: rows.results } });
 });
 
 // GET /api/v1/portfolio/categories
@@ -38,7 +45,7 @@ portfolio.get('/categories', async (c) => {
   const rows = await c.env.DB.prepare(
     `SELECT category, COUNT(*) as count FROM portfolio_images GROUP BY category ORDER BY category`
   ).all();
-  return c.json({ categories: rows.results });
+  return c.json({ success: true, categories: rows.results, data: { categories: rows.results } });
 });
 
 // GET /api/v1/portfolio/category/:category
@@ -46,7 +53,7 @@ portfolio.get('/category/:category', async (c) => {
   const rows = await c.env.DB.prepare(
     `SELECT * FROM portfolio_images WHERE category = ? ORDER BY sort_order ASC, created_at DESC`
   ).bind(c.req.param('category')).all();
-  return c.json({ images: rows.results });
+  return c.json({ success: true, images: rows.results, data: { images: rows.results } });
 });
 
 // POST /api/v1/portfolio — create (auth required)
@@ -65,7 +72,7 @@ portfolio.post('/', requireAuth, async (c) => {
     body.title, body.description ?? null, body.image_url, body.thumbnail_url ?? null,
     body.category, body.is_featured ? 1 : 0, body.sort_order ?? 0, body.tags ?? null
   ).run();
-  return c.json({ ok: true, id: result.meta.last_row_id }, 201);
+  return c.json({ ok: true, success: true, id: result.meta.last_row_id, data: { id: result.meta.last_row_id } }, 201);
 });
 
 // PUT /api/v1/portfolio/:id (auth required)
@@ -91,13 +98,13 @@ portfolio.put('/:id', requireAuth, async (c) => {
     body.category ?? null, body.is_featured !== undefined ? (body.is_featured ? 1 : 0) : null,
     body.sort_order ?? null, body.tags ?? null, c.req.param('id')
   ).run();
-  return c.json({ ok: true });
+  return c.json({ ok: true, success: true });
 });
 
 // DELETE /api/v1/portfolio/:id (auth required)
 portfolio.delete('/:id', requireAuth, async (c) => {
   await c.env.DB.prepare('DELETE FROM portfolio_images WHERE id = ?').bind(c.req.param('id')).run();
-  return c.json({ ok: true });
+  return c.json({ ok: true, success: true });
 });
 
 export default portfolio;

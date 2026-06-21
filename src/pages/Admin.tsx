@@ -22,6 +22,16 @@ const Admin: React.FC = () => {
         <Route path="contacts" element={<AdminContacts />} />
         <Route path="blog" element={<AdminBlog />} />
         <Route path="portfolio" element={<AdminPortfolio />} />
+        <Route
+          path="motion"
+          element={
+            <AdminPortfolio
+              initialCategory="motion"
+              title="Motion Management"
+              description="Manage motion, video, and YouTube portfolio entries"
+            />
+          }
+        />
         <Route path="analytics" element={<AdminAnalytics />} />
         <Route path="email" element={<AdminEmail />} />
         <Route path="database" element={<AdminDatabase />} />

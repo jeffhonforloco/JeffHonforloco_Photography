@@ -38,6 +38,7 @@ import {
   X,
   Upload
 } from 'lucide-react';
+import { extractYouTubeId, getYouTubeThumbnail, isYouTubeUrl } from '@/lib/youtube-utils';
 
 interface PortfolioImage {
   id: number;
@@ -54,13 +55,23 @@ interface PortfolioImage {
   updated_at: string;
 }
 
-const AdminPortfolio: React.FC = () => {
+interface AdminPortfolioProps {
+  initialCategory?: string;
+  title?: string;
+  description?: string;
+}
+
+const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
+  initialCategory = 'all',
+  title = 'Portfolio Management',
+  description = 'Manage your portfolio images and galleries',
+}) => {
   const [portfolioImages, setPortfolioImages] = useState<PortfolioImage[]>([]);
   const [filteredImages, setFilteredImages] = useState<PortfolioImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [selectedImage, setSelectedImage] = useState<PortfolioImage | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -292,6 +303,15 @@ const AdminPortfolio: React.FC = () => {
     }
   };
 
+  const getPreviewUrl = (item: Pick<PortfolioImage, 'image_url' | 'thumbnail_url' | 'category'>) => {
+    if (item.category === 'motion' && isYouTubeUrl(item.image_url)) {
+      const youTubeId = extractYouTubeId(item.image_url);
+      return youTubeId ? getYouTubeThumbnail(youTubeId, 'high') : item.image_url;
+    }
+
+    return item.thumbnail_url || item.image_url;
+  };
+
   const categories = ['beauty', 'fashion', 'glamour', 'editorial', 'headshots', 'lifestyle', 'motion'];
 
   if (loading) {
@@ -308,8 +328,8 @@ const AdminPortfolio: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Portfolio Management</h1>
-          <p className="text-muted-foreground">Manage your portfolio images and galleries</p>
+          <h1 className="text-3xl font-bold">{title}</h1>
+          <p className="text-muted-foreground">{description}</p>
         </div>
         <div className="flex space-x-2">
           <Button onClick={fetchPortfolioImages} variant="outline">
@@ -317,7 +337,7 @@ const AdminPortfolio: React.FC = () => {
             Refresh
           </Button>
           <Button onClick={() => {
-            setEditForm({});
+            setEditForm(initialCategory === 'all' ? {} : { category: initialCategory });
             setIsEditing(false);
             setIsDialogOpen(true);
           }}>
@@ -376,7 +396,7 @@ const AdminPortfolio: React.FC = () => {
               <Card key={image.id} className="overflow-hidden">
                 <div className="aspect-square relative">
                   <img
-                    src={image.image_url}
+                    src={getPreviewUrl(image)}
                     alt={image.title}
                     className="w-full h-full object-cover"
                   />
@@ -470,12 +490,14 @@ const AdminPortfolio: React.FC = () => {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-500">Image</label>
+              <label className="text-sm font-medium text-gray-500">
+                {editForm.category === 'motion' ? 'Video or YouTube URL' : 'Image'}
+              </label>
               <div className="flex gap-2 mt-1">
                 <Input
                   value={editForm.image_url || ''}
                   onChange={(e) => setEditForm(prev => ({ ...prev, image_url: e.target.value }))}
-                  placeholder="Enter image URL or upload a file"
+                  placeholder={editForm.category === 'motion' ? 'Enter YouTube or video URL' : 'Enter image URL or upload a file'}
                 />
                 <Button
                   variant="outline"
@@ -501,7 +523,11 @@ const AdminPortfolio: React.FC = () => {
               />
               {editForm.image_url && (
                 <img
-                  src={editForm.image_url}
+                  src={getPreviewUrl({
+                    image_url: editForm.image_url,
+                    thumbnail_url: editForm.thumbnail_url || '',
+                    category: editForm.category || '',
+                  })}
                   alt="Preview"
                   className="mt-2 h-24 w-auto object-cover rounded-md"
                 />

@@ -15,6 +15,7 @@ const PortfolioDropdown = ({ isOpen, onMouseEnter, onMouseLeave, onClose }: Port
     { name: 'Glamour', href: '/portfolios/glamour' },
     { name: 'Headshots', href: '/portfolios/headshots' },
     { name: 'Lifestyle', href: '/portfolios/lifestyle' },
+    { name: 'Motion', href: '/portfolios/motion' },
   ];
 
   return (
