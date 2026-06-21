@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { portfolioImages as staticPortfolioImages } from '../data/portfolio-data';
 import { categoryTitles, categoryDescriptions } from '../data/category-metadata';
 import { MotionItem } from '@/types/content';
+import { apiUrl } from '@/lib/api-service';
 import MotionPortfolio from '../components/portfolio/MotionPortfolio';
 import BeautyPortfolio from '../components/portfolio/BeautyPortfolio';
 import DefaultPortfolio from '../components/portfolio/DefaultPortfolio';
@@ -19,6 +20,10 @@ interface ApiImage {
   is_featured: boolean;
   sort_order: number;
   metadata: string;
+}
+
+interface PortfolioCategoryProps {
+  categoryOverride?: string;
 }
 
 const toStaticImage = (img: ApiImage): StaticImage => ({
@@ -41,9 +46,9 @@ const toMotionItem = (img: ApiImage): MotionItem => {
   };
 };
 
-const PortfolioCategory = () => {
+const PortfolioCategory = ({ categoryOverride }: PortfolioCategoryProps) => {
   const { category } = useParams<{ category: string }>();
-  const currentCategory = category || 'luxury-fashion-photography-nyc';
+  const currentCategory = categoryOverride || category || 'luxury-fashion-photography-nyc';
 
   const [apiImages, setApiImages] = useState<StaticImage[] | null>(null);
   const [apiMotion, setApiMotion] = useState<MotionItem[] | null>(null);
@@ -52,13 +57,15 @@ const PortfolioCategory = () => {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const res = await fetch(`/api/v1/portfolio/category/${currentCategory}`);
+        const res = await fetch(apiUrl(`/portfolio/category/${currentCategory}`));
         const data = await res.json();
-        if (data.success && Array.isArray(data.data?.images) && data.data.images.length > 0) {
+        const fetchedImages = data.success ? data.data?.images : data.images;
+
+        if (Array.isArray(fetchedImages) && fetchedImages.length > 0) {
           if (currentCategory === 'motion') {
-            setApiMotion((data.data.images as ApiImage[]).map(toMotionItem));
+            setApiMotion((fetchedImages as ApiImage[]).map(toMotionItem));
           } else {
-            setApiImages((data.data.images as ApiImage[]).map(toStaticImage));
+            setApiImages((fetchedImages as ApiImage[]).map(toStaticImage));
           }
         }
       } catch {

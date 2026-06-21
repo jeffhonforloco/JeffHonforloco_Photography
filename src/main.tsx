@@ -1,8 +1,11 @@
 import { createRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
 import App from './App.tsx'
+import { installApiFetchBridge } from './lib/api-service'
 import './index.css'
 import 'react-day-picker/dist/style.css'
+
+installApiFetchBridge()
 
 // Register service worker for offline caching
 if ('serviceWorker' in navigator && import.meta.env.PROD) {

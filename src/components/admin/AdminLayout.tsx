@@ -15,6 +15,7 @@ import {
   BarChart3,
   Database,
   Shield,
+  Video,
   Bell
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -104,6 +105,7 @@ const AdminLayout: React.FC = () => {
     { name: 'Contacts', href: '/admin/contacts', icon: Users },
     { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
     { name: 'Portfolio', href: '/admin/portfolio', icon: Image },
+    { name: 'Motion', href: '/admin/motion', icon: Video },
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
     { name: 'Email', href: '/admin/email', icon: Mail },
     { name: 'Database', href: '/admin/database', icon: Database },
