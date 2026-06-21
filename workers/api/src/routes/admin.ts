@@ -35,13 +35,75 @@ admin.post('/analytics', async (c) => {
 // GET /api/v1/admin/dashboard (auth required)
 admin.get('/dashboard', requireAuth, async (c) => {
   const [contacts, posts, portfolio, subs, recentContacts] = await Promise.all([
-    c.env.DB.prepare('SELECT COUNT(*) as total, SUM(CASE WHEN status="new" THEN 1 ELSE 0 END) as new_count FROM contacts').first(),
-    c.env.DB.prepare('SELECT COUNT(*) as total, SUM(CASE WHEN status="published" THEN 1 ELSE 0 END) as published FROM blog_posts').first(),
-    c.env.DB.prepare('SELECT COUNT(*) as total FROM portfolio_images').first(),
+    c.env.DB.prepare(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN status = "new" THEN 1 ELSE 0 END) as new_count,
+        SUM(CASE WHEN status = "contacted" THEN 1 ELSE 0 END) as contacted,
+        SUM(CASE WHEN status = "qualified" THEN 1 ELSE 0 END) as qualified,
+        SUM(CASE WHEN status = "booked" THEN 1 ELSE 0 END) as booked,
+        SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as completed
+      FROM contacts
+    `).first(),
+    c.env.DB.prepare(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN status = "published" THEN 1 ELSE 0 END) as published,
+        SUM(CASE WHEN status = "draft" THEN 1 ELSE 0 END) as draft
+      FROM blog_posts
+    `).first(),
+    c.env.DB.prepare(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN is_featured = 1 THEN 1 ELSE 0 END) as featured
+      FROM portfolio_images
+    `).first(),
     c.env.DB.prepare('SELECT COUNT(*) as total FROM newsletter_subscribers').first(),
     c.env.DB.prepare('SELECT full_name, email, service_type, status, created_at FROM contacts ORDER BY created_at DESC LIMIT 5').all(),
   ]);
-  return c.json({ contacts, posts, portfolio, subscribers: subs, recentContacts: recentContacts.results });
+
+  const contactCounts = contacts as {
+    total?: number; new_count?: number; contacted?: number; qualified?: number; booked?: number; completed?: number;
+  } | null;
+  const postCounts = posts as { total?: number; published?: number; draft?: number } | null;
+  const portfolioCounts = portfolio as { total?: number; featured?: number } | null;
+
+  const overview = {
+    contacts: {
+      total: contactCounts?.total ?? 0,
+      new: contactCounts?.new_count ?? 0,
+      contacted: contactCounts?.contacted ?? 0,
+      qualified: contactCounts?.qualified ?? 0,
+      booked: contactCounts?.booked ?? 0,
+      completed: contactCounts?.completed ?? 0,
+    },
+    blogPosts: {
+      total: postCounts?.total ?? 0,
+      published: postCounts?.published ?? 0,
+      draft: postCounts?.draft ?? 0,
+    },
+    portfolioImages: {
+      total: portfolioCounts?.total ?? 0,
+      featured: portfolioCounts?.featured ?? 0,
+    },
+    subscribers: subs ?? { total: 0 },
+    recentActivity: (recentContacts.results ?? []).map((contact) => ({
+      type: 'contact',
+      title: `New inquiry from ${(contact as { full_name?: string }).full_name ?? 'Unknown'}`,
+      created_at: (contact as { created_at?: string }).created_at ?? new Date().toISOString(),
+      status: (contact as { status?: string }).status ?? 'new',
+    })),
+  };
+
+  return c.json({
+    success: true,
+    contacts,
+    posts,
+    portfolio,
+    subscribers: subs,
+    recentContacts: recentContacts.results,
+    data: { overview },
+  });
 });
 
 // GET /api/v1/admin/analytics (auth required)
@@ -60,7 +122,31 @@ admin.get('/analytics', requireAuth, async (c) => {
     ).bind(`-${days}`).all(),
   ]);
 
-  return c.json({ period, byType: byType.results, daily: daily.results });
+  const eventCounts = Object.fromEntries(
+    (byType.results ?? []).map((row) => {
+      const event = row as { event_type: string; count: number };
+      return [event.event_type, event.count];
+    })
+  );
+  const dailyData = Object.fromEntries(
+    (daily.results ?? []).map((row) => {
+      const item = row as { date: string; count: number };
+      return [item.date, { pageViews: item.count }];
+    })
+  );
+
+  const data = {
+    pageViews: eventCounts.page_view ?? eventCounts.pageview ?? 0,
+    contactForms: eventCounts.contact_form_submit ?? eventCounts.contact ?? 0,
+    newsletterSignups: eventCounts.email_signup ?? eventCounts.newsletter_signup ?? 0,
+    portfolioViews: eventCounts.portfolio_view ?? 0,
+    blogViews: eventCounts.blog_view ?? 0,
+    dailyData,
+    byType: byType.results,
+    daily: daily.results,
+  };
+
+  return c.json({ success: true, period, byType: byType.results, daily: daily.results, data });
 });
 
 // GET /api/v1/admin/config-check (auth required) — verify Worker secrets are configured
@@ -92,6 +178,7 @@ admin.get('/config-check', requireAuth, async (c) => {
   }
 
   return c.json({
+    success: true,
     secrets: {
       OPENAI_API_KEY: hasOpenAIKey  ? openaiStatus    : 'not_set',
       RESEND_API_KEY: hasResendKey  ? 'set'           : 'not_set',
@@ -120,7 +207,7 @@ admin.get('/export/:type', requireAuth, async (c) => {
     });
   }
 
-  return c.json({ data: rows.results, total: rows.results.length });
+  return c.json({ success: true, data: rows.results, total: rows.results.length });
 });
 
 export default admin;

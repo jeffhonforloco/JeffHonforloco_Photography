@@ -27,7 +27,15 @@ blog.get('/', async (c) => {
   ]);
 
   const categories = (cats.results ?? []).map((r) => (r as { category: string }).category);
-  return c.json({ posts: rows.results, categories, total: total?.n ?? 0, page, limit });
+  return c.json({
+    success: true,
+    posts: rows.results,
+    data: rows.results,
+    categories,
+    total: total?.n ?? 0,
+    page,
+    limit,
+  });
 });
 
 // GET /api/v1/blog/slug/:slug — single post by slug (public)
@@ -36,14 +44,14 @@ blog.get('/slug/:slug', async (c) => {
     `SELECT * FROM blog_posts WHERE slug = ? AND status = 'published'`
   ).bind(c.req.param('slug')).first();
   if (!row) return c.json({ error: 'Not found' }, 404);
-  return c.json(row);
+  return c.json({ success: true, post: row, data: row });
 });
 
 // GET /api/v1/blog/:id — single post by ID (auth required)
 blog.get('/:id', requireAuth, async (c) => {
   const row = await c.env.DB.prepare('SELECT * FROM blog_posts WHERE id = ?').bind(c.req.param('id')).first();
   if (!row) return c.json({ error: 'Not found' }, 404);
-  return c.json(row);
+  return c.json({ success: true, post: row, data: row });
 });
 
 // POST /api/v1/blog — create post (auth required)
@@ -64,7 +72,7 @@ blog.post('/', requireAuth, async (c) => {
     body.read_time ?? '5 min read', body.tags ?? null, body.status ?? 'draft'
   ).run();
 
-  return c.json({ ok: true, id: result.meta.last_row_id }, 201);
+  return c.json({ ok: true, success: true, id: result.meta.last_row_id, data: { id: result.meta.last_row_id } }, 201);
 });
 
 // PUT /api/v1/blog/:id — update post (auth required)
@@ -91,13 +99,13 @@ blog.put('/:id', requireAuth, async (c) => {
     body.category ?? null, body.status ?? null, body.read_time ?? null, body.tags ?? null,
     body.status ?? null, c.req.param('id')
   ).run();
-  return c.json({ ok: true });
+  return c.json({ ok: true, success: true });
 });
 
 // DELETE /api/v1/blog/:id (auth required)
 blog.delete('/:id', requireAuth, async (c) => {
   await c.env.DB.prepare('DELETE FROM blog_posts WHERE id = ?').bind(c.req.param('id')).run();
-  return c.json({ ok: true });
+  return c.json({ ok: true, success: true });
 });
 
 export default blog;
