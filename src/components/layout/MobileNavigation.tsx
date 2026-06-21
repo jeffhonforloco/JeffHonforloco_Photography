@@ -15,6 +15,7 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
 
   const navigation = [
     { name: 'Portfolios', href: '/portfolios' },
+    { name: 'Motion', href: '/motion' },
     { name: 'Services', href: '/services' },
     { name: 'About', href: '/about' },
     { name: 'Journal', href: '/journal' },
@@ -24,6 +25,7 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
   const isActive = (path: string) => {
     return location.pathname === path || 
            (path === '/portfolios' && location.pathname.startsWith('/portfolios')) ||
+           (path === '/motion' && location.pathname === '/motion') ||
            (path === '/journal' && location.pathname.startsWith('/journal'));
   };
 

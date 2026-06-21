@@ -66,9 +66,12 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 {/* Redirect old portfolio route to new portfolios route */}
                 <Route path="/portfolio" element={<Navigate to="/portfolios" replace />} />
+                <Route path="/portfolio/motion" element={<Navigate to="/motion" replace />} />
                 <Route path="/portfolio/:category" element={<Navigate to="/portfolios/:category" replace />} />
                 <Route path="/portfolios" element={<Portfolio />} />
+                <Route path="/portfolios/motion" element={<Navigate to="/motion" replace />} />
                 <Route path="/portfolios/:category" element={<PortfolioCategory />} />
+                <Route path="/motion" element={<PortfolioCategory categoryOverride="motion" />} />
                 <Route path="/journal" element={<Journal />} />
                 <Route path="/journal/:slug" element={<JournalArticle />} />
                 <Route path="/about" element={<About />} />
