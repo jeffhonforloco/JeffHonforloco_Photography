@@ -127,7 +127,9 @@ const About = () => {
         try {
           const motionItems = JSON.parse(localStorage.getItem('motionItems') || '[]');
           behindLensVideo = motionItems.find((item: { isBehindLens?: boolean }) => item.isBehindLens) ?? null;
-        } catch {}
+        } catch {
+          behindLensVideo = null;
+        }
 
         if (!behindLensVideo) return null;
 

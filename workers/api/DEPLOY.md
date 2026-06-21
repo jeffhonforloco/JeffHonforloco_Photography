@@ -17,7 +17,8 @@ Paste and run the contents of `schema.sql`
 | Secret | Value |
 |---|---|
 | `RESEND_API_KEY` | Your Resend API key |
-| `ANTHROPIC_API_KEY` | Your Anthropic API key (for daily journal posts) |
+| `ANTHROPIC_API_KEY` | Your Anthropic API key (for chat) |
+| `OPENAI_API_KEY` | Your OpenAI API key (for daily journal posts and config checks) |
 | `JWT_SECRET` | Any long random string (32+ chars) |
 | `ADMIN_EMAIL` | info@jeffhonforlocophotos.com |
 | `ALLOWED_ORIGIN` | https://jeffhonforlocophotos.com |

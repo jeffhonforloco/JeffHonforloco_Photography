@@ -4,7 +4,7 @@ import type { AppEnv } from '../types';
 
 const admin = new Hono<AppEnv>();
 
-const EVENT_TYPE_RE = /^[a-zA-Z0-9_.:\-]{1,100}$/;
+const EVENT_TYPE_RE = /^[a-zA-Z0-9_.:-]{1,100}$/;
 
 function maskEmail(email: string): string {
   const at = email.indexOf('@');
