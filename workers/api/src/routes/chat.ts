@@ -123,6 +123,8 @@ Otherwise answer in 1-2 warm sentences and end with: "What are you creating — 
 
 const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
 const SIREIQ_ESCALATE = '[ESCALATE_ANTHROPIC]';
+const SIREIQ_REQUIRED_CTA = 'what are you creating';
+const SIREIQ_MIN_WORDS = 10;
 
 function detectServiceType(text: string): string {
   const t = text.toLowerCase();
@@ -231,7 +233,18 @@ async function callSireIq(token: string, model: string, messages: AnthropicMessa
 function extractSireIqMessage(data: HuggingFaceChatResponse): string | null {
   const content = data.choices?.[0]?.message?.content?.trim();
   if (!content || content.includes(SIREIQ_ESCALATE)) return null;
-  return sanitizeContent(content);
+
+  const safeContent = sanitizeContent(content);
+  if (!isCompleteSireIqMessage(safeContent)) return null;
+  return safeContent;
+}
+
+function isCompleteSireIqMessage(content: string): boolean {
+  const trimmed = content.trim();
+  if (trimmed.length < 40) return false;
+  if (trimmed.split(/\s+/).filter(Boolean).length < SIREIQ_MIN_WORDS) return false;
+  if (!/[.!?]["')\]]?$/.test(trimmed)) return false;
+  return trimmed.toLowerCase().includes(SIREIQ_REQUIRED_CTA);
 }
 
 // GET /api/v1/chat/ping — diagnostic: checks each known secret by direct access
