@@ -125,6 +125,13 @@ const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
 const SIREIQ_ESCALATE = '[ESCALATE_ANTHROPIC]';
 const SIREIQ_REQUIRED_CTA = 'what are you creating';
 const SIREIQ_MIN_WORDS = 10;
+const STATIC_EASY_CTA = 'What are you creating — is this for yourself, a brand, or an event?';
+const COMPLEX_CHAT_SIGNALS = [
+  'book', 'booking', 'schedule', 'available', 'availability', 'date', 'calendar',
+  'quote', 'custom', 'budget', 'discount', 'cheaper', 'deal', 'negotiate',
+  'wedding', 'event', 'quince', 'sweet sixteen', 'real estate', 'package',
+  'how much', 'price', 'cost', 'pay', 'deposit', 'contract',
+];
 
 function detectServiceType(text: string): string {
   const t = text.toLowerCase();
@@ -157,22 +164,23 @@ interface HuggingFaceChatResponse {
   choices?: Array<{ message?: { content?: string } }>;
 }
 
+function getLastUserMessage(messages: AnthropicMessage[]): AnthropicMessage | undefined {
+  return [...messages].reverse().find((m) => m.role === 'user');
+}
+
+function hasComplexChatSignal(text: string): boolean {
+  return COMPLEX_CHAT_SIGNALS.some((signal) => text.includes(signal));
+}
+
 function isEasyChatJob(messages: AnthropicMessage[]): boolean {
   if (messages.length > 3) return false;
 
-  const lastUser = [...messages].reverse().find((m) => m.role === 'user');
+  const lastUser = getLastUserMessage(messages);
   if (!lastUser) return false;
 
   const text = lastUser.content.toLowerCase();
   if (lastUser.content.length > 280 || EMAIL_REGEX.test(lastUser.content)) return false;
-
-  const complexSignals = [
-    'book', 'booking', 'schedule', 'available', 'availability', 'date', 'calendar',
-    'quote', 'custom', 'budget', 'discount', 'cheaper', 'deal', 'negotiate',
-    'wedding', 'event', 'quince', 'sweet sixteen', 'real estate', 'package',
-    'how much', 'price', 'cost', 'pay', 'deposit', 'contract',
-  ];
-  if (complexSignals.some((signal) => text.includes(signal))) return false;
+  if (hasComplexChatSignal(text)) return false;
 
   const easySignals = [
     'hi', 'hello', 'hey', 'contact', 'email', 'phone', 'number',
@@ -181,6 +189,47 @@ function isEasyChatJob(messages: AnthropicMessage[]): boolean {
   ];
 
   return easySignals.some((signal) => text.includes(signal));
+}
+
+function getStaticEasyReply(messages: AnthropicMessage[]): string | null {
+  if (messages.length > 3) return null;
+
+  const lastUser = getLastUserMessage(messages);
+  if (!lastUser) return null;
+
+  const text = lastUser.content.toLowerCase();
+  if (lastUser.content.length > 280 || EMAIL_REGEX.test(lastUser.content)) return null;
+  if (hasComplexChatSignal(text)) return null;
+
+  if (text.includes('contact') || text.includes('email') || text.includes('phone') || text.includes('number') || text.includes('call')) {
+    return `You can reach Jeff directly at info@jeffhonforlocophotos.com or +1-646-379-4237. ${STATIC_EASY_CTA}`;
+  }
+
+  if (text.includes('portfolio')) {
+    return `You can view Jeff's portfolio at jeffhonforlocophotos.com/portfolio, including fashion, beauty, glamour, editorial, lifestyle, and portraits. ${STATIC_EASY_CTA}`;
+  }
+
+  if (text.includes('motion') || text.includes('video') || text.includes('reel')) {
+    return `Yes — Jeff offers motion/video and cinematic reels through his partner urs79.com, including social reels, brand stories, and full productions. ${STATIC_EASY_CTA}`;
+  }
+
+  if (text.includes('services') || text.includes('what do you do')) {
+    return `Jeff offers fashion, beauty, glamour, editorial, lifestyle, portrait/headshot, wedding, event, real estate, and commercial photography, plus motion/video through urs79.com. ${STATIC_EASY_CTA}`;
+  }
+
+  if (text.includes('where') || text.includes('location') || text.includes('located')) {
+    return `Jeff is based in Providence, RI and works across CT, MA, RI, NY, and NJ, with nationwide travel available for the right project. ${STATIC_EASY_CTA}`;
+  }
+
+  if (text.includes('about jeff') || text.includes('who is jeff')) {
+    return `Jeff Honforloco is a bold editorial-style photographer based in Providence, RI, specializing in fashion, beauty, glamour, editorial, and portrait photography. ${STATIC_EASY_CTA}`;
+  }
+
+  if (text.includes('hi') || text.includes('hello') || text.includes('hey')) {
+    return `Hi, I'm Jade, Jeff's studio assistant. ${STATIC_EASY_CTA}`;
+  }
+
+  return null;
 }
 
 // Retries once (after 1s) on rate-limit or server errors so transient blips don't
@@ -286,7 +335,7 @@ chat.get('/ping', async (c) => {
     http_status: res.status,
     providers: {
       main_agent: 'anthropic',
-      easy_jobs: env.SIREIQ_HF_TOKEN ? 'sireiq_huggingface' : 'disabled',
+      easy_jobs: env.SIREIQ_HF_TOKEN ? 'worker_static_then_sireiq_huggingface' : 'worker_static',
     },
     secrets,
     anthropic_response: raw.slice(0, 400),
@@ -308,6 +357,16 @@ chat.post('/', async (c) => {
     .filter(m => m.content.length > 0);
 
   if (!safeMessages.length) return c.json({ error: 'messages required' }, 400);
+
+  const staticReply = getStaticEasyReply(safeMessages);
+  if (staticReply) {
+    return c.json({
+      message: staticReply,
+      leadCaptured: false,
+      needsApproval: false,
+      provider: 'worker_static',
+    });
+  }
 
   const shouldTrySireIq = isEasyChatJob(safeMessages) && Boolean(c.env.SIREIQ_HF_TOKEN);
   if (shouldTrySireIq && c.env.SIREIQ_HF_TOKEN) {
