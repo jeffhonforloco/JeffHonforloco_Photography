@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import type { AppEnv } from '../types';
 import { sendEmail, chatLeadNotificationHtml } from '../lib/email';
+import { scheduleLeadFollowups } from '../lib/leadAutomation';
 
 const chat = new Hono<AppEnv>();
 
@@ -521,11 +522,16 @@ chat.post('/', async (c) => {
 
     // Save lead to D1 (non-fatal if it fails)
     try {
-      await c.env.DB.prepare(
+      const result = await c.env.DB.prepare(
         `INSERT OR IGNORE INTO contacts (full_name, email, message, service_type, status)
          VALUES (?, ?, ?, ?, 'new')`
       ).bind('Chat Lead', capturedEmail, conversationLog, serviceType).run();
-    } catch {
+      const contactId = Number(result.meta.last_row_id);
+      if (contactId) {
+        await scheduleLeadFollowups(c.env, contactId);
+      }
+    } catch (error) {
+      console.error('[chat] Lead capture scheduling failed:', error);
       // D1 insert failure is non-fatal
     }
 

@@ -88,3 +88,41 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
   email      TEXT    UNIQUE NOT NULL,
   created_at TEXT    NOT NULL DEFAULT (datetime('now'))
 );
+
+-- Editable email templates used by lead follow-up automation
+CREATE TABLE IF NOT EXISTS email_templates (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  name       TEXT    UNIQUE NOT NULL,
+  subject    TEXT    NOT NULL,
+  content    TEXT    NOT NULL,
+  is_active  INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Scheduled automated emails for contact and chat leads
+CREATE TABLE IF NOT EXISTS email_sequences (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  contact_id     INTEGER NOT NULL,
+  sequence_type  TEXT    NOT NULL,
+  step_number    INTEGER NOT NULL,
+  email_template TEXT    NOT NULL,
+  scheduled_for  TEXT    NOT NULL,
+  sent_at        TEXT,
+  status         TEXT    NOT NULL DEFAULT 'pending',
+  last_error     TEXT,
+  created_at     TEXT    NOT NULL DEFAULT (datetime('now')),
+  updated_at     TEXT    NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(contact_id, sequence_type, step_number)
+);
+CREATE INDEX IF NOT EXISTS idx_email_sequences_due     ON email_sequences (status, scheduled_for);
+CREATE INDEX IF NOT EXISTS idx_email_sequences_contact ON email_sequences (contact_id);
+
+-- Emails that should not receive marketing/follow-up automation
+CREATE TABLE IF NOT EXISTS email_suppression (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  email      TEXT    UNIQUE NOT NULL,
+  reason     TEXT,
+  created_at TEXT    NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_email_suppression_email ON email_suppression (email);

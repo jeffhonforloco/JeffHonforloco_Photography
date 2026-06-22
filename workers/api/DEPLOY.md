@@ -24,17 +24,11 @@ Paste and run the contents of `schema.sql`
 | `JWT_SECRET` | Any long random string (32+ chars) |
 | `ADMIN_EMAIL` | info@jeffhonforlocophotos.com |
 | `ALLOWED_ORIGIN` | https://jeffhonforlocophotos.com |
+| `PUBLIC_API_BASE_URL` | Worker API base URL, for example `https://api-jeffhonforloco-photography.YOUR_ACCOUNT.workers.dev/api/v1` |
+| `BUSINESS_POSTAL_ADDRESS` | Business mailing address for automated email footers |
 
 ### 4. Deploy
 
-#### Option A — GitHub Actions (recommended)
-Add these secrets to your GitHub repo (Settings → Secrets → Actions):
-- `CLOUDFLARE_API_TOKEN` — from Cloudflare → My Profile → API Tokens → Edit Workers
-- `CLOUDFLARE_ACCOUNT_ID` — from Cloudflare sidebar
-
-Push any change to `workers/api/**` → GitHub Action auto-deploys.
-
-#### Option B — Cloudflare Dashboard CI
 Create a **Worker** project (not Pages) and connect it to GitHub with these settings:
 
 | Field | Value |
@@ -75,6 +69,8 @@ Redeploy Pages after saving.
 | GET  | /api/v1/contacts/stats | required | Contact stats |
 | POST | /api/v1/email/contact | public | Contact + email |
 | POST | /api/v1/email/newsletter | public | Newsletter signup |
+| GET  | /api/v1/email/unsubscribe | public | Unsubscribe from automated follow-up emails |
+| POST | /api/v1/email/unsubscribe | public | JSON unsubscribe endpoint |
 | GET  | /api/v1/blog | public | Blog posts list |
 | GET  | /api/v1/blog/slug/:slug | public | Post by slug |
 | POST | /api/v1/blog | required | Create post |
@@ -84,6 +80,23 @@ Redeploy Pages after saving.
 | POST | /api/v1/portfolio | required | Add image |
 | GET  | /api/v1/admin/dashboard | required | Dashboard stats |
 | GET  | /api/v1/admin/analytics | required | Analytics |
+| GET  | /api/v1/admin/email-templates | required | List automated email templates |
+| POST | /api/v1/admin/email-templates | required | Create automated email template |
+| PUT  | /api/v1/admin/email-templates/:id | required | Update automated email template |
+| DELETE | /api/v1/admin/email-templates/:id | required | Delete automated email template |
+| GET  | /api/v1/admin/email-sequences | required | List scheduled lead follow-up emails |
+| POST | /api/v1/admin/email-sequences/process | required | Manually process due follow-up emails |
+| GET  | /api/v1/admin/database/stats | required | Database table counts for admin |
+| GET  | /api/v1/admin/health | required | D1 health check |
+| POST | /api/v1/admin/database/backup | required | Prepare SQL export metadata |
 | GET  | /api/v1/admin/export/:type | required | Export data |
 | POST | /api/v1/analytics | public | Track event |
 | GET  | /health | public | Health check |
+
+## Lead follow-up automation
+
+- New contact form leads and chat-captured leads create four scheduled follow-ups: 15 minutes, 24 hours, 3 days, and 7 days.
+- The Worker cron runs every 15 minutes to process pending follow-up emails. The 08:00 UTC cron still runs the daily journal generator.
+- Follow-ups automatically stop when a contact status becomes `deposit_paid`, `booked`, `lost`, `completed`, or `closed`.
+- The `/api/v1/admin/email-templates` endpoints power the Admin → Email screen. Template variables include `{{first_name}}`, `{{service_type}}`, `{{booking_url}}`, `{{portfolio_url}}`, and `{{unsubscribe_url}}`.
+- The Worker can create the automation tables lazily, but running the latest `schema.sql` in D1 keeps the database definition explicit.
