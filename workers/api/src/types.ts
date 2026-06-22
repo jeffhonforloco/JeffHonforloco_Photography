@@ -1,6 +1,8 @@
 export interface Env {
   DB: D1Database;
   ANTHROPIC_API_KEY: string;
+  SIREIQ_HF_TOKEN?: string;
+  SIREIQ_HF_MODEL?: string;
   OPENAI_API_KEY: string;
   RESEND_API_KEY: string;
   JWT_SECRET: string;

@@ -17,7 +17,9 @@ Paste and run the contents of `schema.sql`
 | Secret | Value |
 |---|---|
 | `RESEND_API_KEY` | Your Resend API key |
-| `ANTHROPIC_API_KEY` | Your Anthropic API key (for chat) |
+| `ANTHROPIC_API_KEY` | Your Anthropic API key (main chat agent + negotiation) |
+| `SIREIQ_HF_TOKEN` | Your Hugging Face token for SIREIQ easy chat jobs |
+| `SIREIQ_HF_MODEL` | Optional model override, defaults to `openai/gpt-oss-20b:fastest` |
 | `OPENAI_API_KEY` | Your OpenAI API key (for daily journal posts and config checks) |
 | `JWT_SECRET` | Any long random string (32+ chars) |
 | `ADMIN_EMAIL` | info@jeffhonforlocophotos.com |

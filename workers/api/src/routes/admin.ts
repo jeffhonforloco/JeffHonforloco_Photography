@@ -152,6 +152,7 @@ admin.get('/analytics', requireAuth, async (c) => {
 // GET /api/v1/admin/config-check (auth required) — verify Worker secrets are configured
 admin.get('/config-check', requireAuth, async (c) => {
   const hasOpenAIKey  = Boolean(c.env.OPENAI_API_KEY);
+  const hasSireIqKey  = Boolean(c.env.SIREIQ_HF_TOKEN);
   const hasResendKey  = Boolean(c.env.RESEND_API_KEY);
   const hasJwtSecret  = Boolean(c.env.JWT_SECRET);
   const hasAdminEmail = Boolean(c.env.ADMIN_EMAIL);
@@ -181,6 +182,8 @@ admin.get('/config-check', requireAuth, async (c) => {
     success: true,
     secrets: {
       OPENAI_API_KEY: hasOpenAIKey  ? openaiStatus    : 'not_set',
+      SIREIQ_HF_TOKEN: hasSireIqKey ? 'set'           : 'not_set',
+      SIREIQ_HF_MODEL: c.env.SIREIQ_HF_MODEL || 'openai/gpt-oss-20b:fastest',
       RESEND_API_KEY: hasResendKey  ? 'set'           : 'not_set',
       JWT_SECRET:     hasJwtSecret  ? 'set'           : 'not_set',
       ADMIN_EMAIL:    hasAdminEmail ? maskEmail(c.env.ADMIN_EMAIL) : 'not_set',

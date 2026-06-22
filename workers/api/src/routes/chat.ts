@@ -6,6 +6,7 @@ const chat = new Hono<AppEnv>();
 
 const MAX_MSG_LEN = 2000;
 const MAX_HISTORY = 20;
+const SIREIQ_DEFAULT_MODEL = 'openai/gpt-oss-20b:fastest';
 const CONTROL_RE = new RegExp(String.raw`[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]`, 'g');
 
 function sanitizeContent(content: string): string {
@@ -114,7 +115,14 @@ RESPONSE STYLE:
 - Never invent services or prices not listed above
 - If uncertain about scope or travel logistics: "Let me have Jeff confirm that detail personally — can I get your email?"`;
 
+const EASY_JOB_PROMPT = `You are Jade, Jeff Honforloco Photography's concise studio assistant.
+You are only allowed to handle easy, low-risk questions: greetings, contact info, location, general services, and whether Jeff offers motion/video.
+Do not negotiate, quote custom prices, schedule, collect emails, approve discounts, or answer complex planning questions.
+If the user asks anything beyond a simple factual answer, reply exactly: [ESCALATE_ANTHROPIC]
+Otherwise answer in 1-2 warm sentences and end with: "What are you creating — is this for yourself, a brand, or an event?"`;
+
 const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+const SIREIQ_ESCALATE = '[ESCALATE_ANTHROPIC]';
 
 function detectServiceType(text: string): string {
   const t = text.toLowerCase();
@@ -141,6 +149,36 @@ interface AnthropicMessage {
 
 interface AnthropicResponse {
   content: Array<{ type: string; text: string }>;
+}
+
+interface HuggingFaceChatResponse {
+  choices?: Array<{ message?: { content?: string } }>;
+}
+
+function isEasyChatJob(messages: AnthropicMessage[]): boolean {
+  if (messages.length > 3) return false;
+
+  const lastUser = [...messages].reverse().find((m) => m.role === 'user');
+  if (!lastUser) return false;
+
+  const text = lastUser.content.toLowerCase();
+  if (lastUser.content.length > 280 || EMAIL_REGEX.test(lastUser.content)) return false;
+
+  const complexSignals = [
+    'book', 'booking', 'schedule', 'available', 'availability', 'date', 'calendar',
+    'quote', 'custom', 'budget', 'discount', 'cheaper', 'deal', 'negotiate',
+    'wedding', 'event', 'quince', 'sweet sixteen', 'real estate', 'package',
+    'how much', 'price', 'cost', 'pay', 'deposit', 'contract',
+  ];
+  if (complexSignals.some((signal) => text.includes(signal))) return false;
+
+  const easySignals = [
+    'hi', 'hello', 'hey', 'contact', 'email', 'phone', 'number',
+    'where', 'location', 'located', 'services', 'what do you do',
+    'portfolio', 'motion', 'video', 'reel', 'about jeff',
+  ];
+
+  return easySignals.some((signal) => text.includes(signal));
 }
 
 // Retries once (after 1s) on rate-limit or server errors so transient blips don't
@@ -170,12 +208,40 @@ async function callClaude(apiKey: string, messages: AnthropicMessage[]): Promise
   return res;
 }
 
+async function callSireIq(token: string, model: string, messages: AnthropicMessage[]): Promise<Response> {
+  return fetch('https://router.huggingface.co/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      stream: false,
+      temperature: 0.2,
+      max_tokens: 160,
+      messages: [
+        { role: 'system', content: EASY_JOB_PROMPT },
+        ...messages.map((message) => ({ role: message.role, content: message.content })),
+      ],
+    }),
+  });
+}
+
+function extractSireIqMessage(data: HuggingFaceChatResponse): string | null {
+  const content = data.choices?.[0]?.message?.content?.trim();
+  if (!content || content.includes(SIREIQ_ESCALATE)) return null;
+  return sanitizeContent(content);
+}
+
 // GET /api/v1/chat/ping — diagnostic: checks each known secret by direct access
 chat.get('/ping', async (c) => {
   const env = c.env as unknown as Record<string, string>;
 
   const secrets = {
     ANTHROPIC_API_KEY: env.ANTHROPIC_API_KEY ? env.ANTHROPIC_API_KEY.slice(0, 7) + '…' : 'NOT SET',
+    SIREIQ_HF_TOKEN:   env.SIREIQ_HF_TOKEN   ? env.SIREIQ_HF_TOKEN.slice(0, 7) + '…'   : 'NOT SET',
+    SIREIQ_HF_MODEL:   env.SIREIQ_HF_MODEL   || SIREIQ_DEFAULT_MODEL,
     RESEND_API_KEY:    env.RESEND_API_KEY     ? env.RESEND_API_KEY.slice(0, 8) + '…'   : 'NOT SET',
     JWT_SECRET:        env.JWT_SECRET         ? 'set'                                    : 'NOT SET',
     ADMIN_EMAIL:       env.ADMIN_EMAIL        ? maskEmail(env.ADMIN_EMAIL)               : 'NOT SET',
@@ -202,7 +268,16 @@ chat.get('/ping', async (c) => {
   });
 
   const raw = await res.text();
-  return c.json({ ok: res.ok, http_status: res.status, secrets, anthropic_response: raw.slice(0, 400) });
+  return c.json({
+    ok: res.ok,
+    http_status: res.status,
+    providers: {
+      main_agent: 'anthropic',
+      easy_jobs: env.SIREIQ_HF_TOKEN ? 'sireiq_huggingface' : 'disabled',
+    },
+    secrets,
+    anthropic_response: raw.slice(0, 400),
+  });
 });
 
 // POST /api/v1/chat — public AI chatbot endpoint
@@ -220,6 +295,35 @@ chat.post('/', async (c) => {
     .filter(m => m.content.length > 0);
 
   if (!safeMessages.length) return c.json({ error: 'messages required' }, 400);
+
+  const shouldTrySireIq = isEasyChatJob(safeMessages) && Boolean(c.env.SIREIQ_HF_TOKEN);
+  if (shouldTrySireIq && c.env.SIREIQ_HF_TOKEN) {
+    try {
+      const sireIqRes = await callSireIq(
+        c.env.SIREIQ_HF_TOKEN,
+        c.env.SIREIQ_HF_MODEL || SIREIQ_DEFAULT_MODEL,
+        safeMessages
+      );
+
+      if (sireIqRes.ok) {
+        const sireIqData = await sireIqRes.json<HuggingFaceChatResponse>();
+        const sireIqMessage = extractSireIqMessage(sireIqData);
+        if (sireIqMessage) {
+          return c.json({
+            message: sireIqMessage,
+            leadCaptured: false,
+            needsApproval: false,
+            provider: 'sireiq',
+          });
+        }
+      } else {
+        const errSnippet = await sireIqRes.text().catch(() => '');
+        console.error(`[chat] SIREIQ easy-job error ${sireIqRes.status}: ${errSnippet.slice(0, 300)}`);
+      }
+    } catch (error) {
+      console.error('[chat] SIREIQ easy-job request failed', error);
+    }
+  }
 
   if (!c.env.ANTHROPIC_API_KEY) {
     console.error('[chat] ANTHROPIC_API_KEY is not set — configure it as a Worker secret in the Cloudflare dashboard');
@@ -320,7 +424,7 @@ chat.post('/', async (c) => {
     }
   }
 
-  return c.json({ message, leadCaptured, needsApproval });
+  return c.json({ message, leadCaptured, needsApproval, provider: 'anthropic' });
 });
 
 export default chat;
