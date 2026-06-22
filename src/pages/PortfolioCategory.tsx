@@ -22,6 +22,10 @@ interface ApiImage {
   metadata: string;
 }
 
+interface PortfolioCategoryProps {
+  categoryOverride?: string;
+}
+
 const toStaticImage = (img: ApiImage): StaticImage => ({
   src: img.image_url,
   alt: img.title,
@@ -42,9 +46,9 @@ const toMotionItem = (img: ApiImage): MotionItem => {
   };
 };
 
-const PortfolioCategory = () => {
+const PortfolioCategory = ({ categoryOverride }: PortfolioCategoryProps) => {
   const { category } = useParams<{ category: string }>();
-  const currentCategory = category || 'luxury-fashion-photography-nyc';
+  const currentCategory = categoryOverride || category || 'luxury-fashion-photography-nyc';
 
   const [apiImages, setApiImages] = useState<StaticImage[] | null>(null);
   const [apiMotion, setApiMotion] = useState<MotionItem[] | null>(null);
