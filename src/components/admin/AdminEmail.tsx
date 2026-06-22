@@ -34,10 +34,7 @@ import {
   Plus,
   RefreshCw,
   Save,
-  X,
-  Users,
-  Clock,
-  CheckCircle
+  X
 } from 'lucide-react';
 
 interface EmailTemplate {
@@ -53,12 +50,15 @@ interface EmailTemplate {
 interface EmailSequence {
   id: number;
   contact_id: number;
+  full_name?: string;
+  email?: string;
   sequence_type: string;
   step_number: number;
   email_template: string;
   scheduled_for: string;
   sent_at?: string;
   status: string;
+  last_error?: string;
   created_at: string;
 }
 
@@ -70,6 +70,7 @@ const AdminEmail: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [editForm, setEditForm] = useState<Partial<EmailTemplate>>({});
 
   useEffect(() => {
@@ -201,6 +202,30 @@ const AdminEmail: React.FC = () => {
     }
   };
 
+  const processDueEmails = async () => {
+    try {
+      setProcessing(true);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/v1/admin/email-sequences/process', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process email sequences');
+      }
+
+      fetchEmailData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to process email sequences');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const handleEdit = (template: EmailTemplate) => {
     setSelectedTemplate(template);
     setEditForm({
@@ -259,8 +284,12 @@ const AdminEmail: React.FC = () => {
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
+          <Button onClick={processDueEmails} variant="outline" disabled={processing}>
+            <Send className="h-4 w-4 mr-2" />
+            {processing ? 'Processing...' : 'Process Due'}
+          </Button>
           <Button onClick={() => {
-            setEditForm({});
+            setEditForm({ is_active: true });
             setIsEditing(false);
             setIsDialogOpen(true);
           }}>
@@ -361,7 +390,10 @@ const AdminEmail: React.FC = () => {
                 {sequences.map((sequence) => (
                   <TableRow key={sequence.id}>
                     <TableCell className="font-medium">
-                      Contact #{sequence.contact_id}
+                      <div>
+                        <p>{sequence.full_name || `Contact #${sequence.contact_id}`}</p>
+                        {sequence.email && <p className="text-xs text-muted-foreground">{sequence.email}</p>}
+                      </div>
                     </TableCell>
                     <TableCell>
                       {sequence.sequence_type}
@@ -373,10 +405,10 @@ const AdminEmail: React.FC = () => {
                       {getStatusBadge(sequence.status)}
                     </TableCell>
                     <TableCell>
-                      {new Date(sequence.scheduled_for).toLocaleDateString()}
+                      {new Date(sequence.scheduled_for).toLocaleString()}
                     </TableCell>
                     <TableCell>
-                      {sequence.sent_at ? new Date(sequence.sent_at).toLocaleDateString() : 'Not sent'}
+                      {sequence.sent_at ? new Date(sequence.sent_at).toLocaleString() : sequence.last_error || 'Not sent'}
                     </TableCell>
                   </TableRow>
                 ))}

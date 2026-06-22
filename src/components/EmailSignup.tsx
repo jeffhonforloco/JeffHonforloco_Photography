@@ -3,9 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { useEmailAutomation } from '@/hooks/useEmailAutomation';
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { useEmailSequence } from '@/hooks/useEmailSequence';
 import { apiService } from '@/lib/api-service';
 
 interface EmailFormData {
@@ -16,9 +14,7 @@ const EmailSignup = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<EmailFormData>();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { addLead } = useEmailAutomation();
   const { trackEmailSignup } = useAnalytics();
-  const { addLead: addEmailLead } = useEmailSequence();
 
   const onSubmit = async (data: EmailFormData) => {
     setIsLoading(true);
@@ -28,10 +24,6 @@ const EmailSignup = () => {
       const result = await apiService.sendNewsletterSignup(data.email);
 
       if (result.success) {
-        // Add to local systems for tracking
-        addLead(data.email, 'website');
-        await addEmailLead(data.email);
-        
         // Track analytics
         trackEmailSignup(data.email, 'homepage_signup');
         

@@ -56,6 +56,18 @@ interface Contact {
   updated_at: string;
 }
 
+const CONTACT_STATUSES = [
+  { value: 'new', label: 'New' },
+  { value: 'contacted', label: 'Contacted' },
+  { value: 'qualified', label: 'Qualified' },
+  { value: 'quote_sent', label: 'Quote Sent' },
+  { value: 'deposit_paid', label: 'Deposit Paid' },
+  { value: 'booked', label: 'Booked' },
+  { value: 'lost', label: 'Lost' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'closed', label: 'Closed' },
+];
+
 const AdminContacts: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
@@ -216,15 +228,20 @@ const AdminContacts: React.FC = () => {
       new: { variant: 'default' as const, color: 'bg-blue-100 text-blue-800' },
       contacted: { variant: 'secondary' as const, color: 'bg-yellow-100 text-yellow-800' },
       qualified: { variant: 'outline' as const, color: 'bg-green-100 text-green-800' },
+      quote_sent: { variant: 'outline' as const, color: 'bg-indigo-100 text-indigo-800' },
+      deposit_paid: { variant: 'default' as const, color: 'bg-emerald-100 text-emerald-800' },
       booked: { variant: 'destructive' as const, color: 'bg-purple-100 text-purple-800' },
-      completed: { variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800' }
+      lost: { variant: 'destructive' as const, color: 'bg-red-100 text-red-800' },
+      completed: { variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800' },
+      closed: { variant: 'secondary' as const, color: 'bg-slate-100 text-slate-800' }
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
+    const label = CONTACT_STATUSES.find((item) => item.value === status)?.label ?? status;
     
     return (
       <Badge variant={config.variant} className={config.color}>
-        {status}
+        {label}
       </Badge>
     );
   };
@@ -282,11 +299,9 @@ const AdminContacts: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="new">New</SelectItem>
-                <SelectItem value="contacted">Contacted</SelectItem>
-                <SelectItem value="qualified">Qualified</SelectItem>
-                <SelectItem value="booked">Booked</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
+                {CONTACT_STATUSES.map((status) => (
+                  <SelectItem key={status.value} value={status.value}>{status.label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -355,11 +370,9 @@ const AdminContacts: React.FC = () => {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="new">New</SelectItem>
-                            <SelectItem value="contacted">Contacted</SelectItem>
-                            <SelectItem value="qualified">Qualified</SelectItem>
-                            <SelectItem value="booked">Booked</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
+                            {CONTACT_STATUSES.map((status) => (
+                              <SelectItem key={status.value} value={status.value}>{status.label}</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <Button

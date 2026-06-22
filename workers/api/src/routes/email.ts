@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { sendEmail, contactNotificationHtml, contactConfirmationHtml, newsletterWelcomeHtml, escapeHtml } from '../lib/email';
+import { scheduleLeadFollowups, suppressEmail } from '../lib/leadAutomation';
 import type { AppEnv } from '../types';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -21,15 +22,25 @@ email.post('/contact', async (c) => {
   }
 
   // Save to contacts table
+  let contactId: number | null = null;
   try {
-    await c.env.DB.prepare(
+    const result = await c.env.DB.prepare(
       `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(body.full_name, body.email, body.phone ?? null, body.message,
            body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
+    contactId = Number(result.meta.last_row_id);
   } catch (err) {
     console.error('[email/contact] DB insert failed:', err);
     return c.json({ error: 'Failed to save inquiry' }, 500);
+  }
+
+  if (contactId) {
+    try {
+      await scheduleLeadFollowups(c.env, contactId);
+    } catch (err) {
+      console.error('[email/contact] Follow-up scheduling failed:', err);
+    }
   }
 
   // Send both emails concurrently
@@ -54,6 +65,43 @@ email.post('/contact', async (c) => {
     }),
   ]);
 
+  return c.json({ success: true });
+});
+
+// GET /api/v1/email/unsubscribe — public one-click suppression link
+email.get('/unsubscribe', async (c) => {
+  const emailAddr = (c.req.query('email') ?? '').trim().toLowerCase();
+
+  if (!EMAIL_RE.test(emailAddr)) {
+    return c.html(`
+      <main style="font-family:Arial,sans-serif;max-width:560px;margin:48px auto;padding:24px;line-height:1.6;">
+        <h1>We could not unsubscribe that address</h1>
+        <p>The unsubscribe link is missing a valid email address. Please email info@jeffhonforlocophotos.com and Jeff will remove it manually.</p>
+      </main>
+    `, 400);
+  }
+
+  await suppressEmail(c.env, emailAddr);
+
+  return c.html(`
+    <main style="font-family:Arial,sans-serif;max-width:560px;margin:48px auto;padding:24px;line-height:1.6;">
+      <h1>You are unsubscribed</h1>
+      <p>${escapeHtml(emailAddr)} will no longer receive automated follow-up emails from Jeff Honforloco Photography.</p>
+      <p>You can still reach Jeff directly at <a href="mailto:info@jeffhonforlocophotos.com">info@jeffhonforlocophotos.com</a>.</p>
+    </main>
+  `);
+});
+
+// POST /api/v1/email/unsubscribe — public JSON suppression endpoint
+email.post('/unsubscribe', async (c) => {
+  const { email: emailAddr } = await c.req.json<{ email?: string }>();
+  const normalizedEmail = (emailAddr ?? '').trim().toLowerCase();
+
+  if (!EMAIL_RE.test(normalizedEmail)) {
+    return c.json({ error: 'Valid email required' }, 400);
+  }
+
+  await suppressEmail(c.env, normalizedEmail);
   return c.json({ success: true });
 });
 

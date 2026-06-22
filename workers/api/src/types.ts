@@ -8,6 +8,8 @@ export interface Env {
   JWT_SECRET: string;
   ADMIN_EMAIL: string;
   ALLOWED_ORIGIN: string;
+  PUBLIC_API_BASE_URL?: string;
+  BUSINESS_POSTAL_ADDRESS?: string;
 }
 
 export type AppEnv = {

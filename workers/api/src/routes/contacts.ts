@@ -1,11 +1,12 @@
 import { Hono } from 'hono';
 import { requireAuth } from '../middleware/auth';
 import type { AppEnv } from '../types';
+import { cancelPendingFollowups, LEAD_PIPELINE_STATUSES, PAUSE_FOLLOWUP_STATUSES, scheduleLeadFollowups } from '../lib/leadAutomation';
 
 const contacts = new Hono<AppEnv>();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const ALLOWED_STATUSES = new Set(['new', 'contacted', 'booked', 'closed']);
+const ALLOWED_STATUSES = new Set<string>(LEAD_PIPELINE_STATUSES);
 
 // GET /api/v1/contacts — paginated, filterable (auth required)
 contacts.get('/', requireAuth, async (c) => {
@@ -73,6 +74,15 @@ contacts.post('/', async (c) => {
   ).bind(body.full_name, body.email, body.phone ?? null, body.message,
          body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
 
+  const contactId = Number(result.meta.last_row_id);
+  if (contactId) {
+    try {
+      await scheduleLeadFollowups(c.env, contactId);
+    } catch (error) {
+      console.error('[contacts] Failed to schedule follow-ups:', error);
+    }
+  }
+
   return c.json({ ok: true, success: true, id: result.meta.last_row_id, data: { id: result.meta.last_row_id } }, 201);
 });
 
@@ -92,6 +102,11 @@ contacts.put('/:id', requireAuth, async (c) => {
   await c.env.DB.prepare(
     `UPDATE contacts SET status = COALESCE(?, status), notes = COALESCE(?, notes), updated_at = datetime('now') WHERE id = ?`
   ).bind(status ?? null, notes ?? null, c.req.param('id')).run();
+
+  if (status && PAUSE_FOLLOWUP_STATUSES.has(status)) {
+    await cancelPendingFollowups(c.env, Number(c.req.param('id')));
+  }
+
   return c.json({ ok: true, success: true });
 });
 

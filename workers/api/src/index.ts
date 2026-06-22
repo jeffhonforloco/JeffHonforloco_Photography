@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { Env, AppEnv } from './types';
 import { generateDailyPosts } from './lib/journal';
+import { processDueEmailSequences } from './lib/leadAutomation';
 import authRoutes      from './routes/auth';
 import contactsRoutes  from './routes/contacts';
 import emailRoutes     from './routes/email';
@@ -37,8 +38,18 @@ app.notFound((c) => c.json({ error: 'Not found' }, 404));
 export default {
   fetch: app.fetch,
 
-  // Runs daily at 08:00 UTC — generates one AI blog post per category
-  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
-    await generateDailyPosts(env);
+  // Process email automation often; keep journal generation on its daily cron.
+  async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
+    const tasks: Promise<unknown>[] = [processDueEmailSequences(env)];
+    if (event.cron === '0 8 * * *') {
+      tasks.push(generateDailyPosts(env));
+    }
+
+    const results = await Promise.allSettled(tasks);
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        console.error('[scheduled] Task failed:', result.reason);
+      }
+    }
   },
 };
