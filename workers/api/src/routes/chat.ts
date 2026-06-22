@@ -132,6 +132,11 @@ const COMPLEX_CHAT_SIGNALS = [
   'wedding', 'event', 'quince', 'sweet sixteen', 'real estate', 'package',
   'how much', 'price', 'cost', 'pay', 'deposit', 'contract',
 ];
+const HARD_COMPLEX_CHAT_SIGNALS = [
+  'book', 'booking', 'schedule', 'available', 'availability', 'date', 'calendar',
+  'quote', 'custom', 'budget', 'discount', 'cheaper', 'deal', 'negotiate',
+  'how much', 'price', 'cost', 'pay', 'deposit', 'contract',
+];
 
 function detectServiceType(text: string): string {
   const t = text.toLowerCase();
@@ -164,12 +169,60 @@ interface HuggingFaceChatResponse {
   choices?: Array<{ message?: { content?: string } }>;
 }
 
+interface StaticServiceReply {
+  signals: string[];
+  message: string;
+}
+
+const STATIC_SERVICE_REPLIES: StaticServiceReply[] = [
+  {
+    signals: ['headshot', 'headshots', 'portrait', 'portraits'],
+    message: `Absolutely — Jeff's headshot and portrait sessions start with the Starter at $499, with the Professional at $1,100 as the most popular option for multiple looks and LinkedIn-ready crops. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['beauty'],
+    message: `Beauty sessions start with the Starter at $499, and the Standard at $1,400 is the most popular option for two looks with hair and makeup guidance. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['fashion'],
+    message: `Fashion sessions start with the Starter at $499, and the Standard at $1,800 is the most popular option for multiple looks and location scouting. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['glamour'],
+    message: `Glamour sessions start with the Starter at $499, and the Premium at $1,400 is the most popular option for dramatic lighting and multiple setups. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['editorial'],
+    message: `Editorial sessions start with the Starter at $499, and the Standard at $2,200 is the most popular option with moodboard and location scouting. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['lifestyle'],
+    message: `Lifestyle sessions start with the Starter at $499, and the Standard at $1,100 is the most popular option for multiple locations and wardrobe guidance. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['wedding', 'engagement'],
+    message: `Wedding and engagement coverage starts with engagement sessions at $850, Wedding Essentials at $3,200, and Full Day wedding coverage at $6,500. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['event', 'events', 'sweet sixteen', 'quince', 'quinceanera', 'quinceañera', 'gala', 'corporate'],
+    message: `Event coverage starts with the Starter at $799, and the Premium at $1,800 is the most popular option with five hours of coverage and a same-day preview. ${STATIC_EASY_CTA}`,
+  },
+  {
+    signals: ['real estate', 'property', 'listing', 'mls'],
+    message: `Real estate photography starts with the Basic at $499, with Standard at $999 for twilight exterior and virtual tour assets. ${STATIC_EASY_CTA}`,
+  },
+];
+
 function getLastUserMessage(messages: AnthropicMessage[]): AnthropicMessage | undefined {
   return [...messages].reverse().find((m) => m.role === 'user');
 }
 
 function hasComplexChatSignal(text: string): boolean {
   return COMPLEX_CHAT_SIGNALS.some((signal) => text.includes(signal));
+}
+
+function hasHardComplexChatSignal(text: string): boolean {
+  return HARD_COMPLEX_CHAT_SIGNALS.some((signal) => text.includes(signal));
 }
 
 function isEasyChatJob(messages: AnthropicMessage[]): boolean {
@@ -199,6 +252,10 @@ function getStaticEasyReply(messages: AnthropicMessage[]): string | null {
 
   const text = lastUser.content.toLowerCase();
   if (lastUser.content.length > 280 || EMAIL_REGEX.test(lastUser.content)) return null;
+
+  const serviceReply = getStaticServiceInterestReply(text);
+  if (serviceReply) return serviceReply;
+
   if (hasComplexChatSignal(text)) return null;
 
   if (text.includes('contact') || text.includes('email') || text.includes('phone') || text.includes('number') || text.includes('call')) {
@@ -230,6 +287,16 @@ function getStaticEasyReply(messages: AnthropicMessage[]): string | null {
   }
 
   return null;
+}
+
+function getStaticServiceInterestReply(text: string): string | null {
+  if (hasHardComplexChatSignal(text)) return null;
+
+  const match = STATIC_SERVICE_REPLIES.find((reply) =>
+    reply.signals.some((signal) => text.includes(signal))
+  );
+
+  return match?.message ?? null;
 }
 
 // Retries once (after 1s) on rate-limit or server errors so transient blips don't
