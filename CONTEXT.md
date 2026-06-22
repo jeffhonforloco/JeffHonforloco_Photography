@@ -73,7 +73,9 @@ VITE_DEBUG_MODE
 VITE_LOG_LEVEL
 
 # Cloudflare Worker Secrets (set in Dashboard → Worker → Settings → Variables, encrypted)
-ANTHROPIC_API_KEY        ← AI chatbot + daily blog generation
+ANTHROPIC_API_KEY        ← Main AI chat agent + negotiation
+SIREIQ_HF_TOKEN          ← Hugging Face token for SIREIQ easy chat jobs
+SIREIQ_HF_MODEL          ← Optional SIREIQ model override (defaults to openai/gpt-oss-20b:fastest)
 RESEND_API_KEY           ← All outbound email
 JWT_SECRET               ← Admin auth tokens
 ADMIN_EMAIL              ← info@jeffhonforlocophotos.com
