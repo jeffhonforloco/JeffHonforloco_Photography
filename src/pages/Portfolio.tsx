@@ -39,12 +39,6 @@ const portfolioCategories = [
     image: '/images/bcd80ca3-d60c-4596-9a71-4b8602583ff7.png',
     href: '/portfolios/lifestyle',
   },
-  {
-    title: 'Motion',
-    slug: 'motion',
-    image: '/images/IMG_7655.jpeg',
-    href: '/portfolios/motion',
-  },
 ];
 
 const Portfolio = () => {
@@ -52,7 +46,7 @@ const Portfolio = () => {
     <Layout>
       <div className="min-h-screen bg-black">
         {/* Single responsive grid — no duplicate mobile/desktop DOM */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 min-h-screen">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 min-h-screen">
           {portfolioCategories.map((category, index) => (
             <Link
               key={category.slug}
@@ -63,7 +57,7 @@ const Portfolio = () => {
                 src={category.image}
                 alt={`${category.title} Photography by Jeff Honforloco`}
                 className="w-full h-full"
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 14vw"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 priority={index < 2}
                 quality={80}
               />
