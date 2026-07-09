@@ -8,16 +8,18 @@ interface SEOProps {
   type?: string;
 }
 
+const SITE_URL = "https://jeffhonforlocophotos.com";
+
 const SEO = ({
   title = "Jeff Honforloco Photography - Fashion & Beauty Photography",
   description = "Professional beauty, fashion, and editorial photography for brands, creators, and models worldwide. Elevate your vision with Jeff Honforloco's artistic expertise.",
-  image = "/og-default.jpg",
-  url = "https://www.jeffhonforlocophotos.com",
+  image = "/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png",
+  url = "https://jeffhonforlocophotos.com",
   type = "website"
 }: SEOProps) => {
   const fullTitle = title.includes("Jeff Honforloco") ? title : `${title} | Jeff Honforloco Photography`;
-  const fullUrl = url.startsWith('http') ? url : `https://www.jeffhonforlocophotos.com${url}`;
-  const fullImage = image.startsWith('http') ? image : `https://www.jeffhonforlocophotos.com${image}`;
+  const fullUrl = url.startsWith('http') ? url : `${SITE_URL}${url}`;
+  const fullImage = image.startsWith('http') ? image : `${SITE_URL}${image}`;
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -33,7 +35,7 @@ const SEO = ({
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "business",
-      "url": `${fullUrl}/contact`
+      "url": `${SITE_URL}/contact`
     },
     "address": {
       "@type": "PostalAddress",

@@ -91,14 +91,14 @@ const LazyImage: React.FC<LazyImageProps> = ({
   return (
     <picture>
       {/* WebP source for better compression */}
-      <source srcSet={srcSet} sizes={sizesAttr} type="image/webp" />
+      {srcSet && <source srcSet={srcSet} sizes={sizesAttr} type="image/webp" />}
       
       {/* Fallback image */}
       <img
         ref={imgRef}
         src={imageSrc}
-        srcSet={srcSet}
-        sizes={sizesAttr}
+        srcSet={srcSet || undefined}
+        sizes={srcSet ? sizesAttr : undefined}
         alt={alt}
         className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-70'} transition-opacity duration-700 ease-out`}
         style={{

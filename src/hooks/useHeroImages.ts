@@ -1,20 +1,31 @@
 import { useState, useEffect } from 'react';
 import { portfolioImages as staticPortfolioImages } from '../data/hero-images';
+import { runWhenIdle } from '@/utils/browserIdle';
 
 export const useHeroImages = () => {
   const [portfolioImages, setPortfolioImages] = useState<string[]>(staticPortfolioImages);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchImages = async () => {
       try {
         const res = await fetch('/api/v1/settings/hero_images');
         const data = await res.json();
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+        if (!cancelled && data.success && Array.isArray(data.data) && data.data.length > 0) {
           setPortfolioImages(data.data);
         }
       } catch { /* use static fallback */ }
     };
-    fetchImages();
+
+    const cancelIdleFetch = runWhenIdle(() => {
+      void fetchImages();
+    }, 5000);
+
+    return () => {
+      cancelled = true;
+      cancelIdleFetch();
+    };
   }, []);
 
   // Double images for seamless -50% loop: at -50% the visible content is

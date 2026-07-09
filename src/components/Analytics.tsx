@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { runWhenIdle } from '@/utils/browserIdle';
 
 interface AnalyticsConfig {
   googleAnalytics: {
@@ -97,60 +98,78 @@ const Analytics = () => {
   const trackingIdRef = useRef<string>('');
 
   useEffect(() => {
-    fetch('/data/analytics-config.json')
-      .then(response => response.json())
-      .then((config: AnalyticsConfig) => {
-        if (config.googleAnalytics.enabled && config.googleAnalytics.trackingId !== 'GA_MEASUREMENT_ID') {
-          trackingIdRef.current = config.googleAnalytics.trackingId;
+    let cancelled = false;
 
-          const script = document.createElement('script');
-          script.async = true;
-          script.src = `https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics.trackingId}`;
-          document.head.appendChild(script);
+    const loadAnalytics = () => {
+      fetch('/data/analytics-config.json')
+        .then(response => response.json())
+        .then((config: AnalyticsConfig) => {
+          if (cancelled) return;
 
-          window.dataLayer = window.dataLayer || [];
-          function gtag(...args: unknown[]) {
-            window.dataLayer!.push(args);
-          }
-          window.gtag = gtag;
+          if (config.googleAnalytics.enabled && config.googleAnalytics.trackingId !== 'GA_MEASUREMENT_ID') {
+            trackingIdRef.current = config.googleAnalytics.trackingId;
 
-          gtag('js', new Date());
-          gtag('config', config.googleAnalytics.trackingId, {
-            page_title: document.title,
-            page_location: window.location.href,
-            anonymize_ip: true,
-            send_page_view: true
-          });
-        }
-
-        if (config.facebookPixel.enabled && config.facebookPixel.pixelId !== 'FB_PIXEL_ID') {
-          const fbqFn = (...args: unknown[]) => {
-            const fb = window.fbq as ((...a: unknown[]) => void) & {
-              callMethod?: (...a: unknown[]) => void;
-              queue?: unknown[];
-              push?: (...a: unknown[]) => void;
-              loaded?: boolean;
-              version?: string;
-            };
-            if (fb?.callMethod) {
-              fb.callMethod(...args);
-            } else {
-              (fb.queue = fb.queue || []).push(args);
+            if (!document.querySelector(`script[src*="${config.googleAnalytics.trackingId}"]`)) {
+              const script = document.createElement('script');
+              script.async = true;
+              script.src = `https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics.trackingId}`;
+              document.head.appendChild(script);
             }
-          };
-          window.fbq = fbqFn;
-          if (!window._fbq) window._fbq = fbqFn;
 
-          const script = document.createElement('script');
-          script.async = true;
-          script.src = 'https://connect.facebook.net/en_US/fbevents.js';
-          document.head.appendChild(script);
+            window.dataLayer = window.dataLayer || [];
+            function gtag(...args: unknown[]) {
+              window.dataLayer!.push(args);
+            }
+            window.gtag = gtag;
 
-          window.fbq('init', config.facebookPixel.pixelId);
-          window.fbq('track', 'PageView');
-        }
-      })
-      .catch(error => console.error('Failed to load analytics config:', error));
+            gtag('js', new Date());
+            gtag('config', config.googleAnalytics.trackingId, {
+              page_title: document.title,
+              page_location: window.location.href,
+              anonymize_ip: true,
+              send_page_view: true
+            });
+          }
+
+          if (config.facebookPixel.enabled && config.facebookPixel.pixelId !== 'FB_PIXEL_ID') {
+            const fbqFn = (...args: unknown[]) => {
+              const fb = window.fbq as ((...a: unknown[]) => void) & {
+                callMethod?: (...a: unknown[]) => void;
+                queue?: unknown[];
+                push?: (...a: unknown[]) => void;
+                loaded?: boolean;
+                version?: string;
+              };
+              if (fb?.callMethod) {
+                fb.callMethod(...args);
+              } else {
+                (fb.queue = fb.queue || []).push(args);
+              }
+            };
+            window.fbq = fbqFn;
+            if (!window._fbq) window._fbq = fbqFn;
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+            document.head.appendChild(script);
+
+            window.fbq('init', config.facebookPixel.pixelId);
+            window.fbq('track', 'PageView');
+          }
+        })
+        .catch((error: unknown) => {
+          if (import.meta.env.DEV) {
+            console.warn('Failed to load analytics config:', error);
+          }
+        });
+    };
+
+    const cancelIdleLoad = runWhenIdle(loadAnalytics, 2500);
+    return () => {
+      cancelled = true;
+      cancelIdleLoad();
+    };
   }, []);
 
   // Track route changes

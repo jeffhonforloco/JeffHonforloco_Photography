@@ -48,6 +48,11 @@ const FeaturedWork = () => {
                   src={work.image}
                   alt={work.title}
                   className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:brightness-110"
+                  loading="lazy"
+                  decoding="async"
+                  fetchPriority="low"
+                  width="800"
+                  height="1000"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
                 <div className="absolute bottom-10 left-10 right-10 transform translate-y-8 group-hover:translate-y-0 transition-all duration-700 opacity-0 group-hover:opacity-100">

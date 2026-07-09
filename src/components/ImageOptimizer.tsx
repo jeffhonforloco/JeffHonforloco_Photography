@@ -43,17 +43,21 @@ const ImageOptimizer: React.FC<ImageOptimizerProps> = ({
     const picture = document.createElement('picture');
 
     // WebP source
-    const webpSource = document.createElement('source');
-    webpSource.srcSet = srcSet;
-    webpSource.sizes = sizesAttr;
-    webpSource.type = 'image/webp';
-    picture.appendChild(webpSource);
+    if (srcSet) {
+      const webpSource = document.createElement('source');
+      webpSource.srcSet = srcSet;
+      webpSource.sizes = sizesAttr;
+      webpSource.type = 'image/webp';
+      picture.appendChild(webpSource);
+    }
 
     // Fallback image
     const fallbackImg = document.createElement('img');
     fallbackImg.src = optimizedSrc;
-    fallbackImg.srcSet = srcSet;
-    fallbackImg.sizes = sizesAttr;
+    if (srcSet) {
+      fallbackImg.srcSet = srcSet;
+      fallbackImg.sizes = sizesAttr;
+    }
     fallbackImg.alt = alt;
     fallbackImg.className = className || '';
     fallbackImg.style.cssText = img.style.cssText;

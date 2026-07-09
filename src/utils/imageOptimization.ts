@@ -1,13 +1,9 @@
+const supportsDynamicImageParams = (src: string): boolean => {
+  return src.startsWith('https://images.unsplash.com/') || src.startsWith('https://res.cloudinary.com/');
+};
+
 export const generateOptimizedUrl = (src: string, width?: number, quality: number = 80): string => {
-  if (src.includes('?') || src.startsWith('http')) {
-    if (src.startsWith('http') && !src.includes('?')) {
-      const params = new URLSearchParams();
-      if (width) params.set('w', width.toString());
-      params.set('q', quality.toString());
-      params.set('f', 'webp');
-      params.set('auto', 'format');
-      return `${src}?${params.toString()}`;
-    }
+  if (src.includes('?') || !supportsDynamicImageParams(src)) {
     return src;
   }
 
@@ -31,6 +27,10 @@ export const generateSrcSet = (
   enable4K: boolean = false,
   _enable8K: boolean = false
 ): string => {
+  if (!supportsDynamicImageParams(src)) {
+    return '';
+  }
+
   const breakpoints = enable4K ? BREAKPOINTS_4K : BASE_BREAKPOINTS;
   return breakpoints
     .map(size => `${generateOptimizedUrl(src, size, quality)} ${size}w`)
@@ -47,6 +47,10 @@ export const generateAVIFSrcSet = (
   enable4K: boolean = false,
   _enable8K: boolean = false
 ): string => {
+  if (!supportsDynamicImageParams(src)) {
+    return '';
+  }
+
   const breakpoints = enable4K ? BREAKPOINTS_4K : BASE_BREAKPOINTS;
   return breakpoints
     .map(size => {
