@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { generateOptimizedUrl } from '@/utils/imageOptimization';
+import { generateOptimizedUrl, generateSrcSet } from '@/utils/imageOptimization';
 
 interface HighResImageProps {
   src: string;
@@ -16,9 +16,6 @@ interface HighResImageProps {
   enable4K?: boolean;
   enable8K?: boolean;
 }
-
-const BASE_BREAKPOINTS = [400, 800, 1200, 1600, 1920];
-const BREAKPOINTS_4K = [...BASE_BREAKPOINTS, 2560, 3840];
 
 const HighResImage: React.FC<HighResImageProps> = ({
   src,
@@ -68,18 +65,11 @@ const HighResImage: React.FC<HighResImageProps> = ({
     return () => observer.disconnect();
   }, [priority]);
 
-  const breakpoints = enable4K || enable8K ? BREAKPOINTS_4K : BASE_BREAKPOINTS;
-
-  const buildSrcSet = (baseSrc: string): string =>
-    breakpoints
-      .map(size => `${generateOptimizedUrl(baseSrc, size, quality)} ${size}w`)
-      .join(', ');
-
   const sizesAttr =
     sizes ?? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
 
   const activeSrc = prioritySrc ?? (isInView ? generateOptimizedUrl(src, width, quality) : undefined);
-  const activeSrcSet = isInView ? buildSrcSet(src) : undefined;
+  const activeSrcSet = isInView ? generateSrcSet(src, quality, enable4K || enable8K, false) : undefined;
 
   return (
     <div

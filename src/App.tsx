@@ -8,8 +8,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Analytics from "./components/Analytics";
 import PerformanceMonitor from "./components/PerformanceMonitor";
 import ErrorBoundary from "./components/common/ErrorBoundary";
-import SalesChatbot from "./components/SalesChatbot";
 import { initializeImageOptimization } from "./utils/performanceOptimizer";
+import { runWhenIdle } from "./utils/browserIdle";
 
 // Lazy load all pages for better performance
 const Index = lazy(() => import("./pages/Index"));
@@ -27,13 +27,48 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Services = lazy(() => import("./pages/Services"));
+const SalesChatbot = lazy(() => import("./components/SalesChatbot"));
+
+const CHATBOT_IDLE_TIMEOUT_MS = 6000;
 
 // Loading component
 const LoadingFallback = () => (
-  <div className="min-h-screen bg-black flex items-center justify-center">
-    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-photo-red"></div>
+  <div className="min-h-screen bg-black flex items-center justify-center" role="status" aria-label="Loading page">
+    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-photo-red" aria-hidden="true"></div>
   </div>
 );
+
+const DeferredSalesChatbot = () => {
+  const [shouldLoad, setShouldLoad] = React.useState(false);
+
+  React.useEffect(() => {
+    if (shouldLoad || typeof window === "undefined") {
+      return;
+    }
+
+    const loadChatbot = () => setShouldLoad(true);
+    const events: Array<keyof WindowEventMap> = ["pointerdown", "keydown", "scroll"];
+    const listenerOptions: AddEventListenerOptions = { once: true, passive: true };
+
+    events.forEach((eventName) => window.addEventListener(eventName, loadChatbot, listenerOptions));
+    const cancelIdleLoad = runWhenIdle(loadChatbot, CHATBOT_IDLE_TIMEOUT_MS);
+
+    return () => {
+      events.forEach((eventName) => window.removeEventListener(eventName, loadChatbot, listenerOptions));
+      cancelIdleLoad();
+    };
+  }, [shouldLoad]);
+
+  if (!shouldLoad) {
+    return null;
+  }
+
+  return (
+    <Suspense fallback={null}>
+      <SalesChatbot />
+    </Suspense>
+  );
+};
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,7 +95,7 @@ const App = () => {
           <BrowserRouter>
             <Analytics />
             <PerformanceMonitor />
-            <SalesChatbot />
+            <DeferredSalesChatbot />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
                 <Route path="/" element={<Index />} />
