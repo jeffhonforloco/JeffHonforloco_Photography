@@ -323,10 +323,13 @@ ${bookingData.message}`,
                         {isSelected && <CheckCircle className="w-4 h-4 text-photo-red flex-shrink-0" />}
                       </div>
                       <p className="text-photo-red font-semibold text-sm mt-1">{tier.price}</p>
-                      <p className="text-gray-500 text-xs">
-                        {tier.duration}
-                        {!isMotion && tier.images ? ` · ${tier.images}` : ''}
-                      </p>
+                      {(tier.duration || (!isMotion && tier.images)) && (
+                        <p className="text-gray-500 text-xs">
+                          {[tier.duration, !isMotion ? tier.images : undefined]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </p>
+                      )}
                     </CardHeader>
                     <CardContent className="pt-0">
                       <ul className="space-y-1.5">
