@@ -50,13 +50,6 @@ export const NE_LOCATIONS = [
   },
 ];
 
-export const VOLUME_HEADSHOT_RATES = [
-  { label: '1–4 people', pricePerPerson: 850, note: 'Standard session pricing' },
-  { label: '5–9 people', pricePerPerson: 350, note: 'Team discount · we come to you' },
-  { label: '10–19 people', pricePerPerson: 299, note: 'Corporate rate · mobile to your office' },
-  { label: '20+ people', pricePerPerson: 249, note: 'Volume rate · mobile to your office' },
-];
-
 export const PRICING_CATEGORIES: PricingCategory[] = [
   {
     id: 'headshots',
@@ -116,7 +109,7 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       },
     ],
     volumeNote:
-      'Mobile Team Rates: 5–9 people from $350/person · 10–19 from $299/person · 20+ from $249/person',
+      'Corporate Team Headshots are produced on-location at your office and custom-quoted for teams of any size — request a tailored proposal.',
   },
   {
     id: 'beauty',
