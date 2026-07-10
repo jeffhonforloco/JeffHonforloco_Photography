@@ -7,6 +7,18 @@ import 'react-day-picker/dist/style.css'
 
 installApiFetchBridge()
 
+// A deploy replaces the hashed chunk files; a session started before it can
+// reference chunks that no longer exist. Reload once to pick up the new build
+// instead of surfacing the error boundary.
+window.addEventListener('vite:preloadError', (event) => {
+  const lastReload = Number(sessionStorage.getItem('chunk-reload-at') ?? 0);
+  if (Date.now() - lastReload > 10_000) {
+    event.preventDefault();
+    sessionStorage.setItem('chunk-reload-at', String(Date.now()));
+    window.location.reload();
+  }
+});
+
 // Register service worker for offline caching
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
