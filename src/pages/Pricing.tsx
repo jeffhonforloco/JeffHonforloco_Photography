@@ -215,7 +215,16 @@ const Pricing = () => {
                             <div>
                               <CardTitle className="text-white text-xl">{tier.name}</CardTitle>
                               <p className="text-photo-red font-bold text-2xl mt-1">{tier.price}</p>
-                              <p className="text-gray-500 text-xs mt-0.5">{tier.duration}{tier.images ? ` · ${tier.images}` : ''}</p>
+                              {(tier.duration || tier.images) && (
+                                <p className="text-gray-500 text-xs mt-0.5">
+                                  {[tier.duration, tier.images].filter(Boolean).join(' · ')}
+                                </p>
+                              )}
+                              {tier.description && (
+                                <p className="text-gray-300 text-sm mt-3 leading-relaxed">
+                                  {tier.description}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </CardHeader>

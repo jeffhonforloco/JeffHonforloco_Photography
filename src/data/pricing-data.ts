@@ -4,8 +4,9 @@ export type PricingTier = {
   price: string;
   priceNumeric: number;
   badge?: string;
-  duration: string;
+  duration?: string;
   images?: string;
+  description?: string;
   deliverables: string[];
   note?: string;
 };
@@ -97,19 +98,21 @@ export const PRICING_CATEGORIES: PricingCategory[] = [
       },
       {
         id: 'headshots-executive',
-        name: 'Executive',
-        price: 'From $1,800',
-        priceNumeric: 1800,
-        duration: '3 hours',
-        images: '18 edited images',
+        name: 'Corporate Team Headshots',
+        price: 'Starting at $3,500',
+        priceNumeric: 3500,
+        description:
+          'Professional on-location headshots designed for companies, leadership teams, and organizations looking for a consistent, polished brand image.',
         deliverables: [
-          '3-hour session',
-          '18 professionally edited images',
-          'Multiple looks',
-          'Full team coordination',
-          'Priority 48-hour delivery',
-          'Brand color consultation',
+          'On-location photography',
+          'Professional posing and expression coaching',
+          'Individually retouched, high-resolution images',
+          'Multiple background and lighting options',
+          'Team coordination for an efficient workflow',
+          'Commercial usage license',
+          'Private online gallery for image selection and delivery',
         ],
+        note: 'Every organization is unique. Final pricing is customized based on team size, location, scheduling, image requirements, and production complexity. Contact us for a tailored proposal.',
       },
     ],
     volumeNote:
