@@ -1,22 +1,17 @@
-const CACHE_NAME = 'jeff-honforloco-v1';
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/favicon.ico'
-];
+const CACHE_NAME = 'jeff-honforloco-v2';
+const OFFLINE_URL = '/';
 
-// Install event - cache static assets
+// Install event - cache the offline fallback shell
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(STATIC_ASSETS))
+      .then((cache) => cache.addAll([OFFLINE_URL]))
       .catch(() => {})
   );
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches (including the stale v1 cache)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
@@ -29,59 +24,57 @@ self.addEventListener('activate', (event) => {
           })
         );
       })
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') {
+  const { request } = event;
+
+  // Skip non-GET and external requests
+  if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) {
     return;
   }
 
-  // Skip external requests
-  if (!event.request.url.startsWith(self.location.origin)) {
+  const url = new URL(request.url);
+
+  // Navigations must be network-first: a cache-first shell pins users to a
+  // deleted deploy's hashed chunks and breaks every lazy-loaded route.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME)
+            .then((cache) => cache.put(OFFLINE_URL, responseToCache))
+            .catch(() => {});
+          return response;
+        })
+        .catch(() => caches.match(OFFLINE_URL))
+    );
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
+  // Hashed build assets and images are content-addressed/immutable — cache-first
+  if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/images/')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
-          // Return cached version
           return cachedResponse;
         }
-
-        // Fetch from network
-        return fetch(event.request)
-          .then((response) => {
-            // Don't cache if not successful
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            // Cache the response for future use
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                // Only cache specific file types
-                const url = event.request.url;
-                if (url.match(/\.(js|css|png|jpg|jpeg|webp|svg|woff|woff2)$/)) {
-                  cache.put(event.request, responseToCache);
-                }
-              });
-
+        return fetch(request).then((response) => {
+          if (!response || response.status !== 200 || response.type !== 'basic') {
             return response;
-          })
-          .catch(() => {
-            // Return offline fallback for navigation requests
-            if (event.request.mode === 'navigate') {
-              return caches.match('/');
-            }
-          });
+          }
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME)
+            .then((cache) => cache.put(request, responseToCache))
+            .catch(() => {});
+          return response;
+        });
       })
-  );
+    );
+  }
+
+  // Everything else falls through to the network untouched
 });
