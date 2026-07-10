@@ -36,7 +36,7 @@ Headshots & Portraits:
   Starter — $499 (1hr, 8 edited images, studio or on-location)
   Professional — $1,100 (2hr, 12 images, multiple looks, LinkedIn crop, same-week delivery) ← Most Popular
   Corporate Team Headshots — starting at $3,500 (premium on-location headshots for companies, leadership teams & organizations; posing & expression coaching, individually retouched high-res images, multiple background/lighting options, team coordination, commercial usage license, private online gallery. Final pricing is always custom-quoted based on team size, location, scheduling, image requirements & production complexity — never quote a fixed total, gather details and route to a tailored proposal)
-  Mobile Team Rates: $249/person (20+ people) · $299/person (10–19) · $350/person (5–9) · $850/person (1–4)
+  Note: ALL corporate, office & team headshot inquiries route to Corporate Team Headshots — never quote per-person rates or per-person discounts; position it as a premium on-location production and gather team size, location & timeline for a tailored proposal
 
 Beauty Photography:
   Starter — $499 (1hr, 6 retouched images, one look)

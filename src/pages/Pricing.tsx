@@ -14,8 +14,10 @@ import {
   ChevronUp,
   Users,
   Film,
+  Briefcase,
+  Building2,
 } from 'lucide-react';
-import { PRICING_CATEGORIES, NE_LOCATIONS, VOLUME_HEADSHOT_RATES } from '@/data/pricing-data';
+import { PRICING_CATEGORIES, NE_LOCATIONS } from '@/data/pricing-data';
 import type { PricingCategory } from '@/data/pricing-data';
 
 const Pricing = () => {
@@ -32,7 +34,7 @@ const Pricing = () => {
     <Layout>
       <SEO
         title="Pricing — Jeff Honforloco Photography | Rhode Island · Massachusetts · Maine · Connecticut"
-        description="Clear, honest photography pricing starting from $499. Headshots, beauty, fashion, editorial, wedding, events, real estate & motion video across New England."
+        description="Clear, honest photography pricing. Portrait sessions from $499, premium corporate team headshots custom-quoted. Headshots, beauty, fashion, editorial, wedding, events, real estate & motion video across New England."
         url="/pricing"
       />
 
@@ -46,11 +48,12 @@ const Pricing = () => {
               <span className="text-sm text-photo-red font-medium">Transparent Pricing · No Surprises</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-5 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">
-              Photography<br />Starting at <span className="text-photo-red">$499</span>
+              Editorial Craft.<br /><span className="text-photo-red">Transparent</span> Pricing.
             </h1>
             <p className="text-xl text-gray-300 leading-relaxed mb-8">
-              Every session is priced so anyone can start. Pick a category, choose a tier, or
-              chat with our AI to build a custom package — we'll find what works for your budget.
+              Portrait sessions start at $499, and commercial and corporate productions are
+              custom-quoted to scope. Pick a category, choose a tier, or chat with us for a
+              tailored proposal.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button
@@ -109,9 +112,9 @@ const Pricing = () => {
                 <Smartphone className="w-5 h-5 text-photo-red" />
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">Corporate & Office Headshots — We Come to You</p>
+                <p className="text-white font-semibold text-sm">Corporate Team Headshots — We Come to You</p>
                 <p className="text-gray-400 text-xs mt-0.5">
-                  Mobile headshot service across RI, MA, ME & CT · Teams of any size · 48-hour delivery
+                  Premium on-location production across RI, MA, ME & CT · Leadership teams to entire organizations
                 </p>
               </div>
             </div>
@@ -120,7 +123,7 @@ const Pricing = () => {
               size="sm"
               className="bg-photo-red hover:bg-photo-red-hover text-white flex-shrink-0"
             >
-              <a href="/book">Book Mobile Shoot</a>
+              <a href="/book?service=headshots&tier=headshots-executive">Request a Proposal</a>
             </Button>
           </div>
         </section>
@@ -361,53 +364,80 @@ const Pricing = () => {
           </div>
         </section>
 
-        {/* ── Volume Headshots Table ── */}
+        {/* ── Corporate Team Headshots Feature ── */}
         <section className="py-16 px-6 bg-white/2 border-t border-white/10">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
               <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-4">
-                <Smartphone className="w-4 h-4 text-blue-400" />
-                <span className="text-blue-400 text-sm font-medium">Mobile Corporate Headshots</span>
+                <Briefcase className="w-4 h-4 text-blue-400" />
+                <span className="text-blue-400 text-sm font-medium">Corporate & Commercial</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">We Come to Your Office</h2>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Corporate and office headshots are a mobile service. The bigger your team, the better
-                the rate. We travel across Rhode Island, Massachusetts, Maine & Connecticut.
+                A premium on-location headshot production for companies, leadership teams, and
+                organizations across Rhode Island, Massachusetts, Maine & Connecticut — designed
+                for a consistent, polished brand image.
               </p>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-white/10">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-white/5 border-b border-white/10">
-                    <th className="text-left px-6 py-4 text-gray-300 font-semibold">Team Size</th>
-                    <th className="text-left px-6 py-4 text-gray-300 font-semibold">Rate per Person</th>
-                    <th className="text-left px-6 py-4 text-gray-300 font-semibold hidden sm:table-cell">Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {VOLUME_HEADSHOT_RATES.map((row, i) => (
-                    <tr
-                      key={i}
-                      className={`border-b border-white/5 last:border-0 ${
-                        i === 0 ? 'bg-transparent' : i % 2 === 0 ? 'bg-white/2' : ''
-                      }`}
-                    >
-                      <td className="px-6 py-4 text-white font-medium">{row.label}</td>
-                      <td className="px-6 py-4 text-photo-red font-bold text-base">
-                        ${row.pricePerPerson.toLocaleString()}/person
-                      </td>
-                      <td className="px-6 py-4 text-gray-400 hidden sm:table-cell">{row.note}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                {
+                  icon: Building2,
+                  title: 'On-Location Production',
+                  text: 'A full studio setup at your office — professional lighting, backdrops, and direction included.',
+                },
+                {
+                  icon: Users,
+                  title: 'Built for Teams',
+                  text: 'From leadership portraits to entire organizations, coordinated around your workday.',
+                },
+                {
+                  icon: CheckCircle,
+                  title: 'Consistent Brand Image',
+                  text: 'Matching backgrounds, lighting, and individual retouching across every teammate.',
+                },
+                {
+                  icon: Briefcase,
+                  title: 'Commercial Usage License',
+                  text: 'Cleared for your website, LinkedIn, press, and marketing materials.',
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="bg-white/5 border border-white/10 rounded-xl p-5 hover:border-blue-400/30 transition-colors"
+                >
+                  <item.icon className="w-6 h-6 text-blue-400 mb-3" />
+                  <p className="text-white font-semibold text-sm mb-1.5">{item.title}</p>
+                  <p className="text-gray-400 text-xs leading-relaxed">{item.text}</p>
+                </div>
+              ))}
             </div>
 
-            <div className="mt-6 text-center">
-              <Button asChild className="bg-photo-red hover:bg-photo-red-hover text-white px-8">
-                <a href="/book?service=headshots">Get Your Team Booked</a>
-              </Button>
+            <div className="mt-8 text-center">
+              <p className="text-white text-lg font-semibold mb-1">
+                Starting at <span className="text-photo-red">$3,500</span>
+              </p>
+              <p className="text-gray-400 text-sm max-w-xl mx-auto mb-6">
+                Every organization is unique — final pricing is tailored to team size, location,
+                scheduling, image requirements, and production complexity.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button asChild className="bg-photo-red hover:bg-photo-red-hover text-white px-8">
+                  <a href="/book?service=headshots&tier=headshots-executive">Request a Tailored Proposal</a>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-white/20 bg-white/5 text-white hover:bg-white/10 px-8"
+                  onClick={() => {
+                    const btn = document.querySelector<HTMLButtonElement>('[aria-label="Chat with Jeff\'s studio"]');
+                    btn?.click();
+                  }}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Discuss Your Project
+                </Button>
+              </div>
             </div>
           </div>
         </section>
