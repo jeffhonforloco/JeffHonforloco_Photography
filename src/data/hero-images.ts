@@ -40,3 +40,45 @@ export const portfolioImages: string[] = [
   '/images/IMG_7662.jpeg',
   '/images/13e3124a-ebf5-4084-94fa-5b85aacda039.png',
 ];
+
+export interface HeroImage {
+  src: string;
+  srcSet: string;
+  alt: string;
+}
+
+// Keep the homepage intentionally small. The full collection belongs on the
+// portfolio pages; mounting it in the hero previously created more than 100
+// image elements after mobile/desktop and animation duplication.
+export const optimizedHeroImages: HeroImage[] = [
+  {
+    src: '/images/optimized/2301434b-9540-429b-b183-c3f01e585450-480.webp',
+    srcSet: '/images/optimized/2301434b-9540-429b-b183-c3f01e585450-320.webp 320w, /images/optimized/2301434b-9540-429b-b183-c3f01e585450-480.webp 480w, /images/optimized/2301434b-9540-429b-b183-c3f01e585450-960.webp 960w',
+    alt: 'Beauty portrait photographed by Jeff Honforloco',
+  },
+  {
+    src: '/images/optimized/fbeb876e-8eb3-40e4-8481-eb136e709b02-480.webp',
+    srcSet: '/images/optimized/fbeb876e-8eb3-40e4-8481-eb136e709b02-320.webp 320w, /images/optimized/fbeb876e-8eb3-40e4-8481-eb136e709b02-480.webp 480w, /images/optimized/fbeb876e-8eb3-40e4-8481-eb136e709b02-960.webp 960w',
+    alt: 'Editorial fashion portrait photographed by Jeff Honforloco',
+  },
+  {
+    src: '/images/optimized/e846a586-047a-4535-9d2e-ab304f4ba711-480.webp',
+    srcSet: '/images/optimized/e846a586-047a-4535-9d2e-ab304f4ba711-320.webp 320w, /images/optimized/e846a586-047a-4535-9d2e-ab304f4ba711-480.webp 480w, /images/optimized/e846a586-047a-4535-9d2e-ab304f4ba711-960.webp 960w',
+    alt: 'Creative beauty campaign portrait',
+  },
+  {
+    src: '/images/optimized/IMG_7707-480.webp',
+    srcSet: '/images/optimized/IMG_7707-320.webp 320w, /images/optimized/IMG_7707-480.webp 480w, /images/optimized/IMG_7707-640.webp 640w, /images/optimized/IMG_7707-960.webp 960w',
+    alt: 'Lifestyle portrait with natural curls',
+  },
+  {
+    src: '/images/optimized/ae423683-fce8-4398-9f0a-df01c3ff0e83-480.webp',
+    srcSet: '/images/optimized/ae423683-fce8-4398-9f0a-df01c3ff0e83-320.webp 320w, /images/optimized/ae423683-fce8-4398-9f0a-df01c3ff0e83-480.webp 480w, /images/optimized/ae423683-fce8-4398-9f0a-df01c3ff0e83-960.webp 960w',
+    alt: 'High-fashion studio portrait',
+  },
+  {
+    src: '/images/optimized/IMG_7671-480.webp',
+    srcSet: '/images/optimized/IMG_7671-320.webp 320w, /images/optimized/IMG_7671-480.webp 480w, /images/optimized/IMG_7671-640.webp 640w, /images/optimized/IMG_7671-960.webp 960w',
+    alt: 'Blue eyeliner beauty editorial portrait',
+  },
+];

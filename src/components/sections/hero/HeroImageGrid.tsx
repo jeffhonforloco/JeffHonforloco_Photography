@@ -1,48 +1,39 @@
-import { useHeroImages } from '../../../hooks/useHeroImages';
+import { optimizedHeroImages } from '../../../data/hero-images';
 
 const HeroImageGrid = () => {
-  const { col1Images, col2Images, col3Images } = useHeroImages();
-
-  const renderImage = (src: string, index: number, key: string, isPriority: boolean) => (
-    <div key={key} className="relative overflow-hidden flex-shrink-0">
-      <img
-        src={src}
-        alt=""
-        aria-hidden="true"
-        className="hero-image w-full h-auto object-cover"
-        loading={isPriority ? 'eager' : 'lazy'}
-        decoding="async"
-        fetchPriority={isPriority ? 'high' : 'low'}
-        width="400"
-        height="600"
-      />
-    </div>
-  );
-
   return (
     <div className="absolute inset-0 bg-black overflow-hidden">
-      {/* Mobile: 2 columns */}
-      <div className="md:hidden grid grid-cols-2 gap-2 h-full px-2">
-        <div className="flex flex-col gap-2 hero-col-1">
-          {col1Images.map((src, i) => renderImage(src, i, `mob-c1-${i}`, i === 0))}
-        </div>
-        <div className="flex flex-col gap-2 hero-col-2">
-          {col2Images.map((src, i) => renderImage(src, i, `mob-c2-${i}`, i === 0))}
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 px-2 md:px-3 -translate-y-12 md:-translate-y-36">
+        {optimizedHeroImages.map((image, index) => {
+          const isPriority = index === 3;
+          return (
+            <div
+              key={image.src}
+              className="relative aspect-[4/5] overflow-hidden bg-photo-gray-900"
+            >
+              <picture>
+                <source
+                  media="(max-width: 767px)"
+                  srcSet={image.srcSet.split(',')[0].trim()}
+                />
+                <img
+                  src={image.src}
+                  srcSet={image.srcSet}
+                  sizes="33vw"
+                  alt={image.alt}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading={isPriority ? 'eager' : 'lazy'}
+                  decoding="async"
+                  fetchPriority="auto"
+                  width="480"
+                  height="600"
+                />
+              </picture>
+            </div>
+          );
+        })}
       </div>
-
-      {/* Desktop: 3 columns */}
-      <div className="hidden md:grid grid-cols-3 gap-3 h-full px-3">
-        <div className="flex flex-col gap-3 hero-col-1">
-          {col1Images.map((src, i) => renderImage(src, i, `dsk-c1-${i}`, i === 0))}
-        </div>
-        <div className="flex flex-col gap-3 hero-col-2">
-          {col2Images.map((src, i) => renderImage(src, i, `dsk-c2-${i}`, i === 0))}
-        </div>
-        <div className="flex flex-col gap-3 hero-col-3">
-          {col3Images.map((src, i) => renderImage(src, i, `dsk-c3-${i}`, i === 0))}
-        </div>
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/15" aria-hidden="true" />
     </div>
   );
 };

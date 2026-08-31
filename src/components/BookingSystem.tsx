@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +10,13 @@ import { CheckCircle, Clock, Camera, Users, Award, ArrowRight, ArrowLeft, Calend
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
 import { apiService } from '@/lib/api-service';
-import { trackBookingIntent } from '@/components/Analytics';
+import {
+  trackBookingComplete,
+  trackBookingIntent,
+  trackBookingSelection,
+  trackBookingStart,
+  trackBookingStep,
+} from '@/components/Analytics';
 import { PRICING_CATEGORIES } from '@/data/pricing-data';
 import { format } from 'date-fns';
 
@@ -142,6 +148,15 @@ const BookingSystem: React.FC = () => {
     message: '',
     budget: '',
   });
+  const hasTrackedStart = useRef(false);
+
+  useEffect(() => {
+    if (!hasTrackedStart.current) {
+      hasTrackedStart.current = true;
+      trackBookingStart();
+      trackBookingStep(1);
+    }
+  }, []);
 
   const formatDate = (date: Date | undefined, formatStr: string): string => {
     if (!date) return 'Not selected';
@@ -163,6 +178,7 @@ const BookingSystem: React.FC = () => {
 
   const nextStep = () => {
     if (currentStep < BOOKING_STEPS.length) {
+      trackBookingStep(currentStep + 1, bookingData.serviceType, bookingData.packageType);
       setCurrentStep(prev => prev + 1);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -203,6 +219,7 @@ ${bookingData.message}`,
       });
 
       if (result.success) {
+        trackBookingComplete(bookingData.serviceType, bookingData.packageType, bookingData.locationType);
         nextStep();
         toast({ title: 'Booking Request Submitted!', description: "We'll confirm within 24 hours." });
       } else {
@@ -247,6 +264,11 @@ ${bookingData.message}`,
           {SERVICE_TYPES.map((service) => {
             const Icon = service.icon;
             const isSelected = bookingData.serviceType === service.id;
+            const selectService = () => {
+              updateBookingData('serviceType', service.id);
+              updateBookingData('packageType', '');
+              trackBookingSelection('service', service.id);
+            };
             return (
               <Card
                 key={service.id}
@@ -255,9 +277,16 @@ ${bookingData.message}`,
                     ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
                     : 'bg-white/5 border-white/10 hover:border-white/30'
                 }`}
-                onClick={() => {
-                  updateBookingData('serviceType', service.id);
-                  updateBookingData('packageType', '');
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                aria-label={`Select ${service.name}`}
+                onClick={selectService}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    selectService();
+                  }
                 }}
               >
                 <CardHeader className="pb-3">
@@ -302,6 +331,10 @@ ${bookingData.message}`,
             <div className="grid md:grid-cols-3 gap-4">
               {selectedCategory.tiers.map((tier) => {
                 const isSelected = bookingData.packageType === tier.id;
+                const selectPackage = () => {
+                  updateBookingData('packageType', tier.id);
+                  trackBookingSelection('package', tier.id);
+                };
                 return (
                   <Card
                     key={tier.id}
@@ -310,7 +343,17 @@ ${bookingData.message}`,
                         ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
                         : 'bg-white/5 border-white/10 hover:border-white/30'
                     }`}
-                    onClick={() => updateBookingData('packageType', tier.id)}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isSelected}
+                    aria-label={`Select ${tier.name} package, ${tier.price}`}
+                    onClick={selectPackage}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        selectPackage();
+                      }
+                    }}
                   >
                     <CardHeader className="pb-2">
                       <div className="flex items-center justify-between">

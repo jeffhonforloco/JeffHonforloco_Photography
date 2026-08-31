@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { runWhenIdle } from '@/utils/browserIdle';
 
 interface AnalyticsConfig {
   googleAnalytics: {
@@ -92,6 +91,33 @@ export const trackBookingIntent = (source: string, location?: string) => {
   });
 };
 
+export const trackBookingStart = () => {
+  trackEvent('booking_start', { source: 'booking_page' });
+};
+
+export const trackBookingStep = (step: number, serviceType?: string, packageType?: string) => {
+  trackEvent('booking_step_view', {
+    step,
+    service_type: serviceType || 'not_selected',
+    package_type: packageType || 'not_selected',
+  });
+};
+
+export const trackBookingSelection = (selectionType: 'service' | 'package', value: string) => {
+  trackEvent('booking_selection', {
+    selection_type: selectionType,
+    selection_value: value,
+  });
+};
+
+export const trackBookingComplete = (serviceType: string, packageType: string, locationType: string) => {
+  trackEvent('booking_complete', {
+    service_type: serviceType,
+    package_type: packageType,
+    location_type: locationType,
+  });
+};
+
 // Analytics component for route tracking
 const Analytics = () => {
   const location = useLocation();
@@ -99,8 +125,11 @@ const Analytics = () => {
 
   useEffect(() => {
     let cancelled = false;
+    let started = false;
 
     const loadAnalytics = () => {
+      if (started) return;
+      started = true;
       fetch('/data/analytics-config.json')
         .then(response => response.json())
         .then((config: AnalyticsConfig) => {
@@ -165,10 +194,14 @@ const Analytics = () => {
         });
     };
 
-    const cancelIdleLoad = runWhenIdle(loadAnalytics, 2500);
+    const interactionEvents: Array<keyof WindowEventMap> = ['pointerdown', 'keydown'];
+    interactionEvents.forEach((eventName) => {
+      window.addEventListener(eventName, loadAnalytics, { once: true, passive: true });
+    });
+
     return () => {
       cancelled = true;
-      cancelIdleLoad();
+      interactionEvents.forEach((eventName) => window.removeEventListener(eventName, loadAnalytics));
     };
   }, []);
 

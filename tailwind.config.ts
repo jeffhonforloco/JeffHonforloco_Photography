@@ -89,8 +89,8 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				'playfair': ['Playfair Display', 'serif'],
-				'inter': ['Inter', 'sans-serif'],
+				'playfair': ['Georgia', 'Times New Roman', 'serif'],
+				'inter': ['ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
 				'montserrat': ['Montserrat', 'sans-serif'],
 			},
 			letterSpacing: {

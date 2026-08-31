@@ -1,0 +1,4 @@
+/portfolio /portfolios 301
+/portfolio/motion /motion 301
+/portfolio/* /portfolios/:splat 301
+/portfolios/motion /motion 301
