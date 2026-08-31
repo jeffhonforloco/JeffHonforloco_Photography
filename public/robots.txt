@@ -1,69 +1,47 @@
-# JeffHonforloco Photography — robots.txt
+# Jeff Honforloco Photography crawler policy
+# Search and answer-engine discovery are allowed. Model training is not granted.
 
 User-agent: *
-Disallow: /admin
-Disallow: /private/
-Disallow: /data/
-Disallow: /*?*utm_source=
-Disallow: /*?*session_id=
-Allow: /images/
-Crawl-delay: 1
-
-# Google — full access except blocked paths
-User-agent: Googlebot
-Disallow: /admin
-Disallow: /private/
-Disallow: /data/
 Allow: /
-Crawl-delay: 0
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /private/
+Disallow: /data/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /private/
+Disallow: /data/
 
 User-agent: Bingbot
+Allow: /
 Disallow: /admin
+Disallow: /dashboard
 Disallow: /private/
 Disallow: /data/
+
+# AI search and user-requested retrieval agents
+User-agent: OAI-SearchBot
 Allow: /
 
-User-agent: Slurp
-Disallow: /admin
-Disallow: /private/
-Disallow: /data/
+User-agent: ChatGPT-User
 Allow: /
 
-User-agent: DuckDuckBot
-Disallow: /admin
-Disallow: /private/
-Disallow: /data/
+User-agent: GPTBot
 Allow: /
 
-User-agent: Yandex
-Disallow: /admin
-Disallow: /private/
-Disallow: /data/
+User-agent: ClaudeBot
 Allow: /
 
-User-agent: Baiduspider
-Disallow: /admin
-Disallow: /private/
-Disallow: /data/
+User-agent: Claude-SearchBot
 Allow: /
 
-# Social media crawlers — full access for rich previews
-User-agent: facebookexternalhit
+User-agent: PerplexityBot
 Allow: /
 
-User-agent: Twitterbot
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: WhatsApp
-Allow: /
-
-User-agent: Pinterest
-Allow: /
-
-User-agent: TelegramBot
+User-agent: Google-Extended
 Allow: /
 
 Sitemap: https://jeffhonforlocophotos.com/sitemap.xml

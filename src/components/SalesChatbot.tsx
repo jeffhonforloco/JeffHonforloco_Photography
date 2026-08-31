@@ -75,7 +75,7 @@ export default function SalesChatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [hasUnread, setHasUnread] = useState(true);
+  const [hasUnread, setHasUnread] = useState(false);
   const [showChips, setShowChips] = useState(true);
   const [proactiveLabel, setProactiveLabel] = useState<string | null>(null);
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
@@ -85,7 +85,6 @@ export default function SalesChatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isOpenRef = useRef(false);
-  const exitIntentFired = useRef(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
   // Must be called synchronously inside a user-gesture handler (click/touch/key)
@@ -130,42 +129,16 @@ export default function SalesChatbot() {
     if (messages.length > 0) saveSession(messages);
   }, [messages]);
 
-  // Auto-open after 3 seconds — sound plays if user already interacted, skipped silently if not
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!isOpenRef.current) {
-        playChime();
-        setIsOpen(true);
-      }
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []); // intentionally runs once on mount
-
-  // Proactive notification after 15s if user closed the chat
+  // Offer help without opening over the visitor's work or stealing focus.
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isOpenRef.current) {
         setProactiveLabel("✨ Have a project in mind?");
         setHasUnread(true);
       }
-    }, 15000);
+    }, 25000);
     return () => clearTimeout(timer);
-  }, []); // intentionally runs once on mount
-
-  // Exit-intent detection (desktop only)
-  useEffect(() => {
-    const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY < 10 && !isOpenRef.current && !exitIntentFired.current) {
-        exitIntentFired.current = true;
-        setProactiveLabel("Wait — quick question about your project?");
-        setHasUnread(true);
-        playChime();
-        setIsOpen(true);
-      }
-    };
-    document.addEventListener("mouseleave", handleMouseLeave);
-    return () => document.removeEventListener("mouseleave", handleMouseLeave);
-  }, []); // intentionally runs once on mount
+  }, []);
 
   // Focus input and clear unread badge when opening
   useEffect(() => {

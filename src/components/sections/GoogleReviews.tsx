@@ -4,7 +4,7 @@ const reviews = [
   {
     name: 'Emely Adames',
     initials: 'EA',
-    color: 'bg-orange-500',
+    color: 'bg-orange-800',
     service: 'Makeup Artist · Collaborator',
     quote:
       "I've worked with him as a makeup artist, and honestly, I've never seen such meticulous work. His photos are high quality, he's very professional, and above all, punctual. I recommend him 100%. If you're reading this, stop reading and book your appointment now!",
@@ -12,7 +12,7 @@ const reviews = [
   {
     name: 'ArnitaSimone Official',
     initials: 'AS',
-    color: 'bg-purple-600',
+    color: 'bg-purple-800',
     service: 'Portrait Session',
     quote:
       'Jeff is an extremely creative and talented photographer who exceeded my expectations. His love and passion for his art and work are awesome!',
@@ -20,7 +20,7 @@ const reviews = [
   {
     name: 'Kimberly Curvelo',
     initials: 'KC',
-    color: 'bg-green-600',
+    color: 'bg-green-800',
     service: 'Beauty Photography',
     quote:
       'You have the ability to capture ones beauty like no other. You are Amazing.',
@@ -28,7 +28,7 @@ const reviews = [
   {
     name: 'Sarah Wessel',
     initials: 'SW',
-    color: 'bg-blue-600',
+    color: 'bg-blue-800',
     service: 'STYLEWEEK Bridal Event',
     quote:
       'Jeff took amazing pictures for our event, STYLEWEEK Bridal! Captured every moment on the runway. Would definitely recommend!',
@@ -36,7 +36,7 @@ const reviews = [
   {
     name: 'Donahue Models & Talent',
     initials: 'DM',
-    color: 'bg-red-700',
+    color: 'bg-red-800',
     service: 'Talent Agency',
     quote:
       'Jeff is a great photographer, he is reliable and delivers on time!',
@@ -44,7 +44,7 @@ const reviews = [
   {
     name: 'Mfon Essien',
     initials: 'ME',
-    color: 'bg-yellow-600',
+    color: 'bg-yellow-800',
     service: 'Photography Session',
     quote:
       'Very professional, extremely courteous and impeccable quality of work!!!',
@@ -52,14 +52,14 @@ const reviews = [
   {
     name: 'Libra Infinity',
     initials: 'LI',
-    color: 'bg-indigo-600',
+    color: 'bg-indigo-800',
     service: 'Photography Session',
     quote: 'Pictures are very elegant and captures the beauty of the people.',
   },
   {
     name: 'Marie Michaelle',
     initials: 'MM',
-    color: 'bg-pink-600',
+    color: 'bg-pink-800',
     service: 'Repeat Client',
     quote: 'Great photographer!',
   },
@@ -121,7 +121,7 @@ const GoogleReviews = () => {
                 </div>
                 <div>
                   <p className="text-white font-medium text-sm">{review.name}</p>
-                  <p className="text-gray-500 text-xs mt-0.5">{review.service}</p>
+                  <p className="text-gray-400 text-xs mt-0.5">{review.service}</p>
                 </div>
               </div>
             </div>

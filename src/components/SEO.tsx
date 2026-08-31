@@ -5,124 +5,112 @@ interface SEOProps {
   description?: string;
   image?: string;
   url?: string;
-  type?: string;
+  type?: 'website' | 'article';
+  noIndex?: boolean;
 }
 
-const SITE_URL = "https://jeffhonforlocophotos.com";
+const SITE_URL = 'https://jeffhonforlocophotos.com';
+const SITE_NAME = 'Jeff Honforloco Photography';
+const DEFAULT_IMAGE = '/images/optimized/IMG_7671-960.webp';
+const DEFAULT_DESCRIPTION =
+  'Fashion, beauty, editorial, headshot, event and commercial photography by Jeff Honforloco. Based in Providence, Rhode Island and available for travel.';
+
+const normalizePath = (value: string): string => {
+  if (value.startsWith('http')) return value;
+  if (value === '' || value === '/') return `${SITE_URL}/`;
+  return `${SITE_URL}${value.startsWith('/') ? value : `/${value}`}`;
+};
 
 const SEO = ({
-  title = "Jeff Honforloco Photography - Fashion & Beauty Photography",
-  description = "Professional beauty, fashion, and editorial photography for brands, creators, and models worldwide. Elevate your vision with Jeff Honforloco's artistic expertise.",
-  image = "/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png",
-  url = "https://jeffhonforlocophotos.com",
-  type = "website"
+  title = 'Jeff Honforloco Photography | Fashion, Beauty & Editorial Photographer',
+  description = DEFAULT_DESCRIPTION,
+  image = DEFAULT_IMAGE,
+  url,
+  type = 'website',
+  noIndex = false,
 }: SEOProps) => {
-  const fullTitle = title.includes("Jeff Honforloco") ? title : `${title} | Jeff Honforloco Photography`;
-  const fullUrl = url.startsWith('http') ? url : `${SITE_URL}${url}`;
-  const fullImage = image.startsWith('http') ? image : `${SITE_URL}${image}`;
+  const routePath = url ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const fullTitle = title.includes('Jeff Honforloco') ? title : `${title} | ${SITE_NAME}`;
+  const fullUrl = normalizePath(routePath);
+  const fullImage = normalizePath(image);
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Photographer",
-    "name": "Jeff Honforloco",
-    "description": description,
-    "url": fullUrl,
-    "image": fullImage,
-    "sameAs": [
-      "https://instagram.com/jeffhonforloco",
-      "https://www.linkedin.com/in/jeffhonforloco"
-    ],
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "business",
-      "url": `${SITE_URL}/contact`
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': type === 'article' ? 'Article' : 'WebPage',
+    name: fullTitle,
+    description,
+    url: fullUrl,
+    image: fullImage,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: SITE_NAME,
+      url: `${SITE_URL}/`,
     },
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "New York",
-      "addressCountry": "US"
-    }
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What kind of photography does Jeff Honforloco specialize in?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Jeff focuses on fashion, beauty, editorial, and lifestyle photography — brand campaigns, model portfolios, and celebrity shoots."
-        }
-      },
-      {
-        "@type": "Question", 
-        "name": "Where is Jeff Honforloco based?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Jeff operates primarily in NYC, LA, Miami, and travels internationally for fashion and beauty shoots."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I book a session with Jeff Honforloco?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, booking inquiries for fashion, beauty, and editorial shoots are available through the website's contact page."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does Jeff offer creative direction services?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, Jeff provides full creative direction, styling consultation, and art direction for fashion and beauty campaigns."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Are digital and print licensing options available?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, clients can request both digital delivery and usage rights for commercial, editorial, and social media purposes."
-        }
-      }
-    ]
+  const businessSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': `${SITE_URL}/#business`,
+    name: SITE_NAME,
+    url: `${SITE_URL}/`,
+    image: fullImage,
+    telephone: '+1-646-379-4237',
+    email: 'info@jeffhonforlocophotos.com',
+    priceRange: '$$$',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Providence',
+      addressRegion: 'RI',
+      addressCountry: 'US',
+    },
+    areaServed: { '@type': 'Country', name: 'United States' },
+    sameAs: [
+      'https://www.facebook.com/jeffhonforlocophotography',
+      'https://instagram.com/jeffhonforlocophotos',
+      'https://youtube.com/@jeffhonforlocophotos',
+      'https://x.com/jeffhonforloco',
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Photography Services',
+      itemListElement: [
+        'Fashion Photography',
+        'Beauty Photography',
+        'Editorial Photography',
+        'Headshot Photography',
+        'Event Photography',
+        'Commercial Photography',
+      ].map((name) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', name },
+      })),
+    },
   };
+
+  const schemas = routePath === '/' ? [webPageSchema, businessSchema] : [webPageSchema];
 
   return (
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
-      <meta name="keywords" content="photography, beauty photography, fashion photography, editorial photography, editorial photography, professional photographer, NYC photographer" />
-      
-      {/* Open Graph */}
+      <meta
+        name="robots"
+        content={noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+      />
       <meta property="og:type" content={type} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={fullImage} />
       <meta property="og:url" content={fullUrl} />
-      <meta property="og:site_name" content="Jeff Honforloco Photography" />
-      
-      {/* Twitter Card */}
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content="en_US" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={fullImage} />
-      
-      {/* Canonical */}
       <link rel="canonical" href={fullUrl} />
-      
-      {/* Structured Data */}
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </script>
-      
-      {/* FAQ Schema for AI Overview */}
-      <script type="application/ld+json">
-        {JSON.stringify(faqSchema)}
-      </script>
+      <script type="application/ld+json">{JSON.stringify(schemas)}</script>
     </Helmet>
   );
 };

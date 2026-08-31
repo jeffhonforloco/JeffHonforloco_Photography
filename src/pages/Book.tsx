@@ -111,8 +111,8 @@ const Book = () => {
                 <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mb-4">
                   <Award className="w-8 h-8 text-purple-500" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-white">100+ Happy Clients</h3>
-                <p className="text-gray-400 text-sm">Trusted by brands and celebrities worldwide</p>
+                <h3 className="text-xl font-semibold mb-2 text-white">Client-Focused Service</h3>
+                <p className="text-gray-400 text-sm">Clear planning, creative direction and personal follow-up</p>
               </div>
             </div>
           </div>

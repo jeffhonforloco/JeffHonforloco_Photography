@@ -1,18 +1,14 @@
 
 import React, { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Analytics from "./components/Analytics";
+import RouteMetadata from "./components/RouteMetadata";
 import PerformanceMonitor from "./components/PerformanceMonitor";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { initializeImageOptimization } from "./utils/performanceOptimizer";
-import { runWhenIdle } from "./utils/browserIdle";
+import Index from "./pages/Index";
 
 // Lazy load all pages for better performance
-const Index = lazy(() => import("./pages/Index"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
 const PortfolioCategory = lazy(() => import("./pages/PortfolioCategory"));
 const Journal = lazy(() => import("./pages/Journal"));
@@ -28,8 +24,7 @@ const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Services = lazy(() => import("./pages/Services"));
 const SalesChatbot = lazy(() => import("./components/SalesChatbot"));
-
-const CHATBOT_IDLE_TIMEOUT_MS = 6000;
+const Toaster = lazy(() => import("./components/ui/toaster").then((module) => ({ default: module.Toaster })));
 
 // Loading component
 const LoadingFallback = () => (
@@ -40,26 +35,26 @@ const LoadingFallback = () => (
 
 const DeferredSalesChatbot = () => {
   const [shouldLoad, setShouldLoad] = React.useState(false);
+  const { pathname } = useLocation();
+  const isConversionPage = pathname === "/book" || pathname === "/contact";
 
   React.useEffect(() => {
-    if (shouldLoad || typeof window === "undefined") {
+    if (isConversionPage || shouldLoad || typeof window === "undefined") {
       return;
     }
 
     const loadChatbot = () => setShouldLoad(true);
-    const events: Array<keyof WindowEventMap> = ["pointerdown", "keydown", "scroll"];
+    const events: Array<keyof WindowEventMap> = ["pointerdown", "keydown"];
     const listenerOptions: AddEventListenerOptions = { once: true, passive: true };
 
     events.forEach((eventName) => window.addEventListener(eventName, loadChatbot, listenerOptions));
-    const cancelIdleLoad = runWhenIdle(loadChatbot, CHATBOT_IDLE_TIMEOUT_MS);
 
     return () => {
       events.forEach((eventName) => window.removeEventListener(eventName, loadChatbot, listenerOptions));
-      cancelIdleLoad();
     };
-  }, [shouldLoad]);
+  }, [isConversionPage, shouldLoad]);
 
-  if (!shouldLoad) {
+  if (isConversionPage || !shouldLoad) {
     return null;
   }
 
@@ -70,31 +65,33 @@ const DeferredSalesChatbot = () => {
   );
 };
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000,   // 5 min — avoid redundant refetches
-      gcTime: 10 * 60 * 1000,     // 10 min — keep cache warm
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const DeferredToaster = () => {
+  const [shouldLoad, setShouldLoad] = React.useState(false);
 
-const App = () => {
+  React.useEffect(() => {
+    const load = () => setShouldLoad(true);
+    window.addEventListener("pointerdown", load, { once: true, passive: true });
+    window.addEventListener("keydown", load, { once: true, passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", load);
+      window.removeEventListener("keydown", load);
+    };
+  }, []);
+
+  return shouldLoad ? <Suspense fallback={null}><Toaster /></Suspense> : null;
+};
+
+export const AppContent = () => {
   React.useEffect(() => {
     initializeImageOptimization();
   }, []);
 
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+    <>
+            <RouteMetadata />
             <Analytics />
             <PerformanceMonitor />
+            <DeferredToaster />
             <DeferredSalesChatbot />
             <Suspense fallback={<LoadingFallback />}>
               <Routes>
@@ -141,9 +138,16 @@ const App = () => {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
+    </>
+  );
+};
+
+const App = () => {
+  return (
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </ErrorBoundary>
   );
 };

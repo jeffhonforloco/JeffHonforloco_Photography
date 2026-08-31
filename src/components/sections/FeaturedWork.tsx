@@ -2,19 +2,22 @@
 const FeaturedWork = () => {
   const featuredWork = [
     {
-      image: '/images/IMG_7671.jpeg',
+      image: '/images/optimized/IMG_7671-480.webp',
+      srcSet: '/images/optimized/IMG_7671-480.webp 480w, /images/optimized/IMG_7671-640.webp 640w, /images/optimized/IMG_7671-960.webp 960w',
       category: 'High-End Editorial',
       title: 'Editorial Beauty',
       description: 'Editorial beauty photography for campaigns and publications'
     },
     {
-      image: '/images/IMG_7707.jpeg',
+      image: '/images/optimized/IMG_7707-480.webp',
+      srcSet: '/images/optimized/IMG_7707-480.webp 480w, /images/optimized/IMG_7707-640.webp 640w, /images/optimized/IMG_7707-960.webp 960w',
       category: 'Fashion',
       title: 'Fashion Campaign',
       description: 'High-end fashion photography for brands and models'
     },
     {
-      image: '/images/IMG_7664.jpeg',
+      image: '/images/optimized/IMG_7664-480.webp',
+      srcSet: '/images/optimized/IMG_7664-480.webp 480w, /images/optimized/IMG_7664-640.webp 640w, /images/optimized/IMG_7664-960.webp 960w',
       category: 'Beauty Editorial',
       title: 'Beauty Portrait',
       description: 'Premium beauty photography for cosmetic brands and artists'
@@ -32,7 +35,7 @@ const FeaturedWork = () => {
           </h2>
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-photo-red to-transparent mx-auto mb-12"></div>
           <p className="font-light text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed tracking-wide">
-            Award-winning fashion, beauty and editorial photography for high-end brands, celebrities and models across NYC, LA, Miami, Chicago and worldwide
+            Fashion, beauty and editorial photography for brands, creators and models in New England and across the United States
           </p>
         </div>
 
@@ -44,16 +47,21 @@ const FeaturedWork = () => {
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className="relative aspect-[4/5] overflow-hidden mb-10">
-                <img
-                  src={work.image}
-                  alt={work.title}
-                  className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:brightness-110"
-                  loading="lazy"
-                  decoding="async"
-                  fetchPriority="low"
-                  width="800"
-                  height="1000"
-                />
+                <picture>
+                  <source media="(max-width: 767px)" srcSet={work.image} />
+                  <img
+                    src={work.image}
+                    srcSet={work.srcSet}
+                    sizes="(max-width: 1023px) 100vw, 33vw"
+                    alt={work.title}
+                    className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:brightness-110"
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                    width="800"
+                    height="1000"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
                 <div className="absolute bottom-10 left-10 right-10 transform translate-y-8 group-hover:translate-y-0 transition-all duration-700 opacity-0 group-hover:opacity-100">
                   <p className="text-photo-red font-medium text-sm tracking-[0.25em] uppercase mb-3">
