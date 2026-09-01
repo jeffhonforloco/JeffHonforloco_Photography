@@ -36,7 +36,7 @@ export default defineConfig(({ isSsrBuild }) => ({
       },
     },
     cssCodeSplit: true,
-    assetsInlineLimit: 5000,       // inline the tiny mobile wordmark to remove its LCP request
+    assetsInlineLimit: 4096,
     sourcemap: false,
     minify: 'esbuild',
     target: 'es2020',
