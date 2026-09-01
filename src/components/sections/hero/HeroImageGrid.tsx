@@ -6,7 +6,8 @@ const HeroImageGrid = () => {
       <picture>
         <source
           media="(max-width: 767px)"
-          srcSet={image.srcSet.split(',')[0].trim()}
+          srcSet={image.srcSet.split(',').slice(0, 2).join(',')}
+          sizes="50vw"
         />
         <img
           src={image.src}
