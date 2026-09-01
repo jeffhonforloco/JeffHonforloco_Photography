@@ -1,5 +1,3 @@
-import inlineBrandLogo from '../../../assets/brand-logo-inline.webp?inline';
-
 const HeroContent = () => {
   return (
     <>
@@ -9,10 +7,10 @@ const HeroContent = () => {
           <picture>
             <source
               type="image/webp"
-              srcSet={inlineBrandLogo}
+              srcSet="/images/optimized/brand-logo-320.webp"
             />
             <img
-              src={inlineBrandLogo}
+              src="/images/optimized/brand-logo-320.webp"
               alt="Jeff Honforloco Photography"
               className="w-64 sm:w-72 max-w-[75vw] h-auto mx-auto mb-3 drop-shadow-2xl brightness-125 contrast-110"
               width="1280"
@@ -55,7 +53,7 @@ const HeroContent = () => {
               media="(min-width: 768px)"
             />
             <img
-              src={inlineBrandLogo}
+              src="/images/optimized/brand-logo-320.webp"
               alt="Jeff Honforloco Photography"
               className="w-80 lg:w-96 xl:w-[28rem] h-auto mb-5 drop-shadow-2xl brightness-125 contrast-110"
               width="1280"

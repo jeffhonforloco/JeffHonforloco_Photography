@@ -30,10 +30,14 @@ const Index = () => {
       return () => window.clearTimeout(timeoutId);
     }
 
+    const revealBelowFold = () => {
+      loadHomepageStyles();
+      setShowBelowFold(true);
+    };
+
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        loadHomepageStyles();
-        setShowBelowFold(true);
+        revealBelowFold();
         observer.disconnect();
       }
     }, { threshold: 1 });
@@ -44,9 +48,17 @@ const Index = () => {
       window.addEventListener(eventName, loadHomepageStyles, { once: true, passive: true });
     });
 
+    const revealEvents: Array<keyof WindowEventMap> = ['wheel', 'touchmove', 'scroll'];
+    revealEvents.forEach((eventName) => {
+      window.addEventListener(eventName, revealBelowFold, { once: true, passive: true });
+    });
+    const fallbackId = window.setTimeout(revealBelowFold, 12_000);
+
     return () => {
       observer.disconnect();
+      window.clearTimeout(fallbackId);
       interactionEvents.forEach((eventName) => window.removeEventListener(eventName, loadHomepageStyles));
+      revealEvents.forEach((eventName) => window.removeEventListener(eventName, revealBelowFold));
     };
   }, []);
 
@@ -54,7 +66,7 @@ const Index = () => {
     <Layout>
       <SEO />
       <HeroSection />
-      <div ref={boundaryRef} className="h-px mt-px" aria-hidden="true" />
+      <div ref={boundaryRef} className="h-4" aria-hidden="true" />
       {showBelowFold && (
         <Suspense fallback={<div className="min-h-screen bg-black" aria-hidden="true" />}>
           <HomepageBelowFold />
