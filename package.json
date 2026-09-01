@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/generate-static-entrypoints.mjs && vite build --ssr src/entry-server.tsx --outDir .ssr-dist && tailwindcss -c tailwind.critical.config.ts -i src/index.css -o .critical-home.css --minify && node scripts/inject-homepage-ssr.mjs",
+    "build": "vite build && node scripts/generate-static-entrypoints.mjs && vite build --ssr src/entry-server.tsx --outDir .ssr-dist && node scripts/inject-homepage-ssr.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
