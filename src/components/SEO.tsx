@@ -11,7 +11,7 @@ interface SEOProps {
 
 const SITE_URL = 'https://jeffhonforlocophotos.com';
 const SITE_NAME = 'Jeff Honforloco Photography';
-const DEFAULT_IMAGE = '/images/optimized/IMG_7671-960.webp';
+const DEFAULT_IMAGE = '/images/optimized/IMG_7671-960.webp?v=20260901';
 const DEFAULT_DESCRIPTION =
   'Fashion, beauty, editorial, headshot, event and commercial photography by Jeff Honforloco. Based in Providence, Rhode Island and available for travel.';
 

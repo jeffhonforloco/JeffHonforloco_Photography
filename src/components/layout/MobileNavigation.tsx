@@ -84,7 +84,7 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
             aria-label="Share this page"
           >
             <img
-              src="/images/optimized/navigation-mark-128.webp"
+              src="/images/optimized/navigation-mark-128.webp?v=20260901"
               alt=""
               className="w-6 h-6 filter brightness-0 invert"
               aria-hidden="true"

@@ -47,6 +47,8 @@ export interface HeroImage {
   alt: string;
 }
 
+const HERO_IMAGE_VERSION = '20260901';
+
 // Preserve the complete original hero collection while serving only compact,
 // responsive WebP derivatives. This keeps the visual variety without sending
 // the 119 MB source-image payload to homepage visitors.
@@ -56,8 +58,8 @@ export const optimizedHeroImages: HeroImage[] = portfolioImages.map((original, i
   const optimizedBase = `/images/optimized/${stem}`;
 
   return {
-    src: `${optimizedBase}-640.webp`,
-    srcSet: `${optimizedBase}-320.webp 320w, ${optimizedBase}-640.webp 640w, ${optimizedBase}-960.webp 960w`,
+    src: `${optimizedBase}-640.webp?v=${HERO_IMAGE_VERSION}`,
+    srcSet: `${optimizedBase}-320.webp?v=${HERO_IMAGE_VERSION} 320w, ${optimizedBase}-640.webp?v=${HERO_IMAGE_VERSION} 640w, ${optimizedBase}-960.webp?v=${HERO_IMAGE_VERSION} 960w`,
     alt: `Fashion and beauty photography by Jeff Honforloco, image ${index + 1}`,
   };
 });

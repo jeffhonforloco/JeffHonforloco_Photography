@@ -2,22 +2,22 @@
 const FeaturedWork = () => {
   const featuredWork = [
     {
-      image: '/images/optimized/IMG_7671-480.webp',
-      srcSet: '/images/optimized/IMG_7671-480.webp 480w, /images/optimized/IMG_7671-640.webp 640w, /images/optimized/IMG_7671-960.webp 960w',
+      image: '/images/optimized/IMG_7671-480.webp?v=20260901',
+      srcSet: '/images/optimized/IMG_7671-480.webp?v=20260901 480w, /images/optimized/IMG_7671-640.webp?v=20260901 640w, /images/optimized/IMG_7671-960.webp?v=20260901 960w',
       category: 'High-End Editorial',
       title: 'Editorial Beauty',
       description: 'Editorial beauty photography for campaigns and publications'
     },
     {
-      image: '/images/optimized/IMG_7707-480.webp',
-      srcSet: '/images/optimized/IMG_7707-480.webp 480w, /images/optimized/IMG_7707-640.webp 640w, /images/optimized/IMG_7707-960.webp 960w',
+      image: '/images/optimized/IMG_7707-480.webp?v=20260901',
+      srcSet: '/images/optimized/IMG_7707-480.webp?v=20260901 480w, /images/optimized/IMG_7707-640.webp?v=20260901 640w, /images/optimized/IMG_7707-960.webp?v=20260901 960w',
       category: 'Fashion',
       title: 'Fashion Campaign',
       description: 'High-end fashion photography for brands and models'
     },
     {
-      image: '/images/optimized/IMG_7664-480.webp',
-      srcSet: '/images/optimized/IMG_7664-480.webp 480w, /images/optimized/IMG_7664-640.webp 640w, /images/optimized/IMG_7664-960.webp 960w',
+      image: '/images/optimized/IMG_7664-480.webp?v=20260901',
+      srcSet: '/images/optimized/IMG_7664-480.webp?v=20260901 480w, /images/optimized/IMG_7664-640.webp?v=20260901 640w, /images/optimized/IMG_7664-960.webp?v=20260901 960w',
       category: 'Beauty Editorial',
       title: 'Beauty Portrait',
       description: 'Premium beauty photography for cosmetic brands and artists'
