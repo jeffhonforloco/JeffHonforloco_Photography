@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jeff-honforloco-v2';
+const CACHE_NAME = 'jeff-honforloco-v3';
 const OFFLINE_URL = '/';
 
 // Install event - cache the offline fallback shell
@@ -55,8 +55,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Hashed build assets and images are content-addressed/immutable — cache-first
-  if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/images/')) {
+  // Hashed build assets are content-addressed and safe to serve cache-first.
+  if (url.pathname.startsWith('/assets/')) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
@@ -64,6 +64,30 @@ self.addEventListener('fetch', (event) => {
         }
         return fetch(request).then((response) => {
           if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response;
+          }
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME)
+            .then((cache) => cache.put(request, responseToCache))
+            .catch(() => {});
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Images use cache-first only after verifying the response is actually an
+  // image. This prevents a Pages HTML fallback from poisoning an image URL.
+  if (url.pathname.startsWith('/images/')) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return fetch(request).then((response) => {
+          const contentType = response.headers.get('content-type') || '';
+          if (!response || response.status !== 200 || response.type !== 'basic' || !contentType.startsWith('image/')) {
             return response;
           }
           const responseToCache = response.clone();

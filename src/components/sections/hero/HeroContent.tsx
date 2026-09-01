@@ -7,10 +7,10 @@ const HeroContent = () => {
           <picture>
             <source
               type="image/webp"
-              srcSet="/images/optimized/brand-logo-320.webp"
+              srcSet="/images/optimized/brand-logo-320.webp?v=20260901"
             />
             <img
-              src="/images/optimized/brand-logo-320.webp"
+              src="/images/optimized/brand-logo-320.webp?v=20260901"
               alt="Jeff Honforloco Photography"
               className="w-64 sm:w-72 max-w-[75vw] h-auto mx-auto mb-3 drop-shadow-2xl brightness-125 contrast-110"
               width="1280"
@@ -49,11 +49,11 @@ const HeroContent = () => {
           <picture>
             <source
               type="image/webp"
-              srcSet="/images/optimized/brand-logo-640.webp"
+              srcSet="/images/optimized/brand-logo-640.webp?v=20260901"
               media="(min-width: 768px)"
             />
             <img
-              src="/images/optimized/brand-logo-320.webp"
+              src="/images/optimized/brand-logo-320.webp?v=20260901"
               alt="Jeff Honforloco Photography"
               className="w-80 lg:w-96 xl:w-[28rem] h-auto mb-5 drop-shadow-2xl brightness-125 contrast-110"
               width="1280"
