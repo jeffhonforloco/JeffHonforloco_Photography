@@ -7,6 +7,7 @@ import PerformanceMonitor from "./components/PerformanceMonitor";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { initializeImageOptimization } from "./utils/performanceOptimizer";
 import Index from "./pages/Index";
+import { WebmcpProvider } from "./webmcp/WebmcpProvider";
 
 // Lazy load all pages for better performance
 const Portfolio = lazy(() => import("./pages/Portfolio"));
@@ -91,6 +92,7 @@ export const AppContent = () => {
             <RouteMetadata />
             <Analytics />
             <PerformanceMonitor />
+            <WebmcpProvider />
             <DeferredToaster />
             <DeferredSalesChatbot />
             <Suspense fallback={<LoadingFallback />}>

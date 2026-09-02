@@ -17,7 +17,7 @@ const HeroContent = () => {
               height="359"
               decoding="async"
               loading="eager"
-              fetchPriority="high"
+              {...{ fetchpriority: "high" }}
             />
           </picture>
           <p className="font-inter text-[10px] tracking-[0.35em] text-white/80 uppercase mb-1 text-center">

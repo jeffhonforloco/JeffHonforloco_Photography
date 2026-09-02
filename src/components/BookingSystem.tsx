@@ -19,6 +19,7 @@ import {
 } from '@/components/Analytics';
 import { PRICING_CATEGORIES } from '@/data/pricing-data';
 import { format } from 'date-fns';
+import { BOOKING_DRAFT_STORAGE_KEY } from '@/webmcp/constants';
 
 interface BookingData {
   serviceType: string;
@@ -155,6 +156,54 @@ const BookingSystem: React.FC = () => {
       hasTrackedStart.current = true;
       trackBookingStart();
       trackBookingStep(1);
+    }
+  }, []);
+
+  useEffect(() => {
+    const storedDraft = window.sessionStorage.getItem(BOOKING_DRAFT_STORAGE_KEY);
+    if (!storedDraft) return;
+
+    try {
+      const draft = JSON.parse(storedDraft) as {
+        service?: string;
+        package?: string;
+        desiredDate?: string;
+        desiredTime?: string;
+        fullName?: string;
+        email?: string;
+        phone?: string;
+        budget?: string;
+        location?: string;
+        locationType?: BookingData['locationType'];
+        projectDetails?: string;
+      };
+      const selectedDate = draft.desiredDate ? new Date(`${draft.desiredDate}T12:00:00`) : undefined;
+
+      setBookingData((current) => ({
+        ...current,
+        serviceType: draft.service ?? current.serviceType,
+        packageType: draft.package ?? current.packageType,
+        selectedDate:
+          selectedDate && !Number.isNaN(selectedDate.getTime()) ? selectedDate : current.selectedDate,
+        selectedTime: draft.desiredTime ?? current.selectedTime,
+        fullName: draft.fullName ?? current.fullName,
+        email: draft.email ?? current.email,
+        phone: draft.phone ?? current.phone,
+        budget: draft.budget ?? current.budget,
+        location: draft.location ?? current.location,
+        locationType: draft.locationType ?? current.locationType,
+        message: draft.projectDetails ?? current.message,
+      }));
+
+      if (draft.service && draft.package && draft.desiredDate && draft.desiredTime) {
+        setCurrentStep(3);
+      } else if (draft.service && draft.package) {
+        setCurrentStep(2);
+      }
+    } catch {
+      // Ignore malformed or stale drafts and leave the human booking flow intact.
+    } finally {
+      window.sessionStorage.removeItem(BOOKING_DRAFT_STORAGE_KEY);
     }
   }, []);
 

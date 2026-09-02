@@ -117,7 +117,7 @@ const HighResImage: React.FC<HighResImageProps> = ({
           onError={() => { setHasError(true); onError?.(); }}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
-          fetchPriority={priority ? 'high' : 'auto'}
+          {...{ fetchpriority: priority ? 'high' : 'auto' }}
         />
       </picture>
 
