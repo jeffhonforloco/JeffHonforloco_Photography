@@ -44,6 +44,7 @@ export const portfolioImages: string[] = [
 export interface HeroImage {
   src: string;
   srcSet: string;
+  mobileSrcSet: string;
   alt: string;
 }
 
@@ -60,6 +61,7 @@ export const optimizedHeroImages: HeroImage[] = portfolioImages.map((original, i
   return {
     src: `${optimizedBase}-640.webp?v=${HERO_IMAGE_VERSION}`,
     srcSet: `${optimizedBase}-320.webp?v=${HERO_IMAGE_VERSION} 320w, ${optimizedBase}-640.webp?v=${HERO_IMAGE_VERSION} 640w, ${optimizedBase}-960.webp?v=${HERO_IMAGE_VERSION} 960w`,
+    mobileSrcSet: `${optimizedBase}-320.webp?v=${HERO_IMAGE_VERSION} 320w, ${optimizedBase}-480.webp?v=${HERO_IMAGE_VERSION} 480w`,
     alt: `Fashion and beauty photography by Jeff Honforloco, image ${index + 1}`,
   };
 });

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,8 +22,17 @@ import { PRICING_CATEGORIES, NE_LOCATIONS } from '@/data/pricing-data';
 import type { PricingCategory } from '@/data/pricing-data';
 
 const Pricing = () => {
-  const [activeCategory, setActiveCategory] = useState<string>('headshots');
+  const [searchParams] = useSearchParams();
+  const requestedCategory = searchParams.get('service');
+  const requestedCategoryIsValid = PRICING_CATEGORIES.some((category) => category.id === requestedCategory);
+  const defaultCategory = requestedCategoryIsValid
+    ? requestedCategory as string
+    : 'headshots';
+  const [manualSelection, setManualSelection] = useState<{ category: string; query: string | null } | null>(null);
   const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({});
+  const activeCategory = manualSelection?.query === requestedCategory
+    ? manualSelection.category
+    : defaultCategory;
 
   const current = PRICING_CATEGORIES.find((c) => c.id === activeCategory) as PricingCategory;
 
@@ -137,7 +147,7 @@ const Pricing = () => {
               {PRICING_CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
+                  onClick={() => setManualSelection({ category: cat.id, query: requestedCategory })}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-150 ${
                     activeCategory === cat.id
                       ? 'bg-photo-red text-white shadow-lg shadow-photo-red/20'
