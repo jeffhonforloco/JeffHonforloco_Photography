@@ -12,43 +12,61 @@ const PORTFOLIO_CATEGORIES = [
   'motion',
 ] as const;
 
+type SiteSection = {
+  title: string;
+  path: string;
+  summary: string;
+  type: 'site-section' | 'service';
+  categoryId?: string;
+  keywords: string[];
+  searchContent?: string;
+};
+
 const SITE_SECTIONS = [
   {
     title: 'Booking process',
     path: '/book',
-    content:
+    summary:
       'Choose a photography service and package, request a date and time, then provide project and contact details. Every request is personally reviewed and normally receives a response within 24 hours.',
+    type: 'site-section',
+    keywords: ['book', 'booking', 'request', 'schedule', 'appointment', 'reserve'],
   },
   {
     title: 'Service area',
     path: '/services',
-    content:
+    summary:
       'Jeff Honforloco Photography is based in Providence, Rhode Island, serves New England and clients nationwide, and travels for the right project.',
+    type: 'site-section',
+    keywords: ['travel', 'outside', 'location', 'nationwide', 'Rhode Island', 'New England', 'Providence'],
   },
   {
     title: 'Portfolio',
     path: '/portfolios',
-    content:
+    summary:
       'Published portfolio categories include beauty, fashion, editorial, glamour, headshots, lifestyle, and motion work.',
+    type: 'site-section',
+    keywords: ['portfolio', 'gallery', 'examples', 'work'],
   },
   {
     title: 'Contact',
     path: '/contact',
-    content:
+    summary:
       'Visitors can send a project inquiry through the contact page or call +1 646-379-4237. The studio lists a 24-hour response time for inquiries.',
+    type: 'site-section',
+    keywords: ['contact', 'call', 'phone', 'inquiry', 'reach'],
   },
   ...PRICING_CATEGORIES.map((category) => ({
     title: category.name,
     path: `/pricing?service=${category.id}`,
-    content: [
-      category.tagline,
-      ...category.tiers.map(
-        (tier) =>
-          `${tier.name}: ${tier.price}${tier.duration ? `, ${tier.duration}` : ''}${tier.images ? `, ${tier.images}` : ''}. ${tier.deliverables.join('; ')}`,
-      ),
-    ].join(' '),
+    summary: category.tagline,
+    type: 'service' as const,
+    categoryId: category.id,
+    keywords: [category.id, category.slug, 'pricing', 'packages', ...category.tiers.map((tier) => tier.name)],
+    searchContent: category.tiers
+      .flatMap((tier) => [tier.description ?? '', ...tier.deliverables])
+      .join(' '),
   })),
-];
+] satisfies SiteSection[];
 
 const navigateInApp = (path: string) => {
   if (typeof window === 'undefined') throw new Error('This tool requires a browser page.');
@@ -56,11 +74,105 @@ const navigateInApp = (path: string) => {
   window.dispatchEvent(new PopStateEvent('popstate'));
 };
 
-const tokenize = (value: string) =>
+const LOW_VALUE_TERMS = new Set([
+  'a',
+  'an',
+  'and',
+  'are',
+  'available',
+  'can',
+  'do',
+  'does',
+  'for',
+  'i',
+  'is',
+  'of',
+  'offer',
+  'photography',
+  'photo',
+  'photos',
+  'service',
+  'services',
+  'the',
+  'to',
+  'what',
+  'which',
+  'you',
+  'your',
+]);
+
+const normalize = (value: string) =>
   value
     .toLowerCase()
-    .split(/[^a-z0-9]+/)
-    .filter((token) => token.length > 1);
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+
+const tokenize = (value: string) =>
+  [...new Set(normalize(value).split(' '))].filter(
+    (token) => token.length > 1 && !LOW_VALUE_TERMS.has(token),
+  );
+
+const isBroadServiceQuery = (query: string) => {
+  const normalized = normalize(query);
+  const asksWhatCanBeBooked = /\bwhat can i book\b/.test(normalized);
+  const asksForServices =
+    /\bservices?\b/.test(normalized) && /\b(available|offer|offered|provide|provided|have)\b/.test(normalized);
+  const namesSpecificCategory = PRICING_CATEGORIES.some((category) => {
+    const categoryTerms = tokenize(`${category.id} ${category.name}`);
+    return categoryTerms.some((term) => normalize(query).split(' ').includes(term));
+  });
+
+  return (asksWhatCanBeBooked || asksForServices) && !namesSpecificCategory;
+};
+
+const toPublicMatch = ({ title, path, summary, type, categoryId }: SiteSection) => ({
+  title,
+  path,
+  summary,
+  type,
+  ...(categoryId ? { categoryId } : {}),
+});
+
+const rankSiteSections = (query: string) => {
+  const normalizedQuery = normalize(query);
+  const terms = tokenize(query);
+
+  if (!normalizedQuery || terms.length === 0) return [];
+
+  return SITE_SECTIONS.map((section, index) => {
+    const title = normalize(section.title);
+    const summary = normalize(section.summary);
+    const keywords = section.keywords.map(normalize);
+    const keywordText = keywords.join(' ');
+    const body = normalize(section.searchContent ?? '');
+    const titleTokens = new Set(title.split(' '));
+    const keywordTokens = new Set(keywordText.split(' '));
+    const summaryTokens = new Set(summary.split(' '));
+    const bodyTokens = new Set(body.split(' '));
+
+    let score = 0;
+    if (title === normalizedQuery) score += 120;
+    else if (normalizedQuery.length > 2 && (title.includes(normalizedQuery) || normalizedQuery.includes(title))) {
+      score += 70;
+    }
+    if (summary.includes(normalizedQuery)) score += 24;
+    if (keywords.some((keyword) => keyword.length > 2 && normalizedQuery.includes(keyword))) score += 45;
+
+    for (const term of terms) {
+      if (titleTokens.has(term)) score += 18;
+      if (keywordTokens.has(term)) score += 12;
+      if (summaryTokens.has(term)) score += 5;
+      if (bodyTokens.has(term)) score += 2;
+    }
+
+    return { section, score, index };
+  })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .slice(0, 3)
+    .map(({ section }) => toPublicMatch(section));
+};
 
 type AskSiteInput = {
   query: string;
@@ -84,23 +196,25 @@ export const askSite = defineTool<AskSiteInput>({
   source: 'merchant_authored',
   intent: 'answer',
   execute({ query }) {
-    const terms = tokenize(query);
-    const matches = SITE_SECTIONS.map((section) => {
-      const searchable = `${section.title} ${section.content}`.toLowerCase();
-      const score = terms.reduce((total, term) => total + (searchable.includes(term) ? 1 : 0), 0);
-      return { ...section, score };
-    })
-      .filter((section) => section.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5)
-      .map(({ score: _score, ...section }) => section);
+    if (isBroadServiceQuery(query)) {
+      return {
+        matches: SITE_SECTIONS.filter((section) => section.type === 'service')
+          .slice(0, 3)
+          .map(toPublicMatch),
+        note: 'Published photography services available on the site.',
+      };
+    }
+
+    const matches = rankSiteSections(query);
 
     return {
       matches,
       note:
         matches.length > 0
-          ? 'These excerpts come from the site’s published content.'
-          : 'The site has no published section matching that question. Try a service, package, portfolio category, location, booking, or contact term.',
+          ? 'These summaries come from the site’s published content.'
+          : normalize(query)
+            ? 'No published site information matched that query. Try a specific service, package, portfolio category, location, booking, or contact term.'
+            : 'Enter a service, package, portfolio, location, booking, or contact question.',
     };
   },
 });
