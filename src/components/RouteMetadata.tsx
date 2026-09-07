@@ -1,10 +1,13 @@
-import { useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import SEO from './SEO';
+import serviceAuthorityMeta from '@/data/service-authority-meta.json';
+import { SERVICE_AUTHORITY_BY_PATH } from '@/data/service-authority-data';
 
 interface RouteMeta {
   title: string;
   description: string;
+  image?: string;
   noIndex?: boolean;
 }
 
@@ -53,6 +56,10 @@ const STATIC_META: Record<string, RouteMeta> = {
   '/dashboard': { title: 'Studio Dashboard', description: 'Studio dashboard.', noIndex: true },
 };
 
+serviceAuthorityMeta.forEach(({ path, title, description, image }) => {
+  STATIC_META[path] = { title, description, image };
+});
+
 const titleCase = (value: string): string =>
   value.split('-').filter(Boolean).map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
 
@@ -92,16 +99,51 @@ const getRouteMeta = (pathname: string): RouteMeta => {
 
 const RouteMetadata = () => {
   const { pathname } = useLocation();
-  const meta = getRouteMeta(pathname);
+  const normalizedPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  const meta = getRouteMeta(normalizedPath);
+  const servicePage = SERVICE_AUTHORITY_BY_PATH[normalizedPath];
+  const additionalSchemas = servicePage ? [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: servicePage.h1,
+      description: servicePage.description,
+      url: `https://jeffhonforlocophotos.com${servicePage.path}`,
+      image: `https://jeffhonforlocophotos.com${servicePage.image}`,
+      provider: { '@id': 'https://jeffhonforlocophotos.com/#business' },
+      areaServed: [
+        { '@type': 'City', name: 'Providence' },
+        { '@type': 'State', name: 'Rhode Island' },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://jeffhonforlocophotos.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://jeffhonforlocophotos.com/services' },
+        { '@type': 'ListItem', position: 3, name: servicePage.h1, item: `https://jeffhonforlocophotos.com${servicePage.path}` },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: servicePage.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+      })),
+    },
+  ] : [];
 
   // Static route entry points give crawlers correct metadata before JS runs.
   // Once React is active, remove those copies so Helmet owns one canonical and
   // one description during client-side navigation.
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.head.querySelectorAll('[data-static-meta="true"]').forEach((element) => element.remove());
-  }, [pathname]);
+  }, [normalizedPath]);
 
-  return <SEO title={meta.title} description={meta.description} url={pathname} noIndex={meta.noIndex} type={pathname.startsWith('/journal/') ? 'article' : 'website'} />;
+  return <SEO title={meta.title} description={meta.description} image={meta.image} url={normalizedPath} noIndex={meta.noIndex} type={normalizedPath.startsWith('/journal/') ? 'article' : 'website'} additionalSchemas={additionalSchemas} />;
 };
 
 export default RouteMetadata;

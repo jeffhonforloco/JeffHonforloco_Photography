@@ -1,5 +1,6 @@
 
 import { Link } from 'react-router-dom';
+import { SERVICE_AUTHORITY_LINKS } from '@/data/service-authority-data';
 
 const Footer = () => {
   const navigation = [
@@ -21,6 +22,16 @@ const Footer = () => {
             </p>
           </div>
           <div>
+            <h4 className="font-inter font-medium mb-6 tracking-wider uppercase text-sm">Providence Services</h4>
+            <div className="space-y-4">
+              {SERVICE_AUTHORITY_LINKS.map((item) => (
+                <Link key={item.path} to={item.path} className="block text-gray-400 hover:text-photo-red transition-colors duration-300 font-light">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
             <h4 className="font-inter font-medium mb-6 tracking-wider uppercase text-sm">Navigation</h4>
             <div className="space-y-4">
               {navigation.map((item) => (
@@ -38,7 +49,7 @@ const Footer = () => {
         
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-16 pt-8 text-center">
-          <p className="text-gray-500 font-light tracking-wide">
+          <p className="text-gray-400 font-light tracking-wide">
             © 2026 Jeff Honforloco Photography. All rights reserved.
           </p>
         </div>

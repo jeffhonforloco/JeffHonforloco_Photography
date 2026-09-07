@@ -7,6 +7,7 @@ import PerformanceMonitor from "./components/PerformanceMonitor";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { initializeImageOptimization } from "./utils/performanceOptimizer";
 import Index from "./pages/Index";
+import ServiceAuthority from "./pages/ServiceAuthority";
 import { WebmcpProvider } from "./webmcp/WebmcpProvider";
 
 // Lazy load all pages for better performance
@@ -110,6 +111,11 @@ export const AppContent = () => {
                 <Route path="/journal/:slug" element={<JournalArticle />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/providence-headshot-photographer" element={<ServiceAuthority />} />
+                <Route path="/providence-fashion-photographer" element={<ServiceAuthority />} />
+                <Route path="/providence-beauty-photographer" element={<ServiceAuthority />} />
+                <Route path="/providence-commercial-photographer" element={<ServiceAuthority />} />
+                <Route path="/rhode-island-editorial-photographer" element={<ServiceAuthority />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/book" element={<Book />} />
                 <Route path="/pricing" element={<Pricing />} />

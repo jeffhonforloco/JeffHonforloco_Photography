@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import SEO from '../components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,6 +35,13 @@ const Pricing = () => {
     : defaultCategory;
 
   const current = PRICING_CATEGORIES.find((c) => c.id === activeCategory) as PricingCategory;
+  const authorityPaths: Record<string, { path: string; label: string }> = {
+    headshots: { path: '/providence-headshot-photographer', label: 'Providence headshot service guide' },
+    beauty: { path: '/providence-beauty-photographer', label: 'Providence beauty service guide' },
+    fashion: { path: '/providence-fashion-photographer', label: 'Providence fashion service guide' },
+    editorial: { path: '/rhode-island-editorial-photographer', label: 'Rhode Island editorial service guide' },
+  };
+  const authorityLink = authorityPaths[activeCategory];
 
   function toggleTier(tierId: string) {
     setExpandedTiers((prev) => ({ ...prev, [tierId]: !prev[tierId] }));
@@ -84,6 +91,11 @@ const Pricing = () => {
                 Get a Custom Quote
               </Button>
             </div>
+            {authorityLink && (
+              <p className="mt-6 text-sm text-gray-400">
+                Planning locally? <Link to={authorityLink.path} className="text-red-400 hover:text-white underline underline-offset-4">{authorityLink.label}</Link>
+              </p>
+            )}
           </div>
         </section>
 

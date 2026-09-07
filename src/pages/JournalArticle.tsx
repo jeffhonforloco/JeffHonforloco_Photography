@@ -9,6 +9,25 @@ import { toast } from '@/components/ui/use-toast';
 // Renders HTML content from the Worker, or plain text from the static JSON fallback.
 const HTML_TAG = /<[a-z][\s\S]*>/i;
 
+const ARTICLE_SERVICE_LINKS: Record<string, Array<{ path: string; label: string }>> = {
+  'how-to-prepare-beauty-photography-session': [
+    { path: '/providence-beauty-photographer', label: 'Providence beauty photography services' },
+  ],
+  'best-editorial-photography-ideas-personal-brands': [
+    { path: '/rhode-island-editorial-photographer', label: 'Rhode Island editorial photography' },
+    { path: '/providence-commercial-photographer', label: 'Providence commercial photography' },
+  ],
+  'luxury-fashion-photography-trends-2025': [
+    { path: '/providence-fashion-photographer', label: 'Providence and New England fashion photography' },
+  ],
+  'building-fashion-photography-portfolio-guide': [
+    { path: '/providence-fashion-photographer', label: 'Providence fashion portfolio sessions' },
+  ],
+  'professional-photographer-secrets-stunning-portraits': [
+    { path: '/providence-headshot-photographer', label: 'Professional headshots in Providence' },
+  ],
+};
+
 const ArticleBody = ({ content }: { content: string }) => {
   if (HTML_TAG.test(content)) {
     return (
@@ -134,6 +153,8 @@ const JournalArticle = () => {
     );
   }
 
+  const articleServiceLinks = ARTICLE_SERVICE_LINKS[article.slug ?? article.id] ?? [];
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -204,6 +225,19 @@ const JournalArticle = () => {
           <div className="prose prose-lg prose-invert max-w-none">
             <ArticleBody content={article.content} />
           </div>
+          {articleServiceLinks.length > 0 && (
+            <aside className="mt-14 border-l-2 border-photo-red pl-6" aria-label="Related photography services">
+              <h2 className="text-2xl font-semibold text-white mb-3">Put this guidance into practice</h2>
+              <p className="text-gray-400 mb-4">Explore the relevant local service, portfolio and published package options:</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-3">
+                {articleServiceLinks.map((item) => (
+                  <Link key={item.path} to={item.path} className="text-red-400 hover:text-white underline underline-offset-4">
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </aside>
+          )}
         </div>
       </section>
 

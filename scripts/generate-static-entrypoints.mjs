@@ -4,6 +4,9 @@ import path from 'node:path';
 const SITE_URL = 'https://jeffhonforlocophotos.com';
 const distDir = path.resolve('dist');
 const baseHtml = await readFile(path.join(distDir, 'index.html'), 'utf8');
+const serviceAuthorityMeta = JSON.parse(
+  await readFile(path.resolve('src/data/service-authority-meta.json'), 'utf8'),
+);
 
 const routes = [
   ['/', 'Jeff Honforloco Photography | Fashion, Beauty & Editorial Photographer', 'Fashion, beauty, editorial, headshot, event and commercial photography by Jeff Honforloco. Based in Providence, Rhode Island and available for travel.'],
@@ -16,6 +19,7 @@ const routes = [
   ['/journal', 'Photography Journal | Jeff Honforloco Photography', 'Practical guidance about preparing for portrait, fashion, beauty and editorial photography sessions.'],
   ['/motion', 'Motion & Video Portfolio | Jeff Honforloco Photography', 'View motion, campaign and short-form video work from Jeff Honforloco Photography.'],
   ['/prep-guide', 'Photography Session Prep Guide | Jeff Honforloco Photography', 'Prepare wardrobe, styling and creative details for your upcoming photography session.'],
+  ...serviceAuthorityMeta.map(({ path: route, title, description, image }) => [route, title, description, image]),
   ...['beauty', 'fashion', 'editorial', 'glamour', 'headshots', 'lifestyle'].map((category) => [
     `/portfolios/${category}`,
     `${category[0].toUpperCase()}${category.slice(1)} Photography Portfolio | Jeff Honforloco Photography`,
@@ -42,11 +46,12 @@ const setMeta = (html, attribute, key, value) => html.replace(
   `<meta ${attribute}="${key}" content="${escapeHtml(value)}" data-react-helmet="true" data-static-meta="true" />`,
 );
 
-for (const [route, title, description] of routes) {
+for (const [route, title, description, image] of routes) {
   if (route === '/') continue;
 
   const canonical = `${SITE_URL}${route}`;
   let html = baseHtml
+    .replace(/\s*<link\s+rel="preload"\s+as="image"[\s\S]*?\/>/gi, '')
     .replace(/<title>[^<]*<\/title>/i, `<title>${escapeHtml(title)}</title>`)
     .replace(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${canonical}" data-react-helmet="true" data-static-meta="true" />`);
 
@@ -56,6 +61,16 @@ for (const [route, title, description] of routes) {
   html = setMeta(html, 'property', 'og:url', canonical);
   html = setMeta(html, 'name', 'twitter:title', title);
   html = setMeta(html, 'name', 'twitter:description', description);
+
+  if (image) {
+    const absoluteImage = `${SITE_URL}${image}`;
+    html = setMeta(html, 'property', 'og:image', absoluteImage);
+    html = setMeta(html, 'name', 'twitter:image', absoluteImage);
+    const src480 = image.replace('-960.webp', '-480.webp');
+    const src640 = image.replace('-960.webp', '-640.webp');
+    const preload = `<link rel="preload" as="image" type="image/webp" href="${image}" imagesrcset="${src480} 480w, ${src640} 640w, ${image} 960w" imagesizes="(max-width: 1023px) 100vw, 45vw" fetchpriority="high" />`;
+    html = html.replace('</head>', `    ${preload}\n  </head>`);
+  }
 
   const outputDir = path.join(distDir, route.slice(1));
   await mkdir(outputDir, { recursive: true });

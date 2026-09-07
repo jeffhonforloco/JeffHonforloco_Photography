@@ -85,6 +85,13 @@ const PortfolioCategory = ({ categoryOverride }: PortfolioCategoryProps) => {
   const images = apiImages ?? staticImages;
   const title = categoryTitles[currentCategory as keyof typeof categoryTitles] || 'Portfolio';
   const description = categoryDescriptions[currentCategory as keyof typeof categoryDescriptions] || '';
+  const serviceLinks: Record<string, { path: string; label: string }> = {
+    headshots: { path: '/providence-headshot-photographer', label: 'Providence headshot services' },
+    fashion: { path: '/providence-fashion-photographer', label: 'Providence fashion services' },
+    beauty: { path: '/providence-beauty-photographer', label: 'Providence beauty services' },
+    editorial: { path: '/rhode-island-editorial-photographer', label: 'Rhode Island editorial services' },
+  };
+  const serviceLink = serviceLinks[currentCategory];
 
   if (loading) {
     return (
@@ -100,10 +107,10 @@ const PortfolioCategory = ({ categoryOverride }: PortfolioCategoryProps) => {
   }
 
   if (currentCategory.includes('beauty')) {
-    return <BeautyPortfolio images={images} />;
+    return <BeautyPortfolio images={images} serviceLink={serviceLink} />;
   }
 
-  return <DefaultPortfolio title={title} description={description} images={images} />;
+  return <DefaultPortfolio title={title} description={description} images={images} serviceLink={serviceLink} />;
 };
 
 export default PortfolioCategory;

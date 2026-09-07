@@ -10,3 +10,19 @@ export const renderHomepage = () => renderToString(
     </StaticRouter>
   </HelmetProvider>,
 );
+
+export const renderServiceRoute = (location: string) => {
+  const helmetContext: { helmet?: { script: { toString: () => string } } } = {};
+  const body = renderToString(
+    <HelmetProvider context={helmetContext}>
+      <StaticRouter location={location}>
+        <AppContent />
+      </StaticRouter>
+    </HelmetProvider>,
+  );
+
+  return {
+    body,
+    structuredData: helmetContext.helmet?.script.toString() ?? '',
+  };
+};

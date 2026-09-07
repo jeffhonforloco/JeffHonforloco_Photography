@@ -15,6 +15,7 @@ const services = [
     duration: '2–8 hours',
     startingAt: '$499',
     bookId: 'fashion',
+    authorityPath: '/providence-fashion-photographer',
   },
   {
     id: 'beauty',
@@ -28,6 +29,7 @@ const services = [
     duration: '1–5 hours',
     startingAt: '$499',
     bookId: 'beauty',
+    authorityPath: '/providence-beauty-photographer',
   },
   {
     id: 'headshots',
@@ -41,6 +43,7 @@ const services = [
     duration: '1–3 hours',
     startingAt: '$499',
     bookId: 'headshots',
+    authorityPath: '/providence-headshot-photographer',
     isMobile: true,
   },
   {
@@ -68,6 +71,7 @@ const services = [
     duration: '4–8 hours',
     startingAt: '$499',
     bookId: 'editorial',
+    authorityPath: '/rhode-island-editorial-photographer',
   },
   {
     id: 'lifestyle',
@@ -207,6 +211,11 @@ const Services = () => {
                     Book This Session
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
+                  {service.authorityPath && (
+                    <Link to={service.authorityPath} className="inline-flex items-center gap-2 ml-0 sm:ml-5 mt-4 sm:mt-0 text-red-400 hover:text-white underline underline-offset-4">
+                      Providence & Rhode Island service details
+                    </Link>
+                  )}
                 </div>
 
                 {/* Details panel */}

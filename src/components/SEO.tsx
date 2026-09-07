@@ -7,6 +7,7 @@ interface SEOProps {
   url?: string;
   type?: 'website' | 'article';
   noIndex?: boolean;
+  additionalSchemas?: Record<string, unknown>[];
 }
 
 const SITE_URL = 'https://jeffhonforlocophotos.com';
@@ -28,6 +29,7 @@ const SEO = ({
   url,
   type = 'website',
   noIndex = false,
+  additionalSchemas = [],
 }: SEOProps) => {
   const routePath = url ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
   const fullTitle = title.includes('Jeff Honforloco') ? title : `${title} | ${SITE_NAME}`;
@@ -41,6 +43,11 @@ const SEO = ({
     description,
     url: fullUrl,
     image: fullImage,
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      contentUrl: fullImage,
+      caption: fullTitle,
+    },
     isPartOf: {
       '@type': 'WebSite',
       name: SITE_NAME,
@@ -88,7 +95,11 @@ const SEO = ({
     },
   };
 
-  const schemas = routePath === '/' ? [webPageSchema, businessSchema] : [webPageSchema];
+  const schemas = [
+    webPageSchema,
+    ...(routePath === '/' ? [businessSchema] : []),
+    ...additionalSchemas,
+  ];
 
   return (
     <Helmet>
