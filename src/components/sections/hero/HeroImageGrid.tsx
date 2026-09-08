@@ -53,7 +53,10 @@ const HeroImageGrid = () => {
     responsiveSrcSet: string,
     isInitiallyVisible: boolean,
   ) => (
-    <div key={key} className="relative aspect-[4/5] overflow-hidden bg-photo-gray-900 flex-shrink-0">
+    <div
+      key={key}
+      className="relative aspect-[4/5] overflow-hidden bg-photo-gray-900 flex-shrink-0 ring-1 ring-inset ring-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.32)]"
+    >
       <picture>
         <source
           media={media}
@@ -66,7 +69,7 @@ const HeroImageGrid = () => {
           data-hero-src={image.src}
           alt=""
           aria-hidden="true"
-          className="hero-image absolute inset-0 h-full w-full object-cover"
+          className="hero-image absolute inset-0 h-full w-full object-cover scale-[1.01]"
           loading={isInitiallyVisible ? 'eager' : 'lazy'}
           decoding="async"
           width="480"
@@ -124,7 +127,10 @@ const HeroImageGrid = () => {
           </div>
         ))}
       </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/15" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/35 to-transparent md:h-14"
+        aria-hidden="true"
+      />
     </div>
   );
 };
