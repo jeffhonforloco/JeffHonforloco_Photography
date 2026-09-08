@@ -10,7 +10,7 @@ const HeroImageGrid = () => {
     const grid = gridRef.current;
     if (!grid) return;
 
-    const pendingImages = Array.from(grid.querySelectorAll<HTMLImageElement>('img[data-hero-src]'));
+    const pendingImages = new Set(grid.querySelectorAll<HTMLImageElement>('img[data-hero-src]'));
     const loadImage = (image: HTMLImageElement) => {
       const source = image.dataset.heroSrc;
       const pictureSource = image.parentElement?.querySelector('source');
@@ -20,30 +20,40 @@ const HeroImageGrid = () => {
       if (source) image.src = source;
       delete image.dataset.heroSrc;
       if (pictureSource) delete pictureSource.dataset.heroSrcset;
+      pendingImages.delete(image);
     };
 
-    if (!('IntersectionObserver' in window)) {
-      pendingImages.forEach(loadImage);
-      return;
-    }
+    // IntersectionObserver does not consistently emit new entries when only a
+    // parent transform moves the columns. Sample the pending tiles in one read
+    // batch instead, then update their sources in a separate write batch.
+    const loadUpcomingImages = () => {
+      if (document.hidden) return;
 
-    // Native lazy loading uses a very large look-ahead window. On an animated
-    // gallery that caused dozens of off-screen photographs to download during
-    // the initial mobile audit. Observe the actual hero viewport instead so
-    // images arrive shortly before they scroll into view.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          loadImage(entry.target as HTMLImageElement);
-          observer.unobserve(entry.target);
-        });
-      },
-      { root: grid, rootMargin: '600px 0px' },
-    );
+      const preloadMargin = Math.max(240, window.innerHeight * 0.75);
+      const upcoming: HTMLImageElement[] = [];
 
-    pendingImages.forEach((image) => observer.observe(image));
-    return () => observer.disconnect();
+      pendingImages.forEach((image) => {
+        const rect = image.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return;
+        if (rect.bottom >= -preloadMargin && rect.top <= window.innerHeight + preloadMargin) {
+          upcoming.push(image);
+        }
+      });
+
+      upcoming.forEach(loadImage);
+    };
+
+    const initialFrame = window.requestAnimationFrame(loadUpcomingImages);
+    const interval = window.setInterval(loadUpcomingImages, 1500);
+    window.addEventListener('resize', loadUpcomingImages, { passive: true });
+    document.addEventListener('visibilitychange', loadUpcomingImages);
+
+    return () => {
+      window.cancelAnimationFrame(initialFrame);
+      window.clearInterval(interval);
+      window.removeEventListener('resize', loadUpcomingImages);
+      document.removeEventListener('visibilitychange', loadUpcomingImages);
+    };
   }, []);
 
   const renderImage = (
@@ -52,6 +62,7 @@ const HeroImageGrid = () => {
     media: string,
     responsiveSrcSet: string,
     isInitiallyVisible: boolean,
+    isPriority: boolean,
   ) => (
     <div
       key={key}
@@ -65,13 +76,14 @@ const HeroImageGrid = () => {
           sizes={media.includes('max-width') ? '50vw' : '33vw'}
         />
         <img
-          src={TRANSPARENT_PIXEL}
-          data-hero-src={image.src}
+          src={isInitiallyVisible ? image.src : TRANSPARENT_PIXEL}
+          data-hero-src={isInitiallyVisible ? undefined : image.src}
           alt=""
           aria-hidden="true"
           className="hero-image absolute inset-0 h-full w-full object-cover scale-[1.01]"
-          loading={isInitiallyVisible ? 'eager' : 'lazy'}
+          loading={isPriority ? 'eager' : 'lazy'}
           decoding="async"
+          {...{ fetchpriority: isPriority ? 'high' : 'low' }}
           width="480"
           height="600"
         />
@@ -104,6 +116,7 @@ const HeroImageGrid = () => {
                 '(max-width: 767px)',
                 image.mobileSrcSet,
                 isInitiallyVisible,
+                columnIndex === 0 && index === 0,
               );
             })}
           </div>
@@ -122,6 +135,7 @@ const HeroImageGrid = () => {
                 '(min-width: 768px)',
                 image.srcSet,
                 index >= start && index <= end,
+                columnIndex === 0 && index === 1,
               );
             })}
           </div>
