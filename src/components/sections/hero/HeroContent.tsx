@@ -3,7 +3,7 @@ const HeroContent = () => {
     <>
       {/* Mobile hero content — text sits at bottom, clear of the chatbot FAB */}
       <div className="md:hidden absolute inset-0 flex flex-col items-center justify-end z-20 pointer-events-none px-6 pb-28">
-        <div className="flex flex-col items-center w-full pt-16">
+        <div className="relative flex flex-col items-center w-full pt-16 [text-shadow:0_1px_4px_rgba(0,0,0,0.85)]">
           <picture>
             <source
               type="image/webp"
@@ -12,7 +12,7 @@ const HeroContent = () => {
             <img
               src="/images/optimized/brand-logo-320.webp?v=20260901"
               alt="Jeff Honforloco Photography"
-              className="w-64 sm:w-72 max-w-[75vw] h-auto mx-auto mb-3 drop-shadow-2xl brightness-125 contrast-110"
+              className="w-64 sm:w-72 max-w-[75vw] h-auto mx-auto mb-3 drop-shadow-[0_2px_5px_rgba(0,0,0,0.72)] brightness-125 contrast-110"
               width="1280"
               height="359"
               decoding="async"
@@ -43,9 +43,9 @@ const HeroContent = () => {
         </div>
       </div>
 
-      {/* Desktop — text block bottom-left, local gradient only under the text */}
+      {/* Desktop — text block bottom-left with a tight text shadow only */}
       <div className="hidden md:flex absolute inset-0 items-end z-20 pointer-events-none pb-12 lg:pb-16 pl-10 lg:pl-16 xl:pl-24">
-        <div className="max-w-xl pr-16 pt-16">
+        <div className="relative max-w-xl pr-16 pt-16 [text-shadow:0_1px_4px_rgba(0,0,0,0.85)]">
           <picture>
             <source
               type="image/webp"
@@ -55,7 +55,7 @@ const HeroContent = () => {
             <img
               src="/images/optimized/brand-logo-320.webp?v=20260901"
               alt="Jeff Honforloco Photography"
-              className="w-80 lg:w-96 xl:w-[28rem] h-auto mb-5 drop-shadow-2xl brightness-125 contrast-110"
+              className="w-80 lg:w-96 xl:w-[28rem] h-auto mb-5 drop-shadow-[0_2px_5px_rgba(0,0,0,0.72)] brightness-125 contrast-110"
               width="1280"
               height="359"
               decoding="async"
