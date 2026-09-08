@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jeff-honforloco-v3';
+const CACHE_NAME = 'jeff-honforloco-v4';
 const OFFLINE_URL = '/';
 
 // Install event - cache the offline fallback shell
@@ -44,10 +44,15 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then((cache) => cache.put(OFFLINE_URL, responseToCache))
-            .catch(() => {});
+          // Only a successful homepage response may refresh the offline
+          // fallback. Route HTML must stay route-specific and must never
+          // replace the cached homepage.
+          if (url.pathname === OFFLINE_URL && response.ok && response.type === 'basic') {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME)
+              .then((cache) => cache.put(OFFLINE_URL, responseToCache))
+              .catch(() => {});
+          }
           return response;
         })
         .catch(() => caches.match(OFFLINE_URL))
