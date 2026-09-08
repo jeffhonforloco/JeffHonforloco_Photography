@@ -24,6 +24,51 @@ type SiteSection = {
 
 const SITE_SECTIONS = [
   {
+    title: 'Providence Headshot Photographer',
+    path: '/providence-headshot-photographer',
+    summary:
+      'Professional headshots in Providence for executives, founders, LinkedIn profiles, creative professionals, individuals and corporate teams, in studio or on location. Published individual packages begin at $499.',
+    type: 'service',
+    categoryId: 'headshots',
+    keywords: ['professional headshots', 'headshot photographer', 'Providence', 'Rhode Island', 'LinkedIn', 'executive', 'founder', 'corporate team'],
+    searchContent: 'Individual and team headshots with posing and expression coaching, multiple background and lighting options, retouched high-resolution images and team coordination.',
+  },
+  {
+    title: 'Providence Fashion Photographer',
+    path: '/providence-fashion-photographer',
+    summary:
+      'Fashion photography for models, designers, influencers and creative brands in Providence, Rhode Island and across New England, from portfolio sessions to campaigns.',
+    type: 'service',
+    categoryId: 'fashion',
+    keywords: ['fashion photographer', 'Providence', 'Rhode Island', 'New England', 'models', 'designers', 'campaign'],
+  },
+  {
+    title: 'Providence Beauty Photographer',
+    path: '/providence-beauty-photographer',
+    summary:
+      'Beauty photography in Providence for personal brands, cosmetics, skincare, makeup artists and editorial concepts, with professional retouching.',
+    type: 'service',
+    categoryId: 'beauty',
+    keywords: ['beauty photographer', 'Providence', 'Rhode Island', 'cosmetics', 'skincare', 'makeup', 'retouching'],
+  },
+  {
+    title: 'Providence Commercial Photographer',
+    path: '/providence-commercial-photographer',
+    summary:
+      'Commercial photography for Providence brands and organizations, including campaigns, brand imagery, executive portraits and coordinated productions.',
+    type: 'service',
+    keywords: ['commercial photographer', 'Providence', 'brand', 'campaign', 'organization', 'executive portraits'],
+  },
+  {
+    title: 'Rhode Island Editorial Photographer',
+    path: '/rhode-island-editorial-photographer',
+    summary:
+      'Concept-led editorial photography for Rhode Island publications, brands, creative teams and models, with planning options from a concept brief through full production.',
+    type: 'service',
+    categoryId: 'editorial',
+    keywords: ['editorial photographer', 'Rhode Island', 'Providence', 'publication', 'moodboard', 'creative direction'],
+  },
+  {
     title: 'Booking process',
     path: '/book',
     summary:
@@ -85,12 +130,14 @@ const LOW_VALUE_TERMS = new Set([
   'does',
   'for',
   'i',
+  'in',
   'is',
   'of',
   'offer',
   'photography',
   'photo',
   'photos',
+  'professional',
   'service',
   'services',
   'the',
@@ -100,6 +147,8 @@ const LOW_VALUE_TERMS = new Set([
   'you',
   'your',
 ]);
+
+const LOCATION_TERMS = new Set(['providence', 'rhode', 'island', 'ri', 'new', 'england']);
 
 const normalize = (value: string) =>
   value
@@ -137,6 +186,7 @@ const toPublicMatch = ({ title, path, summary, type, categoryId }: SiteSection) 
 const rankSiteSections = (query: string) => {
   const normalizedQuery = normalize(query);
   const terms = tokenize(query);
+  const discriminatingTerms = terms.filter((term) => !LOCATION_TERMS.has(term));
 
   if (!normalizedQuery || terms.length === 0) return [];
 
@@ -166,9 +216,13 @@ const rankSiteSections = (query: string) => {
       if (bodyTokens.has(term)) score += 2;
     }
 
-    return { section, score, index };
+    const searchableTokens = new Set([...titleTokens, ...keywordTokens, ...summaryTokens, ...bodyTokens]);
+    const hasDiscriminatingMatch =
+      discriminatingTerms.length === 0 || discriminatingTerms.some((term) => searchableTokens.has(term));
+
+    return { section, score, index, hasDiscriminatingMatch };
   })
-    .filter(({ score }) => score > 0)
+    .filter(({ score, hasDiscriminatingMatch }) => score > 0 && hasDiscriminatingMatch)
     .sort((a, b) => b.score - a.score || a.index - b.index)
     .slice(0, 3)
     .map(({ section }) => toPublicMatch(section));

@@ -6,9 +6,10 @@ interface DefaultPortfolioProps {
   title: string;
   description: string;
   images: Array<{ src: string; alt: string; caption: string }>;
+  serviceLink?: { path: string; label: string };
 }
 
-const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps) => {
+const DefaultPortfolio = ({ title, description, images, serviceLink }: DefaultPortfolioProps) => {
   return (
     <Layout>
       <div className="min-h-screen bg-black">
@@ -21,6 +22,13 @@ const DefaultPortfolio = ({ title, description, images }: DefaultPortfolioProps)
             Back to Portfolios
           </Link>
         </div>
+        {serviceLink && (
+          <div className="fixed top-24 right-4 z-10">
+            <Link to={serviceLink.path} className="text-sm text-white hover:text-photo-red bg-black/80 backdrop-blur px-3 py-2 rounded transition-colors">
+              {serviceLink.label} →
+            </Link>
+          </div>
+        )}
 
         <div className="fixed top-0 left-0 right-0 z-10 bg-black/90 backdrop-blur pt-16 pb-4">
           <h1 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-wide text-center">

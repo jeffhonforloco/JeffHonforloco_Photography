@@ -8,6 +8,7 @@
     "build": "vite build && node scripts/generate-static-entrypoints.mjs && vite build --ssr src/entry-server.tsx --outDir .ssr-dist && node scripts/inject-homepage-ssr.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "verify:seo-phase2": "node scripts/verify-seo-phase-2.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
