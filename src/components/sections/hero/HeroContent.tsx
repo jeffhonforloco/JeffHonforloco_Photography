@@ -3,11 +3,7 @@ const HeroContent = () => {
     <>
       {/* Mobile hero content — text sits at bottom, clear of the chatbot FAB */}
       <div className="md:hidden absolute inset-0 flex flex-col items-center justify-end z-20 pointer-events-none px-6 pb-28">
-        <div
-          className="absolute inset-x-0 bottom-12 h-[25rem] bg-[radial-gradient(ellipse_at_50%_78%,rgba(0,0,0,0.62)_0%,rgba(0,0,0,0.36)_40%,rgba(0,0,0,0.08)_66%,transparent_80%)]"
-          aria-hidden="true"
-        />
-        <div className="relative flex flex-col items-center w-full pt-16 [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]">
+        <div className="relative flex flex-col items-center w-full pt-16 [text-shadow:0_1px_4px_rgba(0,0,0,0.85)]">
           <picture>
             <source
               type="image/webp"
@@ -16,7 +12,7 @@ const HeroContent = () => {
             <img
               src="/images/optimized/brand-logo-320.webp?v=20260901"
               alt="Jeff Honforloco Photography"
-              className="w-64 sm:w-72 max-w-[75vw] h-auto mx-auto mb-3 drop-shadow-2xl brightness-125 contrast-110"
+              className="w-64 sm:w-72 max-w-[75vw] h-auto mx-auto mb-3 drop-shadow-[0_2px_5px_rgba(0,0,0,0.72)] brightness-125 contrast-110"
               width="1280"
               height="359"
               decoding="async"
@@ -47,13 +43,9 @@ const HeroContent = () => {
         </div>
       </div>
 
-      {/* Desktop — text block bottom-left, local gradient only under the text */}
+      {/* Desktop — text block bottom-left with a tight text shadow only */}
       <div className="hidden md:flex absolute inset-0 items-end z-20 pointer-events-none pb-12 lg:pb-16 pl-10 lg:pl-16 xl:pl-24">
-        <div
-          className="absolute -bottom-12 -left-12 h-[31rem] w-[min(62rem,72vw)] bg-[radial-gradient(ellipse_at_27%_76%,rgba(0,0,0,0.66)_0%,rgba(0,0,0,0.40)_38%,rgba(0,0,0,0.10)_64%,transparent_80%)]"
-          aria-hidden="true"
-        />
-        <div className="relative max-w-xl pr-16 pt-16 [text-shadow:0_2px_16px_rgba(0,0,0,0.9)]">
+        <div className="relative max-w-xl pr-16 pt-16 [text-shadow:0_1px_4px_rgba(0,0,0,0.85)]">
           <picture>
             <source
               type="image/webp"
@@ -63,7 +55,7 @@ const HeroContent = () => {
             <img
               src="/images/optimized/brand-logo-320.webp?v=20260901"
               alt="Jeff Honforloco Photography"
-              className="w-80 lg:w-96 xl:w-[28rem] h-auto mb-5 drop-shadow-2xl brightness-125 contrast-110"
+              className="w-80 lg:w-96 xl:w-[28rem] h-auto mb-5 drop-shadow-[0_2px_5px_rgba(0,0,0,0.72)] brightness-125 contrast-110"
               width="1280"
               height="359"
               decoding="async"
