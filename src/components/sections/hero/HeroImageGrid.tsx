@@ -127,10 +127,6 @@ const HeroImageGrid = () => {
           </div>
         ))}
       </div>
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/35 to-transparent md:h-14"
-        aria-hidden="true"
-      />
     </div>
   );
 };
