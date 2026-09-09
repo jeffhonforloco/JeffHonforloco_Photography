@@ -5,6 +5,11 @@ import { installApiFetchBridge } from './lib/api-service'
 import './index.css'
 import 'react-day-picker/dist/style.css'
 
+// The WebMCP SDK reads this page-level flag during module initialization.
+// Set it before React effects can import the SDK so its optional telemetry
+// never makes a blocked request or adds work to the critical loading path.
+(globalThis as typeof globalThis & { __WEBMCP_TELEMETRY__?: boolean }).__WEBMCP_TELEMETRY__ = false
+
 installApiFetchBridge()
 
 // A deploy replaces the hashed chunk files; a session started before it can
