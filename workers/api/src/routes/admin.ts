@@ -135,15 +135,19 @@ admin.post('/analytics', async (c) => {
   const body = await c.req.json<{ event_type: string; event_data?: string }>();
   if (!body.event_type) return c.json({ error: 'event_type required' }, 400);
   if (!EVENT_TYPE_RE.test(body.event_type)) return c.json({ error: 'Invalid event_type' }, 400);
+  if (body.event_type === 'Lead' || body.event_type === 'BookingConfirmed') {
+    return c.json({ error: `${body.event_type} is recorded only by the verified lead workflow` }, 403);
+  }
 
   const eventData = body.event_data ? body.event_data.slice(0, 1000) : null;
+  const isAcquisitionEvent = ['ViewService', 'ViewPortfolio', 'StartBooking', 'Lead', 'BookingConfirmed'].includes(body.event_type);
 
   await c.env.DB.prepare(
     `INSERT INTO analytics (event_type, event_data, user_agent, ip_address, referrer) VALUES (?, ?, ?, ?, ?)`
   ).bind(
     body.event_type, eventData,
-    c.req.header('User-Agent') ?? null,
-    c.req.header('CF-Connecting-IP') ?? null,
+    isAcquisitionEvent ? null : c.req.header('User-Agent') ?? null,
+    isAcquisitionEvent ? null : c.req.header('CF-Connecting-IP') ?? null,
     c.req.header('Referer') ?? null,
   ).run();
   return c.json({ ok: true });
@@ -237,10 +241,22 @@ admin.get('/analytics', requireAuth, async (c) => {
   const period = c.req.query('period') ?? '30d';
   const days = period === '7d' ? 7 : period === '90d' ? 90 : period === '1y' ? 365 : 30;
 
-  const [byType, daily] = await Promise.all([
+  const [byType, bySource, byService, daily] = await Promise.all([
     c.env.DB.prepare(
       `SELECT event_type, COUNT(*) as count FROM analytics
        WHERE created_at >= datetime('now', ? || ' days') GROUP BY event_type ORDER BY count DESC`
+    ).bind(`-${days}`).all(),
+    c.env.DB.prepare(
+      `SELECT COALESCE(json_extract(event_data, '$.attribution.source'), 'unknown') as source, COUNT(*) as count
+       FROM analytics WHERE created_at >= datetime('now', ? || ' days')
+       AND event_type IN ('ViewService', 'ViewPortfolio', 'StartBooking', 'Lead', 'BookingConfirmed')
+       GROUP BY source ORDER BY count DESC`
+    ).bind(`-${days}`).all(),
+    c.env.DB.prepare(
+      `SELECT COALESCE(json_extract(event_data, '$.service'), 'unknown') as service, COUNT(*) as count
+       FROM analytics WHERE created_at >= datetime('now', ? || ' days')
+       AND event_type IN ('ViewService', 'StartBooking', 'Lead', 'BookingConfirmed')
+       GROUP BY service ORDER BY count DESC`
     ).bind(`-${days}`).all(),
     c.env.DB.prepare(
       `SELECT DATE(created_at) as date, COUNT(*) as count FROM analytics
@@ -267,12 +283,21 @@ admin.get('/analytics', requireAuth, async (c) => {
     newsletterSignups: eventCounts.email_signup ?? eventCounts.newsletter_signup ?? 0,
     portfolioViews: eventCounts.portfolio_view ?? 0,
     blogViews: eventCounts.blog_view ?? 0,
+    funnel: {
+      viewService: eventCounts.ViewService ?? 0,
+      viewPortfolio: eventCounts.ViewPortfolio ?? 0,
+      startBooking: eventCounts.StartBooking ?? 0,
+      leads: eventCounts.Lead ?? 0,
+      bookingConfirmed: eventCounts.BookingConfirmed ?? 0,
+    },
+    bySource: bySource.results,
+    byService: byService.results,
     dailyData,
     byType: byType.results,
     daily: daily.results,
   };
 
-  return c.json({ success: true, period, byType: byType.results, daily: daily.results, data });
+  return c.json({ success: true, period, byType: byType.results, daily: daily.results, bySource: bySource.results, byService: byService.results, data });
 });
 
 // GET /api/v1/admin/config-check (auth required) — verify Worker secrets are configured

@@ -31,7 +31,7 @@ const DesktopNavigation = ({
   };
 
   return (
-    <div className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2 items-center">
+    <div className="hidden xl:flex space-x-8 absolute left-1/2 transform -translate-x-1/2 items-center">
       {/* Portfolios with Dropdown */}
       <div className="relative group">
         <Link

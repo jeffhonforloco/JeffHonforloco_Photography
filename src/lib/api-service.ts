@@ -11,6 +11,8 @@ interface ContactEmailRequest {
   budget_range?: string;
   event_date?: string;
   location?: string;
+  attribution?: string;
+  qualification?: string;
 }
 
 interface ApiResponse {

@@ -12,6 +12,7 @@ email.post('/contact', async (c) => {
   const body = await c.req.json<{
     full_name: string; email: string; phone?: string; message: string;
     service_type?: string; budget_range?: string; event_date?: string; location?: string;
+    attribution?: string; qualification?: string;
   }>();
 
   if (!body.full_name || !body.email || !body.message) {
@@ -25,11 +26,17 @@ email.post('/contact', async (c) => {
   let contactId: number | null = null;
   try {
     const result = await c.env.DB.prepare(
-      `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location, attribution, qualification)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).bind(body.full_name, body.email, body.phone ?? null, body.message,
-           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
+           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null,
+           body.attribution?.slice(0, 2000) ?? null, body.qualification?.slice(0, 2000) ?? null).run();
     contactId = Number(result.meta.last_row_id);
+    let attribution: unknown = null;
+    try { attribution = body.attribution ? JSON.parse(body.attribution) : null; } catch { attribution = null; }
+    await c.env.DB.prepare(
+      `INSERT INTO analytics (event_type, event_data) VALUES ('Lead', ?)`
+    ).bind(JSON.stringify({ contactId, service: body.service_type ?? null, attribution })).run();
   } catch (err) {
     console.error('[email/contact] DB insert failed:', err);
     return c.json({ error: 'Failed to save inquiry' }, 500);

@@ -98,6 +98,7 @@ const services = [
     duration: '2.5–10 hours',
     startingAt: '$850',
     bookId: 'wedding',
+    authorityPath: '/providence-wedding-photographer',
   },
   {
     id: 'events',
@@ -111,6 +112,7 @@ const services = [
     duration: '2–8 hours',
     startingAt: '$799',
     bookId: 'events',
+    authorityPath: '/providence-sweet-16-quinceanera-photographer',
   },
   {
     id: 'real-estate',
@@ -124,6 +126,7 @@ const services = [
     duration: 'Up to 3 hours',
     startingAt: '$499',
     bookId: 'real-estate',
+    authorityPath: '/providence-real-estate-photographer',
     isMobile: true,
   },
   {

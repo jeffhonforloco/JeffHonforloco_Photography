@@ -66,9 +66,12 @@ for (const [route, title, description, image] of routes) {
     const absoluteImage = `${SITE_URL}${image}`;
     html = setMeta(html, 'property', 'og:image', absoluteImage);
     html = setMeta(html, 'name', 'twitter:image', absoluteImage);
-    const src480 = image.replace('-960.webp', '-480.webp');
-    const src640 = image.replace('-960.webp', '-640.webp');
-    const preload = `<link rel="preload" as="image" type="image/webp" href="${image}" imagesrcset="${src480} 480w, ${src640} 640w, ${image} 960w" imagesizes="(max-width: 1023px) 100vw, 45vw" fetchpriority="high" />`;
+    const cleanImage = image.split('?')[0];
+    const isAcquisitionImage = cleanImage.startsWith('/images/acquisition/');
+    const imageSrcset = isAcquisitionImage
+      ? [480, 768, 1200, 1600].map((width) => `${cleanImage.replace(/-\d+\.webp$/, `-${width}.webp`)} ${width}w`).join(', ')
+      : `${image.replace('-960.webp', '-480.webp')} 480w, ${image.replace('-960.webp', '-640.webp')} 640w, ${image} 960w`;
+    const preload = `<link rel="preload" as="image" type="image/webp" href="${image}" imagesrcset="${imageSrcset}" imagesizes="(max-width: 1023px) 100vw, 45vw" fetchpriority="high" />`;
     html = html.replace('</head>', `    ${preload}\n  </head>`);
   }
 

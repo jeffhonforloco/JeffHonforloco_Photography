@@ -54,6 +54,8 @@ interface Contact {
   notes?: string;
   created_at: string;
   updated_at: string;
+  attribution?: string;
+  qualification?: string;
 }
 
 const CONTACT_STATUSES = [
@@ -67,6 +69,10 @@ const CONTACT_STATUSES = [
   { value: 'completed', label: 'Completed' },
   { value: 'closed', label: 'Closed' },
 ];
+
+const formatStoredJson = (value: string): string => {
+  try { return JSON.stringify(JSON.parse(value), null, 2); } catch { return value; }
+};
 
 const AdminContacts: React.FC = () => {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -445,6 +451,18 @@ const AdminContacts: React.FC = () => {
                   {selectedContact.message}
                 </p>
               </div>
+              {selectedContact.attribution && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Acquisition attribution</label>
+                  <pre className="text-xs mt-1 p-3 bg-gray-50 rounded-md whitespace-pre-wrap overflow-auto">{formatStoredJson(selectedContact.attribution)}</pre>
+                </div>
+              )}
+              {selectedContact.qualification && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Booking qualification</label>
+                  <pre className="text-xs mt-1 p-3 bg-gray-50 rounded-md whitespace-pre-wrap overflow-auto">{formatStoredJson(selectedContact.qualification)}</pre>
+                </div>
+              )}
               {selectedContact.notes && (
                 <div>
                   <label className="text-sm font-medium text-gray-500">Notes</label>

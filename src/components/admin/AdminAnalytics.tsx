@@ -29,6 +29,9 @@ interface AnalyticsData {
   portfolioViews: number;
   blogViews: number;
   dailyData: Record<string, Record<string, number>>;
+  funnel: { viewService: number; viewPortfolio: number; startBooking: number; leads: number; bookingConfirmed: number };
+  bySource: Array<{ source: string; count: number }>;
+  byService: Array<{ service: string; count: number }>;
 }
 
 const AdminAnalytics: React.FC = () => {
@@ -252,6 +255,25 @@ const AdminAnalytics: React.FC = () => {
             <p className="text-xs text-muted-foreground">
               Blog interactions
             </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Daily Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader><CardTitle>Acquisition Funnel</CardTitle><CardDescription>First-party visitor progression</CardDescription></CardHeader>
+          <CardContent className="space-y-3">
+            {analytics?.funnel && Object.entries(analytics.funnel).map(([stage, count]) => (
+              <div key={stage} className="flex justify-between border-b pb-2 last:border-0"><span className="capitalize">{stage.replace(/([A-Z])/g, ' $1')}</span><strong>{count}</strong></div>
+            ))}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>Sources & Services</CardTitle><CardDescription>Attributed funnel activity</CardDescription></CardHeader>
+          <CardContent className="grid grid-cols-2 gap-6">
+            <div className="space-y-2">{analytics?.bySource?.map((item) => <div key={item.source} className="flex justify-between"><span>{item.source}</span><Badge variant="outline">{item.count}</Badge></div>)}</div>
+            <div className="space-y-2">{analytics?.byService?.map((item) => <div key={item.service} className="flex justify-between"><span>{item.service}</span><Badge variant="outline">{item.count}</Badge></div>)}</div>
           </CardContent>
         </Card>
       </div>
