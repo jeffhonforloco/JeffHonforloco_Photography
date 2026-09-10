@@ -10,43 +10,50 @@ const ServiceAuthority = () => {
 
   if (!page) return <Navigate to="/not-found" replace />;
 
+  const imagePath = page.image.split('?')[0];
+  const isAcquisitionImage = imagePath.startsWith('/images/acquisition/');
+  const heroSrcSet = isAcquisitionImage
+    ? [480, 768, 1200, 1600].map((width) => `${imagePath.replace(/-\d+\.webp$/, `-${width}.webp`)} ${width}w`).join(', ')
+    : `${page.image.replace('-960.webp', '-480.webp')} 480w, ${page.image.replace('-960.webp', '-640.webp')} 640w, ${page.image} 960w`;
+  const heroMedia = page.gallery?.find((image) => image.src === imagePath);
+
   return (
     <Layout>
-      <article className="bg-photo-black text-white">
+      <article className="bg-photo-black text-white overflow-x-clip">
         <section className="pt-28 md:pt-36 pb-16 md:pb-24">
-          <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
-            <nav aria-label="Breadcrumb" className="mb-8 text-sm text-gray-400">
-              <ol className="flex flex-wrap items-center gap-2">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-16">
+            <nav aria-label="Breadcrumb" className="mb-8 text-xs sm:text-sm text-gray-400">
+              <ol className="flex min-w-0 flex-wrap items-center gap-2">
                 <li><Link className="hover:text-photo-red" to="/">Home</Link></li>
                 <li aria-hidden="true">/</li>
                 <li><Link className="hover:text-photo-red" to="/services">Services</Link></li>
                 <li aria-hidden="true">/</li>
-                <li aria-current="page" className="text-gray-200">{page.h1}</li>
+                <li aria-current="page" className="min-w-0 break-words text-gray-200">{page.h1}</li>
               </ol>
             </nav>
 
-            <div className="grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-20 items-center">
-              <div>
+            <div className="grid min-w-0 lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-20 items-center">
+              <div className="min-w-0">
                 <p className="font-inter text-xs tracking-[0.32em] text-red-400 uppercase mb-5">{page.eyebrow}</p>
-                <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-light leading-[1.04] mb-8">{page.h1}</h1>
-                <p className="text-lg md:text-xl text-gray-300 font-light leading-relaxed mb-9">{page.introduction}</p>
+                <h1 className="font-playfair text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light leading-[1.04] break-words mb-8">{page.h1}</h1>
+                <p className="text-base sm:text-lg md:text-xl text-gray-300 font-light leading-relaxed mb-9">{page.introduction}</p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link to={`/book?service=${page.pricingService}`} className="inline-flex justify-center items-center gap-2 bg-photo-red hover:bg-photo-red-hover px-7 py-4 text-sm font-medium uppercase tracking-[0.14em] transition-colors">
-                    Request a session <ArrowRight className="w-4 h-4" />
+                  <Link to={`/book?service=${page.pricingService}`} className="inline-flex min-w-0 max-w-full w-full sm:w-auto justify-center items-center gap-2 bg-photo-red hover:bg-photo-red-hover px-5 sm:px-7 py-4 text-sm font-medium text-center uppercase tracking-[0.1em] sm:tracking-[0.14em] transition-colors">
+                    <span className="min-w-0 break-words">Request a session</span> <ArrowRight className="w-4 h-4 flex-none" />
                   </Link>
-                  <Link to={page.portfolioPath} className="inline-flex justify-center items-center border border-white/25 hover:border-white/60 px-7 py-4 text-sm uppercase tracking-[0.14em] transition-colors">
-                    {page.portfolioLabel}
+                  <Link to={page.portfolioPath} className="inline-flex min-w-0 max-w-full w-full sm:w-auto justify-center items-center border border-white/25 hover:border-white/60 px-5 sm:px-7 py-4 text-sm text-center uppercase tracking-[0.1em] sm:tracking-[0.14em] transition-colors">
+                    <span className="min-w-0 break-words">{page.portfolioLabel}</span>
                   </Link>
                 </div>
               </div>
               <figure>
                 <img
                   src={page.image}
-                  srcSet={`${page.image.replace('-960.webp', '-480.webp')} 480w, ${page.image.replace('-960.webp', '-640.webp')} 640w, ${page.image} 960w`}
+                  srcSet={heroSrcSet}
                   sizes="(max-width: 1023px) 100vw, 45vw"
                   alt={page.imageAlt}
-                  width="960"
-                  height="1200"
+                  width={heroMedia?.width ?? 960}
+                  height={heroMedia?.height ?? 1200}
                   loading="eager"
                   decoding="async"
                   {...{ fetchpriority: 'high' }}
@@ -77,6 +84,35 @@ const ServiceAuthority = () => {
             </div>
           </div>
         </section>
+
+        {page.gallery && page.gallery.length > 0 && (
+          <section className="py-20 md:py-28 bg-photo-gray-900 border-y border-white/10" aria-labelledby="service-gallery-title">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
+              <h2 id="service-gallery-title" className="font-playfair text-4xl md:text-5xl font-light mb-10">{page.galleryTitle}</h2>
+              <div className="grid grid-cols-2 lg:grid-cols-12 gap-3 md:gap-5">
+                {page.gallery.map((image, index) => {
+                  const base = image.src.replace(/-\d+\.webp$/, '');
+                  const widths = image.src.endsWith('-1600.webp') ? [480, 768, 1200, 1600] : [480, 768, 1200];
+                  return (
+                    <figure key={image.src} className={`${index === 0 ? 'col-span-2 lg:col-span-7 lg:row-span-2' : 'col-span-1 lg:col-span-5'} overflow-hidden bg-black`}>
+                      <img
+                        src={image.src}
+                        srcSet={widths.map((width) => `${base}-${width}.webp ${width}w`).join(', ')}
+                        sizes={index === 0 ? '(max-width: 1023px) 100vw, 58vw' : '(max-width: 1023px) 50vw, 42vw'}
+                        width={image.width}
+                        height={image.height}
+                        alt={image.alt}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full min-h-56 md:min-h-72 object-cover transition-transform duration-700 hover:scale-[1.02]"
+                      />
+                    </figure>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">

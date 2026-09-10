@@ -59,6 +59,7 @@ contacts.post('/', async (c) => {
   const body = await c.req.json<{
     full_name: string; email: string; phone?: string; message: string;
     service_type?: string; budget_range?: string; event_date?: string; location?: string;
+    attribution?: string; qualification?: string;
   }>();
 
   if (!body.full_name || !body.email || !body.message) {
@@ -69,13 +70,19 @@ contacts.post('/', async (c) => {
   }
 
   const result = await c.env.DB.prepare(
-    `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location, attribution, qualification)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(body.full_name, body.email, body.phone ?? null, body.message,
-         body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
+         body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null,
+         body.attribution?.slice(0, 2000) ?? null, body.qualification?.slice(0, 2000) ?? null).run();
 
   const contactId = Number(result.meta.last_row_id);
   if (contactId) {
+    let attribution: unknown = null;
+    try { attribution = body.attribution ? JSON.parse(body.attribution) : null; } catch { attribution = null; }
+    await c.env.DB.prepare(
+      `INSERT INTO analytics (event_type, event_data) VALUES ('Lead', ?)`
+    ).bind(JSON.stringify({ contactId, service: body.service_type ?? null, attribution })).run();
     try {
       await scheduleLeadFollowups(c.env, contactId);
     } catch (error) {
@@ -99,12 +106,24 @@ contacts.put('/:id', requireAuth, async (c) => {
   if (status !== undefined && !ALLOWED_STATUSES.has(status)) {
     return c.json({ error: `Invalid status. Allowed: ${[...ALLOWED_STATUSES].join(', ')}` }, 400);
   }
+  const existing = await c.env.DB.prepare(
+    'SELECT status, service_type, attribution FROM contacts WHERE id = ?'
+  ).bind(c.req.param('id')).first<{ status: string; service_type?: string; attribution?: string }>();
+
   await c.env.DB.prepare(
     `UPDATE contacts SET status = COALESCE(?, status), notes = COALESCE(?, notes), updated_at = datetime('now') WHERE id = ?`
   ).bind(status ?? null, notes ?? null, c.req.param('id')).run();
 
   if (status && PAUSE_FOLLOWUP_STATUSES.has(status)) {
     await cancelPendingFollowups(c.env, Number(c.req.param('id')));
+  }
+
+  if (status === 'booked' && existing?.status !== 'booked') {
+    let attribution: unknown = null;
+    try { attribution = existing?.attribution ? JSON.parse(existing.attribution) : null; } catch { attribution = null; }
+    await c.env.DB.prepare(
+      `INSERT INTO analytics (event_type, event_data) VALUES ('BookingConfirmed', ?)`
+    ).bind(JSON.stringify({ contactId: Number(c.req.param('id')), service: existing?.service_type ?? null, attribution })).run();
   }
 
   return c.json({ ok: true, success: true });

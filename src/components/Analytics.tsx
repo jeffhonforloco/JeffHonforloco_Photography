@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getAttribution, trackFunnelEvent } from '@/lib/acquisition';
+import { SERVICE_AUTHORITY_BY_PATH } from '@/data/service-authority-data';
 
 interface AnalyticsConfig {
   googleAnalytics: {
@@ -110,14 +112,6 @@ export const trackBookingSelection = (selectionType: 'service' | 'package', valu
   });
 };
 
-export const trackBookingComplete = (serviceType: string, packageType: string, locationType: string) => {
-  trackEvent('booking_complete', {
-    service_type: serviceType,
-    package_type: packageType,
-    location_type: locationType,
-  });
-};
-
 // Analytics component for route tracking
 const Analytics = () => {
   const location = useLocation();
@@ -208,6 +202,7 @@ const Analytics = () => {
   // Track route changes
   useEffect(() => {
     const currentPath = location.pathname;
+    getAttribution();
 
     if (window.gtag && trackingIdRef.current) {
       window.gtag('config', trackingIdRef.current, {
@@ -220,12 +215,15 @@ const Analytics = () => {
     if (currentPath.startsWith('/portfolios/')) {
       const category = currentPath.split('/')[2];
       trackPortfolioView(category);
+      trackFunnelEvent('ViewPortfolio', { category });
     } else if (currentPath.startsWith('/journal/')) {
       const slug = currentPath.split('/')[2];
       trackBlogPost(slug, document.title);
     } else if (currentPath.startsWith('/location/')) {
       const locationName = currentPath.split('/')[2];
       trackLocationLanding(locationName);
+    } else if (SERVICE_AUTHORITY_BY_PATH[currentPath]) {
+      trackFunnelEvent('ViewService', { service: SERVICE_AUTHORITY_BY_PATH[currentPath].pricingService });
     }
   }, [location]);
 

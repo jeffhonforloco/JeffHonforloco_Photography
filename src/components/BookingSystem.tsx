@@ -11,12 +11,12 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
 import { apiService } from '@/lib/api-service';
 import {
-  trackBookingComplete,
   trackBookingIntent,
   trackBookingSelection,
   trackBookingStart,
   trackBookingStep,
 } from '@/components/Analytics';
+import { getAttribution, trackFunnelEvent } from '@/lib/acquisition';
 import { PRICING_CATEGORIES } from '@/data/pricing-data';
 import { format } from 'date-fns';
 import { BOOKING_DRAFT_STORAGE_KEY } from '@/webmcp/constants';
@@ -33,6 +33,8 @@ interface BookingData {
   phone: string;
   message: string;
   budget: string;
+  projectSize: string;
+  coverageNeeds: string;
 }
 
 const BOOKING_STEPS = [
@@ -148,6 +150,8 @@ const BookingSystem: React.FC = () => {
     phone: '',
     message: '',
     budget: '',
+    projectSize: '',
+    coverageNeeds: '',
   });
   const hasTrackedStart = useRef(false);
 
@@ -155,7 +159,12 @@ const BookingSystem: React.FC = () => {
     if (!hasTrackedStart.current) {
       hasTrackedStart.current = true;
       trackBookingStart();
+      trackFunnelEvent('StartBooking', { entry: 'booking_page' });
       trackBookingStep(1);
+    }
+    const requestedService = new URLSearchParams(window.location.search).get('service');
+    if (requestedService && SERVICE_TYPES.some((service) => service.id === requestedService)) {
+      setBookingData((current) => ({ ...current, serviceType: current.serviceType || requestedService }));
     }
   }, []);
 
@@ -265,10 +274,19 @@ ${bookingData.message}`,
             ? ''
             : formatDate(bookingData.selectedDate, 'yyyy-MM-dd'),
         location: bookingData.location,
+        attribution: JSON.stringify(getAttribution()),
+        qualification: JSON.stringify({
+          service: bookingData.serviceType,
+          package: bookingData.packageType,
+          requestedDate: formatDate(bookingData.selectedDate, 'yyyy-MM-dd'),
+          requestedTime: bookingData.selectedTime,
+          locationType: bookingData.locationType,
+          projectSize: bookingData.projectSize,
+          coverageNeeds: bookingData.coverageNeeds,
+        }),
       });
 
       if (result.success) {
-        trackBookingComplete(bookingData.serviceType, bookingData.packageType, bookingData.locationType);
         nextStep();
         toast({ title: 'Booking Request Submitted!', description: "We'll confirm within 24 hours." });
       } else {
@@ -601,6 +619,35 @@ ${bookingData.message}`,
         />
         <p className="text-gray-500 text-xs mt-1.5">Available across the US — we travel for the right project</p>
       </div>
+
+      {['wedding', 'events', 'real-estate'].includes(bookingData.serviceType) && (
+        <div className="grid md:grid-cols-2 gap-5 border border-white/10 bg-white/[0.03] p-5 rounded-lg">
+          <div>
+            <Label htmlFor="projectSize" className="text-white mb-2 block">
+              {bookingData.serviceType === 'real-estate' ? 'Approximate square footage / rooms' : 'Approximate guest count'}
+            </Label>
+            <Input
+              id="projectSize"
+              value={bookingData.projectSize}
+              onChange={(e) => updateBookingData('projectSize', e.target.value)}
+              placeholder={bookingData.serviceType === 'real-estate' ? 'e.g., 2,400 sq ft · 4 bedrooms' : 'e.g., 120 guests'}
+              className="bg-gray-900 border-gray-700 text-white"
+            />
+          </div>
+          <div>
+            <Label htmlFor="coverageNeeds" className="text-white mb-2 block">
+              {bookingData.serviceType === 'real-estate' ? 'Listing deadline / required photography' : 'Coverage priorities'}
+            </Label>
+            <Input
+              id="coverageNeeds"
+              value={bookingData.coverageNeeds}
+              onChange={(e) => updateBookingData('coverageNeeds', e.target.value)}
+              placeholder={bookingData.serviceType === 'real-estate' ? 'Deadline, interiors, exteriors…' : 'Ceremony, reception, portraits…'}
+              className="bg-gray-900 border-gray-700 text-white"
+            />
+          </div>
+        </div>
+      )}
 
       <div>
         <Label htmlFor="message" className="text-white mb-2 block">Tell us about your vision *</Label>

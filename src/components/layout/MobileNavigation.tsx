@@ -32,8 +32,7 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
   return (
     <>
       {/* Mobile Header Icons and Menu Button */}
-      <div className="md:hidden flex items-center space-x-3">
-        <SocialMediaIcons variant="mobile" />
+      <div className="xl:hidden flex items-center space-x-3">
         {/* Mobile menu button */}
         <button
           className="z-50 flex items-center justify-center"
@@ -51,17 +50,15 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
       </div>
 
       {/* Mobile Navigation Menu */}
-      <div
-        ref={focusTrapRef}
-        id="mobile-menu"
-        className={`md:hidden absolute top-0 right-0 w-full h-screen bg-black/98 backdrop-blur-md transform transition-all duration-500 ${
-          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        role="dialog"
-        aria-modal="true"
-        aria-hidden={!isMenuOpen}
-      >
-        <nav className="flex flex-col justify-center items-center h-full space-y-8" aria-label="Mobile navigation">
+      {isMenuOpen && (
+        <div
+          ref={focusTrapRef}
+          id="mobile-menu"
+          className="xl:hidden absolute top-0 right-0 w-full h-screen bg-black/98 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+        >
+          <nav className="flex flex-col justify-center items-center h-full space-y-8" aria-label="Mobile navigation">
           {navigation.map((item, index) => (
             <Link
               key={item.name}
@@ -92,8 +89,9 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
           </button>
 
           <SocialMediaIcons variant="mobile-menu" />
-        </nav>
-      </div>
+          </nav>
+        </div>
+      )}
     </>
   );
 };

@@ -1,5 +1,6 @@
 import { defineTool } from '@nekuda/webmcp-sdk';
 import { PRICING_CATEGORIES } from '@/data/pricing-data';
+import { markWebmcpAttribution } from '@/lib/acquisition';
 import { BOOKING_DRAFT_STORAGE_KEY } from '../constants';
 
 const PORTFOLIO_CATEGORIES = [
@@ -10,6 +11,8 @@ const PORTFOLIO_CATEGORIES = [
   'headshots',
   'lifestyle',
   'motion',
+  'wedding',
+  'engagement',
 ] as const;
 
 type SiteSection = {
@@ -23,6 +26,38 @@ type SiteSection = {
 };
 
 const SITE_SECTIONS = [
+  {
+    title: 'Providence Wedding Photographer',
+    path: '/providence-wedding-photographer',
+    summary: 'Editorial wedding photography in Providence, Rhode Island and New England. Published wedding coverage begins at $3,200.',
+    type: 'service',
+    categoryId: 'wedding',
+    keywords: ['wedding photographer', 'Providence', 'Rhode Island', 'New England', 'ceremony', 'reception', 'bride', 'groom'],
+  },
+  {
+    title: 'Providence Engagement Photographer',
+    path: '/providence-engagement-photographer',
+    summary: 'Standalone engagement sessions and pre-wedding photography in Providence and Rhode Island. Published sessions begin at $850.',
+    type: 'service',
+    categoryId: 'wedding',
+    keywords: ['engagement photographer', 'couples', 'Providence', 'Rhode Island', 'save the date', 'pre-wedding'],
+  },
+  {
+    title: 'Providence Sweet 16 and Quinceañera Photographer',
+    path: '/providence-sweet-16-quinceanera-photographer',
+    summary: 'Planning and booking information for Sweet 15, Sweet 16 and quinceañera event photography in Providence and Rhode Island.',
+    type: 'service',
+    categoryId: 'events',
+    keywords: ['sweet 15', 'sweet 16', 'quinceañera', 'quinceanera', 'event', 'celebration', 'Providence', 'Rhode Island'],
+  },
+  {
+    title: 'Providence Real Estate and Airbnb Photographer',
+    path: '/providence-real-estate-photographer',
+    summary: 'Real estate, property and Airbnb photography for agents, hosts, designers and property teams in Providence and Rhode Island.',
+    type: 'service',
+    categoryId: 'real-estate',
+    keywords: ['real estate photographer', 'property', 'Airbnb', 'listing', 'realtor', 'Providence', 'Rhode Island'],
+  },
   {
     title: 'Providence Headshot Photographer',
     path: '/providence-headshot-photographer',
@@ -358,7 +393,7 @@ export const explorePortfolio = defineTool<ExplorePortfolioInput>({
   name: 'explore_portfolio',
   title: 'Explore a portfolio',
   description:
-    'Open one published Jeff Honforloco portfolio category: beauty, fashion, editorial, glamour, headshots, lifestyle, or motion. Use this when a visitor wants examples of a specific kind of work; it returns the selected category and visibly navigates to its gallery.',
+    'Open one published Jeff Honforloco portfolio experience: beauty, fashion, editorial, glamour, headshots, lifestyle, motion, wedding, or engagement. Use this when a visitor wants examples of a specific kind of work; it returns the selected category and visibly navigates to its gallery.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -384,7 +419,13 @@ export const explorePortfolio = defineTool<ExplorePortfolioInput>({
       };
     }
 
-    const path = match === 'motion' ? '/motion' : `/portfolios/${match}`;
+    const path = match === 'motion'
+      ? '/motion'
+      : match === 'wedding'
+        ? '/providence-wedding-photographer'
+        : match === 'engagement'
+          ? '/providence-engagement-photographer'
+          : `/portfolios/${match}`;
     navigateInApp(path);
     return { category: match, page: path, status: 'opened' };
   },
@@ -413,7 +454,7 @@ export const prepareBooking = defineTool<PrepareBookingInput>({
   inputSchema: {
     type: 'object',
     properties: {
-      service: { type: 'string', description: 'Published service id such as fashion, beauty, headshots, or motion.' },
+      service: { type: 'string', description: 'Published service id such as fashion, beauty, headshots, motion, wedding, events, or real-estate.' },
       package: { type: 'string', description: 'Optional package id from the selected service.' },
       desiredDate: { type: 'string', format: 'date', description: 'Optional requested date in YYYY-MM-DD format.' },
       desiredTime: { type: 'string', description: 'Optional requested time, such as 2:00 PM.' },
@@ -449,6 +490,7 @@ export const prepareBooking = defineTool<PrepareBookingInput>({
       if (requestedDate < today) throw new Error('desiredDate cannot be in the past.');
     }
 
+    markWebmcpAttribution();
     window.sessionStorage.setItem(BOOKING_DRAFT_STORAGE_KEY, JSON.stringify(input));
     navigateInApp('/book?draft=prepared');
 

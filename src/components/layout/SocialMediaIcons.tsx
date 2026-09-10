@@ -31,7 +31,7 @@ const SocialMediaIcons = ({ variant }: SocialMediaIconsProps) => {
 
   if (variant === 'desktop') {
     return (
-      <div className="hidden md:flex items-center space-x-3">
+      <div className="hidden xl:flex items-center space-x-3">
         {socialLinks.map(({ Icon, href, label }) => (
           <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={`Visit Jeff Honforloco Photography on ${label}`} className="text-white/70 hover:text-white transition-all duration-300 hover:scale-125 transform">
             <Icon className="w-7 h-7" aria-hidden="true" />
