@@ -12,10 +12,10 @@ const ServiceAuthority = () => {
 
   const imagePath = page.image.split('?')[0];
   const isAcquisitionImage = imagePath.startsWith('/images/acquisition/');
-  const heroSrcSet = isAcquisitionImage
-    ? [480, 768, 1200, 1600].map((width) => `${imagePath.replace(/-\d+\.webp$/, `-${width}.webp`)} ${width}w`).join(', ')
-    : `${page.image.replace('-960.webp', '-480.webp')} 480w, ${page.image.replace('-960.webp', '-640.webp')} 640w, ${page.image} 960w`;
   const heroMedia = page.gallery?.find((image) => image.src === imagePath);
+  const heroSrcSet = isAcquisitionImage
+    ? (heroMedia?.variants ?? [480, 768, 1200, 1600]).map((width) => `${imagePath.replace(/-\d+\.webp$/, `-${width}.webp`)} ${width}w`).join(', ')
+    : `${page.image.replace('-960.webp', '-480.webp')} 480w, ${page.image.replace('-960.webp', '-640.webp')} 640w, ${page.image} 960w`;
 
   return (
     <Layout>
@@ -92,7 +92,7 @@ const ServiceAuthority = () => {
               <div className="grid grid-cols-2 lg:grid-cols-12 gap-3 md:gap-5">
                 {page.gallery.map((image, index) => {
                   const base = image.src.replace(/-\d+\.webp$/, '');
-                  const widths = image.src.endsWith('-1600.webp') ? [480, 768, 1200, 1600] : [480, 768, 1200];
+                  const widths = image.variants;
                   return (
                     <figure key={image.src} className={`${index === 0 ? 'col-span-2 lg:col-span-7 lg:row-span-2' : 'col-span-1 lg:col-span-5'} overflow-hidden bg-black`}>
                       <img

@@ -3,6 +3,7 @@ export type AcquisitionGalleryImage = {
   width: number;
   height: number;
   alt: string;
+  variants: readonly number[];
 };
 
 const weddingImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
@@ -10,6 +11,7 @@ const weddingImage = (name: string, width: number, height: number, alt: string):
   width,
   height,
   alt,
+  variants: [480, 768, 1200, 1600],
 });
 
 const engagementImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
@@ -17,6 +19,15 @@ const engagementImage = (name: string, width: number, height: number, alt: strin
   width,
   height,
   alt,
+  variants: width > 1365 ? [480, 768, 1200, 1600] : [480, 768, 1200],
+});
+
+const sweet16Image = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
+  src: `/images/acquisition/sweet-16/${name}-${width}.webp`,
+  width,
+  height,
+  alt,
+  variants: [480, 768, width],
 });
 
 export const ACQUISITION_SERVICE_PAGES = [
@@ -104,10 +115,10 @@ export const ACQUISITION_SERVICE_PAGES = [
     path: '/providence-sweet-16-quinceanera-photographer',
     title: 'Providence Sweet 16 and Quinceañera Photographer | Jeff Honforloco',
     description: 'Plan Sweet 15, Sweet 16 and quinceañera photography in Providence and Rhode Island, with portrait and event coverage tailored to the celebration.',
-    image: '/images/optimized/IMG_7652-960.webp?v=20260901',
+    image: '/images/acquisition/sweet-16/jailyn-sweet16-outdoor-1024.webp',
     eyebrow: 'Sweet 15 · Sweet 16 · Quinceañera',
     h1: 'Providence Sweet 16 & Quinceañera Photographer',
-    introduction: 'A milestone celebration deserves a photography plan built around the person, family and event—not a generic event checklist. Jeff offers event coverage with directed portraits and attentive candid photography. This page is ready for an approved celebration portfolio as soon as that work is selected; it does not present unrelated images as proof.',
+    introduction: 'A milestone celebration deserves a photography plan built around the person, family and event—not a generic event checklist. Jeff offers event coverage with directed portraits and attentive candid photography, creating polished images that honor the celebrant and the traditions around the day.',
     audienceTitle: 'Plan the coverage that fits the celebration',
     audiences: ['Sweet 15 and Sweet 16 celebrations', 'Quinceañeras in Providence and across Rhode Island', 'Families planning portraits before the event', 'Celebrations combining ceremony, reception and family traditions'],
     processTitle: 'A clear milestone-event plan',
@@ -118,10 +129,15 @@ export const ACQUISITION_SERVICE_PAGES = [
     pricingService: 'events',
     portfolioPath: '/portfolios/lifestyle',
     portfolioLabel: 'View portrait style',
-    secondaryTitle: 'Approved portfolio photography coming next',
-    secondaryCopy: ['No wedding or unrelated event images are being presented as Sweet 16 or quinceañera work. The page structure is ready for approved photographs without another rebuild.', 'A concise inquiry should include the event type, date, venue, estimated guest count and whether you want portraits before the event.'],
-    faqs: [{ question: 'Do you photograph Sweet 16 and quinceañera celebrations?', answer: 'These celebrations are included within Jeff’s published Events & Celebrations service, subject to date and scope confirmation.' }, { question: 'Can portraits happen before the event?', answer: 'Yes. Include pre-event portrait needs in the inquiry so they can be included in the proposed coverage.' }, { question: 'What information should we send?', answer: 'Share the event type, date, venue, approximate guest count, ceremony and reception plans, and package interest.' }, { question: 'Is there a dedicated celebration portfolio?', answer: 'Not yet. This page intentionally avoids using unrelated photographs as portfolio proof.' }],
-    imageAlt: 'Editorial portrait showing Jeff Honforloco photography style',
+    secondaryTitle: 'Portraits centered on the celebrant',
+    secondaryCopy: ['A portrait session before the event creates space for carefully directed photographs of the celebrant, attire and meaningful details without competing with the reception schedule.', 'A concise inquiry should include the event type, date, venue, estimated guest count and whether you want portraits before the event.'],
+    faqs: [{ question: 'Do you photograph Sweet 16 and quinceañera celebrations?', answer: 'These celebrations are included within Jeff’s published Events & Celebrations service, subject to date and scope confirmation.' }, { question: 'Can portraits happen before the event?', answer: 'Yes. Include pre-event portrait needs in the inquiry so they can be included in the proposed coverage.' }, { question: 'What information should we send?', answer: 'Share the event type, date, venue, approximate guest count, ceremony and reception plans, and package interest.' }, { question: 'Is there a dedicated celebration portfolio?', answer: 'Yes. This page includes approved Sweet 16 portraits photographed by Jeff Honforloco.' }],
+    imageAlt: 'Sweet 16 celebrant in a blush ball gown photographed outdoors by Jeff Honforloco',
+    galleryTitle: 'A Sweet 16 portrait experience',
+    gallery: [
+      sweet16Image('jailyn-sweet16-outdoor', 1024, 1535, 'Sweet 16 celebrant in a blush ball gown posing outdoors beside classical columns'),
+      sweet16Image('jailyn-sweet16-indoor', 979, 1607, 'Sweet 16 celebrant wearing a tiara and blush ball gown in an indoor portrait'),
+    ],
   },
   {
     path: '/providence-real-estate-photographer',
