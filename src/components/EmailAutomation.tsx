@@ -19,8 +19,7 @@ export function calculateLeadScore(formData: ContactFormData): number {
   const budget = formData.budget.toLowerCase();
 
   // Service type
-  if (service.includes("celebrity")) score += 40;
-  else if (service.includes("wedding")) score += 38;
+  if (service.includes("wedding")) score += 38;
   else if (
     service.includes("corporate branding") ||
     service.includes("brand campaign")
@@ -72,18 +71,7 @@ export function calculateLeadScore(formData: ContactFormData): number {
 
   // High-value market
   const loc = formData.location.toLowerCase();
-  const premiumCities = [
-    "new york",
-    "nyc",
-    "los angeles",
-    "miami",
-    "paris",
-    "london",
-    "monaco",
-    "chicago",
-    "boston",
-    "atlanta",
-  ];
+  const premiumCities = ["providence", "newport", "rhode island", "boston", "new england"];
   if (premiumCities.some((c) => loc.includes(c))) score += 8;
 
   return Math.min(score, 100);

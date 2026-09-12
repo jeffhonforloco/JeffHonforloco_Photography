@@ -25,12 +25,12 @@ const PROCESS_STEPS = [
 ];
 
 const SERVICE_AREAS = [
-  'New York City',
-  'Los Angeles',
-  'Miami',
-  'Chicago',
-  'Atlanta',
-  'Worldwide Travel',
+  'Rhode Island',
+  'Massachusetts',
+  'Connecticut',
+  'Maine',
+  'Nationwide Projects',
+  'Selected Travel',
 ];
 
 const Contact = () => {
@@ -111,14 +111,6 @@ const Contact = () => {
 
   return (
     <Layout>
-      <div className="sr-only">
-        <h1>Book Fashion & Beauty Photography Sessions | Jeff Honforloco NYC</h1>
-        <p>
-          Book professional fashion, beauty, and editorial photography sessions. Available
-          nationwide with premium service in NYC, LA, Miami, Chicago.
-        </p>
-      </div>
-
       <div className="min-h-screen bg-black">
         {/* Hero */}
         <div className="pt-24 pb-12 lg:pt-32 lg:pb-16 px-4 lg:px-8">
@@ -127,14 +119,14 @@ const Contact = () => {
               Book Your Session
             </h1>
             <p className="text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Professional fashion, beauty &amp; editorial photography available nationwide.
-              Serving high-end clients in NYC, LA, Miami, Chicago, and worldwide.
+              Professional fashion, beauty, editorial, headshot, wedding and event photography.
+              Based in Providence, Rhode Island, serving New England and available for travel by project.
             </p>
 
             <div className="flex justify-center gap-8 mt-8 text-gray-400">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-photo-red" />
-                <span className="text-sm">100+ Happy Clients</span>
+                <span className="text-sm">Personally Reviewed Inquiries</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-photo-red" />
@@ -204,7 +196,7 @@ const Contact = () => {
                         id="phone"
                         type="tel"
                         name="phone"
-                        placeholder="(555) 123-4567"
+                        placeholder="Your phone number"
                         value={formData.phone}
                         onChange={handleChange}
                         className={inputClass}
@@ -226,7 +218,7 @@ const Contact = () => {
                         <option value="Fashion Photography">Fashion Photography</option>
                         <option value="Beauty & Cosmetic Photography">Beauty &amp; Cosmetic Photography</option>
                         <option value="Editorial Photography">Editorial Photography</option>
-                        <option value="Celebrity & Portrait Photography">Celebrity &amp; Portrait Photography</option>
+                        <option value="Portrait Photography">Portrait Photography</option>
                         <option value="Brand Campaign Photography">Brand Campaign Photography</option>
                         <option value="Custom Photography Project">Custom Photography Project</option>
                       </select>
@@ -256,7 +248,7 @@ const Contact = () => {
                         id="location"
                         type="text"
                         name="location"
-                        placeholder="NYC, LA, Miami, etc."
+                        placeholder="Providence, Boston, or your project location"
                         value={formData.location}
                         onChange={handleChange}
                         className={inputClass}
@@ -348,7 +340,7 @@ const Contact = () => {
                       <span className="w-10 h-10 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center group-hover:border-photo-red transition-colors shrink-0">
                         <Phone className="w-4 h-4 text-photo-red" />
                       </span>
-                      +646-379-4237
+                      +1-646-379-4237
                     </a>
                     <a
                       href="mailto:info@jeffhonforlocophotos.com"
@@ -363,7 +355,7 @@ const Contact = () => {
                       <span className="w-10 h-10 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center shrink-0">
                         <MapPin className="w-4 h-4 text-photo-red" />
                       </span>
-                      Based in Providence, RI &bull; Available Worldwide
+                      Based in Providence, RI &bull; Travel by project
                     </div>
                   </div>
                 </div>

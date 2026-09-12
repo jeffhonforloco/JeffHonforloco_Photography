@@ -39,6 +39,7 @@ const SEO = ({
   const webPageSchema = {
     '@context': 'https://schema.org',
     '@type': type === 'article' ? 'Article' : 'WebPage',
+    '@id': `${fullUrl}#webpage`,
     name: fullTitle,
     description,
     url: fullUrl,
@@ -49,10 +50,29 @@ const SEO = ({
       caption: fullTitle,
     },
     isPartOf: {
-      '@type': 'WebSite',
-      name: SITE_NAME,
-      url: `${SITE_URL}/`,
+      '@id': `${SITE_URL}/#website`,
     },
+    about: { '@id': `${SITE_URL}/#business` },
+  };
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
+    name: SITE_NAME,
+    url: `${SITE_URL}/`,
+    publisher: { '@id': `${SITE_URL}/#business` },
+  };
+
+  const personSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${SITE_URL}/#person`,
+    name: 'Jeff Honforloco',
+    url: `${SITE_URL}/about`,
+    image: `${SITE_URL}${DEFAULT_IMAGE}`,
+    jobTitle: 'Photographer',
+    worksFor: { '@id': `${SITE_URL}/#business` },
   };
 
   const businessSchema = {
@@ -71,7 +91,13 @@ const SEO = ({
       addressRegion: 'RI',
       addressCountry: 'US',
     },
-    areaServed: { '@type': 'Country', name: 'United States' },
+    founder: { '@id': `${SITE_URL}/#person` },
+    areaServed: [
+      { '@type': 'City', name: 'Providence' },
+      { '@type': 'State', name: 'Rhode Island' },
+      { '@type': 'AdministrativeArea', name: 'New England' },
+      { '@type': 'Country', name: 'United States' },
+    ],
     sameAs: [
       'https://www.facebook.com/jeffhonforlocophotography',
       'https://instagram.com/jeffhonforlocophotos',
@@ -86,7 +112,11 @@ const SEO = ({
         'Beauty Photography',
         'Editorial Photography',
         'Headshot Photography',
+        'Wedding Photography',
+        'Engagement Photography',
+        'Sweet 16 and Quinceañera Photography',
         'Event Photography',
+        'Real Estate Photography',
         'Commercial Photography',
       ].map((name) => ({
         '@type': 'Offer',
@@ -97,7 +127,9 @@ const SEO = ({
 
   const schemas = [
     webPageSchema,
-    ...(routePath === '/' ? [businessSchema] : []),
+    websiteSchema,
+    businessSchema,
+    personSchema,
     ...additionalSchemas,
   ];
 

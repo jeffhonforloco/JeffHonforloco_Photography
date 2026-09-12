@@ -25,14 +25,6 @@ const routes = [
     `${category[0].toUpperCase()}${category.slice(1)} Photography Portfolio | Jeff Honforloco Photography`,
     `View ${category} photography by Jeff Honforloco.`,
   ]),
-  ...['nyc', 'los-angeles', 'miami', 'paris', 'london', 'italy', 'lagos', 'switzerland', 'malta', 'monaco', 'rhode-island', 'massachusetts', 'maine', 'connecticut'].map((slug) => {
-    const location = slug.split('-').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ');
-    return [
-      `/${slug}`,
-      `Photographer Available in ${location} | Jeff Honforloco Photography`,
-      `Book fashion, beauty, portrait, event and commercial photography in ${location}, subject to project availability and travel.`,
-    ];
-  }),
 ];
 
 const escapeHtml = (value) => value

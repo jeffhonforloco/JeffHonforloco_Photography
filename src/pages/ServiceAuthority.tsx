@@ -164,7 +164,7 @@ const ServiceAuthority = () => {
           </div>
         </section>
 
-        <section className="pb-24">
+        <section className="pb-12">
           <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
             <h2 className="font-playfair text-3xl font-light mb-6">Related photography services</h2>
             <nav aria-label="Related photography services" className="flex flex-wrap gap-x-6 gap-y-3">
@@ -174,6 +174,18 @@ const ServiceAuthority = () => {
               <Link to="/services" className="text-gray-300 hover:text-photo-red underline underline-offset-4">All services</Link>
               <Link to="/contact" className="text-gray-300 hover:text-photo-red underline underline-offset-4">Contact the studio</Link>
             </nav>
+          </div>
+        </section>
+
+        <section className="pb-24" aria-labelledby="service-booking-cta">
+          <div className="max-w-5xl mx-auto px-6 md:px-12">
+            <div className="border border-white/15 bg-photo-gray-900 px-6 py-10 text-center sm:px-10 md:py-14">
+              <h2 id="service-booking-cta" className="font-playfair text-3xl md:text-4xl font-light mb-4">Ready to plan your session?</h2>
+              <p className="mx-auto max-w-2xl text-gray-300 leading-relaxed mb-7">Share your preferred date, location and creative goals. Jeff personally reviews each request before confirming availability.</p>
+              <Link to={`/book?service=${page.pricingService}`} className="inline-flex items-center justify-center gap-2 bg-photo-red hover:bg-photo-red-hover px-7 py-4 text-sm font-medium uppercase tracking-[0.14em] transition-colors">
+                Request availability <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </section>
       </article>

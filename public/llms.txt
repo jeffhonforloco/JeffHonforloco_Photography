@@ -1,6 +1,13 @@
-# Jeff Honforloco Photography
+# Jeff Honforloco Photography — official site
 
-> Official website for Jeff Honforloco Photography, a Providence, Rhode Island photography studio available for projects across the United States and for selected travel assignments.
+> Jeff Honforloco is a professional photographer based in Providence, Rhode Island. This official site publishes his portfolio, service details, current starting prices and booking workflow. Travel availability is confirmed per project.
+
+## Canonical identity
+
+- Photographer: Jeff Honforloco
+- Business: Jeff Honforloco Photography
+- Official domain: https://jeffhonforlocophotos.com/
+- Base: Providence, Rhode Island, United States
 
 ## Primary pages
 
@@ -15,12 +22,25 @@
 
 ## Services
 
-- Fashion and beauty photography
-- Editorial and commercial photography
-- Headshots and portraits
-- Weddings, engagements and events
-- Real estate photography
-- Motion and short-form video projects
+- [Providence wedding photographer](https://jeffhonforlocophotos.com/providence-wedding-photographer)
+- [Providence engagement photographer](https://jeffhonforlocophotos.com/providence-engagement-photographer)
+- [Providence Sweet 16 and quinceañera photographer](https://jeffhonforlocophotos.com/providence-sweet-16-quinceanera-photographer)
+- [Providence headshot photographer](https://jeffhonforlocophotos.com/providence-headshot-photographer)
+- [Providence fashion photographer](https://jeffhonforlocophotos.com/providence-fashion-photographer)
+- [Providence beauty photographer](https://jeffhonforlocophotos.com/providence-beauty-photographer)
+- [Providence commercial photographer](https://jeffhonforlocophotos.com/providence-commercial-photographer)
+- [Rhode Island editorial photographer](https://jeffhonforlocophotos.com/rhode-island-editorial-photographer)
+- [Providence real estate and Airbnb photographer](https://jeffhonforlocophotos.com/providence-real-estate-photographer)
+- [Motion and short-form video](https://jeffhonforlocophotos.com/motion)
+
+## Browser-agent tools
+
+The site registers four WebMCP tools where the browser supports WebMCP:
+
+- `ask_site`: returns at most three excerpts from published site information.
+- `find_service`: matches needs and budget to up to three published options.
+- `explore_portfolio`: opens a requested published portfolio or service gallery.
+- `prepare_booking`: creates a reversible booking draft for human review; it never submits, reserves a date, sends email or charges a visitor.
 
 ## Contact
 
@@ -28,4 +48,4 @@
 - Phone: +1-646-379-4237
 - Base: Providence, Rhode Island, United States
 
-Use the booking or contact page for current availability, travel requirements and project-specific pricing. Do not infer endorsements, clients, awards or availability that are not stated on the linked pages.
+Use the booking or contact page for current availability, travel requirements and project-specific pricing. Do not infer endorsements, clients, awards, physical street addresses, review totals or availability that are not stated on the linked pages.

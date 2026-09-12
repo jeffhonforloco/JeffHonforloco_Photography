@@ -13,6 +13,7 @@ const PORTFOLIO_CATEGORIES = [
   'motion',
   'wedding',
   'engagement',
+  'sweet-16',
 ] as const;
 
 type SiteSection = {
@@ -184,6 +185,10 @@ const LOW_VALUE_TERMS = new Set([
 ]);
 
 const LOCATION_TERMS = new Set(['providence', 'rhode', 'island', 'ri', 'new', 'england']);
+const SERVICE_INTENT_TERMS = new Set([
+  'beauty', 'commercial', 'editorial', 'engagement', 'event', 'fashion', 'headshot',
+  'property', 'quinceanera', 'realtor', 'wedding',
+]);
 
 const normalize = (value: string) =>
   value
@@ -201,7 +206,7 @@ const isBroadServiceQuery = (query: string) => {
   const normalized = normalize(query);
   const asksWhatCanBeBooked = /\bwhat can i book\b/.test(normalized);
   const asksForServices =
-    /\bservices?\b/.test(normalized) && /\b(available|offer|offered|provide|provided|have)\b/.test(normalized);
+    /\bservices?\b/.test(normalized) && /\b(available|book|offer|offered|provide|provided|have)\b/.test(normalized);
   const namesSpecificCategory = PRICING_CATEGORIES.some((category) => {
     const categoryTerms = tokenize(`${category.id} ${category.name}`);
     return categoryTerms.some((term) => normalize(query).split(' ').includes(term));
@@ -249,7 +254,11 @@ const rankSiteSections = (query: string) => {
       if (keywordTokens.has(term)) score += 12;
       if (summaryTokens.has(term)) score += 5;
       if (bodyTokens.has(term)) score += 2;
+      if (SERVICE_INTENT_TERMS.has(term) && (titleTokens.has(term) || keywordTokens.has(term))) score += 90;
     }
+
+    const hasServiceIntent = terms.some((term) => SERVICE_INTENT_TERMS.has(term));
+    if (!hasServiceIntent && terms.some((term) => LOCATION_TERMS.has(term)) && section.title === 'Service area') score += 80;
 
     const searchableTokens = new Set([...titleTokens, ...keywordTokens, ...summaryTokens, ...bodyTokens]);
     const hasDiscriminatingMatch =
@@ -393,7 +402,7 @@ export const explorePortfolio = defineTool<ExplorePortfolioInput>({
   name: 'explore_portfolio',
   title: 'Explore a portfolio',
   description:
-    'Open one published Jeff Honforloco portfolio experience: beauty, fashion, editorial, glamour, headshots, lifestyle, motion, wedding, or engagement. Use this when a visitor wants examples of a specific kind of work; it returns the selected category and visibly navigates to its gallery.',
+    'Open one published Jeff Honforloco portfolio experience: beauty, fashion, editorial, glamour, headshots, lifestyle, motion, wedding, engagement, or Sweet 16 and quinceañera. Use this when a visitor wants examples of a specific kind of work; it returns the selected category and visibly navigates to its gallery.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -406,7 +415,9 @@ export const explorePortfolio = defineTool<ExplorePortfolioInput>({
   source: 'merchant_authored',
   intent: 'act',
   execute({ category }) {
-    const normalized = category.toLowerCase().trim();
+    const normalizedCategory = normalize(category);
+    const requested = normalizedCategory.replace(/\s+/g, '-');
+    const normalized = /\b(sweet|quince)/.test(normalizedCategory) ? 'sweet-16' : requested;
     const match = PORTFOLIO_CATEGORIES.find(
       (candidate) => candidate === normalized || candidate.includes(normalized) || normalized.includes(candidate),
     );
@@ -425,6 +436,8 @@ export const explorePortfolio = defineTool<ExplorePortfolioInput>({
         ? '/providence-wedding-photographer'
         : match === 'engagement'
           ? '/providence-engagement-photographer'
+          : match === 'sweet-16'
+            ? '/providence-sweet-16-quinceanera-photographer'
           : `/portfolios/${match}`;
     navigateInApp(path);
     return { category: match, page: path, status: 'opened' };
