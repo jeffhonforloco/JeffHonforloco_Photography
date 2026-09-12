@@ -8,9 +8,10 @@ const serverBundle = path.join(projectRoot, '.ssr-dist', 'entry-server.js');
 const { renderHomepage, renderServiceRoute } = await import(pathToFileURL(serverBundle).href);
 
 const html = await readFile(distIndex, 'utf8');
-const homepage = renderHomepage();
+const { body: homepage, structuredData: homepageStructuredData } = renderHomepage();
 
-const rendered = html.replace('<div id="root"></div>', `<div id="root">${homepage}</div>`);
+const renderedBody = html.replace('<div id="root"></div>', `<div id="root">${homepage}</div>`);
+const rendered = renderedBody.replace('</head>', `    ${homepageStructuredData}\n  </head>`);
 
 if (rendered === html) {
   throw new Error('Could not find the root element while injecting homepage HTML.');

@@ -64,8 +64,8 @@ const AdminNavigation = () => {
   ]);
 
   const [socialLinks, setSocialLinks] = useState([
-    { id: '1', platform: 'Instagram', url: 'https://instagram.com/jeffhonforloco', visible: true },
-    { id: '2', platform: 'YouTube', url: 'https://youtube.com/@jeffhonforloco', visible: true },
+    { id: '1', platform: 'Instagram', url: 'https://instagram.com/jeffhonforlocophotos', visible: true },
+    { id: '2', platform: 'YouTube', url: 'https://youtube.com/@jeffhonforlocophotos', visible: true },
     { id: '3', platform: 'LinkedIn', url: '', visible: false },
     { id: '4', platform: 'Facebook', url: '', visible: false }
   ]);
@@ -76,8 +76,8 @@ const AdminNavigation = () => {
     showSocialLinks: true,
     showContactInfo: true,
     contactEmail: 'info@jeffhonforlocophotos.com',
-    contactPhone: '+646-379-4237',
-    businessAddress: 'Wisdom Ave, Providence, RI 02908'
+    contactPhone: '+1-646-379-4237',
+    businessAddress: 'Providence, Rhode Island'
   });
 
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);

@@ -48,7 +48,7 @@ const toMotionItem = (img: ApiImage): MotionItem => {
 
 const PortfolioCategory = ({ categoryOverride }: PortfolioCategoryProps) => {
   const { category } = useParams<{ category: string }>();
-  const currentCategory = categoryOverride || category || 'luxury-fashion-photography-nyc';
+  const currentCategory = categoryOverride || category || 'fashion';
 
   const [apiImages, setApiImages] = useState<StaticImage[] | null>(null);
   const [apiMotion, setApiMotion] = useState<MotionItem[] | null>(null);

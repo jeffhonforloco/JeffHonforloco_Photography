@@ -42,23 +42,18 @@
       "Under $5,000": 5
     },
     "serviceWeights": {
-      "Celebrity Photography": 30,
+      "Wedding Photography": 30,
       "Fashion Photography": 25,
       "Beauty Photography": 20,
       "Editorial Photography": 20,
       "Lifestyle Photography": 15
     },
     "locationWeights": {
-      "NYC": 20,
-      "Los Angeles": 20,
-      "Monaco": 25,
-      "Paris": 20,
-      "London": 18,
-      "Italy": 15,
-      "Switzerland": 15,
-      "Miami": 12,
-      "Lagos": 10,
-      "Malta": 8
+      "Providence": 20,
+      "Rhode Island": 20,
+      "Newport": 18,
+      "New England": 15,
+      "Boston": 12
     }
   }
 }

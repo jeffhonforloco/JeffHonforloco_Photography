@@ -17,7 +17,6 @@ const Journal = lazy(() => import("./pages/Journal"));
 const JournalArticle = lazy(() => import("./pages/JournalArticle"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
-const LocationLanding = lazy(() => import("./pages/LocationLanding"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Book = lazy(() => import("./pages/Book"));
@@ -126,24 +125,11 @@ export const AppContent = () => {
                 <Route path="/prep-guide" element={<PrepGuidePage />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                {/* Location-specific landing pages */}
-                <Route path="/location/:location" element={<LocationLanding />} />
-                {/* Legacy location routes for SEO */}
-                <Route path="/nyc" element={<LocationLanding />} />
-                <Route path="/los-angeles" element={<LocationLanding />} />
-                <Route path="/miami" element={<LocationLanding />} />
-                <Route path="/paris" element={<LocationLanding />} />
-                <Route path="/london" element={<LocationLanding />} />
-                <Route path="/italy" element={<LocationLanding />} />
-                <Route path="/lagos" element={<LocationLanding />} />
-                <Route path="/switzerland" element={<LocationLanding />} />
-                <Route path="/malta" element={<LocationLanding />} />
-                <Route path="/monaco" element={<LocationLanding />} />
-                {/* New England location routes */}
-                <Route path="/rhode-island" element={<LocationLanding />} />
-                <Route path="/massachusetts" element={<LocationLanding />} />
-                <Route path="/maine" element={<LocationLanding />} />
-                <Route path="/connecticut" element={<LocationLanding />} />
+                {/* Retired thin location pages converge on the verified service hub. */}
+                <Route path="/location/:location" element={<Navigate to="/services" replace />} />
+                {['nyc', 'los-angeles', 'miami', 'paris', 'london', 'italy', 'lagos', 'switzerland', 'malta', 'monaco', 'rhode-island', 'massachusetts', 'maine', 'connecticut'].map((slug) => (
+                  <Route key={slug} path={`/${slug}`} element={<Navigate to="/services" replace />} />
+                ))}
                 {/* Admin Panel */}
                 <Route path="/admin/*" element={<Admin />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

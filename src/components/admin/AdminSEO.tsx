@@ -13,19 +13,19 @@ const AdminSEO = () => {
   const { toast } = useToast();
   
   const [globalSEO, setGlobalSEO] = useState({
-    siteTitle: 'Jeff Honforloco Photography - Fashion & Beauty Photographer | Global Services',
-    siteDescription: 'World-class fashion, beauty & editorial photographer. Photography services for Fortune 500 brands, A-list celebrities & top models. Global availability across NYC, LA, Miami, Paris, London.',
-    keywords: 'fashion photographer, elite beauty photographer NYC, top celebrity photographer Los Angeles, premier editorial photographer Miami, international fashion photographer Paris London, brand photographer, A-list celebrity photography, Fortune 500 photography services',
+    siteTitle: 'Jeff Honforloco Photography | Providence, Rhode Island',
+    siteDescription: 'Fashion, beauty, editorial, headshot, wedding, event and commercial photography based in Providence, Rhode Island.',
+    keywords: 'Providence photographer, Rhode Island photographer, fashion photographer, beauty photographer, wedding photographer, headshot photographer',
     canonicalUrl: 'https://jeffhonforlocophotos.com',
     robotsContent: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
   });
 
   const [socialMedia, setSocialMedia] = useState({
-    ogTitle: 'Jeff Honforloco Photography - Fashion & Beauty Photographer | Global Services',
-    ogDescription: 'World-class fashion, beauty & editorial photographer. Photography services for Fortune 500 brands, A-list celebrities & top models. Global availability across NYC, LA, Miami, Paris, London.',
+    ogTitle: 'Jeff Honforloco Photography | Providence, Rhode Island',
+    ogDescription: 'Fashion, beauty, editorial, headshot, wedding, event and commercial photography based in Providence, Rhode Island.',
     ogImage: 'https://jeffhonforlocophotos.com/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
     twitterTitle: 'Jeff Honforloco Photography - Fashion & Beauty Photographer',
-    twitterDescription: 'World-class fashion, beauty & editorial photographer. Photography services for Fortune 500 brands, A-list celebrities & top models. Global availability.',
+    twitterDescription: 'Fashion, beauty, editorial, headshot, wedding, event and commercial photography based in Providence, Rhode Island.',
     twitterImage: 'https://jeffhonforlocophotos.com/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
     twitterHandle: '@jeffhonforloco'
   });
@@ -42,11 +42,11 @@ const AdminSEO = () => {
     businessName: 'Jeff Honforloco',
     businessType: 'ProfessionalService',
     jobTitle: 'Fashion & Beauty Photographer',
-    description: 'World-class fashion, beauty & editorial photographer serving Fortune 500 brands, A-list celebrities, and elite models. Global availability across major fashion capitals including NYC, LA, Miami, Paris, London, Monaco, and Switzerland.',
+    description: 'Providence-based photographer offering fashion, beauty, editorial, headshot, wedding, event and commercial photography.',
     address: 'Providence, RI, US',
-    serviceAreas: 'New York City, Los Angeles, Miami, Chicago, Atlanta, Paris, London, Monaco, Switzerland',
-    priceRange: '$$$$',
-    services: 'Fashion Photography, Elite Beauty Photography, Editorial Photography, Celebrity Photography, Fashion Week Photography, Brand Campaigns'
+    serviceAreas: 'Providence, Rhode Island, New England, United States by project',
+    priceRange: '$$$',
+    services: 'Fashion Photography, Beauty Photography, Editorial Photography, Headshots, Weddings, Events, Commercial Photography'
   });
 
   const [pageSpecificSEO] = useState([

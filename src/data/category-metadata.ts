@@ -16,9 +16,9 @@ export const categoryTitles = {
 
 export const categoryDescriptions = {
   'luxury-fashion-photography-nyc': '',
-  'luxury-beauty-photography-nationwide': 'Premium beauty and cosmetic photography for top brands, featuring sophisticated lighting and flawless execution. Serving high-end beauty brands coast to coast.',
+  'luxury-beauty-photography-nationwide': 'Beauty and cosmetic photography with polished lighting, careful direction and professional retouching.',
   'editorial-photography-magazines': 'Magazine-quality editorial photography for publications, brands, and storytelling campaigns. Creating compelling narratives that captivate audiences and drive engagement.',
-  'celebrity-lifestyle-photography': 'Exclusive celebrity and lifestyle photography capturing authentic moments with sophisticated aesthetics. Trusted by high-profile clients and entertainment industry professionals.',
+  'celebrity-lifestyle-photography': 'Lifestyle photography focused on authentic moments, people and environments.',
   // Legacy descriptions
   beauty: 'Elegant beauty photography showcasing natural and enhanced aesthetics with sophisticated lighting and composition.',
   fashion: 'Contemporary fashion photography featuring bold styling, creative concepts, and innovative visual narratives.',

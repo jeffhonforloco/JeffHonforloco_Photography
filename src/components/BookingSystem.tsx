@@ -327,7 +327,7 @@ ${bookingData.message}`,
           <p className="text-gray-400">Select a service type, then pick your package</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid min-w-0 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {SERVICE_TYPES.map((service) => {
             const Icon = service.icon;
             const isSelected = bookingData.serviceType === service.id;
@@ -339,7 +339,7 @@ ${bookingData.message}`,
             return (
               <Card
                 key={service.id}
-                className={`cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
+                className={`min-w-0 cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
                   isSelected
                     ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
                     : 'bg-white/5 border-white/10 hover:border-white/30'
@@ -360,7 +360,7 @@ ${bookingData.message}`,
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <Icon className="w-5 h-5 text-photo-red flex-shrink-0" />
-                      <CardTitle className="text-white text-base truncate">{service.name}</CardTitle>
+                      <CardTitle className="text-white text-base break-words">{service.name}</CardTitle>
                     </div>
                     {isSelected && <CheckCircle className="w-5 h-5 text-photo-red flex-shrink-0 ml-2" />}
                   </div>
@@ -395,7 +395,7 @@ ${bookingData.message}`,
         {selectedCategory && (
           <div>
             <h3 className="text-lg font-semibold text-white mb-4">Select Your Package</h3>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid min-w-0 md:grid-cols-3 gap-4">
               {selectedCategory.tiers.map((tier) => {
                 const isSelected = bookingData.packageType === tier.id;
                 const selectPackage = () => {
@@ -405,7 +405,7 @@ ${bookingData.message}`,
                 return (
                   <Card
                     key={tier.id}
-                    className={`cursor-pointer transition-all duration-200 ${
+                    className={`min-w-0 cursor-pointer transition-all duration-200 ${
                       isSelected
                         ? 'border-photo-red bg-photo-red/10 ring-1 ring-photo-red'
                         : 'bg-white/5 border-white/10 hover:border-white/30'
@@ -561,7 +561,7 @@ ${bookingData.message}`,
           <Input
             id="phone"
             type="tel"
-            placeholder="+1 (555) 000-0000"
+            placeholder="Your phone number"
             value={bookingData.phone}
             onChange={(e) => updateBookingData('phone', e.target.value)}
             className="bg-gray-900 border-gray-700 text-white"
@@ -612,12 +612,12 @@ ${bookingData.message}`,
         <Label htmlFor="location" className="text-white mb-2 block">City / Location *</Label>
         <Input
           id="location"
-          placeholder="e.g., New York NY · Los Angeles CA · Chicago IL · Providence RI · Miami FL"
+          placeholder="e.g., Providence RI · Newport RI · Boston MA"
           value={bookingData.location}
           onChange={(e) => updateBookingData('location', e.target.value)}
           className="bg-gray-900 border-gray-700 text-white"
         />
-        <p className="text-gray-500 text-xs mt-1.5">Available across the US — we travel for the right project</p>
+        <p className="text-gray-500 text-xs mt-1.5">Providence home base · New England and travel projects available</p>
       </div>
 
       {['wedding', 'events', 'real-estate'].includes(bookingData.serviceType) && (
@@ -815,7 +815,7 @@ ${bookingData.message}`,
       </div>
 
       <Card className="bg-black/50 border-white/10 backdrop-blur-sm">
-        <CardContent className="p-8">{renderStepContent()}</CardContent>
+        <CardContent className="p-4 sm:p-8">{renderStepContent()}</CardContent>
       </Card>
 
       {currentStep < 4 && (

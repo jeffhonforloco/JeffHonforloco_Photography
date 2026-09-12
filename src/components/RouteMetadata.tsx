@@ -82,14 +82,6 @@ const getRouteMeta = (pathname: string): RouteMeta => {
     };
   }
 
-  if (pathname.startsWith('/location/') || /^\/(nyc|los-angeles|miami|paris|london|italy|lagos|switzerland|malta|monaco|rhode-island|massachusetts|maine|connecticut)$/.test(pathname)) {
-    const location = titleCase(pathname.split('/').filter(Boolean).pop() ?? 'United States');
-    return {
-      title: `Photographer Available in ${location} | Jeff Honforloco Photography`,
-      description: `Book fashion, beauty, portrait, event and commercial photography in ${location}, subject to project availability and travel.`,
-    };
-  }
-
   return {
     title: 'Page Not Found | Jeff Honforloco Photography',
     description: 'The requested page could not be found.',
@@ -106,11 +98,13 @@ const RouteMetadata = () => {
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
+      '@id': `https://jeffhonforlocophotos.com${servicePage.path}#service`,
       name: servicePage.h1,
       description: servicePage.description,
       url: `https://jeffhonforlocophotos.com${servicePage.path}`,
       image: `https://jeffhonforlocophotos.com${servicePage.image}`,
       provider: { '@id': 'https://jeffhonforlocophotos.com/#business' },
+      mainEntityOfPage: { '@id': `https://jeffhonforlocophotos.com${servicePage.path}#webpage` },
       areaServed: [
         { '@type': 'City', name: 'Providence' },
         { '@type': 'State', name: 'Rhode Island' },

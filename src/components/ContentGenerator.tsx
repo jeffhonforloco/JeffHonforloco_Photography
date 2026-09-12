@@ -150,7 +150,7 @@ const ContentGenerator = () => {
 
       return {
         title: template.title,
-        content: `# Instagram Carousel: ${template.title}\n\n${content}\n\n## Hashtag Suggestions:\n#JeffHonforloco #EditorialPhotography #FashionPhotography #BehindTheScenes #ModelPrep #BeautyPhotography #PhotographyTips #NYC #CreativeDirection\n\n## Posting Schedule:\nBest times: Tuesday-Thursday, 11 AM or 7 PM EST\nUse Stories to tease the carousel 1 hour before posting.`
+        content: `# Instagram Carousel: ${template.title}\n\n${content}\n\n## Hashtag Suggestions:\n#JeffHonforloco #EditorialPhotography #FashionPhotography #BehindTheScenes #ModelPrep #BeautyPhotography #PhotographyTips #Providence #RhodeIsland #CreativeDirection\n\n## Posting Schedule:\nBest times: Tuesday-Thursday, 11 AM or 7 PM EST\nUse Stories to tease the carousel 1 hour before posting.`
       };
     }
 
@@ -300,7 +300,7 @@ What story do you want to tell?
 
 📸 Book your session → link in bio
 
-#JeffHonforloco #Photography #${topic.replace(/\s+/g, '')} #Luxury #Professional #Creative #NYC #Editorial #Fashion #Beauty
+#JeffHonforloco #Photography #${topic.replace(/\s+/g, '')} #Luxury #Professional #Creative #Providence #RhodeIsland #Editorial #Fashion #Beauty
 
 ---
 

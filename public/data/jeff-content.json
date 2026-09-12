@@ -2,28 +2,28 @@
 {
   "personal": {
     "name": "Jeff Honforloco",
-    "profession": "Hyper-creative photographer and astute businessman",
-    "location": "Providence, RI area, USA",
-    "specialization": "Fashion and Beauty photography",
+    "profession": "Professional photographer",
+    "location": "Providence, Rhode Island, USA",
+    "specialization": "Fashion, beauty, editorial, headshot, wedding, event and commercial photography",
     "quote": "A well-captured image represents a moment in time that is expressed infinitely",
-    "bio": "With over a decade of experience in professional photography, I've dedicated my career to creating compelling visual stories that capture the essence and beauty of my subjects. My work spans across fashion, beauty, editorial, and lifestyle photography.",
+    "bio": "Jeff Honforloco is a Providence-based photographer creating fashion, beauty, editorial, headshot, wedding, event and commercial imagery.",
     "philosophy": "Photography is not just about capturing what you see—it's about revealing what others might miss. Every frame is an opportunity to create something timeless and meaningful."
   },
   "contact": {
-    "address": "Wisdom Ave, Providence, RI 02908", 
-    "phone": "+646-379-4237",
-    "emails": ["info@jeffhonforlocophotos.com", "jeffhonforloco@gmail.com"]
+    "base": "Providence, Rhode Island",
+    "phone": "+1-646-379-4237",
+    "emails": ["info@jeffhonforlocophotos.com"]
   },
   "services": [
     "Fashion photography",
     "Beauty photography", 
-    "Portrait photography",
-    "Album cover photography",
-    "Custom photography projects"
-  ],
-  "experience": {
-    "years": "15+",
-    "publishedWorks": "50+",
-    "happyClients": "100+"
-  }
+    "Editorial photography",
+    "Headshot photography",
+    "Wedding and engagement photography",
+    "Sweet 16 and quinceañera photography",
+    "Event photography",
+    "Commercial photography",
+    "Real estate and Airbnb photography",
+    "Motion and short-form video"
+  ]
 }

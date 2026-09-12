@@ -1,5 +1,7 @@
 # Jeff Honforloco Photography crawler policy
-# Search and answer-engine discovery are allowed. Model training is not granted.
+# Search and answer-engine discovery are allowed. Training crawlers are blocked
+# where vendors provide a separate search/retrieval crawler. Google-Extended
+# remains allowed because it also controls Gemini grounding, not Google Search.
 
 User-agent: *
 Allow: /
@@ -30,15 +32,21 @@ User-agent: ChatGPT-User
 Allow: /
 
 User-agent: GPTBot
-Allow: /
+Disallow: /
 
 User-agent: ClaudeBot
-Allow: /
+Disallow: /
 
 User-agent: Claude-SearchBot
 Allow: /
 
+User-agent: Claude-User
+Allow: /
+
 User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
 Allow: /
 
 User-agent: Google-Extended
