@@ -1,6 +1,6 @@
 
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigationType } from "react-router-dom";
 import Analytics from "./components/Analytics";
 import RouteMetadata from "./components/RouteMetadata";
 import PerformanceMonitor from "./components/PerformanceMonitor";
@@ -33,6 +33,49 @@ const LoadingFallback = () => (
     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-photo-red" aria-hidden="true"></div>
   </div>
 );
+
+const useIsomorphicLayoutEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
+
+const RouteScrollManager = () => {
+  const location = useLocation();
+  const navigationType = useNavigationType();
+
+  useIsomorphicLayoutEffect(() => {
+    if (navigationType === "POP") {
+      return;
+    }
+
+    if (!location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+      return;
+    }
+
+    const targetId = decodeURIComponent(location.hash.slice(1));
+    const scrollToTarget = () => {
+      const target = document.getElementById(targetId);
+      if (!target) return false;
+      target.scrollIntoView();
+      return true;
+    };
+
+    if (scrollToTarget()) {
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (scrollToTarget()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    const timeoutId = window.setTimeout(() => observer.disconnect(), 2_000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      observer.disconnect();
+    };
+  }, [location.hash, location.key, navigationType]);
+
+  return null;
+};
 
 const DeferredSalesChatbot = () => {
   const [shouldLoad, setShouldLoad] = React.useState(false);
@@ -89,6 +132,7 @@ export const AppContent = () => {
 
   return (
     <>
+            <RouteScrollManager />
             <RouteMetadata />
             <Analytics />
             <PerformanceMonitor />
