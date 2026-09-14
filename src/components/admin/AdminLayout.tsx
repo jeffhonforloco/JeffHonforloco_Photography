@@ -1,265 +1,128 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { 
-  LayoutDashboard, 
-  Users, 
-  FileText, 
-  Image, 
-  Mail, 
-  Settings, 
-  LogOut, 
-  Menu, 
-  X,
-  BarChart3,
-  Database,
-  Shield,
-  Video,
-  Bell
+import React, { useCallback, useEffect, useState } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Activity, BarChart3, Bell, BookOpenCheck, Bot, BriefcaseBusiness, CalendarCheck,
+  ChartNoAxesCombined, ChevronRight, FileText, Gauge, Globe2, Image, LayoutDashboard,
+  Lightbulb, LogOut, Mail, MapPinned, Menu, Search, Settings, Shield, Users, X,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { adminPath } from '@/lib/admin-routing';
 
-interface AdminUser {
-  id: number;
-  username: string;
-  role: string;
-  last_login: string;
-  last_activity: string;
-}
+interface AdminUser { id: number; username: string; role: string }
+
+const navigation = [
+  { label: 'Command', items: [
+    { name: 'Overview', path: 'overview', icon: LayoutDashboard },
+    { name: 'Leads', path: 'leads', icon: Users },
+    { name: 'Bookings', path: 'bookings', icon: CalendarCheck },
+    { name: 'Funnels', path: 'funnels', icon: ChartNoAxesCombined },
+  ] },
+  { label: 'Discovery', items: [
+    { name: 'Search & SEO', path: 'search', icon: Search },
+    { name: 'AI Visibility', path: 'ai-visibility', icon: Bot },
+    { name: 'Competitors', path: 'competitors', icon: Globe2 },
+    { name: 'Recommendations', path: 'recommendations', icon: Lightbulb },
+    { name: 'Local Authority', path: 'local-authority', icon: MapPinned },
+    { name: 'Content Opportunities', path: 'content-opportunities', icon: FileText },
+  ] },
+  { label: 'Health', items: [
+    { name: 'WebMCP', path: 'webmcp', icon: Bot },
+    { name: 'Performance', path: 'performance', icon: Gauge },
+    { name: 'Site Health', path: 'site-health', icon: Activity },
+  ] },
+  { label: 'Operations', items: [
+    { name: 'Portfolio / Content', path: 'portfolio-content', icon: Image },
+    { name: 'Journal', path: 'blog', icon: BookOpenCheck },
+    { name: 'Analytics (legacy)', path: 'analytics', icon: BarChart3 },
+    { name: 'Email / Follow-up', path: 'email', icon: Mail },
+    { name: 'Database', path: 'database', icon: BriefcaseBusiness },
+    { name: 'Security', path: 'security', icon: Shield },
+    { name: 'Settings', path: 'settings', icon: Settings },
+  ] },
+] as const;
 
 const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
+  const clearSession = useCallback(() => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+  }, []);
+
   const checkAuth = useCallback(async () => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+      navigate(adminPath('login'), { replace: true });
+      setLoading(false);
+      return;
+    }
     try {
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
-        navigate('/admin/login');
-        return;
-      }
-
-      const response = await fetch('/api/v1/admin-auth/verify', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminUser');
-        navigate('/admin/login');
-        return;
-      }
-
+      const response = await fetch('/api/v1/admin-auth/verify', { headers: { Authorization: `Bearer ${token}` } });
+      if (!response.ok) throw new Error('Session expired');
       const data = await response.json();
-      if (data.success) {
-        setUser(data.data.user);
-      } else {
-        throw new Error('Authentication failed');
-      }
-    } catch (err) {
-      setError('Authentication failed. Please log in again.');
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      navigate('/admin/login');
+      if (!data.success || !data.data?.user || data.data.user.role !== 'admin') throw new Error('Administrator access required');
+      setUser(data.data.user);
+    } catch {
+      clearSession();
+      navigate(adminPath('login'), { replace: true });
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, [clearSession, navigate]);
 
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+  useEffect(() => { void checkAuth(); }, [checkAuth]);
+  useEffect(() => { setSidebarOpen(false); }, [location.pathname]);
 
   const handleLogout = async () => {
+    const token = localStorage.getItem('adminToken');
     try {
-      const token = localStorage.getItem('adminToken');
-      if (token) {
-        await fetch('/api/v1/admin-auth/logout', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-      }
-    } catch (err) {
-      console.error('Logout error:', err);
+      if (token) await fetch('/api/v1/admin-auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
     } finally {
-      localStorage.removeItem('adminToken');
-      localStorage.removeItem('adminUser');
-      navigate('/admin/login');
+      clearSession();
+      navigate(adminPath('login'), { replace: true });
     }
   };
 
-  const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Contacts', href: '/admin/contacts', icon: Users },
-    { name: 'Blog Posts', href: '/admin/blog', icon: FileText },
-    { name: 'Portfolio', href: '/admin/portfolio', icon: Image },
-    { name: 'Motion', href: '/admin/motion', icon: Video },
-    { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
-    { name: 'Email', href: '/admin/email', icon: Mail },
-    { name: 'Database', href: '/admin/database', icon: Database },
-    { name: 'Security', href: '/admin/security', icon: Shield },
-    { name: 'Settings', href: '/admin/settings', icon: Settings },
-  ];
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-300" role="status">Verifying secure session…</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Mobile sidebar */}
-      <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
-          <div className="absolute top-0 right-0 -mr-12 pt-2">
-            <button
-              type="button"
-              className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-6 w-6 text-white" />
-            </button>
-          </div>
-          <SidebarContent navigation={navigation} />
+    <div className="min-h-screen bg-slate-100 text-slate-950">
+      {sidebarOpen && <button className="fixed inset-0 z-40 bg-slate-950/70 lg:hidden" aria-label="Close navigation" onClick={() => setSidebarOpen(false)} />}
+      <aside className={`fixed inset-y-0 left-0 z-50 flex w-[18rem] flex-col border-r border-slate-800 bg-slate-950 text-white transition-transform lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex h-20 items-center justify-between border-b border-slate-800 px-5">
+          <div><p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-rose-400">Jeff Honforloco</p><p className="mt-1 text-base font-semibold">Growth Command Center</p></div>
+          <button className="rounded-md p-2 text-slate-400 hover:bg-slate-800 hover:text-white lg:hidden" onClick={() => setSidebarOpen(false)} aria-label="Close navigation"><X className="h-5 w-5" /></button>
         </div>
-      </div>
-
-      {/* Desktop sidebar */}
-      <div className="hidden lg:flex lg:flex-shrink-0">
-        <div className="flex flex-col w-64">
-          <SidebarContent navigation={navigation} />
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="lg:pl-64 flex flex-col flex-1">
-        {/* Top bar */}
-        <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
-          <button
-            type="button"
-            className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-          <div className="flex-1 px-4 flex justify-between">
-            <div className="flex-1 flex">
-              <div className="w-full flex md:ml-0">
-                <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                  <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                    <span className="text-sm font-medium text-gray-900">
-                      Admin Panel
-                    </span>
-                  </div>
-                </div>
+        <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Admin navigation">
+          {navigation.map((group) => (
+            <div className="mb-5" key={group.label}>
+              <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">{group.label}</p>
+              <div className="space-y-1">
+                {group.items.map((item) => {
+                  const href = adminPath(item.path);
+                  const active = location.pathname === href || location.pathname.startsWith(`${href}/`);
+                  return <Link key={item.path} to={href} className={`group flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${active ? 'bg-rose-600 text-white' : 'text-slate-300 hover:bg-slate-900 hover:text-white'}`}><item.icon className="h-4 w-4 shrink-0" /><span className="flex-1">{item.name}</span>{active && <ChevronRight className="h-3.5 w-3.5" />}</Link>;
+                })}
               </div>
             </div>
-            <div className="ml-4 flex items-center md:ml-6">
-              <div className="flex items-center space-x-4">
-                <Badge variant="outline" className="hidden sm:block">
-                  {user?.role}
-                </Badge>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-700">{user?.username}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="flex items-center space-x-1"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Page content */}
-        <main className="flex-1">
-          <div className="py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Outlet />
-            </div>
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-};
-
-const SidebarContent: React.FC<{ navigation: Array<{ name: string; href: string; icon: React.ElementType }> }> = ({ navigation }) => {
-  const location = useLocation();
-
-  return (
-    <div className="flex flex-col h-0 flex-1 border-r border-gray-200 bg-white">
-      <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-        <div className="flex items-center flex-shrink-0 px-4">
-          <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-        </div>
-        <nav className="mt-5 flex-1 px-2 space-y-1">
-          {navigation.map((item) => {
-            const isActive = location.pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`${
-                  isActive
-                    ? 'bg-gray-100 text-gray-900'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                } group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
-              >
-                <item.icon
-                  className={`${
-                    isActive ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500'
-                  } mr-3 flex-shrink-0 h-6 w-6`}
-                />
-                {item.name}
-              </Link>
-            );
-          })}
+          ))}
         </nav>
-      </div>
-      <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-        <div className="flex items-center">
-          <div className="flex-shrink-0">
-            <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-              <span className="text-sm font-medium text-gray-700">A</span>
-            </div>
-          </div>
-          <div className="ml-3">
-            <p className="text-sm font-medium text-gray-700">Admin User</p>
-            <p className="text-xs text-gray-500">System Administrator</p>
-          </div>
+        <div className="border-t border-slate-800 p-4">
+          <div className="mb-3 flex items-center justify-between gap-3"><div className="min-w-0"><p className="truncate text-sm font-medium">{user?.username}</p><p className="text-xs text-slate-500">Authenticated operator</p></div><Badge className="border-emerald-700 bg-emerald-950 text-emerald-300">Private</Badge></div>
+          <Button variant="outline" className="w-full border-slate-700 bg-transparent text-slate-200 hover:bg-slate-800 hover:text-white" onClick={handleLogout}><LogOut className="mr-2 h-4 w-4" />Log out</Button>
         </div>
+      </aside>
+      <div className="lg:pl-[18rem]">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6">
+          <div className="flex items-center gap-3"><button className="rounded-lg border border-slate-200 p-2 lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open navigation"><Menu className="h-5 w-5" /></button><div><p className="text-sm font-semibold">Private operations</p><p className="hidden text-xs text-slate-500 sm:block">Evidence-led growth, human-approved changes</p></div></div>
+          <div className="flex items-center gap-2"><Badge variant="outline" className="hidden sm:inline-flex">{user?.role}</Badge><Link to={adminPath('recommendations')} className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50" aria-label="Review alerts and recommendations"><Bell className="h-4 w-4" /></Link></div>
+        </header>
+        <main className="mx-auto max-w-[1500px] p-4 sm:p-6 lg:p-8"><Outlet /></main>
       </div>
     </div>
   );

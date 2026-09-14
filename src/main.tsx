@@ -1,7 +1,8 @@
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { HelmetProvider } from 'react-helmet-async'
-import App from './App.tsx'
+import App from '@/app-entry'
 import { installApiFetchBridge } from './lib/api-service'
+import { isAdminHostname } from './lib/admin-routing'
 import './index.css'
 import 'react-day-picker/dist/style.css'
 
@@ -25,7 +26,7 @@ window.addEventListener('vite:preloadError', (event) => {
 });
 
 // Register service worker for offline caching
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
+if ('serviceWorker' in navigator && import.meta.env.PROD && !isAdminHostname()) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .catch((error: unknown) => {

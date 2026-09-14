@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import type { Env, AppEnv } from './types';
 import { generateDailyPosts } from './lib/journal';
 import { processDueEmailSequences } from './lib/leadAutomation';
+import { queueGrowthMonitoring, type MonitoringCadence } from './lib/growthMonitoring';
 import authRoutes      from './routes/auth';
 import contactsRoutes  from './routes/contacts';
 import emailRoutes     from './routes/email';
@@ -10,13 +11,15 @@ import blogRoutes      from './routes/blog';
 import portfolioRoutes from './routes/portfolio';
 import adminRoutes     from './routes/admin';
 import chatRoutes      from './routes/chat';
+import growthRoutes    from './routes/growth';
 
 const app = new Hono<AppEnv>();
 
 // CORS — use ALLOWED_ORIGIN when set in Worker secrets; fall back to * until it is configured
 app.use('*', async (c, next) => {
-  const origin = c.env.ALLOWED_ORIGIN || '*';
-  return cors({ origin, allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] })(c, next);
+  const configured = c.env.ALLOWED_ORIGINS || c.env.ALLOWED_ORIGIN || 'https://jeffhonforlocophotos.com,https://admin.jeffhonforlocophotos.com';
+  const origins = configured.split(',').map((origin) => origin.trim()).filter(Boolean);
+  return cors({ origin: origins, allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], allowHeaders: ['Authorization', 'Content-Type'] })(c, next);
 });
 
 // Health check
@@ -29,6 +32,7 @@ app.route('/api/v1/contacts',  contactsRoutes);
 app.route('/api/v1/email',     emailRoutes);
 app.route('/api/v1/blog',      blogRoutes);
 app.route('/api/v1/portfolio', portfolioRoutes);
+app.route('/api/v1/admin/growth', growthRoutes);
 app.route('/api/v1/admin',     adminRoutes);
 app.route('/api/v1/chat',      chatRoutes);
 
@@ -44,6 +48,12 @@ export default {
     if (event.cron === '0 8 * * *') {
       tasks.push(generateDailyPosts(env));
     }
+    const growthCadence: Record<string, MonitoringCadence> = {
+      '15 7 * * *': 'daily',
+      '30 7 * * 1': 'weekly',
+      '0 8 1 * *': 'monthly',
+    };
+    if (growthCadence[event.cron]) tasks.push(queueGrowthMonitoring(env, growthCadence[event.cron]));
 
     const results = await Promise.allSettled(tasks);
     for (const result of results) {

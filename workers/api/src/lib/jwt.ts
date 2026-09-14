@@ -24,7 +24,7 @@ export async function signJWT(
   expiresInSeconds = 86400
 ): Promise<string> {
   const now = Math.floor(Date.now() / 1000);
-  const full: JWTPayload = { ...payload, iat: now, exp: now + expiresInSeconds };
+  const full: JWTPayload = { ...payload, jti: payload.jti ?? crypto.randomUUID(), iat: now, exp: now + expiresInSeconds };
   const enc = new TextEncoder();
   const header = b64url(enc.encode(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).buffer as ArrayBuffer);
   const body   = b64url(enc.encode(JSON.stringify(full)).buffer as ArrayBuffer);

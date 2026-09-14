@@ -1,27 +1,57 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminLogin from '@/components/admin/AdminLogin';
-import AdminDashboard from '@/components/admin/AdminDashboard';
-import AdminContacts from '@/components/admin/AdminContacts';
-import AdminBlog from '@/components/admin/AdminBlog';
-import AdminPortfolio from '@/components/admin/AdminPortfolio';
-import AdminAnalytics from '@/components/admin/AdminAnalytics';
-import AdminEmail from '@/components/admin/AdminEmail';
-import AdminDatabase from '@/components/admin/AdminDatabase';
-import AdminSecurity from '@/components/admin/AdminSecurity';
-import AdminSettings from '@/components/admin/AdminSettings';
+import { adminPath, isAdminHostname } from '@/lib/admin-routing';
+
+const AdminDashboard = lazy(() => import('@/components/admin/AdminDashboard'));
+const AdminContacts = lazy(() => import('@/components/admin/AdminContacts'));
+const AdminBlog = lazy(() => import('@/components/admin/AdminBlog'));
+const AdminPortfolio = lazy(() => import('@/components/admin/AdminPortfolio'));
+const AdminAnalytics = lazy(() => import('@/components/admin/AdminAnalytics'));
+const AdminEmail = lazy(() => import('@/components/admin/AdminEmail'));
+const AdminDatabase = lazy(() => import('@/components/admin/AdminDatabase'));
+const AdminSecurity = lazy(() => import('@/components/admin/AdminSecurity'));
+const AdminSettings = lazy(() => import('@/components/admin/AdminSettings'));
+const GrowthOverview = lazy(() => import('@/components/admin/growth/GrowthOverview'));
+const FunnelDashboard = lazy(() => import('@/components/admin/growth/FunnelDashboard'));
+const BookingsDashboard = lazy(() => import('@/components/admin/growth/BookingsDashboard'));
+const GrowthWorkspace = lazy(() => import('@/components/admin/growth/GrowthWorkspace'));
+
+const AdminLoading = () => (
+  <div className="flex min-h-64 items-center justify-center text-sm text-slate-500" role="status">
+    Loading command center…
+  </div>
+);
 
 const Admin: React.FC = () => {
+  const base = isAdminHostname() ? '' : '/admin';
+  const route = (path: string) => `${base}/${path}`.replace(/\/+/g, '/');
+
   return (
-    <Routes>
-      <Route path="/login" element={<AdminLogin />} />
-      <Route path="/" element={<AdminLayout />}>
-        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+    <Suspense fallback={<AdminLoading />}>
+      <Routes>
+      <Route path={route('login')} element={<AdminLogin />} />
+      <Route path={route('')} element={<AdminLayout />}>
+        <Route index element={<Navigate to={adminPath('overview')} replace />} />
+        <Route path="overview" element={<GrowthOverview />} />
         <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="contacts" element={<AdminContacts />} />
+        <Route path="leads" element={<AdminContacts />} />
+        <Route path="contacts" element={<Navigate to={adminPath('leads')} replace />} />
+        <Route path="bookings" element={<BookingsDashboard />} />
+        <Route path="funnels" element={<FunnelDashboard />} />
+        <Route path="search" element={<GrowthWorkspace kind="search" />} />
+        <Route path="ai-visibility" element={<GrowthWorkspace kind="ai" />} />
+        <Route path="competitors" element={<GrowthWorkspace kind="competitors" />} />
+        <Route path="recommendations" element={<GrowthWorkspace kind="recommendations" />} />
+        <Route path="local-authority" element={<GrowthWorkspace kind="authority" />} />
+        <Route path="content-opportunities" element={<GrowthWorkspace kind="content" />} />
+        <Route path="webmcp" element={<GrowthWorkspace kind="webmcp" />} />
+        <Route path="performance" element={<GrowthWorkspace kind="performance" />} />
+        <Route path="site-health" element={<GrowthWorkspace kind="site-health" />} />
+        <Route path="portfolio-content" element={<AdminPortfolio />} />
         <Route path="blog" element={<AdminBlog />} />
-        <Route path="portfolio" element={<AdminPortfolio />} />
+        <Route path="portfolio" element={<Navigate to={adminPath('portfolio-content')} replace />} />
         <Route
           path="motion"
           element={
@@ -38,7 +68,9 @@ const Admin: React.FC = () => {
         <Route path="security" element={<AdminSecurity />} />
         <Route path="settings" element={<AdminSettings />} />
       </Route>
-    </Routes>
+      <Route path="*" element={<Navigate to={adminPath('overview')} replace />} />
+      </Routes>
+    </Suspense>
   );
 };
 
