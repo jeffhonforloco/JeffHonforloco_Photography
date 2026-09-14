@@ -18,7 +18,7 @@ const JournalArticle = lazy(() => import("./pages/JournalArticle"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const Admin = lazy(() => import("./pages/Admin"));
+const AdminTransition = lazy(() => import("./pages/AdminTransition"));
 const Book = lazy(() => import("./pages/Book"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
@@ -167,15 +167,15 @@ export const AppContent = () => {
                 <Route path="/book" element={<Book />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/prep-guide" element={<PrepGuidePage />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin" element={<AdminTransition />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 {/* Retired thin location pages converge on the verified service hub. */}
                 <Route path="/location/:location" element={<Navigate to="/services" replace />} />
                 {['nyc', 'los-angeles', 'miami', 'paris', 'london', 'italy', 'lagos', 'switzerland', 'malta', 'monaco', 'rhode-island', 'massachusetts', 'maine', 'connecticut'].map((slug) => (
                   <Route key={slug} path={`/${slug}`} element={<Navigate to="/services" replace />} />
                 ))}
-                {/* Admin Panel */}
-                <Route path="/admin/*" element={<Admin />} />
+                {/* Compatibility bridge to the isolated private admin application. */}
+                <Route path="/admin/*" element={<AdminTransition />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -8,8 +8,13 @@ export interface Env {
   JWT_SECRET: string;
   ADMIN_EMAIL: string;
   ALLOWED_ORIGIN: string;
+  ALLOWED_ORIGINS?: string;
   PUBLIC_API_BASE_URL?: string;
   BUSINESS_POSTAL_ADDRESS?: string;
+  GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL?: string;
+  GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY?: string;
+  GOOGLE_BUSINESS_PROFILE_ACCOUNT_ID?: string;
+  GITHUB_APP_ID?: string;
 }
 
 export type AppEnv = {
@@ -18,6 +23,8 @@ export type AppEnv = {
     userId: number;
     userRole: string;
     username: string;
+    sessionId: string;
+    sessionExpiresAt: number;
   };
 };
 
@@ -27,4 +34,5 @@ export interface JWTPayload {
   role: string;
   exp: number;
   iat: number;
+  jti?: string;
 }

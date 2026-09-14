@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Eye, EyeOff, Lock, User } from 'lucide-react';
+import { adminPath } from '@/lib/admin-routing';
 
 interface LoginFormData {
   username: string;
@@ -58,7 +59,7 @@ const AdminLogin: React.FC = () => {
         localStorage.setItem('adminUser', JSON.stringify(data.data.user));
         
         // Redirect to admin dashboard
-        navigate('/admin/dashboard');
+        navigate(adminPath('overview'), { replace: true });
       } else {
         throw new Error(data.message || 'Login failed');
       }
@@ -75,10 +76,10 @@ const AdminLogin: React.FC = () => {
         <div className="text-center">
           <Lock className="mx-auto h-12 w-12 text-gray-400" />
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Admin Login
+            Growth Command Center
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Sign in to access the admin panel
+            Private access for authorized studio operators
           </p>
         </div>
 

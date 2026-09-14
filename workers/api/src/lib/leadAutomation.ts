@@ -5,6 +5,8 @@ export const LEAD_PIPELINE_STATUSES = [
   'new',
   'contacted',
   'qualified',
+  'consultation',
+  'proposal',
   'quote_sent',
   'deposit_paid',
   'booked',

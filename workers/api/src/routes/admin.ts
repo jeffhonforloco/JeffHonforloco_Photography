@@ -17,6 +17,19 @@ const EXPORT_TABLES = [
   'email_templates',
   'email_sequences',
   'email_suppression',
+  'growth_recommendations',
+  'competitors',
+  'competitor_snapshots',
+  'competitor_change_events',
+  'search_query_snapshots',
+  'ai_visibility_tests',
+  'authority_tasks',
+  'performance_snapshots',
+  'site_health_snapshots',
+  'growth_fix_proposals',
+  'growth_experiments',
+  'monitoring_runs',
+  'growth_notifications',
 ] as const;
 const DATABASE_EXPORT_LIMIT = 10000;
 
