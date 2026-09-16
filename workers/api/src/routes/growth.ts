@@ -186,4 +186,81 @@ growth.get('/integration-status', (c) => c.json({ success: true, data: {
   github: { status: c.env.GITHUB_APP_ID ? 'connected' : 'not_connected', prepareOnly: true, autoMerge: false },
 } }));
 
+
+// AI-powered SEO analysis via SEOAgentPro (Hugging Face)
+growth.post('/seo-analyze', async (c) => {
+  const token = c.env.SEOAGENTPRO_HF_TOKEN;
+  if (!token) return c.json({ error: 'SEOAgentPro not configured' }, 503);
+  const body = await c.req.json<{ query?: string; url?: string; content?: string }>();
+  const target = body.query || body.url || body.content;
+  if (!target) return c.json({ error: 'query, url, or content is required' }, 400);
+
+  const systemPrompt = `You are SEOAgentPro, an expert SEO analyst for Jeff Honforloco Photography, a Providence RI-based photography studio specializing in fashion, beauty, editorial, headshots, and weddings. Provide actionable SEO analysis. Be specific, practical, and focused on ranking improvements.`;
+  const userPrompt = body.query
+    ? `Analyze this search query for SEO opportunity: "${body.query}". Provide: 1) Search intent, 2) Competition level, 3) Content recommendations, 4) Keyword variations to target.`
+    : body.url
+    ? `Analyze this page URL for SEO: ${body.url}. Provide: 1) Title/meta recommendations, 2) Content gaps, 3) Technical SEO issues to check, 4) Local SEO opportunities for Providence RI.`
+    : `Analyze this content for SEO: "${body.content?.slice(0, 2000)}". Provide: 1) Keyword optimization suggestions, 2) Readability improvements, 3) Missing SEO elements.`;
+
+  try {
+    const res = await fetch('https://router.huggingface.co/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        model: 'meta-llama/Llama-3.3-70B-Instruct',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        max_tokens: 1000,
+        temperature: 0.7,
+      }),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('[seo-analyze] HF rejected:', res.status, errText.slice(0, 300));
+      return c.json({ error: 'AI analysis temporarily unavailable' }, 502);
+    }
+    const data = await res.json() as { choices?: { message?: { content?: string } }[] };
+    const analysis = data.choices?.[0]?.message?.content || 'No analysis returned';
+    return c.json({ success: true, data: { analysis, target } });
+  } catch (err) {
+    console.error('[seo-analyze] Error:', err);
+    return c.json({ error: 'AI analysis failed' }, 500);
+  }
+});
+
+// AI Visibility check via SEOAgentPro
+growth.post('/ai-visibility-check', async (c) => {
+  const token = c.env.SEOAGENTPRO_HF_TOKEN;
+  if (!token) return c.json({ error: 'SEOAgentPro not configured' }, 503);
+  const body = await c.req.json<{ prompt?: string }>();
+  if (!body.prompt) return c.json({ error: 'prompt is required' }, 400);
+
+  try {
+    const res = await fetch('https://router.huggingface.co/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        model: 'meta-llama/Llama-3.3-70B-Instruct',
+        messages: [
+          { role: 'system', content: `You are SEOAgentPro analyzing AI search visibility for Jeff Honforloco Photography (Providence RI photographer). Given a user prompt, predict whether this business would likely surface in AI-generated answers, and suggest improvements.` },
+          { role: 'user', content: `User prompt: "${body.prompt}"
+
+Would Jeff Honforloco Photography likely appear in an AI answer to this? Provide: 1) Likelihood (High/Medium/Low), 2) Why, 3) 3 specific actions to improve AI visibility for this query.` },
+        ],
+        max_tokens: 800,
+        temperature: 0.7,
+      }),
+    });
+    if (!res.ok) return c.json({ error: 'AI analysis temporarily unavailable' }, 502);
+    const data = await res.json() as { choices?: { message?: { content?: string } }[] };
+    const analysis = data.choices?.[0]?.message?.content || 'No analysis returned';
+    return c.json({ success: true, data: { analysis, prompt: body.prompt } });
+  } catch (err) {
+    console.error('[ai-visibility-check] Error:', err);
+    return c.json({ error: 'AI analysis failed' }, 500);
+  }
+});
+
 export default growth;
