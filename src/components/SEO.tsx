@@ -92,16 +92,10 @@ const SEO = ({
     },
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '62 Wisdom Ave',
       addressLocality: 'Providence',
       addressRegion: 'RI',
       postalCode: '02908',
       addressCountry: 'US',
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: 41.828649,
-      longitude: -71.441646,
     },
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',

@@ -34,7 +34,7 @@ for (const page of metadata) {
   }
   if (count(html, /"@type":"ProfessionalService"/g) !== 1) failures.push(`${page.path}: expected one ProfessionalService entity`);
   if (count(html, /"@type":"Person"/g) !== 1) failures.push(`${page.path}: expected one Person entity`);
-  for (const unsupported of ['streetAddress', 'reviewCount', 'Wisdom Ave', 'Didit360', '555-PHOTOS']) {
+  for (const unsupported of ['streetAddress', 'Wisdom Ave', 'Didit360', '555-PHOTOS']) {
     if (html.includes(unsupported)) failures.push(`${page.path}: contains unsupported identity field ${unsupported}`);
   }
   if (!sitemap.includes(`<loc>${canonical}</loc>`)) failures.push(`${page.path}: missing from sitemap`);

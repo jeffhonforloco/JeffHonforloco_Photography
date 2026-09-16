@@ -7,9 +7,12 @@ const baseHtml = await readFile(path.join(distDir, 'index.html'), 'utf8');
 const serviceAuthorityMeta = JSON.parse(
   await readFile(path.resolve('src/data/service-authority-meta.json'), 'utf8'),
 );
+const journalMeta = JSON.parse(
+  await readFile(path.resolve('src/data/journal-meta.json'), 'utf8'),
+);
 
 const routes = [
-  ['/', 'Jeff Honforloco Photography | Fashion, Beauty & Editorial Photographer', 'Fashion, beauty, editorial, headshot, event and commercial photography by Jeff Honforloco. Based in Providence, Rhode Island and available for travel.'],
+  ['/', 'Providence Fashion Photographer | Jeff Honforloco Photography', 'Fashion, beauty & editorial photographer in Providence, RI, serving New England — Rhode Island, Boston, NYC & Miami. Published pricing. Book your shoot today.'],
   ['/portfolios', 'Photography Portfolios | Jeff Honforloco Photography', 'Explore fashion, beauty, editorial, glamour, headshot and lifestyle photography portfolios by Jeff Honforloco.'],
   ['/services', 'Photography Services | Jeff Honforloco Photography', 'Photography services for fashion, beauty, editorial, headshots, weddings, events, real estate and commercial projects.'],
   ['/about', 'About Jeff Honforloco | Photographer in Providence, RI', 'Meet photographer Jeff Honforloco and learn about his approach to fashion, beauty, editorial and commercial photography.'],
@@ -20,6 +23,7 @@ const routes = [
   ['/motion', 'Motion & Video Portfolio | Jeff Honforloco Photography', 'View motion, campaign and short-form video work from Jeff Honforloco Photography.'],
   ['/prep-guide', 'Photography Session Prep Guide | Jeff Honforloco Photography', 'Prepare wardrobe, styling and creative details for your upcoming photography session.'],
   ...serviceAuthorityMeta.map(({ path: route, title, description, image }) => [route, title, description, image]),
+  ...journalMeta.map(({ path: route, title, description }) => [route, title, description]),
   ...['beauty', 'fashion', 'editorial', 'glamour', 'headshots', 'lifestyle'].map((category) => [
     `/portfolios/${category}`,
     `${category[0].toUpperCase()}${category.slice(1)} Photography Portfolio | Jeff Honforloco Photography`,

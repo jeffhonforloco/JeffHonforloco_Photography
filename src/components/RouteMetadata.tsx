@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import SEO from './SEO';
 import serviceAuthorityMeta from '@/data/service-authority-meta.json';
+import journalMeta from '@/data/journal-meta.json';
 import { SERVICE_AUTHORITY_BY_PATH } from '@/data/service-authority-data';
 
 interface RouteMeta {
@@ -58,6 +59,10 @@ const STATIC_META: Record<string, RouteMeta> = {
 
 serviceAuthorityMeta.forEach(({ path, title, description, image }) => {
   STATIC_META[path] = { title, description, image };
+});
+
+journalMeta.forEach(({ path, title, description }) => {
+  STATIC_META[path] = { title, description };
 });
 
 const titleCase = (value: string): string =>
