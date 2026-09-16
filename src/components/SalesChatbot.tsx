@@ -24,7 +24,7 @@ interface ChatResponse {
 const CHATBOT_URL: string | undefined =
   (import.meta.env.VITE_CHATBOT_URL as string | undefined) ||
   (import.meta.env.VITE_API_BASE_URL
-    ? `${import.meta.env.VITE_API_BASE_URL}/chat`
+    ? `${import.meta.env.VITE_API_BASE_URL}/api/v1/chat`
     : undefined);
 const STORAGE_KEY = "jhp_chat_v2";
 const LEAD_KEY = "jhp_lead_v1";
@@ -201,10 +201,11 @@ export default function SalesChatbot() {
       // AI asked for contact details, or visitor is engaged (3+ messages):
       // surface the lead form so no conversation ends without a follow-up path.
       const userMsgCount = updated.filter((m) => m.role === "user").length;
-      if (!leadSubmitted && !showLeadForm && (data.leadCaptured || userMsgCount >= 3)) {
+      if (!leadSubmitted && !showLeadForm && (data.leadCaptured || userMsgCount >= 2)) {
         setShowLeadForm(true);
       }
     } catch {
+      const userMsgCount = updated.filter((m) => m.role === "user").length;
       setMessages((prev) => [
         ...prev,
         {
@@ -214,6 +215,10 @@ export default function SalesChatbot() {
           timestamp: Date.now(),
         },
       ]);
+      // Even on connection failure, surface the lead form early so the visitor can leave details
+      if (!leadSubmitted && !showLeadForm && userMsgCount >= 2) {
+        setShowLeadForm(true);
+      }
     } finally {
       setIsLoading(false);
     }
