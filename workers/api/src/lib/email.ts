@@ -22,6 +22,12 @@ export async function sendEmail(apiKey: string, opts: SendOptions): Promise<bool
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({ from: FROM, to: [opts.to], subject: opts.subject, html: opts.html, reply_to: opts.replyTo }),
   });
+  if (!res.ok) {
+    try {
+      const errBody = await res.text();
+      console.error(`[sendEmail] Resend rejected (${res.status}):`, errBody.slice(0, 500));
+    } catch { console.error(`[sendEmail] Resend rejected (${res.status}), could not read body`); }
+  }
   return res.ok;
 }
 
