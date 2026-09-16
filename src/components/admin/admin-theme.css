@@ -113,9 +113,3 @@
 .admin-dark .text-sm {
   font-weight: 500 !important;
 }
-/* Empty states on light cards — dark bold text for contrast */
-.admin-dark .bg-card .text-muted-foreground,
-.admin-dark [style*="background"] .text-muted-foreground {
-  color: #333333 !important;
-  font-weight: 700 !important;
-}
