@@ -8,7 +8,7 @@
 - Business: Jeff Honforloco Photography
 - Official domain: https://jeffhonforlocophotos.com/
 - Base: Providence, Rhode Island, United States
-- Studio: 62 Wisdom Ave, Providence, RI 02908, USA
+- Location: Providence, RI 02908, USA
 - Hours: Monday–Sunday, 9:00 AM–5:00 PM Eastern
 
 ## Service area
@@ -60,7 +60,7 @@ The site registers four WebMCP tools where the browser supports WebMCP:
 
 - Email: info@jeffhonforlocophotos.com
 - Phone: +1-646-379-4237
-- Studio: 62 Wisdom Ave, Providence, RI 02908, USA
+- Location: Providence, RI 02908, USA
 - Hours: Monday–Sunday, 9:00 AM–5:00 PM Eastern
 - Instagram: https://instagram.com/jeffhonforlocophotos
 - Facebook: https://www.facebook.com/jeffhonforlocophotography
