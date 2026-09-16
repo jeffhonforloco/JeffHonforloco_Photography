@@ -57,6 +57,11 @@ Subject to full payment, Photographer grants Client a non-exclusive, non-transfe
 (b) Client shall NOT: sell, license, or redistribute the Works to third parties; use the Works in paid advertising or commercial campaigns; submit the Works to contests; alter, crop, filter, or edit the Works; remove watermarks or metadata; or use the Works to train AI/machine-learning models — without Photographer's prior WRITTEN consent.
 (c) Any use beyond the granted license requires a separate written agreement and additional fees.
 
+(d) THIRD-PARTY USE: Client shall not authorize, permit, or enable any third party — including but not limited to advertising agencies, brands, publications, media outlets, vendors, venues, planners, makeup artists, stylists, or any other person or entity — to use, reproduce, publish, or distribute the Works without Photographer's prior WRITTEN consent. Any third party desiring to use the Works must obtain a separate license directly from Photographer at Photographer's standard licensing rates. Client is responsible for informing all third parties of this restriction.
+(e) VENDOR/SOCIAL SHARING: If Client wishes to allow vendors (e.g., venue, planner, florist) to share images on social media, Client must request Photographer's written permission identifying each vendor. Approved vendors must credit "Photo by {photographer_name}" and link to Photographer's website/social profile on every post. Vendors may not use the Works for paid advertising, print marketing, or website hero images without a separate commercial license.
+(f) PUBLICATION SUBMISSIONS: Client shall not submit the Works to any publication, blog, magazine, contest, or award program without Photographer's prior WRITTEN consent. Photographer retains the exclusive right to submit the Works for publication and shall receive sole photo credit.
+(g) NO AI TRAINING: Client and all third parties are expressly prohibited from using the Works to train, fine-tune, or develop artificial intelligence or machine-learning models.
+
 6. FULL BUYOUT OPTION (COPYRIGHT TRANSFER)
 Client may purchase full and exclusive ownership of the copyrights in the delivered Works ("Buyout") for an additional fee to be mutually agreed in writing. Upon (i) execution of a written Copyright Assignment and (ii) receipt of the full buyout fee, all copyrights in the specified Works transfer to Client. Until both conditions are met, Section 4 remains in full force. Buyout does not include RAW files or working files unless expressly stated.
 
@@ -136,6 +141,8 @@ Collaborator shall:
 (e) NOT submit the Works to contests or publications without Photographer's prior WRITTEN consent.
 (f) NOT use the Works to train AI/machine-learning models.
 Any commercial use requires a separate written license and payment of Photographer's standard commercial rates. Violation of this Section terminates the license immediately.
+
+(g) THIRD-PARTY RESTRICTIONS: Collaborator shall not authorize any third party — including agencies, brands, magazines, or publications — to use the Works. Any agency or brand wishing to use images of Collaborator from this shoot must license them directly from Photographer. Collaborator shall direct all third-party inquiries to Photographer.
 
 5. MODEL RELEASE
 Collaborator irrevocably grants Photographer (and Photographer's licensees, successors, and assigns) the right to photograph/film Collaborator and to use the Collaborator's name, likeness, image, and voice in the Works for any lawful purpose described in Section 3(d), worldwide and in perpetuity, without further consent or compensation. Collaborator confirms they are 18 years of age or older (or a parent/guardian co-signs below). Collaborator waives any right to inspect or approve the finished Works.
