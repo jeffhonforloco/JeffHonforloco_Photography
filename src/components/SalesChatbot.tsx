@@ -268,7 +268,7 @@ export default function SalesChatbot() {
     setIsSubmittingLead(true);
 
     const convo = conversationText();
-    const result = await insertLead({
+    const saved = await insertLead({
       name,
       phone,
       email,
@@ -276,7 +276,6 @@ export default function SalesChatbot() {
       source: "jade_chat",
       conversation: convo,
     });
-    const saved = result.ok;
 
     // Always email Jeff too — the worker/D1 is the database of record,
     // email is the instant notification.
@@ -310,7 +309,7 @@ export default function SalesChatbot() {
       ...prev,
       {
         role: "assistant",
-        content: saved ? `Thanks ${name.split(" ")[0]} — you're in. Jeff will personally reach out ${phone ? `at ${phone}` : `at ${email}`} within 24 hours. Anything else you'd like to know meanwhile?` : `Thanks ${name.split(" ")[0]} — I've sent your details directly to Jeff and he'll personally reach out ${phone ? `at ${phone}` : `at ${email}`} within 24 hours. [DEBUG: Save failed - ${result.error || 'unknown'}] Anything else you'd like to know meanwhile?`,
+        content: saved ? `Thanks ${name.split(" ")[0]} — you're in. Jeff will personally reach out ${phone ? `at ${phone}` : `at ${email}`} within 24 hours. Anything else you'd like to know meanwhile?` : `Thanks ${name.split(" ")[0]} — I've sent your details directly to Jeff and he'll personally reach out ${phone ? `at ${phone}` : `at ${email}`} within 24 hours. Anything else you'd like to know meanwhile?`,
         timestamp: Date.now(),
       },
     ]);
