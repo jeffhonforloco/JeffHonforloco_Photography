@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/generate-static-entrypoints.mjs && vite build --ssr src/entry-server.tsx --outDir .ssr-dist && node scripts/inject-homepage-ssr.mjs",
-    "build:admin": "vite build --mode admin --outDir dist-admin && cp dist-admin/index.html dist-admin/app.html",
+    "build:admin": "vite build --mode admin --outDir dist-admin",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "verify:seo-phase2": "node scripts/verify-seo-phase-2.mjs",
