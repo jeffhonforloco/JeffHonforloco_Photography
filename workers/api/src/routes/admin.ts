@@ -490,6 +490,36 @@ admin.post('/email-sequences/process', requireAuth, async (c) => {
   return c.json({ success: true, data: result });
 });
 
+// POST /api/v1/admin/email-sequences/cancel (auth required)
+// Cancels pending sequences by contact_ids and/or sequence ids. Only pending sequences are affected.
+admin.post('/email-sequences/cancel', requireAuth, async (c) => {
+  await ensureLeadAutomationSchema(c.env);
+  const body = await c.req.json<{ contact_ids?: number[]; ids?: number[] }>().catch(() => ({}));
+  const contactIds = (body.contact_ids ?? []).filter((n) => Number.isInteger(n));
+  const ids = (body.ids ?? []).filter((n) => Number.isInteger(n));
+  if (!contactIds.length && !ids.length) {
+    return c.json({ error: 'contact_ids or ids required' }, 400);
+  }
+  let cancelled = 0;
+  if (contactIds.length) {
+    const placeholders = contactIds.map(() => '?').join(',');
+    const res = await c.env.DB.prepare(
+      `UPDATE email_sequences SET status = 'cancelled', updated_at = datetime('now')
+       WHERE status = 'pending' AND contact_id IN (${placeholders})`
+    ).bind(...contactIds).run();
+    cancelled += res.meta.changes ?? 0;
+  }
+  if (ids.length) {
+    const placeholders = ids.map(() => '?').join(',');
+    const res = await c.env.DB.prepare(
+      `UPDATE email_sequences SET status = 'cancelled', updated_at = datetime('now')
+       WHERE status = 'pending' AND id IN (${placeholders})`
+    ).bind(...ids).run();
+    cancelled += res.meta.changes ?? 0;
+  }
+  return c.json({ success: true, cancelled });
+});
+
 // GET /api/v1/admin/database/stats (auth required)
 admin.get('/database/stats', requireAuth, async (c) => {
   await ensureLeadAutomationSchema(c.env);
