@@ -263,4 +263,15 @@ Would Jeff Honforloco Photography likely appear in an AI answer to this? Provide
   }
 });
 
+growth.get('/seo-auto-runs', async (c) => {
+  try {
+    const rows = await c.env.DB.prepare(
+      `SELECT run_type, target, analysis, created_at FROM seo_auto_runs ORDER BY created_at DESC LIMIT 100`
+    ).all();
+    return c.json({ success: true, data: rows.results || [] });
+  } catch {
+    return c.json({ success: true, data: [] });
+  }
+});
+
 export default growth;
