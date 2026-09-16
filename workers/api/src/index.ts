@@ -11,6 +11,12 @@ import blogRoutes      from './routes/blog';
 import portfolioRoutes from './routes/portfolio';
 import adminRoutes     from './routes/admin';
 import chatRoutes      from './routes/chat';
+import settingsRoutes   from './routes/settings';
+import mediaRoutes      from './routes/media';
+import { galleries, proof } from './routes/galleries';
+import { pages, publicPages } from './routes/pages';
+import { campaigns, resendWebhook, processDueEmailCampaigns } from './routes/campaigns';
+import { shopPublic, shopAdmin, stripeWebhook } from './routes/shop';
 import growthRoutes    from './routes/growth';
 
 const app = new Hono<AppEnv>();
@@ -35,6 +41,17 @@ app.route('/api/v1/portfolio', portfolioRoutes);
 app.route('/api/v1/admin/growth', growthRoutes);
 app.route('/api/v1/admin',     adminRoutes);
 app.route('/api/v1/chat',      chatRoutes);
+app.route('/api/v1/settings',  settingsRoutes);
+app.route('/api/v1/admin/media', mediaRoutes);
+app.route('/api/v1/admin/galleries', galleries);
+app.route('/api/v1/proof', proof);
+app.route('/api/v1/admin/pages', pages);
+app.route('/api/v1/pages', publicPages);
+app.route('/api/v1/admin/campaigns', campaigns);
+app.route('/api/v1/webhooks', resendWebhook);
+app.route('/api/v1/shop', shopPublic);
+app.route('/api/v1/admin/shop', shopAdmin);
+app.route('/api/v1/webhooks', stripeWebhook);
 
 // 404 fallback
 app.notFound((c) => c.json({ error: 'Not found' }, 404));
@@ -44,7 +61,7 @@ export default {
 
   // Process email automation often; keep journal generation on its daily cron.
   async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
-    const tasks: Promise<unknown>[] = [processDueEmailSequences(env)];
+    const tasks: Promise<unknown>[] = [processDueEmailSequences(env), processDueEmailCampaigns(env)];
     if (event.cron === '0 8 * * *') {
       tasks.push(generateDailyPosts(env));
     }

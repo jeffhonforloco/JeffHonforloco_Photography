@@ -1,6 +1,6 @@
 
 import React, { Suspense, lazy } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigationType } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation, useNavigationType } from "react-router-dom";
 import Analytics from "./components/Analytics";
 import RouteMetadata from "./components/RouteMetadata";
 import PerformanceMonitor from "./components/PerformanceMonitor";
@@ -24,6 +24,13 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Privacy = lazy(() => import("./pages/Privacy"));
+const ProofGallery = lazy(() => import("./pages/ProofGallery"));
+const DynamicPage = lazy(() => import("./pages/DynamicPage"));
+const Shop = lazy(() => import("./pages/Shop"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const ShopSuccess = lazy(() => import("./pages/ShopSuccess"));
+const CartDrawer = lazy(() => import("./components/shop/CartDrawer"));
+const CartProvider = lazy(() => import("./components/shop/CartContext").then((m) => ({ default: m.CartProvider })));
 const Services = lazy(() => import("./pages/Services"));
 const SalesChatbot = lazy(() => import("./components/SalesChatbot"));
 const Toaster = lazy(() => import("./components/ui/toaster").then((module) => ({ default: module.Toaster })));
@@ -126,6 +133,16 @@ const DeferredToaster = () => {
   return shouldLoad ? <Suspense fallback={null}><Toaster /></Suspense> : null;
 };
 
+/** Wraps shop pages in the cart provider + slide-out cart drawer. */
+const ShopShell: React.FC = () => (
+  <CartProvider>
+    <Outlet />
+    <Suspense fallback={null}>
+      <CartDrawer />
+    </Suspense>
+  </CartProvider>
+);
+
 export const AppContent = () => {
   React.useEffect(() => {
     initializeImageOptimization();
@@ -178,6 +195,16 @@ export const AppContent = () => {
                 ))}
                 {/* Compatibility bridge to the isolated private admin application. */}
                 <Route path="/admin/*" element={<AdminTransition />} />
+                {/* Client proofing galleries */}
+                <Route path="/proof/:slug" element={<ProofGallery />} />
+                {/* Shop — hidden (404) until Jeff flips it ON in Admin → Shop → Settings */}
+                <Route element={<ShopShell />}>
+                  <Route path="/shop" element={<Shop />} />
+                  <Route path="/shop/success" element={<ShopSuccess />} />
+                  <Route path="/shop/:slug" element={<ProductDetail />} />
+                </Route>
+                {/* Custom pages (page builder) — DynamicPage renders NotFound when slug has no published page */}
+                <Route path="/:slug" element={<DynamicPage fallback={<NotFound />} />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

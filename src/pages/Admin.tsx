@@ -8,6 +8,10 @@ const AdminDashboard = lazy(() => import('@/components/admin/AdminDashboard'));
 const AdminContacts = lazy(() => import('@/components/admin/AdminContacts'));
 const AdminBlog = lazy(() => import('@/components/admin/AdminBlog'));
 const AdminPortfolio = lazy(() => import('@/components/admin/AdminPortfolio'));
+const AdminGalleries = lazy(() => import('@/components/admin/AdminGalleries'));
+const AdminCampaigns = lazy(() => import('@/components/admin/AdminCampaigns'));
+const AdminShop = lazy(() => import('@/components/admin/AdminShop'));
+const AdminPages = lazy(() => import('@/components/admin/AdminPages'));
 const AdminAnalytics = lazy(() => import('@/components/admin/AdminAnalytics'));
 const AdminEmail = lazy(() => import('@/components/admin/AdminEmail'));
 const AdminDatabase = lazy(() => import('@/components/admin/AdminDatabase'));
@@ -50,6 +54,10 @@ const Admin: React.FC = () => {
         <Route path="performance" element={<GrowthWorkspace kind="performance" />} />
         <Route path="site-health" element={<GrowthWorkspace kind="site-health" />} />
         <Route path="portfolio-content" element={<AdminPortfolio />} />
+        <Route path="galleries" element={<AdminGalleries />} />
+        <Route path="campaigns" element={<AdminCampaigns />} />
+        <Route path="shop" element={<AdminShop />} />
+        <Route path="pages" element={<AdminPages />} />
         <Route path="blog" element={<AdminBlog />} />
         <Route path="portfolio" element={<Navigate to={adminPath('portfolio-content')} replace />} />
         <Route

@@ -1,10 +1,18 @@
 export interface Env {
   DB: D1Database;
+  MEDIA_BUCKET: R2Bucket;
+  SUPABASE_URL: string;
+  SUPABASE_SERVICE_ROLE_KEY: string;
   ANTHROPIC_API_KEY: string;
   SIREIQ_HF_TOKEN?: string;
   SIREIQ_HF_MODEL?: string;
   OPENAI_API_KEY: string;
   RESEND_API_KEY: string;
+  STREAM_API_TOKEN?: string;
+  STREAM_ACCOUNT_ID?: string;
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
+  STRIPE_PUBLISHABLE_KEY?: string;
   JWT_SECRET: string;
   ADMIN_EMAIL: string;
   ALLOWED_ORIGIN: string;

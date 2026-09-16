@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity, BarChart3, Bell, BookOpenCheck, Bot, BriefcaseBusiness, CalendarCheck,
-  ChartNoAxesCombined, ChevronRight, FileText, Gauge, Globe2, Image, LayoutDashboard,
-  Lightbulb, LogOut, Mail, MapPinned, Menu, Search, Settings, Shield, Users, X,
+  ChartNoAxesCombined, ChevronRight, FileText, Gauge, Globe2, Image, Images, LayoutDashboard,
+  Lightbulb, LogOut, Mail, MapPinned, Megaphone, Menu, Newspaper, Search, Settings, Shield, ShoppingBag, Users, X,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { adminPath } from '@/lib/admin-routing';
+import { apiUrl } from '@/lib/api-base';
 
 interface AdminUser { id: number; username: string; role: string }
 
@@ -32,9 +33,13 @@ const navigation = [
     { name: 'Site Health', path: 'site-health', icon: Activity },
   ] },
   { label: 'Operations', items: [
+    { name: 'Client Galleries', path: 'galleries', icon: Images },
+    { name: 'Pages', path: 'pages', icon: Newspaper },
     { name: 'Portfolio / Content', path: 'portfolio-content', icon: Image },
     { name: 'Journal', path: 'blog', icon: BookOpenCheck },
     { name: 'Analytics (legacy)', path: 'analytics', icon: BarChart3 },
+    { name: 'Campaigns', path: 'campaigns', icon: Megaphone },
+    { name: 'Shop', path: 'shop', icon: ShoppingBag },
     { name: 'Email / Follow-up', path: 'email', icon: Mail },
     { name: 'Database', path: 'database', icon: BriefcaseBusiness },
     { name: 'Security', path: 'security', icon: Shield },
@@ -62,7 +67,7 @@ const AdminLayout: React.FC = () => {
       return;
     }
     try {
-      const response = await fetch('/api/v1/admin-auth/verify', { headers: { Authorization: `Bearer ${token}` } });
+      const response = await fetch(apiUrl('/api/v1/admin-auth/verify'), { headers: { Authorization: `Bearer ${token}` } });
       if (!response.ok) throw new Error('Session expired');
       const data = await response.json();
       if (!data.success || !data.data?.user || data.data.user.role !== 'admin') throw new Error('Administrator access required');
@@ -81,7 +86,7 @@ const AdminLayout: React.FC = () => {
   const handleLogout = async () => {
     const token = localStorage.getItem('adminToken');
     try {
-      if (token) await fetch('/api/v1/admin-auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+      if (token) await fetch(apiUrl('/api/v1/admin-auth/logout'), { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
     } finally {
       clearSession();
       navigate(adminPath('login'), { replace: true });

@@ -39,6 +39,8 @@ import {
   Upload
 } from 'lucide-react';
 import { extractYouTubeId, getYouTubeThumbnail, isYouTubeUrl } from '@/lib/youtube-utils';
+import { optimizeImageForUpload } from '@/lib/image-optimize';
+import { apiUrl } from '@/lib/api-base';
 
 interface PortfolioImage {
   id: number;
@@ -102,7 +104,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/portfolio', {
+      const response = await fetch(apiUrl('/api/v1/portfolio'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -149,7 +151,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const createPortfolioImage = async (imageData: Partial<PortfolioImage>) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/portfolio', {
+      const response = await fetch(apiUrl('/api/v1/portfolio'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -178,7 +180,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const updatePortfolioImage = async (imageId: number, imageData: Partial<PortfolioImage>) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/portfolio/${imageId}`, {
+      const response = await fetch(apiUrl(`/api/v1/portfolio/${imageId}`), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -212,7 +214,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/portfolio/${imageId}`, {
+      const response = await fetch(apiUrl(`/api/v1/portfolio/${imageId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -234,7 +236,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const toggleFeatured = async (imageId: number, isFeatured: boolean) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/portfolio/${imageId}`, {
+      const response = await fetch(apiUrl(`/api/v1/portfolio/${imageId}`), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -282,25 +284,90 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const handleFileUpload = async (file: File) => {
     try {
       setUploading(true);
+      setError(null);
+      // Convert to WebP (2048px) + thumbnail (400px) in the browser —
+      // the server only ever stores optimized WebP.
+      const { full, thumb } = await optimizeImageForUpload(file);
       const token = localStorage.getItem('adminToken');
       const formData = new FormData();
-      formData.append('image', file);
-      const res = await fetch('/api/v1/upload', {
+      formData.append('image', full.blob, full.name);
+      formData.append('thumbnail', thumb.blob, thumb.name);
+      const res = await fetch(apiUrl('/api/v1/admin/media/upload'), {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData,
       });
       const data = await res.json();
-      if (data.success) {
-        setEditForm(prev => ({ ...prev, image_url: data.url }));
+      if (res.ok && data.success) {
+        const url = data.data?.url || data.url;
+        setEditForm(prev => ({ ...prev, image_url: url }));
+        // Refresh the media library so the new upload appears
+        void fetchMediaLibrary();
       } else {
-        setError('Upload failed: ' + (data.message || 'Unknown error'));
+        setError('Upload failed: ' + (data.error || data.message || 'Unknown error'));
       }
     } catch {
-      setError('Upload failed');
+      setError('Upload failed — check your connection and try again');
     } finally {
       setUploading(false);
     }
+  };
+
+  /* ---- R2 media library ---- */
+  const [mediaItems, setMediaItems] = useState<Array<{ key: string; url: string; thumbnail_url?: string; size: number; uploaded: string }>>([]);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const dropRef = useRef<HTMLDivElement>(null);
+
+  const fetchMediaLibrary = async () => {
+    try {
+      setMediaLoading(true);
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(apiUrl('/api/v1/admin/media?limit=60'), {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setMediaItems(data.data?.items ?? []);
+      }
+    } catch {
+      /* R2 may not be configured yet — non-fatal */
+    } finally {
+      setMediaLoading(false);
+    }
+  };
+
+  useEffect(() => { void fetchMediaLibrary(); }, []);
+
+  const handleDropFiles = async (files: FileList | File[]) => {
+    const list = Array.from(files).filter((f) => f.type.startsWith('image/'));
+    if (list.length === 0) {
+      setError('Please drop image files (JPG, PNG, WebP)');
+      return;
+    }
+    for (const file of list.slice(0, 10)) {
+      // eslint-disable-next-line no-await-in-loop
+      await handleFileUpload(file);
+    }
+  };
+
+  const deleteMediaItem = async (key: string) => {
+    if (!confirm('Delete this uploaded image?')) return;
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(apiUrl(`/api/v1/admin/media/${encodeURIComponent(key)}`), {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Delete failed');
+      setMediaItems((prev) => prev.filter((m) => m.key !== key));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
+  };
+
+  const copyMediaUrl = (url: string) => {
+    void navigator.clipboard?.writeText(url).catch(() => {});
   };
 
   const getPreviewUrl = (item: Pick<PortfolioImage, 'image_url' | 'thumbnail_url' | 'category'>) => {
@@ -346,6 +413,54 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
           </Button>
         </div>
       </div>
+
+      {/* Media Library — direct R2 uploads */}
+      <Card className="border-rose-200/70">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-[15px]">
+            <Upload className="h-4 w-4 text-rose-600" />Media Library
+          </CardTitle>
+          <CardDescription>Drag & drop images to upload them to cloud storage, then use the URL in any portfolio item.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div
+            ref={dropRef}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => { e.preventDefault(); setDragOver(false); void handleDropFiles(e.dataTransfer.files); }}
+            className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors ${dragOver ? 'border-rose-500 bg-rose-50' : 'border-slate-300 bg-slate-50/60 hover:border-slate-400'}`}
+          >
+            {uploading ? (
+              <><RefreshCw className="h-8 w-8 animate-spin text-rose-600" /><p className="mt-2 text-sm font-medium">Uploading...</p></>
+            ) : (
+              <><Upload className="h-8 w-8 text-slate-400" />
+              <p className="mt-2 text-sm font-medium">Drag & drop images here</p>
+              <p className="text-xs text-muted-foreground">or</p>
+              <Button variant="outline" size="sm" className="mt-2" onClick={() => fileInputRef.current?.click()}>
+                <Plus className="mr-2 h-4 w-4" />Browse files
+              </Button>
+              <p className="mt-2 text-[11px] text-muted-foreground">JPG, PNG, WebP up to 15 MB</p></>
+            )}
+          </div>
+          {mediaLoading ? (
+            <p className="mt-4 text-sm text-muted-foreground">Loading media...</p>
+          ) : mediaItems.length > 0 ? (
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {mediaItems.map((m) => (
+                <div key={m.key} className="group relative overflow-hidden rounded-lg border border-slate-200">
+                  <img src={m.thumbnail_url || m.url} alt={m.key} className="aspect-square w-full object-cover" loading="lazy" />
+                  <div className="absolute inset-0 flex items-center justify-center gap-1 bg-slate-950/60 opacity-0 transition-opacity group-hover:opacity-100">
+                    <Button variant="secondary" size="sm" onClick={() => copyMediaUrl(m.url)}>Copy URL</Button>
+                    <Button variant="destructive" size="sm" onClick={() => deleteMediaItem(m.key)}><Trash2 className="h-3 w-3" /></Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 text-xs text-muted-foreground">No uploads yet — or cloud storage isn't connected. Uploads will appear here.</p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Filters */}
       <Card>
