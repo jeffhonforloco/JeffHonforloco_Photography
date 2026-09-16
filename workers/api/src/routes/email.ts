@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { sendEmail, contactNotificationHtml, contactConfirmationHtml, newsletterWelcomeHtml, escapeHtml } from '../lib/email';
-import { scheduleLeadFollowups, suppressEmail } from '../lib/leadAutomation';
+import { scheduleLeadFollowups, suppressEmail, cancelPendingFollowups } from '../lib/leadAutomation';
 import type { AppEnv } from '../types';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -24,7 +24,24 @@ email.post('/contact', async (c) => {
 
   // Save to contacts table
   let contactId: number | null = null;
+  let wasReopened = false;
   try {
+    // Repeat inquiry from an existing email: update/reopen instead of failing on UNIQUE(email)
+    const existingContact = await c.env.DB.prepare(
+      'SELECT id FROM contacts WHERE email = ?'
+    ).bind(body.email).first<{ id: number }>();
+    if (existingContact) {
+      await c.env.DB.prepare(
+        `UPDATE contacts SET full_name = ?, phone = COALESCE(?, phone), message = ?,
+         service_type = COALESCE(?, service_type), budget_range = COALESCE(?, budget_range),
+         event_date = COALESCE(?, event_date), location = COALESCE(?, location),
+         status = 'new', updated_at = datetime('now') WHERE id = ?`
+      ).bind(body.full_name, body.phone ?? null, body.message,
+             body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null,
+             body.location ?? null, existingContact.id).run();
+      contactId = existingContact.id;
+      wasReopened = true;
+    } else
     // Try full INSERT with attribution/qualification columns first
     try {
       const result = await c.env.DB.prepare(
@@ -56,6 +73,9 @@ email.post('/contact', async (c) => {
 
   if (contactId) {
     try {
+      if (wasReopened) {
+        await cancelPendingFollowups(c.env, contactId);
+      }
       await scheduleLeadFollowups(c.env, contactId);
     } catch (err) {
       console.error('[email/contact] Follow-up scheduling failed:', err);
