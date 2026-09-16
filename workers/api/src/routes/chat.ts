@@ -465,10 +465,71 @@ chat.post('/', async (c) => {
     }
   }
 
+
+// Smart local fallback when AI providers are unavailable.
+// Uses keyword matching to provide helpful responses from the studio knowledge base.
+function getSmartFallbackReply(messages: AnthropicMessage[]): string {
+  const lastUser = getLastUserMessage(messages);
+  if (!lastUser) return "I'm here to help — what kind of session are you planning?";
+  
+  const text = lastUser.content.toLowerCase();
+  
+  // Pricing queries
+  if (text.includes('price') || text.includes('cost') || text.includes('how much') || text.includes('rate')) {
+    if (text.includes('headshot') || text.includes('portrait')) {
+      return "Jeff's headshot sessions: Starter at $499 (1hr, 8 edited images) or Professional at $1,100 (2hr, 12 images, multiple looks — most popular). Which sounds right for you?";
+    }
+    if (text.includes('wedding')) {
+      return "Wedding collections are custom-quoted based on coverage, locations, and deliverables. Share your date and venue and Jeff will build a tailored proposal. Want to leave your details?";
+    }
+    if (text.includes('fashion')) {
+      return "Fashion sessions: Starter $499 (1hr, 6 images), Standard $1,800 (3hr, 12 images — most popular), or Full Campaign (custom). What are you creating?";
+    }
+    return "Sessions start at $499. Tell me what you're planning — headshots, fashion, beauty, wedding, or something else — and I'll point you to the right package.";
+  }
+  
+  // Booking intent
+  if (text.includes('book') || text.includes('schedule') || text.includes('appointment') || text.includes('reserve')) {
+    return "Love it — let's get you booked! You can go straight to the booking form, or drop your name and number here and Jeff will personally reach out within 24 hours to lock in your date.";
+  }
+  
+  // Service-specific
+  if (text.includes('headshot')) {
+    return "Absolutely — Jeff's headshot and portrait sessions start with the Starter at $499, with the Professional at $1,100 as the most popular option for multiple looks and LinkedIn-ready crops. Is this for yourself, a team, or a brand?";
+  }
+  if (text.includes('wedding')) {
+    return "Congratulations! Jeff covers weddings across New England and travels nationwide. Collections are custom — share your date, venue, and vision and he'll craft a proposal. Want to start with your details?";
+  }
+  if (text.includes('fashion') || text.includes('editorial') || text.includes('model')) {
+    return "Jeff specializes in bold, editorial fashion photography. Sessions from $499 (Starter) to full campaigns. Are you a model building a book, a brand, or a creative team?";
+  }
+  if (text.includes('beauty') || text.includes('glamour') || text.includes('makeup')) {
+    return "Jeff's beauty and glamour work is signature — dramatic lighting, flawless retouching. Beauty Starter $499, Glamour Premium $1,400 (most popular). What look are you going for?";
+  }
+  
+  // Location
+  if (text.includes('where') || text.includes('location') || text.includes('based') || text.includes('area')) {
+    return "Jeff is based in Providence, RI and shoots across CT, MA, RI, NY, NJ — plus nationwide travel for the right project. Where's your session happening?";
+  }
+  
+  // Contact
+  if (text.includes('contact') || text.includes('phone') || text.includes('email') || text.includes('call') || text.includes('number')) {
+    return "You can reach Jeff directly at info@jeffhonforlocophotos.com or +1-646-379-4237 — he responds fast. Or drop your details here and he'll call you.";
+  }
+  
+  // Affirmative / engaged responses (yes, myself, me, etc.)
+  if (text.match(/^(yes|yeah|yep|sure|ok|okay|myself|me|for me|i do)/)) {
+    return "Perfect! To get you the right package and a fast quote, what's the session for — headshots, portraits, fashion, beauty, or an event? And when are you hoping to shoot?";
+  }
+  
+  // Default engaged response
+  return "Got it! Tell me a bit more — what kind of session are you planning, and when are you looking to shoot? I'll point you to the perfect package.";
+}
+
   if (!c.env.ANTHROPIC_API_KEY) {
-    console.error('[chat] ANTHROPIC_API_KEY is not set — configure it as a Worker secret in the Cloudflare dashboard');
+    console.error('[chat] ANTHROPIC_API_KEY is not set — using smart local fallback');
     return c.json({
-      message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
+      message: getSmartFallbackReply(safeMessages),
       leadCaptured: false,
       needsApproval: false,
     });
@@ -478,9 +539,9 @@ chat.post('/', async (c) => {
 
   if (!res.ok) {
     const errSnippet = await res.text().catch(() => '');
-    console.error(`[chat] Anthropic API error ${res.status}: ${errSnippet.slice(0, 300)}`);
+    console.error(`[chat] Anthropic API error ${res.status}: ${errSnippet.slice(0, 300)} — using smart local fallback`);
     return c.json({
-      message: "I'm having a small hiccup connecting right now. You can reach Jeff directly at info@jeffhonforlocophotos.com or call +1-646-379-4237 — he responds fast.",
+      message: getSmartFallbackReply(safeMessages),
       leadCaptured: false,
       needsApproval: false,
     });
