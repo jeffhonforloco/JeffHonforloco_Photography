@@ -69,12 +69,23 @@ contacts.post('/', async (c) => {
     return c.json({ error: 'Invalid email address' }, 400);
   }
 
-  const result = await c.env.DB.prepare(
-    `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location, attribution, qualification)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).bind(body.full_name, body.email, body.phone ?? null, body.message,
-         body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null,
-         body.attribution?.slice(0, 2000) ?? null, body.qualification?.slice(0, 2000) ?? null).run();
+  let result;
+  try {
+    result = await c.env.DB.prepare(
+      `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location, attribution, qualification)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(body.full_name, body.email, body.phone ?? null, body.message,
+           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null,
+           body.attribution?.slice(0, 2000) ?? null, body.qualification?.slice(0, 2000) ?? null).run();
+  } catch (colErr) {
+    // Fallback: attribution/qualification columns may not exist in D1 yet — insert without them
+    console.warn('[contacts] Full INSERT failed, retrying without attribution/qualification:', colErr);
+    result = await c.env.DB.prepare(
+      `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    ).bind(body.full_name, body.email, body.phone ?? null, body.message,
+           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
+  }
 
   const contactId = Number(result.meta.last_row_id);
   if (contactId) {
