@@ -90,6 +90,8 @@ const AdminContracts: React.FC = () => {
   const [sendResult, setSendResult] = useState<{ signUrl: string; emailed: boolean; emailError: string | null; needsResend: boolean } | null>(null);
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [templates, setTemplates] = useState<{ type: string; body_text: string }[]>([]);
   const [editingTemplate, setEditingTemplate] = useState<string | null>(null);
@@ -179,10 +181,14 @@ const AdminContracts: React.FC = () => {
   };
 
   const del = async (id: number) => {
-    if (!confirm('Delete this contract? This cannot be undone.')) return;
-    const res = await fetch(apiUrl(`/api/v1/admin/contracts/${id}`), { method: 'DELETE', headers: authHeaders() });
-    const out = await res.json();
-    if (out.success) { setDetail(null); load(); } else alert(out.error || 'Delete failed');
+    setDeleting(true);
+    try {
+      const res = await fetch(apiUrl(`/api/v1/admin/contracts/${id}`), { method: 'DELETE', headers: authHeaders() });
+      const out = await res.json();
+      if (out.success) { setDetail(null); setConfirmDeleteId(null); load(); } else alert(out.error || 'Delete failed');
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const copyLink = (url: string) => {
@@ -430,7 +436,7 @@ const AdminContracts: React.FC = () => {
                     {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="mr-1 h-4 w-4" />}
                     {detail.status === 'sent' ? 'Re-send signing link' : 'Send for signature'}
                   </Button>
-                  <Button variant="outline" onClick={() => del(detail.id)} className="text-red-600 hover:text-red-700">
+                  <Button variant="outline" onClick={() => setConfirmDeleteId(detail.id)} className="text-red-600 hover:text-red-700">
                     <Trash2 className="mr-1 h-4 w-4" /> Delete
                   </Button>
                 </>
@@ -444,6 +450,24 @@ const AdminContracts: React.FC = () => {
                 <AlertTriangle className="h-3.5 w-3.5" /> Signed contracts are locked — they can't be edited or deleted.
               </p>
             )}
+          </div>
+        </div>
+      )}
+      {confirmDeleteId !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="alertdialog" aria-modal="true" aria-label="Confirm contract deletion">
+          <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
+            <div className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="h-5 w-5" />
+              <h3 className="text-lg font-bold text-neutral-900">Delete contract?</h3>
+            </div>
+            <p className="mt-2 text-sm font-medium text-neutral-700">This cannot be undone. The contract will be permanently removed.</p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setConfirmDeleteId(null)} disabled={deleting}>Cancel</Button>
+              <Button onClick={() => del(confirmDeleteId)} disabled={deleting} className="bg-red-600 text-white hover:bg-red-700">
+                {deleting ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Trash2 className="mr-1 h-4 w-4" />}
+                {deleting ? 'Deleting…' : 'Delete'}
+              </Button>
+            </div>
           </div>
         </div>
       )}
