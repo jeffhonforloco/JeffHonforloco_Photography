@@ -28,7 +28,7 @@
   --secondary: 0 0% 9%;
   --secondary-foreground: 0 0% 100%;
   --muted: 0 0% 9%;
-  --muted-foreground: 0 0% 63%;
+  --muted-foreground: 0 0% 82%;
 
   /* Accent + destructive */
   --accent: 0 0% 9%;
@@ -77,4 +77,26 @@
 /* Skeleton shimmer base on dark */
 .admin-dark .skeleton-dark {
   background-color: #171717;
+}
+
+/* High-visibility typography — bolder labels and descriptions */
+.admin-dark .text-muted-foreground {
+  color: hsl(0 0% 82%) !important;
+  font-weight: 500;
+}
+.admin-dark p.text-muted-foreground,
+.admin-dark span.text-muted-foreground,
+.admin-dark div.text-muted-foreground {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+/* Dashboard KPI labels and card descriptions */
+.admin-dark [class*="card"] p,
+.admin-dark [class*="card"] span {
+  font-weight: 500;
+}
+/* Empty states — ensure contrast on light cards */
+.admin-dark .bg-card .text-muted-foreground {
+  color: hsl(0 0% 35%) !important;
+  font-weight: 600;
 }
