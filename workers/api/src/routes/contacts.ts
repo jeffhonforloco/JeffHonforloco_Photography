@@ -69,6 +69,37 @@ contacts.post('/', async (c) => {
     return c.json({ error: 'Invalid email address' }, 400);
   }
 
+  // Repeat inquiry from an existing email: update/reopen instead of failing on UNIQUE(email)
+  const existingContact = await c.env.DB.prepare(
+    'SELECT id FROM contacts WHERE email = ?'
+  ).bind(body.email).first<{ id: number }>();
+
+  if (existingContact) {
+    await c.env.DB.prepare(
+      `UPDATE contacts SET full_name = ?, phone = COALESCE(?, phone), message = ?,
+       service_type = COALESCE(?, service_type), budget_range = COALESCE(?, budget_range),
+       event_date = COALESCE(?, event_date), location = COALESCE(?, location),
+       status = 'new', updated_at = datetime('now') WHERE id = ?`
+    ).bind(body.full_name, body.phone ?? null, body.message,
+           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null,
+           body.location ?? null, existingContact.id).run();
+
+    const reopenedId = existingContact.id;
+    let attribution: unknown = null;
+    try { attribution = body.attribution ? JSON.parse(body.attribution) : null; } catch { attribution = null; }
+    await c.env.DB.prepare(
+      `INSERT INTO analytics (event_type, event_data) VALUES ('Lead', ?)`
+    ).bind(JSON.stringify({ contactId: reopenedId, service: body.service_type ?? null, attribution, reopened: true })).run();
+    try {
+      await cancelPendingFollowups(c.env, reopenedId);
+      await scheduleLeadFollowups(c.env, reopenedId);
+    } catch (error) {
+      console.error('[contacts] Failed to reschedule follow-ups for reopened contact:', error);
+    }
+
+    return c.json({ ok: true, success: true, id: reopenedId, data: { id: reopenedId }, reopened: true }, 200);
+  }
+
   let result;
   try {
     result = await c.env.DB.prepare(
