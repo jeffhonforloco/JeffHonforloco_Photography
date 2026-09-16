@@ -85,6 +85,7 @@ const AdminContacts: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
 
   useEffect(() => {
     fetchContacts();
@@ -179,10 +180,6 @@ const AdminContacts: React.FC = () => {
   };
 
   const deleteContact = async (contactId: number) => {
-    if (!confirm('Are you sure you want to delete this contact?')) {
-      return;
-    }
-
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/v1/contacts/${contactId}`, {
@@ -388,7 +385,7 @@ const AdminContacts: React.FC = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => deleteContact(contact.id)}
+                          onClick={() => setContactToDelete(contact)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -477,6 +474,34 @@ const AdminContacts: React.FC = () => {
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!contactToDelete} onOpenChange={(open) => !open && setContactToDelete(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete contact?</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete {contactToDelete?.full_name} ({contactToDelete?.email})? This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setContactToDelete(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (contactToDelete) {
+                  deleteContact(contactToDelete.id);
+                  setContactToDelete(null);
+                }
+              }}
+            >
+              Delete
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
