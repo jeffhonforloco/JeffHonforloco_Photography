@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Eye, EyeOff, Lock, User } from 'lucide-react';
 import { adminPath } from '@/lib/admin-routing';
+import { apiUrl } from '@/lib/api-base';
 
 interface LoginFormData {
   username: string;
@@ -15,7 +16,7 @@ interface LoginFormData {
 
 const AdminLogin: React.FC = () => {
   const [formData, setFormData] = useState<LoginFormData>({
-    username: '',
+    username: 'info@jeffhonforlocophotos.com',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -39,7 +40,7 @@ const AdminLogin: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/v1/admin-auth/login', {
+      const response = await fetch(apiUrl('/api/v1/admin-auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -50,7 +51,7 @@ const AdminLogin: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.error || data.message || 'Login failed');
       }
 
       if (data.success) {
@@ -61,7 +62,7 @@ const AdminLogin: React.FC = () => {
         // Redirect to admin dashboard
         navigate(adminPath('overview'), { replace: true });
       } else {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.error || data.message || 'Login failed');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -100,7 +101,7 @@ const AdminLogin: React.FC = () => {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username">Email</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
@@ -111,7 +112,7 @@ const AdminLogin: React.FC = () => {
                       value={formData.username}
                       onChange={handleInputChange}
                       className="pl-10"
-                      placeholder="Enter your username"
+                      placeholder="info@jeffhonforlocophotos.com"
                       disabled={loading}
                     />
                   </div>

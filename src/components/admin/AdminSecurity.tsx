@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiUrl } from '@/lib/api-base';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -114,8 +115,8 @@ const AdminSecurity: React.FC = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/admin-auth/change-password', {
-        method: 'PUT',
+      const response = await fetch(apiUrl('/api/v1/admin-auth/change-password'), {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -128,7 +129,7 @@ const AdminSecurity: React.FC = () => {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Password change failed');
+        throw new Error(data.error || data.message || 'Password change failed');
       }
 
       setPasswordForm({
