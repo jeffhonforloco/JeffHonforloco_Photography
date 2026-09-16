@@ -457,7 +457,19 @@ contracts.post('/:id/send', requireAuth, requireAdmin, async (c) => {
       smsError = e instanceof Error ? e.message : 'sms send failed';
     }
   }
-  return c.json({ success: true, data: { token, signUrl, emailed, emailError, needsResend: !c.env.RESEND_API_KEY, smsSent, smsError, smsConfigured: !!(twilioSid && twilioToken && twilioFrom) } });
+  let whatsappSent = false;
+  let whatsappError: string | null = null;
+  if (twilioSid && twilioToken && twilioFrom && row.client_phone) {
+    try {
+      const waBody =
+        `Hi ${row.client_name}, Jeff Honforloco Photography sent you a ${row.type === 'paid' ? 'photography services agreement' : 'collaboration agreement'}${row.title ? ` — ${row.title}` : ''} to review and sign: ${signUrl} (expires in 30 days)`;
+      await twilioSendSms(twilioSid, twilioToken, `whatsapp:${twilioFrom}`, `whatsapp:${row.client_phone}`, waBody);
+      whatsappSent = true;
+    } catch (e) {
+      whatsappError = e instanceof Error ? e.message : 'whatsapp send failed';
+    }
+  }
+  return c.json({ success: true, data: { token, signUrl, emailed, emailError, needsResend: !c.env.RESEND_API_KEY, smsSent, smsError, smsConfigured: !!(twilioSid && twilioToken && twilioFrom), whatsappSent, whatsappError } });
 });
 
 /* ------------------------------------------------------------------ */
