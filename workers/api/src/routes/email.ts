@@ -51,7 +51,8 @@ email.post('/contact', async (c) => {
     ).bind(JSON.stringify({ contactId, service: body.service_type ?? null, attribution })).run();
   } catch (err) {
     console.error('[email/contact] DB insert failed:', err);
-    return c.json({ error: 'Failed to save inquiry' }, 500);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    return c.json({ error: 'Failed to save inquiry', debug: errMsg }, 500);
   }
 
   if (contactId) {
