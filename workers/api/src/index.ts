@@ -4,6 +4,7 @@ import type { Env, AppEnv } from './types';
 import { generateDailyPosts } from './lib/journal';
 import { processDueEmailSequences } from './lib/leadAutomation';
 import { queueGrowthMonitoring, type MonitoringCadence } from './lib/growthMonitoring';
+import { runAutoSeoChecks } from './lib/autoSeo';
 import authRoutes      from './routes/auth';
 import contactsRoutes  from './routes/contacts';
 import emailRoutes     from './routes/email';
@@ -75,6 +76,7 @@ export default {
       '0 8 1 * *': 'monthly',
     };
     if (growthCadence[event.cron]) tasks.push(queueGrowthMonitoring(env, growthCadence[event.cron]));
+    if (event.cron === '30 7 * * 1') tasks.push(runAutoSeoChecks(env));
 
     const results = await Promise.allSettled(tasks);
     for (const result of results) {
