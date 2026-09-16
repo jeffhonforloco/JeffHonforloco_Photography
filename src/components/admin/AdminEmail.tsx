@@ -226,6 +226,28 @@ const AdminEmail: React.FC = () => {
     }
   };
 
+  const cancelSequence = async (sequenceId: number) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/v1/admin/email-sequences/cancel', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ids: [sequenceId] })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to cancel email sequence');
+      }
+
+      fetchEmailData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to cancel email sequence');
+    }
+  };
+
   const handleEdit = (template: EmailTemplate) => {
     setSelectedTemplate(template);
     setEditForm({
@@ -384,6 +406,7 @@ const AdminEmail: React.FC = () => {
                   <TableHead>Status</TableHead>
                   <TableHead>Scheduled</TableHead>
                   <TableHead>Sent</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -409,6 +432,13 @@ const AdminEmail: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       {sequence.sent_at ? new Date(sequence.sent_at).toLocaleString() : sequence.last_error || 'Not sent'}
+                    </TableCell>
+                    <TableCell>
+                      {sequence.status === 'pending' && (
+                        <Button variant="outline" size="sm" onClick={() => cancelSequence(sequence.id)} className="text-red-600 hover:text-red-700">
+                          Cancel
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
