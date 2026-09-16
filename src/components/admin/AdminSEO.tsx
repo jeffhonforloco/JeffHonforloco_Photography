@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Badge } from '../ui/badge';
 import { Save, Globe, Search, Share2, BarChart3 } from 'lucide-react';
 import { useToast } from '../../hooks/use-toast';
+import SeoAiTools from './SeoAiTools';
 
 const AdminSEO = () => {
   const { toast } = useToast();
@@ -106,7 +107,7 @@ const AdminSEO = () => {
       </div>
 
       <Tabs defaultValue="global" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="global" className="flex items-center gap-2">
             <Globe className="h-4 w-4" />
             Global SEO
@@ -126,6 +127,10 @@ const AdminSEO = () => {
           <TabsTrigger value="pages" className="flex items-center gap-2">
             <Globe className="h-4 w-4" />
             Page SEO
+          </TabsTrigger>
+          <TabsTrigger value="ai-tools" className="flex items-center gap-2">
+            <Search className="h-4 w-4" />
+            AI Tools
           </TabsTrigger>
         </TabsList>
 
@@ -446,6 +451,11 @@ const AdminSEO = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* AI Tools — live backend */}
+        <TabsContent value="ai-tools" className="space-y-6">
+          <SeoAiTools />
         </TabsContent>
       </Tabs>
     </div>
