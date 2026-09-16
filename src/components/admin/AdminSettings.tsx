@@ -297,7 +297,7 @@ const AdminSettings: React.FC = () => {
             </Field>
             <Field label="Display Preview" hint="How it appears on the site">
               <div className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2.5 text-sm font-medium">
-                {location.city}, {location.stateCode || location.state} · {location.country}
+                {[location.city, location.stateCode || location.state].filter(Boolean).join(', ') + ' · ' + (location.country || '')}
               </div>
             </Field>
           </div>
