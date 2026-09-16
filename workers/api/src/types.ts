@@ -5,6 +5,7 @@ export interface Env {
   SUPABASE_SERVICE_ROLE_KEY: string;
   ANTHROPIC_API_KEY: string;
   SIREIQ_HF_TOKEN?: string;
+  SEOAGENTPRO_HF_TOKEN?: string;
   SIREIQ_HF_MODEL?: string;
   OPENAI_API_KEY: string;
   RESEND_API_KEY: string;
