@@ -25,13 +25,25 @@ email.post('/contact', async (c) => {
   // Save to contacts table
   let contactId: number | null = null;
   try {
-    const result = await c.env.DB.prepare(
-      `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location, attribution, qualification)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-    ).bind(body.full_name, body.email, body.phone ?? null, body.message,
-           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null,
-           body.attribution?.slice(0, 2000) ?? null, body.qualification?.slice(0, 2000) ?? null).run();
-    contactId = Number(result.meta.last_row_id);
+    // Try full INSERT with attribution/qualification columns first
+    try {
+      const result = await c.env.DB.prepare(
+        `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location, attribution, qualification)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(body.full_name, body.email, body.phone ?? null, body.message,
+             body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null,
+             body.attribution?.slice(0, 2000) ?? null, body.qualification?.slice(0, 2000) ?? null).run();
+      contactId = Number(result.meta.last_row_id);
+    } catch (colErr) {
+      // Fallback: attribution/qualification columns may not exist in D1 yet — insert without them
+      console.warn('[email/contact] Full INSERT failed, retrying without attribution/qualification:', colErr);
+      const result = await c.env.DB.prepare(
+        `INSERT INTO contacts (full_name, email, phone, message, service_type, budget_range, event_date, location)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(body.full_name, body.email, body.phone ?? null, body.message,
+             body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null, body.location ?? null).run();
+      contactId = Number(result.meta.last_row_id);
+    }
     let attribution: unknown = null;
     try { attribution = body.attribution ? JSON.parse(body.attribution) : null; } catch { attribution = null; }
     await c.env.DB.prepare(
