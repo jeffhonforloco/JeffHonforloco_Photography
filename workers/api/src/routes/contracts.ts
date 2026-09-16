@@ -234,6 +234,23 @@ async function resendSend(apiKey: string, to: string, subject: string, html: str
   return data.id || '';
 }
 
+async function twilioSendSms(accountSid: string, authToken: string, from: string, to: string, body: string): Promise<string> {
+  const url = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+  const credentials = btoa(`${accountSid}:${authToken}`);
+  const params = new URLSearchParams({ From: from, To: to, Body: body });
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Authorization: `Basic ${credentials}` },
+    body: params.toString(),
+  });
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    throw new Error(`Twilio ${res.status}: ${txt.slice(0, 200)}`);
+  }
+  const data = (await res.json().catch(() => ({}))) as { sid?: string };
+  return data.sid || '';
+}
+
 function makeToken(): string {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
@@ -395,7 +412,7 @@ contracts.delete('/:id', requireAuth, requireAdmin, async (c) => {
 // Send contract → generate token, email the signing link (or return link to copy)
 contracts.post('/:id/send', requireAuth, requireAdmin, async (c) => {
   const row = await c.env.DB.prepare(`SELECT * FROM contracts WHERE id = ?`).bind(c.req.param('id')).first<{
-    id: number; type: string; title: string; client_name: string; client_email: string; status: string;
+    id: number; type: string; title: string; client_name: string; client_email: string; client_phone: string | null; status: string;
   }>();
   if (!row) return c.json({ success: false, error: 'Not found' }, 404);
   if (row.status === 'signed' || row.status === 'completed') {
@@ -425,7 +442,22 @@ contracts.post('/:id/send', requireAuth, requireAdmin, async (c) => {
       emailError = e instanceof Error ? e.message : 'send failed';
     }
   }
-  return c.json({ success: true, data: { token, signUrl, emailed, emailError, needsResend: !c.env.RESEND_API_KEY } });
+  let smsSent = false;
+  let smsError: string | null = null;
+  const twilioSid = (c.env as Record<string, string | undefined>).TWILIO_ACCOUNT_SID;
+  const twilioToken = (c.env as Record<string, string | undefined>).TWILIO_AUTH_TOKEN;
+  const twilioFrom = (c.env as Record<string, string | undefined>).TWILIO_FROM_NUMBER;
+  if (twilioSid && twilioToken && twilioFrom && row.client_phone) {
+    try {
+      const smsBody =
+        `Hi ${row.client_name}, Jeff Honforloco Photography sent you a ${row.type === 'paid' ? 'photography services agreement' : 'collaboration agreement'}${row.title ? ` — ${row.title}` : ''} to review and sign: ${signUrl} (expires in 30 days)`;
+      await twilioSendSms(twilioSid, twilioToken, twilioFrom, row.client_phone, smsBody);
+      smsSent = true;
+    } catch (e) {
+      smsError = e instanceof Error ? e.message : 'sms send failed';
+    }
+  }
+  return c.json({ success: true, data: { token, signUrl, emailed, emailError, needsResend: !c.env.RESEND_API_KEY, smsSent, smsError, smsConfigured: !!(twilioSid && twilioToken && twilioFrom) } });
 });
 
 /* ------------------------------------------------------------------ */
