@@ -123,12 +123,12 @@ async function ensureSchema(db: D1Database) {
       sent_at TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS contract_templates (
       type TEXT PRIMARY KEY,
       body_text TEXT NOT NULL,
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_contracts_token ON contracts(token)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_contracts_status ON contracts(status, type)`),
   ]);

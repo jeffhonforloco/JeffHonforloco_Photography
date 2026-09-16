@@ -30,14 +30,14 @@ async function ensureSchema(db: D1Database) {
       affiliate_retailer TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS product_images (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
       image_url TEXT NOT NULL,
       thumbnail_url TEXT,
       sort_order INTEGER NOT NULL DEFAULT 0
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS product_variants (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
@@ -46,7 +46,7 @@ async function ensureSchema(db: D1Database) {
       price_adjust_cents INTEGER NOT NULL DEFAULT 0,
       sku TEXT,
       inventory INTEGER
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS orders (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       stripe_session_id TEXT UNIQUE,
@@ -65,7 +65,7 @@ async function ensureSchema(db: D1Database) {
       notes TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS order_items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
@@ -76,7 +76,7 @@ async function ensureSchema(db: D1Database) {
       quantity INTEGER NOT NULL DEFAULT 1,
       unit_price_cents INTEGER NOT NULL DEFAULT 0,
       total_cents INTEGER NOT NULL DEFAULT 0
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS shop_settings (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL

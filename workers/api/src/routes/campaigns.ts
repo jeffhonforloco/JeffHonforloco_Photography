@@ -24,7 +24,7 @@ async function ensureSchema(db: D1Database) {
       sent_at TEXT,
       created_by TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS email_campaign_recipients (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       campaign_id INTEGER NOT NULL REFERENCES email_campaigns(id) ON DELETE CASCADE,
@@ -36,7 +36,7 @@ async function ensureSchema(db: D1Database) {
       error TEXT,
       sent_at TEXT,
       UNIQUE(campaign_id, email)
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS email_events (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       campaign_id INTEGER,
@@ -44,12 +44,12 @@ async function ensureSchema(db: D1Database) {
       email TEXT,
       event_type TEXT NOT NULL,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS email_suppression (
       email TEXT PRIMARY KEY,
       reason TEXT NOT NULL DEFAULT 'unsubscribe',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS social_campaigns (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -60,7 +60,7 @@ async function ensureSchema(db: D1Database) {
       notes TEXT,
       status TEXT NOT NULL DEFAULT 'active',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS social_campaign_posts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       campaign_id INTEGER NOT NULL REFERENCES social_campaigns(id) ON DELETE CASCADE,
@@ -70,7 +70,7 @@ async function ensureSchema(db: D1Database) {
       status TEXT NOT NULL DEFAULT 'planned',
       publish_queue_ref TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS ad_campaign_drafts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       platform TEXT NOT NULL,
@@ -85,7 +85,7 @@ async function ensureSchema(db: D1Database) {
       creative_json TEXT,
       status TEXT NOT NULL DEFAULT 'draft',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    `),
+    )`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_ecr_campaign ON email_campaign_recipients(campaign_id, status)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_ecr_resend ON email_campaign_recipients(resend_id)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_ee_campaign ON email_events(campaign_id, event_type)`),
