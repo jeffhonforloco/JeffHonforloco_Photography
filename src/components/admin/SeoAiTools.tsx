@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -26,12 +26,31 @@ async function authedPost(path: string, body: unknown) {
 
 const SeoAiTools = () => {
   const { toast } = useToast();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const res = await fetch(apiUrl('/api/v1/admin/growth/seo-auto-runs'), {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.success) setAutoRuns(data.data || []);
+      } catch {
+        // auto-runs table may not exist yet
+      } finally {
+        setAutoLoading(false);
+      }
+    })();
+  }, []);
   const [seoInput, setSeoInput] = useState('');
   const [seoLoading, setSeoLoading] = useState(false);
   const [seoResult, setSeoResult] = useState<string | null>(null);
   const [aiPrompt, setAiPrompt] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState<string | null>(null);
+  const [autoRuns, setAutoRuns] = useState<{ run_type: string; target: string; analysis: string; created_at: string }[]>([]);
+  const [autoLoading, setAutoLoading] = useState(true);
 
   const runSeoAnalysis = async () => {
     if (!seoInput.trim()) {
@@ -73,6 +92,45 @@ const SeoAiTools = () => {
 
   return (
     <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5" />
+            Automatic Weekly Analysis
+          </CardTitle>
+          <CardDescription>
+            Runs every Monday at 7:30 AM ET on your key search queries. Latest results below.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {autoLoading ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Loading latest auto-run…
+            </div>
+          ) : autoRuns.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No automatic runs yet. The first runs Monday at 7:30 AM ET, or run a manual analysis below.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {autoRuns.slice(0, 10).map((run, i) => (
+                <div key={i} className="rounded-md border p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge variant={run.run_type === 'seo' ? 'default' : 'secondary'}>
+                      {run.run_type === 'seo' ? 'SEO' : 'AI Visibility'}
+                    </Badge>
+                    <span className="text-sm font-medium">{run.target}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      {new Date(run.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap">{run.analysis}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
