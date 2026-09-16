@@ -14,7 +14,7 @@ interface RouteMeta {
 const STATIC_META: Record<string, RouteMeta> = {
   '/': {
     title: 'Providence Fashion Photographer | Jeff Honforloco Photography',
-    description: 'Fashion, beauty & editorial photographer in Providence, RI — serving Rhode Island, Boston, NYC & Miami. Published pricing. Book your shoot today.',
+    description: 'Fashion, beauty & editorial photographer in Providence, RI, serving New England — Rhode Island, Boston, NYC & Miami. Published pricing. Book your shoot today.',
   },
   '/portfolios': {
     title: 'Photography Portfolios | Jeff Honforloco Photography',

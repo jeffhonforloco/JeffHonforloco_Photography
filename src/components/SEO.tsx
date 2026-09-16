@@ -14,7 +14,7 @@ const SITE_URL = 'https://jeffhonforlocophotos.com';
 const SITE_NAME = 'Jeff Honforloco Photography';
 const DEFAULT_IMAGE = '/images/optimized/IMG_7671-960.webp?v=20260901';
 const DEFAULT_DESCRIPTION =
-  'Fashion, beauty & editorial photographer in Providence, RI — serving Rhode Island, Boston, NYC & Miami. Published pricing. Book your shoot today.';
+  'Fashion, beauty & editorial photographer in Providence, RI, serving New England — Rhode Island, Boston, NYC & Miami. Published pricing. Book your shoot today.';
 
 const normalizePath = (value: string): string => {
   if (value.startsWith('http')) return value;
