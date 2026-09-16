@@ -9,98 +9,162 @@ export const contractSign = new Hono<AppEnv>();    // public: /api/v1/contracts/
 /* Schema (D1) — auto-created on first hit                             */
 /* ------------------------------------------------------------------ */
 
-const PAID_TEMPLATE = `PHOTOGRAPHY SERVICES AGREEMENT (PAID GIG)
+const PAID_TEMPLATE = `PHOTOGRAPHY & VIDEOGRAPHY SERVICES AGREEMENT (PAID COMMISSION)
 
-This Photography Services Agreement ("Agreement") is entered into as of {sign_date} by and between:
+This Photography & Videography Services Agreement ("Agreement") is entered into as of {sign_date} ("Effective Date") by and between:
 
-Photographer: {photographer_name} ("Photographer")
+Photographer/Videographer: {photographer_name} ("Photographer")
 Email: {photographer_email} | Phone: {photographer_phone}
 
 Client: {client_name} ("Client")
 Email: {client_email} | Phone: {client_phone}
 
+RECITALS
+Client wishes to engage Photographer to provide professional photography and/or videography services, and Photographer agrees to provide such services, on the terms set forth herein.
+
 1. SERVICES
-Photographer agrees to provide the following photography services:
+Photographer agrees to provide the following creative services ("Services"):
 {services_description}
-Shoot date: {shoot_date}
-Location: {location}
+Shoot date(s): {shoot_date}
+Location(s): {location}
+Services include photography and, where specified, video production, including all pre-production planning, on-set direction, capture, and post-production editing.
 
 2. FEES & PAYMENT
 Total fee: {total_fee}
-Deposit of {deposit_amount} is due by {deposit_due_date} to reserve the shoot date. The deposit is non-refundable and applied toward the total fee.
-Remaining balance is due by {balance_due_date}. No final images will be delivered until the balance is paid in full.
-Late payments accrue a fee of 5% per month on the outstanding balance.
+(a) A non-refundable deposit/retainer of {deposit_amount} is due by {deposit_due_date} to reserve the shoot date(s). The shoot date is not confirmed until the deposit is received.
+(b) The remaining balance of {total_fee} less deposit is due by {balance_due_date}.
+(c) No final images, video files, or deliverables of any kind will be released until the full balance is paid.
+(d) Late payments accrue interest at 1.5% per month (18% per annum) on the outstanding balance.
+(e) Additional services, overtime, reshoots, or revisions beyond the agreed scope will be billed at Photographer's standard rates.
 
 3. DELIVERABLES
 {deliverables}
 Delivery timeline: {delivery_timeline}
+(a) All deliverables are provided in Photographer's standard edited format (high-resolution JPEG for stills; H.264/H.265 for video unless otherwise agreed).
+(b) RAW files, unedited footage, project files, and working files are NOT included and remain the exclusive property of Photographer.
+(c) Photographer retains sole creative discretion over image selection, editing style, color grading, and final presentation.
 
-4. USAGE RIGHTS
+4. COPYRIGHT OWNERSHIP — PHOTOGRAPHER RETAINS ALL RIGHTS
+(a) OWNERSHIP: Under the United States Copyright Act (17 U.S.C.), the Photographer is the sole author and exclusive owner of all copyrights in every photograph, video clip, audio recording, and all other creative works produced during the Services ("Works"), including all RAW files, negatives, edits, and derivatives — whether or not delivered to Client.
+(b) NO TRANSFER: No copyright, title, or ownership interest in the Works transfers to Client under this Agreement. Payment of fees grants Client only the limited license described in Section 5.
+(c) NOT WORK FOR HIRE: The Services are expressly NOT a "work made for hire" under 17 U.S.C. § 101. Photographer is an independent contractor, not Client's employee.
+(d) PHOTOGRAPHER'S PORTFOLIO RIGHTS: Photographer retains the irrevocable right to display, publish, and use the Works (including behind-the-scenes content) in Photographer's portfolio, website, social media, marketing materials, competitions, publications, and exhibitions, worldwide and in perpetuity.
+
+5. LIMITED LICENSE TO CLIENT
+Subject to full payment, Photographer grants Client a non-exclusive, non-transferable, non-sublicensable license to use the delivered final Works as follows:
 {usage_rights}
+(a) Unless otherwise specified above, the license is limited to personal, non-commercial use.
+(b) Client shall NOT: sell, license, or redistribute the Works to third parties; use the Works in paid advertising or commercial campaigns; submit the Works to contests; alter, crop, filter, or edit the Works; remove watermarks or metadata; or use the Works to train AI/machine-learning models — without Photographer's prior WRITTEN consent.
+(c) Any use beyond the granted license requires a separate written agreement and additional fees.
 
-5. CANCELLATION & RESCHEDULING
+6. FULL BUYOUT OPTION (COPYRIGHT TRANSFER)
+Client may purchase full and exclusive ownership of the copyrights in the delivered Works ("Buyout") for an additional fee to be mutually agreed in writing. Upon (i) execution of a written Copyright Assignment and (ii) receipt of the full buyout fee, all copyrights in the specified Works transfer to Client. Until both conditions are met, Section 4 remains in full force. Buyout does not include RAW files or working files unless expressly stated.
+
+7. MODEL RELEASE
+Client (and any subjects appearing in the Works arranged by Client) grants Photographer the right to photograph/film and to use the resulting Works as described in Section 4(d). Client confirms all subjects are 18+ or that a parent/guardian has consented in writing.
+
+8. CANCELLATION & RESCHEDULING
 {cancellation_policy}
-If the Client cancels, the deposit is forfeited. If the Photographer must cancel due to emergency, all payments will be refunded or the shoot rescheduled at no extra charge.
+(a) If Client cancels: the deposit/retainer is forfeited. Cancellations within 72 hours of the shoot forfeit 50% of the total fee.
+(b) If Photographer must cancel due to emergency, illness, or force majeure: all payments are refunded in full or the shoot is rescheduled at no additional charge, at Client's election.
+(c) Rescheduling requests made 7+ days in advance incur no fee; requests within 7 days may incur a rescheduling fee of up to 25% of the total.
 
-6. CREATIVE CONTROL
-The Photographer retains creative control over the style, editing, and selection of final images.
+9. CREATIVE CONTROL
+Photographer retains full creative control over all artistic decisions including but not limited to shooting style, lighting, posing direction, image selection, editing, color grading, and final delivery format.
 
-7. LIMITATION OF LIABILITY
-In the unlikely event of equipment failure, loss, or damage to images, the Photographer's liability is limited to a refund of fees paid.
+10. LIMITATION OF LIABILITY
+(a) In the unlikely event of equipment failure, data loss, or inability to deliver, Photographer's total liability shall not exceed the total fees paid by Client under this Agreement.
+(b) Photographer shall not be liable for indirect, incidental, or consequential damages.
+(c) Client is advised to arrange backup coverage for irreplaceable events (e.g., weddings).
 
-8. ENTIRE AGREEMENT
-This Agreement is the entire understanding between the parties and supersedes all prior discussions.
+11. INDEMNIFICATION
+Client agrees to indemnify and hold harmless Photographer from any claims arising from Client's use of the Works beyond the granted license, or from Client's breach of this Agreement.
 
-By signing below, both parties agree to these terms.
+12. GOVERNING LAW
+This Agreement shall be governed by the laws of the State of Rhode Island, without regard to conflict-of-law principles. Any disputes shall be resolved in the state or federal courts located in Providence County, Rhode Island.
 
-Photographer: {photographer_name}            Date: {sign_date}
+13. ENTIRE AGREEMENT
+This Agreement constitutes the entire understanding between the parties and supersedes all prior negotiations, representations, and agreements. Amendments must be in writing and signed by both parties.
 
-Client: ___________________________________  Date: _______________`;
+By signing below, both parties acknowledge they have read, understood, and agree to all terms above.
 
-const COLLAB_TEMPLATE = `COLLABORATION (TFP) AGREEMENT
+Photographer: {photographer_name}                    Date: {sign_date}
 
-This Collaboration Agreement ("Agreement") is entered into as of {sign_date} by and between:
+Client: ___________________________________          Date: _______________`;
 
-Photographer: {photographer_name} ("Photographer") — {photographer_handle}
+const COLLAB_TEMPLATE = `COLLABORATION AGREEMENT (TRADE FOR PORTFOLIO — TFP/TFCD)
+
+This Collaboration Agreement ("Agreement") is entered into as of {sign_date} ("Effective Date") by and between:
+
+Photographer/Videographer: {photographer_name} ("Photographer") — {photographer_handle}
 Email: {photographer_email} | Phone: {photographer_phone}
 
 Collaborator: {collaborator_name} ("Collaborator") — {collaborator_handle}
 Email: {collaborator_email} | Phone: {collaborator_phone}
 
+RECITALS
+The parties wish to collaborate on a creative photography/videography project on a trade-for-portfolio basis. No monetary compensation shall be exchanged.
+
 1. NATURE OF COLLABORATION
-This is a trade-for-portfolio (TFP) collaboration. No money changes hands. Both parties contribute their time, talent, and creative input to produce images for mutual portfolio use.
-Shoot date: {shoot_date}
-Location: {location}
-Concept: {services_description}
+This is a trade-for-portfolio (TFP/TFCD) collaboration. No money changes hands. Each party contributes their time, talent, and creative resources to produce content for mutual portfolio use, subject to the ownership terms in Section 3.
+Shoot date(s): {shoot_date}
+Location(s): {location}
+Concept/Creative Direction: {services_description}
 
 2. DELIVERABLES
 {deliverables}
 Delivery timeline: {delivery_timeline}
+(a) Photographer will deliver retouched final images and/or edited video in Photographer's standard format.
+(b) RAW files, unedited footage, and working files are NOT included and remain Photographer's exclusive property.
+(c) Photographer has sole discretion over selection and editing of all deliverables.
 
-3. USAGE RIGHTS (BOTH PARTIES)
-Both the Photographer and the Collaborator may use the final delivered images for portfolio, website, and social media purposes, provided the other party is credited.
-Credit requirement: when posting, tag {photographer_handle}.
-Neither party may use the images for paid commercial/advertising purposes without the prior WRITTEN permission of the other party.
+3. COPYRIGHT OWNERSHIP — PHOTOGRAPHER OWNS ALL RIGHTS
+(a) SOLE OWNERSHIP: Under the United States Copyright Act (17 U.S.C.), the Photographer is the sole author and exclusive owner of all copyrights in every photograph, video clip, audio recording, and all other creative works produced during this collaboration ("Works") — including all RAW files, outtakes, behind-the-scenes content, edits, and derivatives.
+(b) NO TRANSFER: No copyright or ownership interest transfers to Collaborator under any circumstances pursuant to this Agreement.
+(c) NOT WORK FOR HIRE: This collaboration is expressly NOT a "work made for hire." Photographer is an independent creator, not Collaborator's employee or agent.
+(d) PHOTOGRAPHER'S UNRESTRICTED USE: Photographer may use, publish, license, sell, and exploit the Works in any manner whatsoever — including commercial licensing, advertising, stock, publications, and exhibitions — worldwide, in perpetuity, without notice, consent, or compensation to Collaborator.
 
-4. MODEL RELEASE
-The Collaborator agrees to be photographed and grants the Photographer the right to use the images as described in Section 3. The Collaborator confirms they are 18 years of age or older (or a parent/guardian co-signs below).
+4. LIMITED LICENSE TO COLLABORATOR
+Photographer grants Collaborator a non-exclusive, non-transferable, revocable license to use the delivered final Works SOLELY for:
+  • Personal portfolio (print and digital)
+  • Personal website and social media profiles
+Collaborator shall:
+(a) Credit Photographer on every use: "Photo/Video by {photographer_handle}".
+(b) NOT use the Works for any commercial, advertising, or paid promotional purpose.
+(c) NOT sell, license, or redistribute the Works to any third party (including agencies, brands, or publications).
+(d) NOT alter, crop, filter, re-edit, or remove watermarks/metadata from the Works.
+(e) NOT submit the Works to contests or publications without Photographer's prior WRITTEN consent.
+(f) NOT use the Works to train AI/machine-learning models.
+Any commercial use requires a separate written license and payment of Photographer's standard commercial rates. Violation of this Section terminates the license immediately.
 
-5. CANCELLATION
-If either party must cancel, they will notify the other at least 48 hours before the shoot. Repeated no-shows void any obligation to deliver images.
+5. MODEL RELEASE
+Collaborator irrevocably grants Photographer (and Photographer's licensees, successors, and assigns) the right to photograph/film Collaborator and to use the Collaborator's name, likeness, image, and voice in the Works for any lawful purpose described in Section 3(d), worldwide and in perpetuity, without further consent or compensation. Collaborator confirms they are 18 years of age or older (or a parent/guardian co-signs below). Collaborator waives any right to inspect or approve the finished Works.
 
-6. IMAGE SELECTION & EDITING
-The Photographer retains final say on image selection and editing style.
+6. NO COMMERCIAL OBLIGATION
+Neither party is obligated to secure paid work for the other as a result of this collaboration.
 
-7. ENTIRE AGREEMENT
-This Agreement is the entire understanding between the parties.
+7. CANCELLATION
+If either party must cancel, they shall notify the other at least 48 hours before the shoot. Two or more late cancellations or no-shows by Collaborator void any obligation to deliver images.
 
-By signing below, both parties agree to these terms.
+8. IMAGE/VIDEO SELECTION & EDITING
+Photographer retains absolute final authority over all creative decisions including image/video selection, editing style, color grading, and retouching.
 
-Photographer: {photographer_name}            Date: {sign_date}
+9. INDEMNIFICATION
+Collaborator agrees to indemnify Photographer against claims arising from Collaborator's breach of this Agreement or misuse of the Works.
 
-Collaborator: ______________________________  Date: _______________
+10. GOVERNING LAW
+This Agreement shall be governed by the laws of the State of Rhode Island. Disputes shall be resolved in Providence County, Rhode Island.
 
-Parent/Guardian (if under 18): ______________  Date: _______________`;
+11. ENTIRE AGREEMENT
+This Agreement is the entire understanding between the parties. Amendments must be in writing and signed by both parties.
+
+By signing below, both parties acknowledge they have read, understood, and agree to all terms above — including Photographer's sole ownership of all copyrights.
+
+Photographer: {photographer_name}                    Date: {sign_date}
+
+Collaborator: ________________________________       Date: _______________
+
+Parent/Guardian (if Collaborator under 18): _____    Date: _______________`;
 
 async function ensureSchema(db: D1Database) {
   await db.batch([
