@@ -4,14 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { 
   Select,
   SelectContent,
   SelectItem,
@@ -80,6 +72,8 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const [editForm, setEditForm] = useState<Partial<PortfolioImage>>({});
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [viewImage, setViewImage] = useState<PortfolioImage | null>(null);
+  const [dialogError, setDialogError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPortfolioImages();
@@ -103,6 +97,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const fetchPortfolioImages = async () => {
     try {
       setLoading(true);
+      setError(null);
       const token = localStorage.getItem('adminToken');
       const response = await fetch(apiUrl('/api/v1/portfolio'), {
         headers: {
@@ -119,33 +114,13 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
       if (data.success) {
         setPortfolioImages(data.data.images ?? []);
       } else {
-        throw new Error(data.message || 'Failed to fetch portfolio images');
+        throw new Error(data.error || data.message || 'Failed to fetch portfolio images');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
-  };
-
-  const filterImages = () => {
-    let filtered = portfolioImages;
-
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(image =>
-        image.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        image.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        image.category.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Filter by category
-    if (categoryFilter !== 'all') {
-      filtered = filtered.filter(image => image.category === categoryFilter);
-    }
-
-    setFilteredImages(filtered);
   };
 
   const createPortfolioImage = async (imageData: Partial<PortfolioImage>) => {
@@ -170,7 +145,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
         setIsDialogOpen(false);
         setEditForm({});
       } else {
-        throw new Error(data.message || 'Failed to create portfolio image');
+        throw new Error(data.error || data.message || 'Failed to create portfolio image');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create portfolio image');
@@ -200,7 +175,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
         setEditForm({});
         setIsEditing(false);
       } else {
-        throw new Error(data.message || 'Failed to update portfolio image');
+        throw new Error(data.error || data.message || 'Failed to update portfolio image');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update portfolio image');
@@ -260,6 +235,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
 
   const handleEdit = (image: PortfolioImage) => {
     setSelectedImage(image);
+    setDialogError(null);
     setEditForm({
       title: image.title,
       description: image.description,
@@ -274,6 +250,12 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   };
 
   const handleSave = () => {
+    setDialogError(null);
+    if (!editForm.title?.trim()) { setDialogError('Give the image a title'); return; }
+    if (!editForm.image_url?.trim()) {
+      setDialogError(editForm.category === 'motion' ? 'A YouTube or video URL is required' : 'Upload an image or paste an image URL');
+      return;
+    }
     if (isEditing && selectedImage) {
       updatePortfolioImage(selectedImage.id, editForm);
     } else {
@@ -284,7 +266,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const handleFileUpload = async (file: File) => {
     try {
       setUploading(true);
-      setError(null);
+      setDialogError(null);
       // Convert to WebP (2048px) + thumbnail (400px) in the browser —
       // the server only ever stores optimized WebP.
       const { full, thumb } = await optimizeImageForUpload(file);
@@ -304,10 +286,12 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
         // Refresh the media library so the new upload appears
         void fetchMediaLibrary();
       } else {
-        setError('Upload failed: ' + (data.error || data.message || 'Unknown error'));
+        const msg = 'Upload failed: ' + (data.error || data.message || 'Unknown error');
+        setDialogError(msg); setError(msg);
       }
     } catch {
-      setError('Upload failed — check your connection and try again');
+      const msg = 'Upload failed — check your connection and try again';
+      setDialogError(msg); setError(msg);
     } finally {
       setUploading(false);
     }
@@ -406,6 +390,8 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
           <Button onClick={() => {
             setEditForm(initialCategory === 'all' ? {} : { category: initialCategory });
             setIsEditing(false);
+            setSelectedImage(null);
+            setDialogError(null);
             setIsDialogOpen(true);
           }}>
             <Plus className="h-4 w-4 mr-2" />
@@ -414,11 +400,18 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
         </div>
       </div>
 
+      {error && (
+        <div className="flex items-start justify-between gap-3 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]">
+          <span>{error}</span>
+          <button onClick={() => { setError(null); void fetchPortfolioImages(); }} className="shrink-0 font-semibold text-[#c8102e] underline-offset-2 hover:underline">Retry</button>
+        </div>
+      )}
+
       {/* Media Library — direct R2 uploads */}
-      <Card className="border-rose-200/70">
+      <Card className="border-[#c8102e]/30">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-[15px]">
-            <Upload className="h-4 w-4 text-rose-600" />Media Library
+            <Upload className="h-4 w-4 text-[#c8102e]" />Media Library
           </CardTitle>
           <CardDescription>Drag & drop images to upload them to cloud storage, then use the URL in any portfolio item.</CardDescription>
         </CardHeader>
@@ -428,12 +421,12 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={(e) => { e.preventDefault(); setDragOver(false); void handleDropFiles(e.dataTransfer.files); }}
-            className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors ${dragOver ? 'border-rose-500 bg-rose-50' : 'border-slate-300 bg-slate-50/60 hover:border-slate-400'}`}
+            className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors ${dragOver ? 'border-[#c8102e] bg-[#c8102e]/10' : 'border-neutral-800 bg-neutral-900/60 hover:border-neutral-700'}`}
           >
             {uploading ? (
-              <><RefreshCw className="h-8 w-8 animate-spin text-rose-600" /><p className="mt-2 text-sm font-medium">Uploading...</p></>
+              <><RefreshCw className="h-8 w-8 animate-spin text-[#c8102e]" /><p className="mt-2 text-sm font-medium">Uploading...</p></>
             ) : (
-              <><Upload className="h-8 w-8 text-slate-400" />
+              <><Upload className="h-8 w-8 text-neutral-500" />
               <p className="mt-2 text-sm font-medium">Drag & drop images here</p>
               <p className="text-xs text-muted-foreground">or</p>
               <Button variant="outline" size="sm" className="mt-2" onClick={() => fileInputRef.current?.click()}>
@@ -447,7 +440,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
           ) : mediaItems.length > 0 ? (
             <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {mediaItems.map((m) => (
-                <div key={m.key} className="group relative overflow-hidden rounded-lg border border-slate-200">
+                <div key={m.key} className="group relative overflow-hidden rounded-lg border border-neutral-800">
                   <img src={m.thumbnail_url || m.url} alt={m.key} className="aspect-square w-full object-cover" loading="lazy" />
                   <div className="absolute inset-0 flex items-center justify-center gap-1 bg-slate-950/60 opacity-0 transition-opacity group-hover:opacity-100">
                     <Button variant="secondary" size="sm" onClick={() => copyMediaUrl(m.url)}>Copy URL</Button>
@@ -471,7 +464,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
           <div className="flex space-x-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-neutral-500" />
                 <Input
                   placeholder="Search portfolio images..."
                   value={searchTerm}
@@ -506,6 +499,13 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {filteredImages.length === 0 ? (
+            <p className="py-10 text-center text-sm text-neutral-400">
+              {portfolioImages.length === 0
+                ? 'No portfolio images yet — click "New Image" to add your first one.'
+                : 'No images match your search or category filter.'}
+            </p>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredImages.map((image) => (
               <Card key={image.id} className="overflow-hidden">
@@ -526,7 +526,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-semibold text-sm truncate">{image.title}</h3>
-                  <p className="text-xs text-gray-500 mt-1">{image.category}</p>
+                  <p className="text-xs text-neutral-400 mt-1">{image.category}</p>
                   <div className="flex items-center justify-between mt-3">
                     <Badge variant="outline" className="text-xs">
                       {image.category}
@@ -535,10 +535,8 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => {
-                          setSelectedImage(image);
-                          setIsDialogOpen(true);
-                        }}
+                        onClick={() => setViewImage(image)}
+                        aria-label={`View ${image.title}`}
                       >
                         <Eye className="h-3 w-3" />
                       </Button>
@@ -554,7 +552,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
                         size="sm"
                         onClick={() => toggleFeatured(image.id, image.is_featured)}
                       >
-                        <Star className={`h-3 w-3 ${image.is_featured ? 'text-yellow-500' : 'text-gray-400'}`} />
+                        <Star className={`h-3 w-3 ${image.is_featured ? 'text-yellow-500' : 'text-neutral-500'}`} />
                       </Button>
                       <Button
                         variant="outline"
@@ -569,6 +567,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
               </Card>
             ))}
           </div>
+          )}
         </CardContent>
       </Card>
 
@@ -583,9 +582,12 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
               {isEditing ? 'Update the portfolio image information' : 'Add a new portfolio image'}
             </DialogDescription>
           </DialogHeader>
+          {dialogError && (
+            <div className="rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-2.5 text-sm text-[#f2a3b1]">{dialogError}</div>
+          )}
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-500">Title</label>
+              <label className="text-sm font-medium text-neutral-400">Title</label>
               <Input
                 value={editForm.title || ''}
                 onChange={(e) => setEditForm(prev => ({ ...prev, title: e.target.value }))}
@@ -595,7 +597,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
             </div>
             
             <div>
-              <label className="text-sm font-medium text-gray-500">Description</label>
+              <label className="text-sm font-medium text-neutral-400">Description</label>
               <Input
                 value={editForm.description || ''}
                 onChange={(e) => setEditForm(prev => ({ ...prev, description: e.target.value }))}
@@ -605,7 +607,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-500">
+              <label className="text-sm font-medium text-neutral-400">
                 {editForm.category === 'motion' ? 'Video or YouTube URL' : 'Image'}
               </label>
               <div className="flex gap-2 mt-1">
@@ -651,7 +653,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-500">Category</label>
+                <label className="text-sm font-medium text-neutral-400">Category</label>
                 <Select
                   value={editForm.category || 'beauty'}
                   onValueChange={(value) => setEditForm(prev => ({ ...prev, category: value }))}
@@ -670,7 +672,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-500">Sort Order</label>
+                <label className="text-sm font-medium text-neutral-400">Sort Order</label>
                 <Input
                   type="number"
                   value={editForm.sort_order || 0}
@@ -682,7 +684,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-500">Tags</label>
+              <label className="text-sm font-medium text-neutral-400">Tags</label>
               <Input
                 value={editForm.tags || ''}
                 onChange={(e) => setEditForm(prev => ({ ...prev, tags: e.target.value }))}
@@ -699,7 +701,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
                 onChange={(e) => setEditForm(prev => ({ ...prev, is_featured: e.target.checked }))}
                 className="rounded"
               />
-              <label htmlFor="is_featured" className="text-sm font-medium text-gray-500">
+              <label htmlFor="is_featured" className="text-sm font-medium text-neutral-400">
                 Featured Image
               </label>
             </div>
@@ -722,6 +724,39 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
               </Button>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Read-only preview */}
+      <Dialog open={!!viewImage} onOpenChange={(o) => { if (!o) setViewImage(null); }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{viewImage?.title}</DialogTitle>
+            <DialogDescription>
+              {viewImage?.category}{viewImage?.is_featured ? ' · Featured' : ''}
+            </DialogDescription>
+          </DialogHeader>
+          {viewImage && (
+            <div className="space-y-4">
+              <img
+                src={getPreviewUrl(viewImage)}
+                alt={viewImage.title}
+                className="max-h-96 w-full rounded-lg bg-neutral-950 object-contain"
+              />
+              {viewImage.description && <p className="text-sm text-neutral-400">{viewImage.description}</p>}
+              <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-400">
+                <Badge variant="outline">{viewImage.category}</Badge>
+                {viewImage.tags && <span>Tags: {viewImage.tags}</span>}
+                <span>Sort order: {viewImage.sort_order}</span>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setViewImage(null)}>Close</Button>
+                <Button onClick={() => { const img = viewImage; setViewImage(null); handleEdit(img); }}>
+                  <Edit className="mr-2 h-4 w-4" />Edit
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

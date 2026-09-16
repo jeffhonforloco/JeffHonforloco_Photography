@@ -25,6 +25,71 @@ function publicUrl(c: { req: { url: string } }, key: string) {
 }
 
 /* ------------------------------------------------------------------ */
+/* media_views — image view tracking for the "What People Loved"      */
+/* dashboard section. Auto-created on first hit of /track or /top.    */
+/* ------------------------------------------------------------------ */
+
+async function ensureMediaViewsSchema(db: D1Database) {
+  await db.batch([
+    db.prepare(`CREATE TABLE IF NOT EXISTS media_views (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      image_key TEXT,
+      image_url TEXT,
+      ip_hash TEXT,
+      viewed_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_media_views_key_time ON media_views(image_key, viewed_at)`),
+  ]);
+}
+
+function clientIp(c: { req: { header: (n: string) => string | undefined } }): string {
+  return c.req.header('cf-connecting-ip') || (c.req.header('x-forwarded-for') || '').split(',')[0].trim() || 'unknown';
+}
+
+/** Non-reversible SHA-256 hash of the viewer IP — raw IPs are never stored. */
+async function hashIp(ip: string): Promise<string> {
+  const data = new TextEncoder().encode(`media-view|${ip}`);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* ------------------------------------------------------------------ */
+/* PUBLIC router — view tracking (no auth; called by the website)     */
+/* ------------------------------------------------------------------ */
+
+const mediaPublic = new Hono<AppEnv>();
+
+mediaPublic.post('/track', async (c) => {
+  await ensureMediaViewsSchema(c.env.DB);
+  const body = await c.req.json<{ key?: string; url?: string }>().catch(() => null);
+  if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
+
+  const key = typeof body.key === 'string' ? body.key.trim() : '';
+  const url = typeof body.url === 'string' ? body.url.trim() : '';
+  if (key.length > 500 || url.length > 500) {
+    return c.json({ error: 'key/url must be 500 characters or less' }, 400);
+  }
+  if (!key && !url) return c.json({ error: 'key or url is required' }, 400);
+
+  const ipHash = await hashIp(clientIp(c));
+  const db = c.env.DB;
+
+  // Dedupe: one view per viewer per image per 60 minutes.
+  const recent = await db.prepare(
+    `SELECT 1 FROM media_views
+     WHERE ip_hash = ? AND image_key = ? AND image_url = ? AND viewed_at >= datetime('now', '-60 minutes')
+     LIMIT 1`
+  ).bind(ipHash, key, url).first();
+  if (recent) return c.json({ success: true, deduped: true });
+
+  await db.prepare(
+    `INSERT INTO media_views (image_key, image_url, ip_hash) VALUES (?, ?, ?)`
+  ).bind(key, url, ipHash).run();
+
+  return c.json({ success: true });
+});
+
+/* ------------------------------------------------------------------ */
 /* POST /api/v1/admin/media/upload — multipart image → R2              */
 /* Expects: `image` (WebP, 2048px) + optional `thumbnail` (WebP, 400px)*/
 /* The admin converts to WebP in the browser; the worker stores both. */
@@ -122,6 +187,30 @@ media.get('/', requireAuth, requireAdmin, async (c) => {
 });
 
 /* ------------------------------------------------------------------ */
+/* GET /api/v1/admin/media/top — most-viewed images, last 90 days     */
+/* Powers the "What People Loved" dashboard section.                  */
+/* ------------------------------------------------------------------ */
+
+media.get('/top', requireAuth, requireAdmin, async (c) => {
+  await ensureMediaViewsSchema(c.env.DB);
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') || '12', 10) || 12, 1), 100);
+  const rows = await c.env.DB.prepare(
+    `SELECT image_key, image_url, COUNT(*) AS views
+     FROM media_views
+     WHERE viewed_at >= datetime('now', '-90 days')
+     GROUP BY image_key, image_url
+     ORDER BY views DESC
+     LIMIT ?`
+  ).bind(limit).all();
+  const items = (rows.results ?? []).map((r: Record<string, unknown>) => ({
+    image_key: r.image_key ?? '',
+    image_url: r.image_url ?? '',
+    views: Number(r.views) || 0,
+  }));
+  return c.json({ success: true, data: items });
+});
+
+/* ------------------------------------------------------------------ */
 /* GET /api/v1/admin/media/file/:key — serve image (public, cached)    */
 /* ------------------------------------------------------------------ */
 
@@ -200,3 +289,4 @@ media.post('/video-upload', requireAuth, requireAdmin, async (c) => {
 });
 
 export default media;
+export { mediaPublic };

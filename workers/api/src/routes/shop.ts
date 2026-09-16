@@ -660,6 +660,32 @@ shopAdmin.patch('/orders/:id', requireAuth, requireAdmin, async (c) => {
   return c.json({ success: true, data: { order: updated } });
 });
 
+/* ------------------------------------------------------------------ */
+/* ADMIN — GET /api/v1/admin/shop/revenue-by-product                   */
+/* Revenue breakdown per product from paid orders.                     */
+/* ------------------------------------------------------------------ */
+
+shopAdmin.get('/revenue-by-product', requireAuth, requireAdmin, async (c) => {
+  const db = c.env.DB;
+  await ensureSchema(db);
+  const rows = await db.prepare(
+    `SELECT oi.name AS name,
+            COALESCE(SUM(oi.total_cents), 0) AS revenue_cents,
+            COUNT(DISTINCT oi.order_id) AS orders
+     FROM order_items oi
+     JOIN orders o ON o.id = oi.order_id
+     WHERE o.status = 'paid'
+     GROUP BY oi.name
+     ORDER BY revenue_cents DESC`
+  ).all();
+  const data = (rows.results ?? []).map((r: Record<string, unknown>) => ({
+    name: String(r.name ?? ''),
+    revenue_cents: Number(r.revenue_cents) || 0,
+    orders: Number(r.orders) || 0,
+  }));
+  return c.json({ success: true, data });
+});
+
 shopAdmin.get('/settings', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
   await ensureSchema(db);

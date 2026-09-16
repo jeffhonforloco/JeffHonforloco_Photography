@@ -1,58 +1,31 @@
-// Utility functions for handling YouTube videos
-
 /**
- * Extracts YouTube video ID from various YouTube URL formats
+ * YouTube URL helpers — used by the portfolio admin to accept YouTube links
+ * for "motion" items and render their thumbnails.
  */
+
+const YT_PATTERNS = [
+  /(?:youtube\.com\/watch\?[^#]*v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([A-Za-z0-9_-]{11})/,
+];
+
+export function isYouTubeUrl(url: string): boolean {
+  if (!url) return false;
+  return /(?:youtube\.com|youtu\.be)/i.test(url);
+}
+
+/** Extract the 11-char video id from a YouTube URL, or null. */
 export function extractYouTubeId(url: string): string | null {
-  const patterns = [
-    /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/i,
-    /(?:youtube\.com\/embed\/)([^"&?/\s]{11})/i,
-    /(?:youtube\.com\/watch\?v=)([^"&?/\s]{11})/i,
-    /(?:youtu\.be\/)([^"&?/\s]{11})/i
-  ];
-
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match && match[1]) {
-      return match[1];
-    }
+  if (!url) return null;
+  for (const re of YT_PATTERNS) {
+    const m = url.match(re);
+    if (m) return m[1];
   }
-
   return null;
 }
 
-/**
- * Checks if a URL is a YouTube video
- */
-export function isYouTubeUrl(url: string): boolean {
-  return extractYouTubeId(url) !== null;
-}
+type YtThumbQuality = 'default' | 'mq' | 'hq' | 'high' | 'sd' | 'max';
 
-/**
- * Extracts YouTube ID from iframe embed code
- */
-export function extractYouTubeIdFromEmbed(embedCode: string): string | null {
-  const match = embedCode.match(/(?:embed\/|v=)([^"&?/\s]{11})/i);
-  return match ? match[1] : null;
-}
-
-/**
- * Generates YouTube embed URL from video ID
- */
-export function getYouTubeEmbedUrl(videoId: string): string {
-  return `https://www.youtube.com/embed/${videoId}?enablejsapi=1&rel=0&modestbranding=1`;
-}
-
-/**
- * Generates YouTube thumbnail URL from video ID
- */
-export function getYouTubeThumbnail(videoId: string, quality: 'default' | 'medium' | 'high' | 'maxres' = 'maxres'): string {
-  const qualityMap = {
-    default: 'default.jpg',
-    medium: 'mqdefault.jpg',
-    high: 'hqdefault.jpg',
-    maxres: 'maxresdefault.jpg'
-  };
-  
-  return `https://img.youtube.com/vi/${videoId}/${qualityMap[quality]}`;
+/** Public thumbnail URL for a YouTube video id. */
+export function getYouTubeThumbnail(videoId: string, quality: YtThumbQuality = 'hq'): string {
+  const q = quality === 'high' ? 'hqdefault' : quality === 'default' ? 'default' : `${quality}default`;
+  return `https://i.ytimg.com/vi/${videoId}/${q}.jpg`;
 }

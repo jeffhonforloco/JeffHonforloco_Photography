@@ -310,7 +310,8 @@ campaigns.post('/email', requireAuth, requireAdmin, async (c) => {
   const body = await c.req.json<{
     subject?: string; body_html?: string; audience?: string;
     custom_emails?: string[]; schedule_for?: string | null;
-  }>();
+  }>().catch(() => null);
+  if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
   const subject = (body.subject || '').trim();
   const bodyHtml = (body.body_html || '').trim();
   if (!subject || !bodyHtml) return c.json({ error: 'subject and body_html are required' }, 400);
@@ -387,7 +388,8 @@ campaigns.post('/email/:id/send-now', requireAuth, requireAdmin, async (c) => {
 
 /** Send a one-off test email to a single address. */
 campaigns.post('/email/test', requireAuth, requireAdmin, async (c) => {
-  const body = await c.req.json<{ to?: string; subject?: string; body_html?: string }>();
+  const body = await c.req.json<{ to?: string; subject?: string; body_html?: string }>().catch(() => null);
+  if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
   if (!body.to || !EMAIL_RE.test(body.to)) return c.json({ error: 'Valid "to" email required' }, 400);
   if (!c.env.RESEND_API_KEY) {
     return c.json({ success: false, needsResend: true, message: 'Add RESEND_API_KEY to worker secrets to send.' });
@@ -494,7 +496,8 @@ campaigns.post('/social', requireAuth, requireAdmin, async (c) => {
   const body = await c.req.json<{
     name?: string; theme?: string; start_date?: string; end_date?: string;
     posts_per_week?: number; notes?: string;
-  }>();
+  }>().catch(() => null);
+  if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
   const name = (body.name || '').trim();
   const theme = (body.theme || '').trim();
   if (!name || !theme || !body.start_date || !body.end_date) {
@@ -521,7 +524,8 @@ campaigns.post('/social', requireAuth, requireAdmin, async (c) => {
 campaigns.patch('/social/posts/:postId', requireAuth, requireAdmin, async (c) => {
   await ensureSchema(c.env.DB);
   const postId = Number(c.req.param('postId'));
-  const body = await c.req.json<{ status?: string; publish_queue_ref?: string }>();
+  const body = await c.req.json<{ status?: string; publish_queue_ref?: string }>().catch(() => null);
+  if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
   if (body.status && !['planned', 'queued', 'published', 'skipped'].includes(body.status)) {
     return c.json({ error: 'Invalid status' }, 400);
   }
@@ -560,7 +564,8 @@ campaigns.post('/ads/draft', requireAuth, requireAdmin, async (c) => {
     start_date?: string; end_date?: string;
     targeting?: { locations?: string; age_min?: number; age_max?: number; genders?: string; interests?: string };
     creative?: { headline?: string; primary_text?: string; image_url?: string; cta_url?: string };
-  }>();
+  }>().catch(() => null);
+  if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
   if (!body.platform || !AD_PLATFORMS.includes(body.platform)) {
     return c.json({ error: 'platform must be meta or google' }, 400);
   }

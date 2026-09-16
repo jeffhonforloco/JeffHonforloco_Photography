@@ -9,8 +9,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { adminPath } from '@/lib/admin-routing';
 import { apiUrl } from '@/lib/api-base';
+import './admin-theme.css';
 
 interface AdminUser { id: number; username: string; role: string }
+
+/** Brand crimson — matches jeffhonforlocophotos.com */
+const CRIMSON = '#c8102e';
+const CRIMSON_DARK = '#a50d26';
 
 const navigation = [
   { label: 'Command', items: [
@@ -94,44 +99,107 @@ const AdminLayout: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-300" role="status">Verifying secure session…</div>;
+  if (loading) {
+    return (
+      <div className="admin-dark flex min-h-screen items-center justify-center bg-black text-neutral-300" role="status">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-800" style={{ borderTopColor: CRIMSON }} />
+          <p className="text-sm">Verifying secure session…</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-950">
-      {sidebarOpen && <button className="fixed inset-0 z-40 bg-slate-950/70 lg:hidden" aria-label="Close navigation" onClick={() => setSidebarOpen(false)} />}
-      <aside className={`fixed inset-y-0 left-0 z-50 flex w-[18rem] flex-col border-r border-slate-800 bg-slate-950 text-white transition-transform lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="flex h-20 items-center justify-between border-b border-slate-800 px-5">
-          <div><p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-rose-400">Jeff Honforloco</p><p className="mt-1 text-base font-semibold">Growth Command Center</p></div>
-          <button className="rounded-md p-2 text-slate-400 hover:bg-slate-800 hover:text-white lg:hidden" onClick={() => setSidebarOpen(false)} aria-label="Close navigation"><X className="h-5 w-5" /></button>
+    <div className="admin-dark min-h-screen bg-black text-white">
+      {sidebarOpen && <button className="fixed inset-0 z-40 bg-black/70 lg:hidden" aria-label="Close navigation" onClick={() => setSidebarOpen(false)} />}
+
+      {/* Sidebar */}
+      <aside className={`fixed inset-y-0 left-0 z-50 flex w-[18rem] flex-col border-r border-neutral-900 bg-black text-white transition-transform lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex h-20 items-center justify-between border-b border-neutral-900 px-5">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.28em]" style={{ color: CRIMSON }}>Jeff Honforloco</p>
+            <p className="mt-1 text-base font-semibold text-white">Growth Command Center</p>
+          </div>
+          <button className="rounded-md p-2 text-neutral-400 hover:bg-neutral-900 hover:text-white lg:hidden" onClick={() => setSidebarOpen(false)} aria-label="Close navigation"><X className="h-5 w-5" /></button>
         </div>
+
         <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Admin navigation">
           {navigation.map((group) => (
             <div className="mb-5" key={group.label}>
-              <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">{group.label}</p>
+              <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500">{group.label}</p>
               <div className="space-y-1">
                 {group.items.map((item) => {
                   const href = adminPath(item.path);
                   const active = location.pathname === href || location.pathname.startsWith(`${href}/`);
-                  return <Link key={item.path} to={href} className={`group flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${active ? 'bg-rose-600 text-white' : 'text-slate-300 hover:bg-slate-900 hover:text-white'}`}><item.icon className="h-4 w-4 shrink-0" /><span className="flex-1">{item.name}</span>{active && <ChevronRight className="h-3.5 w-3.5" />}</Link>;
+                  return (
+                    <Link
+                      key={item.path}
+                      to={href}
+                      className={`group flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                        active ? 'text-white' : 'text-neutral-400 hover:bg-neutral-900 hover:text-white'
+                      }`}
+                      style={active ? { backgroundColor: CRIMSON } : undefined}
+                    >
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      <span className="flex-1">{item.name}</span>
+                      {active && <ChevronRight className="h-3.5 w-3.5" />}
+                    </Link>
+                  );
                 })}
               </div>
             </div>
           ))}
         </nav>
-        <div className="border-t border-slate-800 p-4">
-          <div className="mb-3 flex items-center justify-between gap-3"><div className="min-w-0"><p className="truncate text-sm font-medium">{user?.username}</p><p className="text-xs text-slate-500">Authenticated operator</p></div><Badge className="border-emerald-700 bg-emerald-950 text-emerald-300">Private</Badge></div>
-          <Button variant="outline" className="w-full border-slate-700 bg-transparent text-slate-200 hover:bg-slate-800 hover:text-white" onClick={handleLogout}><LogOut className="mr-2 h-4 w-4" />Log out</Button>
+
+        <div className="border-t border-neutral-900 p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-white">{user?.username}</p>
+              <p className="text-xs text-neutral-500">Authenticated operator</p>
+            </div>
+            <Badge className="border-neutral-800 bg-neutral-900 text-neutral-300">Private</Badge>
+          </div>
+          <Button
+            variant="outline"
+            className="w-full border-neutral-800 bg-transparent text-neutral-200 hover:bg-neutral-900 hover:text-white"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-2 h-4 w-4" />Log out
+          </Button>
         </div>
       </aside>
+
+      {/* Main */}
       <div className="lg:pl-[18rem]">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6">
-          <div className="flex items-center gap-3"><button className="rounded-lg border border-slate-200 p-2 lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open navigation"><Menu className="h-5 w-5" /></button><div><p className="text-sm font-semibold">Private operations</p><p className="hidden text-xs text-slate-500 sm:block">Evidence-led growth, human-approved changes</p></div></div>
-          <div className="flex items-center gap-2"><Badge variant="outline" className="hidden sm:inline-flex">{user?.role}</Badge><Link to={adminPath('recommendations')} className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-50" aria-label="Review alerts and recommendations"><Bell className="h-4 w-4" /></Link></div>
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-900 bg-black/95 px-4 backdrop-blur sm:px-6">
+          <div className="flex items-center gap-3">
+            <button className="rounded-lg border border-neutral-800 p-2 text-neutral-300 hover:bg-neutral-900 lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open navigation">
+              <Menu className="h-5 w-5" />
+            </button>
+            <div>
+              <p className="text-sm font-semibold text-white">Private operations</p>
+              <p className="hidden text-xs text-neutral-500 sm:block">Evidence-led growth, human-approved changes</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="hidden border-neutral-800 text-neutral-400 sm:inline-flex">{user?.role}</Badge>
+            <Link
+              to={adminPath('recommendations')}
+              className="rounded-lg border border-neutral-800 p-2 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+              aria-label="Review alerts and recommendations"
+            >
+              <Bell className="h-4 w-4" />
+            </Link>
+          </div>
         </header>
-        <main className="mx-auto max-w-[1500px] p-4 sm:p-6 lg:p-8"><Outlet /></main>
+        <main className="mx-auto max-w-[1500px] p-4 sm:p-6 lg:p-8">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
 };
 
 export default AdminLayout;
+export { CRIMSON, CRIMSON_DARK };

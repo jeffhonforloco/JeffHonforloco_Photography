@@ -1,0 +1,80 @@
+/**
+ * Jeff Honforloco Photography — Admin dark theme.
+ * Matches the public website: BLACK (#000000) backgrounds, WHITE (#ffffff)
+ * text, CRIMSON (#c8102e) primary accent.
+ *
+ * Scoped to `.admin-dark` so the public site is untouched. Overrides the
+ * shadcn CSS variables, so every var-based utility (bg-card,
+ * text-muted-foreground, bg-primary, border-border, …) flips to the dark
+ * brand theme automatically.
+ */
+
+.admin-dark {
+  /* Base */
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+
+  /* Cards / popovers */
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 6%;
+  --popover-foreground: 0 0% 100%;
+
+  /* Crimson primary (#c8102e ≈ 350 85% 42%) */
+  --primary: 350 85% 42%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary / muted surfaces */
+  --secondary: 0 0% 9%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 9%;
+  --muted-foreground: 0 0% 63%;
+
+  /* Accent + destructive */
+  --accent: 0 0% 9%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 350 85% 42%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* Borders / inputs / rings */
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 350 85% 42%;
+
+  color-scheme: dark;
+}
+
+.admin-dark body,
+.admin-dark {
+  background-color: #000;
+  color: #fff;
+}
+
+/* Recharts polish on dark */
+.admin-dark .recharts-cartesian-axis-tick text {
+  fill: #a3a3a3;
+}
+.admin-dark .recharts-legend-item-text {
+  color: #d4d4d4 !important;
+}
+
+/* Scrollbars */
+.admin-dark ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.admin-dark ::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+.admin-dark ::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 8px;
+}
+.admin-dark ::-webkit-scrollbar-thumb:hover {
+  background: #c8102e;
+}
+
+/* Skeleton shimmer base on dark */
+.admin-dark .skeleton-dark {
+  background-color: #171717;
+}

@@ -119,7 +119,10 @@ const EmailTab: React.FC = () => {
       const res = await fetch(apiUrl(`/api/v1/admin/campaigns/email/${id}`), { headers: authHeaders() });
       const d = await res.json();
       if (res.ok && d.success) setDetail(d.data);
-    } catch { /* ignore */ }
+      else setError(d.error || 'Failed to load campaign details');
+    } catch {
+      setError('Failed to load campaign details');
+    }
   };
 
   const handleSend = async () => {
@@ -179,9 +182,9 @@ const EmailTab: React.FC = () => {
   const statusBadge = (s: string) => {
     const map: Record<string, string> = {
       sent: 'bg-emerald-100 text-emerald-800', sending: 'bg-blue-100 text-blue-800',
-      scheduled: 'bg-amber-100 text-amber-800', draft: 'bg-slate-100 text-slate-600',
+      scheduled: 'bg-amber-100 text-amber-800', draft: 'bg-neutral-900 text-neutral-400',
     };
-    return <Badge className={map[s] || 'bg-slate-100 text-slate-600'}>{s}</Badge>;
+    return <Badge className={map[s] || 'bg-neutral-900 text-neutral-400'}>{s}</Badge>;
   };
 
   return (
@@ -194,7 +197,7 @@ const EmailTab: React.FC = () => {
           <CardTitle className="flex items-center gap-2"><Mail className="h-5 w-5" /> Compose email campaign</CardTitle>
           <CardDescription>
             Sends via Resend to your contacts + leads. Unsubscribes are respected automatically.
-            Use <code className="rounded bg-slate-100 px-1">{'{name}'}</code> to personalize.
+            Use <code className="rounded bg-neutral-900 px-1">{'{name}'}</code> to personalize.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -204,7 +207,7 @@ const EmailTab: React.FC = () => {
               <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Fall mini sessions are open 📸" />
             </div>
             <div className="space-y-2">
-              <Label>Audience {audienceCount !== null && <span className="font-normal text-slate-500">({audienceCount} recipients)</span>}</Label>
+              <Label>Audience {audienceCount !== null && <span className="font-normal text-neutral-400">({audienceCount} recipients)</span>}</Label>
               <Select value={audience} onValueChange={setAudience}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -232,7 +235,7 @@ const EmailTab: React.FC = () => {
               </Button>
             </div>
             {showPreview ? (
-              <div className="rounded-lg border bg-white p-4 text-sm" dangerouslySetInnerHTML={{ __html: body.split('{name}').join('there') }} />
+              <div className="rounded-lg border bg-neutral-950 p-4 text-sm" dangerouslySetInnerHTML={{ __html: body.split('{name}').join('there') }} />
             ) : (
               <Textarea rows={8} value={body} onChange={(e) => setBody(e.target.value)} className="font-mono text-sm" />
             )}
@@ -272,14 +275,14 @@ const EmailTab: React.FC = () => {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-sm text-slate-500">Loading…</p>
+            <p className="text-sm text-neutral-400">Loading…</p>
           ) : campaigns.length === 0 ? (
-            <p className="text-sm text-slate-500">No campaigns yet. Compose your first one above.</p>
+            <p className="text-sm text-neutral-400">No campaigns yet. Compose your first one above.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b text-left text-xs uppercase tracking-wide text-slate-500">
+                  <tr className="border-b text-left text-xs uppercase tracking-wide text-neutral-400">
                     <th className="py-2 pr-3">Subject</th>
                     <th className="py-2 pr-3">Status</th>
                     <th className="py-2 pr-3">Sent</th>
@@ -291,14 +294,14 @@ const EmailTab: React.FC = () => {
                 </thead>
                 <tbody>
                   {campaigns.map((c) => (
-                    <tr key={c.id} className="cursor-pointer border-b hover:bg-slate-50" onClick={() => void openDetail(c.id)}>
+                    <tr key={c.id} className="cursor-pointer border-b hover:bg-neutral-900" onClick={() => void openDetail(c.id)}>
                       <td className="max-w-64 truncate py-2 pr-3 font-medium">{c.subject}</td>
                       <td className="py-2 pr-3">{statusBadge(c.status)}</td>
                       <td className="py-2 pr-3">{c.sent_count}/{c.recipient_count}</td>
                       <td className="py-2 pr-3">{c.failed_count}</td>
                       <td className="py-2 pr-3">{pct(c.unique_opens, c.sent_count)}</td>
                       <td className="py-2 pr-3">{pct(c.unique_clicks, c.sent_count)}</td>
-                      <td className="py-2 text-xs text-slate-500">{new Date(c.created_at).toLocaleString()}</td>
+                      <td className="py-2 text-xs text-neutral-400">{new Date(c.created_at).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -322,12 +325,12 @@ const EmailTab: React.FC = () => {
                 {detail.events.map((e) => (
                   <Badge key={e.event_type} variant="outline">{e.event_type}: {e.n} ({e.unique_n} unique)</Badge>
                 ))}
-                {detail.events.length === 0 && <span className="text-sm text-slate-500">No events yet.</span>}
+                {detail.events.length === 0 && <span className="text-sm text-neutral-400">No events yet.</span>}
               </div>
               <div className="max-h-72 overflow-y-auto rounded-lg border">
                 <table className="w-full text-xs">
-                  <thead className="sticky top-0 bg-slate-50">
-                    <tr className="text-left text-slate-500"><th className="p-2">Email</th><th className="p-2">Name</th><th className="p-2">Source</th><th className="p-2">Status</th></tr>
+                  <thead className="sticky top-0 bg-neutral-900">
+                    <tr className="text-left text-neutral-400"><th className="p-2">Email</th><th className="p-2">Name</th><th className="p-2">Source</th><th className="p-2">Status</th></tr>
                   </thead>
                   <tbody>
                     {detail.recipients.map((r) => (
@@ -392,12 +395,15 @@ const SocialTab: React.FC = () => {
   useEffect(() => { void fetchCampaigns(); }, [fetchCampaigns]);
 
   const openCampaign = async (c: SocialCampaign) => {
-    setSelected(c); setDetailLoading(true);
+    setSelected(c); setDetailLoading(true); setError(null);
     try {
       const res = await fetch(apiUrl(`/api/v1/admin/campaigns/social/${c.id}`), { headers: authHeaders() });
       const d = await res.json();
       if (res.ok && d.success) setPosts(d.data.posts);
-    } catch { /* ignore */ }
+      else setError(d.error || 'Failed to load content calendar');
+    } catch {
+      setError('Failed to load content calendar');
+    }
     finally { setDetailLoading(false); }
   };
 
@@ -432,14 +438,23 @@ const SocialTab: React.FC = () => {
   };
 
   const markPost = async (postId: number, status: string) => {
+    const prev = posts.find((p) => p.id === postId)?.status;
+    setPosts((prevPosts) => prevPosts.map((p) => (p.id === postId ? { ...p, status } : p)));
     try {
-      await fetch(apiUrl(`/api/v1/admin/campaigns/social/posts/${postId}`), {
+      const res = await fetch(apiUrl(`/api/v1/admin/campaigns/social/posts/${postId}`), {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ status }),
       });
-      setPosts((prev) => prev.map((p) => (p.id === postId ? { ...p, status } : p)));
-    } catch { /* ignore */ }
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || 'Update failed');
+      }
+    } catch (err) {
+      // revert the optimistic update so the UI stays truthful
+      setPosts((prevPosts) => prevPosts.map((p) => (p.id === postId ? { ...p, status: prev || p.status } : p)));
+      setError(err instanceof Error ? err.message : 'Failed to update post');
+    }
   };
 
   return (
@@ -483,16 +498,16 @@ const SocialTab: React.FC = () => {
             <CardDescription>{campaigns.length} campaign(s)</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {loading ? <p className="text-sm text-slate-500">Loading…</p> :
-              campaigns.length === 0 ? <p className="text-sm text-slate-500">No social campaigns yet.</p> :
+            {loading ? <p className="text-sm text-neutral-400">Loading…</p> :
+              campaigns.length === 0 ? <p className="text-sm text-neutral-400">No social campaigns yet.</p> :
               campaigns.map((c) => (
                 <button key={c.id} onClick={() => void openCampaign(c)}
-                  className={`w-full rounded-lg border p-3 text-left transition hover:bg-slate-50 ${selected?.id === c.id ? 'border-blue-400 ring-1 ring-blue-200' : ''}`}>
+                  className={`w-full rounded-lg border p-3 text-left transition hover:bg-neutral-900 ${selected?.id === c.id ? 'border-blue-400 ring-1 ring-blue-200' : ''}`}>
                   <div className="flex items-center justify-between">
                     <p className="font-medium">{c.name}</p>
                     <Badge variant="outline">{c.done_count}/{c.post_count} done</Badge>
                   </div>
-                  <p className="mt-1 text-xs text-slate-500">{c.theme} · {c.start_date} → {c.end_date} · {c.posts_per_week}/wk</p>
+                  <p className="mt-1 text-xs text-neutral-400">{c.theme} · {c.start_date} → {c.end_date} · {c.posts_per_week}/wk</p>
                 </button>
               ))}
           </CardContent>
@@ -506,24 +521,24 @@ const SocialTab: React.FC = () => {
             <CardDescription>Tap a post to mark it queued or published as you schedule it in your publisher.</CardDescription>
           </CardHeader>
           <CardContent>
-            {detailLoading ? <p className="text-sm text-slate-500">Loading…</p> : (
+            {detailLoading ? <p className="text-sm text-neutral-400">Loading…</p> : (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {posts.map((p) => (
                   <div key={p.id} className="rounded-lg border p-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-slate-500">{p.scheduled_date}</span>
+                      <span className="text-xs font-medium text-neutral-400">{p.scheduled_date}</span>
                       <Badge className={
                         p.status === 'published' ? 'bg-emerald-100 text-emerald-800' :
                         p.status === 'queued' ? 'bg-blue-100 text-blue-800' :
-                        p.status === 'skipped' ? 'bg-slate-100 text-slate-500' : 'bg-amber-100 text-amber-800'
+                        p.status === 'skipped' ? 'bg-neutral-900 text-neutral-400' : 'bg-amber-100 text-amber-800'
                       }>{p.status}</Badge>
                     </div>
                     <p className="mt-1 text-sm font-medium">{PILLAR_LABELS[p.pillar] || p.pillar}</p>
-                    <p className="mt-1 text-xs text-slate-600">{p.caption_prompt}</p>
+                    <p className="mt-1 text-xs text-neutral-400">{p.caption_prompt}</p>
                     <div className="mt-2 flex gap-1">
                       {['planned', 'queued', 'published', 'skipped'].map((s) => (
                         <button key={s} onClick={() => void markPost(p.id, s)}
-                          className={`rounded px-2 py-1 text-[11px] ${p.status === s ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                          className={`rounded px-2 py-1 text-[11px] ${p.status === s ? 'bg-slate-900 text-white' : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800'}`}>
                           {s}
                         </button>
                       ))}
@@ -624,8 +639,16 @@ const AdsTab: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this draft?')) return;
-    await fetch(apiUrl(`/api/v1/admin/campaigns/ads/draft/${id}`), { method: 'DELETE', headers: authHeaders() });
-    setDrafts((prev) => prev.filter((d) => d.id !== id));
+    try {
+      const res = await fetch(apiUrl(`/api/v1/admin/campaigns/ads/draft/${id}`), { method: 'DELETE', headers: authHeaders() });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || 'Delete failed');
+      }
+      setDrafts((prev) => prev.filter((d) => d.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
+    }
   };
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -703,12 +726,12 @@ const AdsTab: React.FC = () => {
                   <div className="space-y-2"><Label>CTA link</Label><Input value={form.cta_url} onChange={set('cta_url')} /></div>
                 </div>
                 {form.image_url && (
-                  <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3">
+                  <div className="flex items-start gap-3 rounded-lg bg-neutral-900 p-3">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={form.image_url} alt="Ad creative preview" className="h-20 w-20 rounded object-cover" />
                     <div className="text-sm">
                       <p className="font-medium">{form.headline || 'Headline'}</p>
-                      <p className="text-xs text-slate-600 line-clamp-2">{form.primary_text || 'Primary text…'}</p>
+                      <p className="text-xs text-neutral-400 line-clamp-2">{form.primary_text || 'Primary text…'}</p>
                     </div>
                   </div>
                 )}
@@ -731,7 +754,7 @@ const AdsTab: React.FC = () => {
             <CardContent className="space-y-4 text-sm">
               <div>
                 <p className="font-medium">Meta (Facebook/Instagram)</p>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-slate-600">
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-neutral-400">
                   <li>Business Manager + ad account with a payment method</li>
                   <li>Connect via Marketing API OAuth (app review for ads_management, ads_read)</li>
                   <li>Then drafts can be pushed as real campaigns</li>
@@ -739,13 +762,13 @@ const AdsTab: React.FC = () => {
               </div>
               <div>
                 <p className="font-medium">Google Ads</p>
-                <ul className="mt-1 list-disc space-y-1 pl-5 text-slate-600">
+                <ul className="mt-1 list-disc space-y-1 pl-5 text-neutral-400">
                   <li>Google Ads account + Google Ads API developer token</li>
                   <li>OAuth consent for adwords scope</li>
                   <li>Then drafts can be pushed as real campaigns</li>
                 </ul>
               </div>
-              <p className="flex items-start gap-1 text-xs text-slate-500">
+              <p className="flex items-start gap-1 text-xs text-neutral-400">
                 <ExternalLink className="mt-0.5 h-3 w-3 shrink-0" />
                 Tell Vytre "connect my Meta/Google ad account" when you're ready and the launch wiring will be built.
               </p>
@@ -755,8 +778,8 @@ const AdsTab: React.FC = () => {
           <Card>
             <CardHeader><CardTitle className="text-base">Saved drafts</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              {loading ? <p className="text-sm text-slate-500">Loading…</p> :
-                drafts.length === 0 ? <p className="text-sm text-slate-500">No drafts yet.</p> :
+              {loading ? <p className="text-sm text-neutral-400">Loading…</p> :
+                drafts.length === 0 ? <p className="text-sm text-neutral-400">No drafts yet.</p> :
                 drafts.map((d) => (
                   <div key={d.id} className="rounded-lg border p-3">
                     <div className="flex items-center justify-between">
@@ -772,7 +795,7 @@ const AdsTab: React.FC = () => {
                       <Badge className="bg-amber-100 text-amber-800">draft — needs ad account</Badge>
                     </div>
                     {String((d.creative as Record<string, unknown>).headline || '') && (
-                      <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
+                      <p className="mt-1 flex items-center gap-1 text-xs text-neutral-400">
                         <ImageIcon className="h-3 w-3" /> {String((d.creative as Record<string, unknown>).headline)}
                       </p>
                     )}
@@ -799,16 +822,16 @@ const AdminCampaigns: React.FC = () => {
         <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
           <Users className="h-6 w-6" /> Campaigns
         </h1>
-        <p className="text-sm text-slate-500">Email blasts, social content plans, and ad drafts — one command center.</p>
+        <p className="text-sm text-neutral-400">Email blasts, social content plans, and ad drafts — one command center.</p>
       </div>
 
-      <div className="flex gap-1 rounded-lg border bg-white p-1">
+      <div className="flex gap-1 rounded-lg border bg-neutral-950 p-1">
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
             className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition ${
-              tab === t.key ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
+              tab === t.key ? 'bg-slate-900 text-white' : 'text-neutral-400 hover:bg-neutral-900'
             }`}
           >
             <t.icon className="h-4 w-4" /> {t.label}

@@ -248,11 +248,11 @@ const AdminShop: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold text-slate-900"><ShoppingBag className="h-6 w-6" /> Shop</h1>
-          <p className="text-sm text-slate-500">Products, orders &amp; store settings</p>
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-white"><ShoppingBag className="h-6 w-6" /> Shop</h1>
+          <p className="text-sm text-neutral-400">Products, orders &amp; store settings</p>
         </div>
         <div className="flex items-center gap-3">
-          <span className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${shopEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}`}>
+          <span className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${shopEnabled ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-neutral-400'}`}>
             <span className={`h-2 w-2 rounded-full ${shopEnabled ? 'bg-emerald-500' : 'bg-slate-400'}`} />
             {shopEnabled ? 'Shop is LIVE' : 'Shop is OFF'}
           </span>
@@ -266,10 +266,15 @@ const AdminShop: React.FC = () => {
         </div>
       </div>
 
-      {error && <div className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+      {error && (
+        <div className="flex items-start justify-between gap-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+          <span>{error}</span>
+          <button onClick={() => { setError(null); void reload(); }} className="shrink-0 font-semibold underline-offset-2 hover:underline">Retry</button>
+        </div>
+      )}
 
       {loading ? (
-        <div className="flex items-center justify-center py-24 text-slate-400"><Loader2 className="h-8 w-8 animate-spin" /></div>
+        <div className="flex items-center justify-center py-24 text-neutral-500"><Loader2 className="h-8 w-8 animate-spin" /></div>
       ) : (
         <>
           {tab === 'products' && (
@@ -277,11 +282,11 @@ const AdminShop: React.FC = () => {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex flex-1 flex-wrap items-center gap-2">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
                     <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products…"
-                      className="w-56 rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm focus:border-slate-500 focus:outline-none" />
+                      className="w-56 rounded-lg border border-neutral-800 py-2 pl-9 pr-3 text-sm focus:border-neutral-500 focus:outline-none" />
                   </div>
-                  <select value={catFilter} onChange={(e) => setCatFilter(e.target.value)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                  <select value={catFilter} onChange={(e) => setCatFilter(e.target.value)} className="rounded-lg border border-neutral-800 px-3 py-2 text-sm">
                     <option>All</option>{CATEGORIES.map((c) => <option key={c}>{c}</option>)}
                   </select>
                 </div>
@@ -289,15 +294,15 @@ const AdminShop: React.FC = () => {
               </div>
 
               {products.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-slate-300 py-16 text-center text-slate-500">
+                <div className="rounded-xl border border-dashed border-neutral-800 py-16 text-center text-neutral-400">
                   <Package className="mx-auto mb-3 h-10 w-10 text-slate-300" />
                   <p>No products yet. Add your first t-shirt, print, book or affiliate pick.</p>
                 </div>
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {products.map((p) => (
-                    <div key={p.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-                      <div className="relative aspect-square bg-slate-100">
+                    <div key={p.id} className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950">
+                      <div className="relative aspect-square bg-neutral-900">
                         {p.images[0] ? (
                           <img src={p.images[0].thumbnail_url} alt={p.name} className="h-full w-full object-cover" loading="lazy" />
                         ) : (
@@ -310,11 +315,11 @@ const AdminShop: React.FC = () => {
                         </div>
                       </div>
                       <div className="p-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">{p.category}</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-500">{p.category}</p>
                         <p className="truncate text-sm font-semibold">{p.name}</p>
                         <p className="mt-1 text-sm font-bold">
-                          {p.product_type === 'affiliate' ? <span className="text-xs font-medium text-slate-500">{p.affiliate_retailer || 'External'}</span> : fmt(p.price_cents)}
-                          {p.product_type === 'physical' && <span className="ml-2 text-xs font-normal text-slate-400">Stock: {p.inventory}</span>}
+                          {p.product_type === 'affiliate' ? <span className="text-xs font-medium text-neutral-400">{p.affiliate_retailer || 'External'}</span> : fmt(p.price_cents)}
+                          {p.product_type === 'physical' && <span className="ml-2 text-xs font-normal text-neutral-500">Stock: {p.inventory}</span>}
                         </p>
                         <div className="mt-2 flex gap-1">
                           <Button size="sm" variant="outline" className="flex-1" onClick={() => openEdit(p)}><Pencil className="mr-1 h-3.5 w-3.5" /> Edit</Button>
@@ -333,21 +338,21 @@ const AdminShop: React.FC = () => {
           {tab === 'orders' && (
             <section className="space-y-4">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <p className="flex items-center gap-1 text-xs text-slate-500"><DollarSign className="h-3.5 w-3.5" /> Paid revenue</p>
+                <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-4">
+                  <p className="flex items-center gap-1 text-xs text-neutral-400"><DollarSign className="h-3.5 w-3.5" /> Paid revenue</p>
                   <p className="mt-1 text-xl font-bold">{fmt(orderStats.paid_revenue_cents)}</p>
                 </div>
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <p className="text-xs text-slate-500">Paid orders</p>
+                <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-4">
+                  <p className="text-xs text-neutral-400">Paid orders</p>
                   <p className="mt-1 text-xl font-bold">{orderStats.paid_count}</p>
                 </div>
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <p className="text-xs text-slate-500">Needs fulfillment</p>
+                <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-4">
+                  <p className="text-xs text-neutral-400">Needs fulfillment</p>
                   <p className="mt-1 text-xl font-bold">{orders.filter((o) => o.status === 'paid' && o.fulfillment_status === 'unfulfilled').length}</p>
                 </div>
-                <div className="rounded-xl border border-slate-200 bg-white p-4">
-                  <p className="text-xs text-slate-500">Filter</p>
-                  <select value={orderFilter} onChange={(e) => setOrderFilter(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm">
+                <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-4">
+                  <p className="text-xs text-neutral-400">Filter</p>
+                  <select value={orderFilter} onChange={(e) => setOrderFilter(e.target.value)} className="mt-1 w-full rounded-lg border border-neutral-800 px-2 py-1.5 text-sm">
                     <option value="">All statuses</option>
                     <option value="pending">Pending</option><option value="paid">Paid</option>
                     <option value="refunded">Refunded</option><option value="cancelled">Cancelled</option>
@@ -356,24 +361,24 @@ const AdminShop: React.FC = () => {
               </div>
 
               {orders.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-slate-300 py-16 text-center text-slate-500">
+                <div className="rounded-xl border border-dashed border-neutral-800 py-16 text-center text-neutral-400">
                   <Truck className="mx-auto mb-3 h-10 w-10 text-slate-300" /><p>No orders yet.</p>
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950">
                   <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+                    <thead className="bg-neutral-900 text-xs uppercase text-neutral-400">
                       <tr><th className="px-4 py-3">Order</th><th className="px-4 py-3">Customer</th><th className="px-4 py-3">Total</th><th className="px-4 py-3">Payment</th><th className="px-4 py-3">Fulfillment</th><th className="px-4 py-3">Date</th></tr>
                     </thead>
                     <tbody>
                       {orders.map((o) => (
-                        <tr key={o.id} className="cursor-pointer border-t border-slate-100 hover:bg-slate-50" onClick={() => setSelectedOrder(o)}>
+                        <tr key={o.id} className="cursor-pointer border-t border-neutral-800 hover:bg-neutral-900" onClick={() => setSelectedOrder(o)}>
                           <td className="px-4 py-3 font-semibold">#{o.id}</td>
-                          <td className="px-4 py-3"><div className="truncate max-w-48">{o.customer_name || '—'}</div><div className="truncate max-w-48 text-xs text-slate-400">{o.email}</div></td>
+                          <td className="px-4 py-3"><div className="truncate max-w-48">{o.customer_name || '—'}</div><div className="truncate max-w-48 text-xs text-neutral-500">{o.email}</div></td>
                           <td className="px-4 py-3 font-semibold">{fmt(o.total_cents)}</td>
                           <td className="px-4 py-3">{statusBadge(o.status)}</td>
                           <td className="px-4 py-3">{statusBadge(o.fulfillment_status)}</td>
-                          <td className="px-4 py-3 text-xs text-slate-500">{new Date(o.created_at).toLocaleDateString()}</td>
+                          <td className="px-4 py-3 text-xs text-neutral-400">{new Date(o.created_at).toLocaleDateString()}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -386,11 +391,11 @@ const AdminShop: React.FC = () => {
           {tab === 'settings' && (
             <section className="mx-auto max-w-2xl space-y-4">
               {/* SHOP ON/OFF — the master switch */}
-              <div className={`rounded-xl border-2 p-5 ${shopEnabled ? 'border-emerald-300 bg-emerald-50' : 'border-slate-300 bg-slate-50'}`}>
+              <div className={`rounded-xl border-2 p-5 ${shopEnabled ? 'border-emerald-300 bg-emerald-50' : 'border-neutral-800 bg-neutral-900'}`}>
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <h2 className="flex items-center gap-2 text-lg font-bold text-slate-900"><Power className="h-5 w-5" /> Shop visibility</h2>
-                    <p className="mt-1 text-sm text-slate-600">
+                    <h2 className="flex items-center gap-2 text-lg font-bold text-white"><Power className="h-5 w-5" /> Shop visibility</h2>
+                    <p className="mt-1 text-sm text-neutral-400">
                       {shopEnabled
                         ? 'The shop is LIVE — /shop is public and the nav link shows.'
                         : 'The shop is OFF — /shop returns 404 and the nav link is hidden. Turn it on when you’re ready to launch.'}
@@ -405,7 +410,7 @@ const AdminShop: React.FC = () => {
                     className={`relative h-10 shrink-0 rounded-full transition-colors ${shopEnabled ? 'bg-emerald-500' : 'bg-slate-300'} ${settingsSaving ? 'opacity-60' : ''}`}
                     style={{ width: 72 }}
                   >
-                    <span className={`absolute top-1 h-8 w-8 rounded-full bg-white shadow transition-all ${shopEnabled ? 'left-[38px]' : 'left-1'}`} />
+                    <span className={`absolute top-1 h-8 w-8 rounded-full bg-neutral-950 shadow transition-all ${shopEnabled ? 'left-[38px]' : 'left-1'}`} />
                   </button>
                 </div>
                 {!shopEnabled && (
@@ -416,35 +421,35 @@ const AdminShop: React.FC = () => {
                 )}
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-white p-5">
+              <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-5">
                 <h2 className="flex items-center gap-2 text-lg font-bold"><Store className="h-5 w-5" /> Store details</h2>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   <label className="block sm:col-span-2">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Store name</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Store name</span>
                     <input value={settings.store_name ?? ''} onChange={(e) => setSettings({ ...settings, store_name: e.target.value })}
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                      className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Flat shipping ($) — e.g. 7.95</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Flat shipping ($) — e.g. 7.95</span>
                     <input value={((parseInt(settings.flat_shipping_cents ?? '795', 10) || 0) / 100).toFixed(2)}
                       onChange={(e) => setSettings({ ...settings, flat_shipping_cents: String(dollarsToCents(e.target.value)) })}
-                      inputMode="decimal" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                      inputMode="decimal" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Free shipping over ($) — e.g. 150</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Free shipping over ($) — e.g. 150</span>
                     <input value={((parseInt(settings.free_shipping_over_cents ?? '15000', 10) || 0) / 100).toFixed(2)}
                       onChange={(e) => setSettings({ ...settings, free_shipping_over_cents: String(dollarsToCents(e.target.value)) })}
-                      inputMode="decimal" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                      inputMode="decimal" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Tax rate (%) — 0 if unsure</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Tax rate (%) — 0 if unsure</span>
                     <input value={settings.tax_rate_percent ?? '0'} onChange={(e) => setSettings({ ...settings, tax_rate_percent: e.target.value })}
-                      inputMode="decimal" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                      inputMode="decimal" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Store email</span>
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Store email</span>
                     <input value={settings.store_email ?? ''} onChange={(e) => setSettings({ ...settings, store_email: e.target.value })}
-                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                      className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                 </div>
                 <Button className="mt-4" onClick={() => saveSettings(settings)} disabled={settingsSaving}>
@@ -452,7 +457,7 @@ const AdminShop: React.FC = () => {
                 </Button>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-white p-5">
+              <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-5">
                 <h2 className="text-lg font-bold">Stripe payments</h2>
                 {stripeInfo ? (
                   <ul className="mt-3 space-y-2 text-sm">
@@ -464,11 +469,11 @@ const AdminShop: React.FC = () => {
                       {stripeInfo.webhook_secret_configured ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
                       Webhook secret {stripeInfo.webhook_secret_configured ? 'connected' : 'missing — add STRIPE_WEBHOOK_SECRET to worker secrets'}
                     </li>
-                    <li className="text-xs text-slate-500">Register this webhook URL in Stripe → Developers → Webhooks:<br />
-                      <code className="rounded bg-slate-100 px-1.5 py-0.5">https://&lt;worker-host&gt;/api/v1/webhooks/stripe</code>
+                    <li className="text-xs text-neutral-400">Register this webhook URL in Stripe → Developers → Webhooks:<br />
+                      <code className="rounded bg-neutral-900 px-1.5 py-0.5">https://&lt;worker-host&gt;/api/v1/webhooks/stripe</code>
                     </li>
                   </ul>
-                ) : <p className="mt-2 text-sm text-slate-500">Loading…</p>}
+                ) : <p className="mt-2 text-sm text-neutral-400">Loading…</p>}
               </div>
             </section>
           )}
@@ -479,57 +484,57 @@ const AdminShop: React.FC = () => {
       {(creating || editing) && (
         <div className="fixed inset-0 z-[80] overflow-y-auto" role="dialog" aria-modal="true" aria-label={editing ? 'Edit product' : 'New product'}>
           <div className="fixed inset-0 bg-slate-950/60" onClick={closeEditor} />
-          <div className="relative mx-auto my-8 w-[calc(100%-2rem)] max-w-3xl rounded-2xl bg-white p-6 shadow-2xl">
+          <div className="relative mx-auto my-8 w-[calc(100%-2rem)] max-w-3xl rounded-2xl bg-neutral-950 p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-bold">{editing ? `Edit: ${editing.name}` : 'New product'}</h2>
-              <button onClick={closeEditor} className="rounded-full p-2 hover:bg-slate-100" aria-label="Close editor"><X className="h-5 w-5" /></button>
+              <button onClick={closeEditor} className="rounded-full p-2 hover:bg-neutral-900" aria-label="Close editor"><X className="h-5 w-5" /></button>
             </div>
             {formError && <div className="mb-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700">{formError}</div>}
 
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block sm:col-span-2">
-                <span className="mb-1 block text-xs font-medium text-slate-500">Name *</span>
-                <input value={form.name} onChange={(e) => set('name', e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Golden Hour Print — 16×20" />
+                <span className="mb-1 block text-xs font-medium text-neutral-400">Name *</span>
+                <input value={form.name} onChange={(e) => set('name', e.target.value)} className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" placeholder="Golden Hour Print — 16×20" />
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs font-medium text-slate-500">Type</span>
-                <select value={form.product_type} onChange={(e) => set('product_type', e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                <span className="mb-1 block text-xs font-medium text-neutral-400">Type</span>
+                <select value={form.product_type} onChange={(e) => set('product_type', e.target.value)} className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm">
                   <option value="physical">Physical — sold &amp; shipped</option>
                   <option value="affiliate">Affiliate — external buy link</option>
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs font-medium text-slate-500">Category</span>
-                <select value={form.category} onChange={(e) => set('category', e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                <span className="mb-1 block text-xs font-medium text-neutral-400">Category</span>
+                <select value={form.category} onChange={(e) => set('category', e.target.value)} className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm">
                   {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
                 </select>
               </label>
               <label className="block sm:col-span-2">
-                <span className="mb-1 block text-xs font-medium text-slate-500">Description</span>
-                <textarea value={form.description} onChange={(e) => set('description', e.target.value)} rows={3} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                <span className="mb-1 block text-xs font-medium text-neutral-400">Description</span>
+                <textarea value={form.description} onChange={(e) => set('description', e.target.value)} rows={3} className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
               </label>
 
               {form.product_type === 'physical' ? (
                 <>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Price ($) *</span>
-                    <input value={form.price} onChange={(e) => set('price', e.target.value)} inputMode="decimal" placeholder="49.00" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Price ($) *</span>
+                    <input value={form.price} onChange={(e) => set('price', e.target.value)} inputMode="decimal" placeholder="49.00" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Compare-at price ($) — for sales</span>
-                    <input value={form.compare_at} onChange={(e) => set('compare_at', e.target.value)} inputMode="decimal" placeholder="69.00" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Compare-at price ($) — for sales</span>
+                    <input value={form.compare_at} onChange={(e) => set('compare_at', e.target.value)} inputMode="decimal" placeholder="69.00" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">SKU</span>
-                    <input value={form.sku} onChange={(e) => set('sku', e.target.value)} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">SKU</span>
+                    <input value={form.sku} onChange={(e) => set('sku', e.target.value)} className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Inventory count</span>
-                    <input value={form.inventory} onChange={(e) => set('inventory', e.target.value)} inputMode="numeric" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Inventory count</span>
+                    <input value={form.inventory} onChange={(e) => set('inventory', e.target.value)} inputMode="numeric" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Weight (oz) — for shipping</span>
-                    <input value={form.weight_oz} onChange={(e) => set('weight_oz', e.target.value)} inputMode="decimal" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Weight (oz) — for shipping</span>
+                    <input value={form.weight_oz} onChange={(e) => set('weight_oz', e.target.value)} inputMode="decimal" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <div className="flex items-center gap-6">
                     <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.featured} onChange={(e) => set('featured', e.target.checked)} className="h-4 w-4" /> Featured</label>
@@ -539,12 +544,12 @@ const AdminShop: React.FC = () => {
               ) : (
                 <>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">External buy URL *</span>
-                    <input value={form.affiliate_url} onChange={(e) => set('affiliate_url', e.target.value)} placeholder="https://…" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">External buy URL *</span>
+                    <input value={form.affiliate_url} onChange={(e) => set('affiliate_url', e.target.value)} placeholder="https://…" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="block">
-                    <span className="mb-1 block text-xs font-medium text-slate-500">Retailer name</span>
-                    <input value={form.affiliate_retailer} onChange={(e) => set('affiliate_retailer', e.target.value)} placeholder="Amazon, B&H…" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                    <span className="mb-1 block text-xs font-medium text-neutral-400">Retailer name</span>
+                    <input value={form.affiliate_retailer} onChange={(e) => set('affiliate_retailer', e.target.value)} placeholder="Amazon, B&H…" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
                   </label>
                   <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" checked={form.active} onChange={(e) => set('active', e.target.checked)} className="h-4 w-4" /> Active (visible)</label>
                 </>
@@ -552,10 +557,10 @@ const AdminShop: React.FC = () => {
 
               {/* images */}
               <div className="sm:col-span-2">
-                <span className="mb-2 block text-xs font-medium text-slate-500">Images (auto-converted to WebP)</span>
+                <span className="mb-2 block text-xs font-medium text-neutral-400">Images (auto-converted to WebP)</span>
                 <div className="flex flex-wrap gap-2">
                   {form.images.map((img, i) => (
-                    <div key={i} className="relative h-20 w-20 overflow-hidden rounded-lg border border-slate-200">
+                    <div key={i} className="relative h-20 w-20 overflow-hidden rounded-lg border border-neutral-800">
                       <img src={img.thumbnail_url} alt="" className="h-full w-full object-cover" />
                       <div className="absolute inset-x-0 bottom-0 flex justify-center gap-1 bg-black/50 py-0.5">
                         <button onClick={() => moveImage(i, -1)} className="px-1 text-white" aria-label="Move left">‹</button>
@@ -566,7 +571,7 @@ const AdminShop: React.FC = () => {
                     </div>
                   ))}
                   <button onClick={() => fileRef.current?.click()} disabled={uploading || form.images.length >= 10}
-                    className="flex h-20 w-20 flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 text-slate-400 hover:border-slate-500 hover:text-slate-600 disabled:opacity-50">
+                    className="flex h-20 w-20 flex-col items-center justify-center rounded-lg border border-dashed border-neutral-800 text-neutral-500 hover:border-neutral-500 hover:text-neutral-400 disabled:opacity-50">
                     {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <ImagePlus className="h-5 w-5" />}
                     <span className="mt-1 text-[10px]">Add</span>
                   </button>
@@ -578,18 +583,18 @@ const AdminShop: React.FC = () => {
               {form.product_type === 'physical' && (
                 <div className="sm:col-span-2">
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500">Variants (e.g. Size: S/M/L, or Print size: 8×10)</span>
+                    <span className="text-xs font-medium text-neutral-400">Variants (e.g. Size: S/M/L, or Print size: 8×10)</span>
                     <Button size="sm" variant="outline" onClick={addVariant}><Plus className="mr-1 h-3.5 w-3.5" /> Add variant</Button>
                   </div>
-                  {form.variants.length === 0 && <p className="text-xs text-slate-400">No variants — the product sells as-is.</p>}
+                  {form.variants.length === 0 && <p className="text-xs text-neutral-500">No variants — the product sells as-is.</p>}
                   <div className="space-y-2">
                     {form.variants.map((v, i) => (
-                      <div key={i} className="flex items-center gap-2 rounded-lg border border-slate-200 p-2">
+                      <div key={i} className="flex items-center gap-2 rounded-lg border border-neutral-800 p-2">
                         <GripVertical className="h-4 w-4 text-slate-300" />
-                        <input value={v.name} onChange={(e) => updateVariant(i, { name: e.target.value })} placeholder="Size" className="w-20 rounded border border-slate-200 px-2 py-1.5 text-xs" />
-                        <input value={v.value} onChange={(e) => updateVariant(i, { value: e.target.value })} placeholder="L" className="w-20 rounded border border-slate-200 px-2 py-1.5 text-xs" />
-                        <input value={v.price_adjust_cents === 0 ? '' : (v.price_adjust_cents / 100).toFixed(2)} onChange={(e) => updateVariant(i, { price_adjust_cents: dollarsToCents(e.target.value) })} placeholder="+$" inputMode="decimal" className="w-20 rounded border border-slate-200 px-2 py-1.5 text-xs" title="Price adjustment in dollars (+/-)" />
-                        <input value={v.inventory == null ? '' : String(v.inventory)} onChange={(e) => updateVariant(i, { inventory: e.target.value === '' ? null : parseInt(e.target.value, 10) || 0 })} placeholder="Stock" inputMode="numeric" className="w-16 rounded border border-slate-200 px-2 py-1.5 text-xs" title="Variant stock (blank = use product stock)" />
+                        <input value={v.name} onChange={(e) => updateVariant(i, { name: e.target.value })} placeholder="Size" className="w-20 rounded border border-neutral-800 px-2 py-1.5 text-xs" />
+                        <input value={v.value} onChange={(e) => updateVariant(i, { value: e.target.value })} placeholder="L" className="w-20 rounded border border-neutral-800 px-2 py-1.5 text-xs" />
+                        <input value={v.price_adjust_cents === 0 ? '' : (v.price_adjust_cents / 100).toFixed(2)} onChange={(e) => updateVariant(i, { price_adjust_cents: dollarsToCents(e.target.value) })} placeholder="+$" inputMode="decimal" className="w-20 rounded border border-neutral-800 px-2 py-1.5 text-xs" title="Price adjustment in dollars (+/-)" />
+                        <input value={v.inventory == null ? '' : String(v.inventory)} onChange={(e) => updateVariant(i, { inventory: e.target.value === '' ? null : parseInt(e.target.value, 10) || 0 })} placeholder="Stock" inputMode="numeric" className="w-16 rounded border border-neutral-800 px-2 py-1.5 text-xs" title="Variant stock (blank = use product stock)" />
                         <button onClick={() => removeVariant(i)} className="p-1 text-red-500 hover:text-red-700" aria-label="Remove variant"><X className="h-4 w-4" /></button>
                       </div>
                     ))}
@@ -613,48 +618,48 @@ const AdminShop: React.FC = () => {
       {selectedOrder && (
         <div className="fixed inset-0 z-[80] overflow-y-auto" role="dialog" aria-modal="true" aria-label={`Order ${selectedOrder.id}`}>
           <div className="fixed inset-0 bg-slate-950/60" onClick={() => setSelectedOrder(null)} />
-          <div className="relative mx-auto my-8 w-[calc(100%-2rem)] max-w-2xl rounded-2xl bg-white p-6 shadow-2xl">
+          <div className="relative mx-auto my-8 w-[calc(100%-2rem)] max-w-2xl rounded-2xl bg-neutral-950 p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-bold">Order #{selectedOrder.id}</h2>
-              <button onClick={() => setSelectedOrder(null)} className="rounded-full p-2 hover:bg-slate-100" aria-label="Close"><X className="h-5 w-5" /></button>
+              <button onClick={() => setSelectedOrder(null)} className="rounded-full p-2 hover:bg-neutral-900" aria-label="Close"><X className="h-5 w-5" /></button>
             </div>
             <div className="mb-4 flex flex-wrap gap-2">{statusBadge(selectedOrder.status)}{statusBadge(selectedOrder.fulfillment_status)}</div>
             <div className="grid gap-4 sm:grid-cols-2 text-sm">
-              <div><p className="text-xs text-slate-500">Customer</p><p className="font-medium">{selectedOrder.customer_name || '—'}</p><p className="text-slate-500">{selectedOrder.email}</p></div>
-              <div><p className="text-xs text-slate-500">Placed</p><p>{new Date(selectedOrder.created_at).toLocaleString()}</p></div>
+              <div><p className="text-xs text-neutral-400">Customer</p><p className="font-medium">{selectedOrder.customer_name || '—'}</p><p className="text-neutral-400">{selectedOrder.email}</p></div>
+              <div><p className="text-xs text-neutral-400">Placed</p><p>{new Date(selectedOrder.created_at).toLocaleString()}</p></div>
             </div>
-            <div className="mt-4 rounded-lg bg-slate-50 p-3">
-              <p className="mb-2 text-xs font-semibold uppercase text-slate-500">Items</p>
+            <div className="mt-4 rounded-lg bg-neutral-900 p-3">
+              <p className="mb-2 text-xs font-semibold uppercase text-neutral-400">Items</p>
               <ul className="space-y-1.5 text-sm">
                 {selectedOrder.items.map((it) => (
                   <li key={it.id} className="flex justify-between gap-2">
-                    <span>{it.quantity}× {it.name}{it.variant_label && <span className="text-slate-500"> ({it.variant_label})</span>}</span>
+                    <span>{it.quantity}× {it.name}{it.variant_label && <span className="text-neutral-400"> ({it.variant_label})</span>}</span>
                     <span className="font-medium">{fmt(it.total_cents)}</span>
                   </li>
                 ))}
               </ul>
-              <div className="mt-2 space-y-1 border-t border-slate-200 pt-2 text-sm">
-                <div className="flex justify-between text-slate-500"><span>Subtotal</span><span>{fmt(selectedOrder.subtotal_cents)}</span></div>
-                <div className="flex justify-between text-slate-500"><span>Shipping</span><span>{fmt(selectedOrder.shipping_cents)}</span></div>
-                <div className="flex justify-between text-slate-500"><span>Tax</span><span>{fmt(selectedOrder.tax_cents)}</span></div>
+              <div className="mt-2 space-y-1 border-t border-neutral-800 pt-2 text-sm">
+                <div className="flex justify-between text-neutral-400"><span>Subtotal</span><span>{fmt(selectedOrder.subtotal_cents)}</span></div>
+                <div className="flex justify-between text-neutral-400"><span>Shipping</span><span>{fmt(selectedOrder.shipping_cents)}</span></div>
+                <div className="flex justify-between text-neutral-400"><span>Tax</span><span>{fmt(selectedOrder.tax_cents)}</span></div>
                 <div className="flex justify-between font-bold"><span>Total</span><span>{fmt(selectedOrder.total_cents)}</span></div>
               </div>
             </div>
-            {selectedOrder.tracking_number && <p className="mt-3 text-sm"><span className="text-slate-500">Tracking:</span> <span className="font-mono">{selectedOrder.tracking_number}</span></p>}
+            {selectedOrder.tracking_number && <p className="mt-3 text-sm"><span className="text-neutral-400">Tracking:</span> <span className="font-mono">{selectedOrder.tracking_number}</span></p>}
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <label className="block">
-                <span className="mb-1 block text-xs font-medium text-slate-500">Fulfillment</span>
+                <span className="mb-1 block text-xs font-medium text-neutral-400">Fulfillment</span>
                 <select value={selectedOrder.fulfillment_status}
                   onChange={(e) => updateOrder(selectedOrder.id, { fulfillment_status: e.target.value })}
-                  disabled={orderSaving} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm">
+                  disabled={orderSaving} className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm">
                   {['unfulfilled', 'fulfilled', 'shipped', 'delivered', 'cancelled'].map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs font-medium text-slate-500">Tracking number</span>
+                <span className="mb-1 block text-xs font-medium text-neutral-400">Tracking number</span>
                 <input defaultValue={selectedOrder.tracking_number ?? ''} key={selectedOrder.tracking_number}
                   onBlur={(e) => { if (e.target.value !== (selectedOrder.tracking_number ?? '')) updateOrder(selectedOrder.id, { tracking_number: e.target.value }); }}
-                  placeholder="1Z…" className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+                  placeholder="1Z…" className="w-full rounded-lg border border-neutral-800 px-3 py-2 text-sm" />
               </label>
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
@@ -663,7 +668,7 @@ const AdminShop: React.FC = () => {
                 Mark refunded
               </Button>
               <a href={`https://dashboard.stripe.com/search?query=${encodeURIComponent(selectedOrder.email)}`} target="_blank" rel="noreferrer"
-                className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50">
+                className="inline-flex items-center gap-1 rounded-lg border border-neutral-800 px-3 py-1.5 text-sm hover:bg-neutral-900">
                 Open in Stripe <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>

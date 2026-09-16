@@ -60,15 +60,15 @@ function BlockEditor({ block, onChange, onRemove, onMoveUp, onMoveDown }: {
   const set = (patch: Partial<Block>) => onChange({ ...block, ...patch } as Block);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white">
-      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-2.5">
-        <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+    <div className="rounded-xl border border-neutral-800 bg-neutral-950">
+      <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-2.5">
+        <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
           <Icon className="h-3.5 w-3.5" />{meta.label}
         </span>
         <div className="flex gap-1">
           <Button variant="ghost" size="sm" onClick={onMoveUp} aria-label="Move up"><ArrowUp className="h-3.5 w-3.5" /></Button>
           <Button variant="ghost" size="sm" onClick={onMoveDown} aria-label="Move down"><ArrowDown className="h-3.5 w-3.5" /></Button>
-          <Button variant="ghost" size="sm" onClick={onRemove} aria-label="Remove block"><X className="h-3.5 w-3.5 text-rose-600" /></Button>
+          <Button variant="ghost" size="sm" onClick={onRemove} aria-label="Remove block"><X className="h-3.5 w-3.5 text-[#c8102e]" /></Button>
         </div>
       </div>
       <div className="space-y-3 p-4">
@@ -129,6 +129,14 @@ const AdminPages: React.FC = () => {
   const [published, setPublished] = useState(false);
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [addType, setAddType] = useState<Block['type']>('text');
+  const [editorOpen, setEditorOpen] = useState(false);
+
+  const SITE_URL = 'https://jeffhonforlocophotos.com';
+
+  const closeEditor = () => {
+    setEditorOpen(false); setEditing(null);
+    setTitle(''); setSlug(''); setMeta(''); setPublished(false); setBlocks([]); setAddType('text');
+  };
 
   const flash = (msg: string) => { setSuccess(msg); setTimeout(() => setSuccess(null), 4000); };
 
@@ -149,7 +157,8 @@ const AdminPages: React.FC = () => {
   useEffect(() => { void fetchPages(); }, [fetchPages]);
 
   const openNew = () => {
-    setEditing(null); setTitle(''); setSlug(''); setMeta(''); setPublished(false); setBlocks([]);
+    setEditing(null); setTitle(''); setSlug(''); setMeta(''); setPublished(false); setBlocks([]); setAddType('text');
+    setEditorOpen(true);
   };
 
   const openEdit = async (p: PageItem) => {
@@ -162,6 +171,7 @@ const AdminPages: React.FC = () => {
       setEditing(det); setTitle(det.title); setSlug(det.slug);
       setMeta(det.meta_description || ''); setPublished(det.is_published === 1);
       setBlocks(det.content);
+      setEditorOpen(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load page');
     } finally {
@@ -186,8 +196,8 @@ const AdminPages: React.FC = () => {
       });
       const d = await res.json();
       if (!res.ok || !d.success) throw new Error(d.error || 'Save failed');
-      flash(editing ? 'Page updated' : `Page created — live at /${d.data.slug}`);
-      setEditing(null);
+      flash(editing ? 'Page updated' : `Page created — live at ${SITE_URL}/${d.data.slug}`);
+      closeEditor();
       void fetchPages();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed');
@@ -219,10 +229,8 @@ const AdminPages: React.FC = () => {
     });
   };
 
-  const isEditorOpen = editing !== null || title !== '' || blocks.length > 0 || slug !== '';
-
   /* ================= editor ================= */
-  if (isEditorOpen || editing) {
+  if (editorOpen) {
     return (
       <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -237,19 +245,19 @@ const AdminPages: React.FC = () => {
               <Switch checked={published} onCheckedChange={setPublished} />
               <span className="font-medium">{published ? 'Published' : 'Draft'}</span>
             </label>
-            <Button variant="outline" size="sm" onClick={() => { setEditing(null); setTitle(''); setSlug(''); setMeta(''); setPublished(false); setBlocks([]); }}>
+            <Button variant="outline" size="sm" onClick={closeEditor}>
               Cancel
             </Button>
-            <Button size="sm" onClick={save} disabled={saving} className="bg-rose-600 hover:bg-rose-700">
+            <Button size="sm" onClick={save} disabled={saving} className="bg-[#c8102e] hover:bg-[#a50d26]">
               <Save className="mr-2 h-4 w-4" />{saving ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </div>
 
-        {error && <div className="flex items-start gap-2 rounded-lg border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
+        {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
 
         {editLoading ? <p className="text-sm text-muted-foreground">Loading...</p> : (<>
-          <Card className="border-slate-200/80 shadow-sm">
+          <Card className="border-neutral-800 shadow-sm">
             <CardContent className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
               <div><Label>Page title *</Label><Input className="mt-1.5" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Senior Portraits" /></div>
               <div><Label>URL slug</Label>
@@ -273,7 +281,7 @@ const AdminPages: React.FC = () => {
             ))}
           </div>
 
-          <Card className="border-dashed border-slate-300">
+          <Card className="border-dashed border-neutral-800">
             <CardContent className="flex flex-wrap items-center gap-2 p-4">
               <Select value={addType} onValueChange={(v) => setAddType(v as Block['type'])}>
                 <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
@@ -302,26 +310,26 @@ const AdminPages: React.FC = () => {
         </div>
         <div className="flex gap-2">
           <Button onClick={fetchPages} variant="outline" size="sm"><RefreshCw className="mr-2 h-4 w-4" />Refresh</Button>
-          <Button onClick={openNew} size="sm" className="bg-rose-600 hover:bg-rose-700"><Plus className="mr-2 h-4 w-4" />New Page</Button>
+          <Button onClick={openNew} size="sm" className="bg-[#c8102e] hover:bg-[#a50d26]"><Plus className="mr-2 h-4 w-4" />New Page</Button>
         </div>
       </div>
 
-      {error && <div className="flex items-start gap-2 rounded-lg border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
+      {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
       {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
 
       {loading ? <p className="text-sm text-muted-foreground">Loading pages...</p>
         : pages.length === 0 ? (
-          <Card className="border-slate-200/80">
+          <Card className="border-neutral-800">
             <CardContent className="flex flex-col items-center py-16 text-center">
               <Globe className="h-10 w-10 text-slate-300" />
               <p className="mt-3 font-medium">No custom pages yet</p>
               <p className="mt-1 max-w-sm text-sm text-muted-foreground">Build promo pages, seasonal offers or service landing pages — they go live at yoursite.com/your-slug.</p>
-              <Button className="mt-4 bg-rose-600 hover:bg-rose-700" onClick={openNew}><Plus className="mr-2 h-4 w-4" />Create your first page</Button>
+              <Button className="mt-4 bg-[#c8102e] hover:bg-[#a50d26]" onClick={openNew}><Plus className="mr-2 h-4 w-4" />Create your first page</Button>
             </CardContent>
           </Card>
         ) : (
-          <Card className="border-slate-200/80 shadow-sm">
-            <CardContent className="divide-y divide-slate-100 p-0">
+          <Card className="border-neutral-800 shadow-sm">
+            <CardContent className="divide-y divide-neutral-800 p-0">
               {pages.map((p) => (
                 <div key={p.id} className="flex items-center justify-between gap-3 px-5 py-3.5">
                   <div className="min-w-0">
@@ -329,11 +337,11 @@ const AdminPages: React.FC = () => {
                     <p className="truncate text-xs text-muted-foreground">/{p.slug} · updated {new Date(p.updated_at).toLocaleDateString()}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <Badge variant="outline" className={p.is_published ? 'border-emerald-300 text-emerald-700' : 'border-slate-300 text-slate-500'}>
+                    <Badge variant="outline" className={p.is_published ? 'border-emerald-300 text-emerald-700' : 'border-neutral-800 text-neutral-400'}>
                       {p.is_published ? 'Live' : 'Draft'}
                     </Badge>
                     {p.is_published === 1 && (
-                      <a href={`/${p.slug}`} target="_blank" rel="noreferrer">
+                      <a href={`${SITE_URL}/${p.slug}`} target="_blank" rel="noreferrer">
                         <Button variant="outline" size="sm"><Eye className="h-3.5 w-3.5" /></Button>
                       </a>
                     )}

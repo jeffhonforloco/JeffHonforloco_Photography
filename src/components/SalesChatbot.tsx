@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Loader2, Camera, CheckCircle } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Camera, CheckCircle, User } from "lucide-react";
 import { apiService } from "@/lib/api-service";
+import { insertLead } from "@/lib/leads";
 
 interface Message {
   role: "user" | "assistant";
@@ -26,6 +27,7 @@ const CHATBOT_URL: string | undefined =
     ? `${import.meta.env.VITE_API_BASE_URL}/chat`
     : undefined);
 const STORAGE_KEY = "jhp_chat_v2";
+const LEAD_KEY = "jhp_lead_v1";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 
@@ -81,6 +83,15 @@ export default function SalesChatbot() {
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
   const [approvalNeeded, setApprovalNeeded] = useState(false);
+  // Lead capture — every chat becomes a follow-up-able lead
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [isSubmittingLead, setIsSubmittingLead] = useState(false);
+  const [leadError, setLeadError] = useState<string | null>(null);
+  const [leadName, setLeadName] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [serviceInterest, setServiceInterest] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -122,6 +133,9 @@ export default function SalesChatbot() {
       setMessages(stored);
       setShowChips(false);
     }
+    try {
+      if (sessionStorage.getItem(LEAD_KEY) === "1") setLeadSubmitted(true);
+    } catch { /* ignore */ }
   }, []);
 
   // Persist session whenever messages change
@@ -184,6 +198,12 @@ export default function SalesChatbot() {
       if (data.needsApproval && !quoteSubmitted) {
         setApprovalNeeded(true);
       }
+      // AI asked for contact details, or visitor is engaged (3+ messages):
+      // surface the lead form so no conversation ends without a follow-up path.
+      const userMsgCount = updated.filter((m) => m.role === "user").length;
+      if (!leadSubmitted && !showLeadForm && (data.leadCaptured || userMsgCount >= 3)) {
+        setShowLeadForm(true);
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -207,6 +227,7 @@ export default function SalesChatbot() {
   }
 
   function handleChipClick(label: string) {
+    setServiceInterest(label);
     sendMessage(`I'm interested in ${label} photography`);
   }
 
@@ -215,21 +236,98 @@ export default function SalesChatbot() {
     setShowChips(true);
     setQuoteSubmitted(false);
     setApprovalNeeded(false);
+    setShowLeadForm(false);
     sessionStorage.removeItem(STORAGE_KEY);
+  }
+
+  function conversationText(): string {
+    return messages
+      .map((m) => `${m.role === "user" ? "Client" : "Jade"}: ${m.content}`)
+      .join("\n\n");
+  }
+
+  /** Save the chat lead to the worker (D1) and notify Jeff. */
+  async function submitLead() {
+    if (isSubmittingLead || leadSubmitted) return;
+    const name = leadName.trim();
+    const phone = leadPhone.trim();
+    const email = leadEmail.trim();
+    if (!name) {
+      setLeadError("Please add your name so Jeff knows who he's talking to.");
+      return;
+    }
+    if (!phone && !email) {
+      setLeadError("Add a phone number or email so Jeff can reach you.");
+      return;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setLeadError("That email doesn't look quite right — mind checking it?");
+      return;
+    }
+    setLeadError(null);
+    setIsSubmittingLead(true);
+
+    const convo = conversationText();
+    const saved = await insertLead({
+      name,
+      phone,
+      email,
+      service_interest: serviceInterest || "General inquiry",
+      source: "jade_chat",
+      conversation: convo,
+    });
+
+    // Always email Jeff too — the worker/D1 is the database of record,
+    // email is the instant notification.
+    try {
+      await apiService.sendContactEmail({
+        full_name: name,
+        email: email || ((import.meta.env.VITE_CONTACT_EMAIL as string) ?? "info@jeffhonforlocophotos.com"),
+        phone,
+        message:
+          `[NEW CHAT LEAD — Jade]\n` +
+          `Name: ${name}\nPhone: ${phone || "—"}\nEmail: ${email || "—"}\n` +
+          `Interested in: ${serviceInterest || "General inquiry"}\n` +
+          `Saved to database: ${saved ? "yes" : "NO — worker not configured, email only"}\n\n` +
+          `--- CONVERSATION ---\n${convo}\n--- END CONVERSATION ---`,
+        service_type: serviceInterest || "Chat Inquiry",
+        budget_range: "",
+        event_date: "",
+        location: "United States",
+      });
+    } catch {
+      // Email failed but the lead may still be saved — don't block the UX.
+    }
+
+    try {
+      sessionStorage.setItem(LEAD_KEY, "1");
+    } catch { /* ignore */ }
+    setLeadSubmitted(true);
+    setShowLeadForm(false);
+    setIsSubmittingLead(false);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: `Thanks ${name.split(" ")[0]} — you're in. Jeff will personally reach out ${phone ? `at ${phone}` : `at ${email}`} within 24 hours. Anything else you'd like to know meanwhile?`,
+        timestamp: Date.now(),
+      },
+    ]);
   }
 
   async function submitQuoteToJeff() {
     if (messages.length === 0 || isSubmittingQuote) return;
     setIsSubmittingQuote(true);
-    const conversationText = messages
-      .map((m) => `${m.role === "user" ? "Client" : "Studio AI"}: ${m.content}`)
-      .join("\n\n");
+    const convo = conversationText();
+    const leadLine = leadSubmitted
+      ? `Client contact: ${leadName.trim()}${leadPhone.trim() ? ` · ${leadPhone.trim()}` : ""}${leadEmail.trim() ? ` · ${leadEmail.trim()}` : ""}\n\n`
+      : "";
     try {
       await apiService.sendContactEmail({
-        full_name: "Chat Inquiry — Pending Jeff Approval",
+        full_name: leadSubmitted ? leadName.trim() : "Chat Inquiry — Pending Jeff Approval",
         email: import.meta.env.VITE_CONTACT_EMAIL as string ?? "info@jeffhonforlocophotos.com",
         phone: "",
-        message: `[CUSTOM QUOTE REQUEST — AI NEGOTIATION]\n\nA client negotiated a custom package via the studio chatbot and is requesting Jeff's approval.\n\n--- CONVERSATION ---\n${conversationText}\n\n--- END CONVERSATION ---\n\nPlease review and contact the client directly to confirm pricing.`,
+        message: `[CUSTOM QUOTE REQUEST — AI NEGOTIATION]\n\n${leadLine}A client negotiated a custom package via the studio chatbot and is requesting Jeff's approval.\n\n--- CONVERSATION ---\n${convo}\n\n--- END CONVERSATION ---\n\nPlease review and contact the client directly to confirm pricing.`,
         service_type: "Custom Quote",
         budget_range: "AI Negotiated",
         event_date: "",
@@ -345,6 +443,70 @@ export default function SalesChatbot() {
                 </div>
               </div>
             ))}
+
+            {/* Lead capture card — appears once the visitor is engaged */}
+            {showLeadForm && !leadSubmitted && (
+              <div className="flex justify-start">
+                <div className="max-w-[92%] bg-photo-gray-800 border border-photo-red/40 rounded-2xl rounded-tl-sm px-4 py-3 space-y-2.5">
+                  <p className="text-sm text-photo-white leading-relaxed">
+                    <span className="font-semibold">Where should Jeff send your quote?</span>
+                    <span className="block text-photo-gray-400 text-xs mt-1">
+                      Drop your details — he'll personally follow up within 24 hours.
+                    </span>
+                  </p>
+                  <div className="flex items-center gap-2 bg-photo-gray-900 border border-photo-gray-700 rounded-xl px-3 py-2">
+                    <User size={14} className="text-photo-gray-500 flex-shrink-0" />
+                    <input
+                      type="text"
+                      value={leadName}
+                      onChange={(e) => setLeadName(e.target.value)}
+                      placeholder="Your name"
+                      maxLength={80}
+                      className="flex-1 bg-transparent text-photo-white placeholder-photo-gray-500 text-sm outline-none"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="tel"
+                      value={leadPhone}
+                      onChange={(e) => setLeadPhone(e.target.value)}
+                      placeholder="Phone"
+                      maxLength={20}
+                      className="bg-photo-gray-900 border border-photo-gray-700 rounded-xl px-3 py-2 text-photo-white placeholder-photo-gray-500 text-sm outline-none focus:border-photo-red"
+                    />
+                    <input
+                      type="email"
+                      value={leadEmail}
+                      onChange={(e) => setLeadEmail(e.target.value)}
+                      placeholder="Email"
+                      maxLength={120}
+                      className="bg-photo-gray-900 border border-photo-gray-700 rounded-xl px-3 py-2 text-photo-white placeholder-photo-gray-500 text-sm outline-none focus:border-photo-red"
+                    />
+                  </div>
+                  {leadError && (
+                    <p className="text-red-400 text-xs">{leadError}</p>
+                  )}
+                  <button
+                    onClick={submitLead}
+                    disabled={isSubmittingLead}
+                    className="w-full flex items-center justify-center gap-2 bg-photo-red hover:bg-photo-red-hover text-white text-sm font-semibold px-3 py-2.5 rounded-xl transition-colors disabled:opacity-50"
+                  >
+                    {isSubmittingLead ? (
+                      <Loader2 size={15} className="animate-spin" />
+                    ) : (
+                      <CheckCircle size={15} />
+                    )}
+                    {isSubmittingLead ? "Saving…" : "Send my details to Jeff"}
+                  </button>
+                  <button
+                    onClick={() => setShowLeadForm(false)}
+                    className="w-full text-photo-gray-500 hover:text-photo-gray-300 text-xs transition-colors"
+                  >
+                    Not now
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Typing indicator */}
             {isLoading && (

@@ -77,6 +77,7 @@ const AdminGalleries: React.FC = () => {
   /* ---- detail ---- */
   const openGallery = async (g: Gallery) => {
     setSelected(g); setDetailLoading(true); setError(null);
+    setPhotos([]); setSelections([]); // don't show the previous gallery's photos on a failed load
     try {
       const [pRes, sRes] = await Promise.all([
         fetch(apiUrl(`/api/v1/admin/galleries/${g.id}`), { headers: authHeaders() }),
@@ -219,20 +220,20 @@ const AdminGalleries: React.FC = () => {
           </div>
         </div>
 
-        {error && <div className="flex items-start gap-2 rounded-lg border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
+        {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
         {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
 
         {/* Upload */}
-        <Card className="border-rose-200/70">
+        <Card className="border-[#c8102e]/30">
           <CardContent className="pt-6">
             <div
               onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
               onDragLeave={() => setDragOver(false)}
               onDrop={(e) => { e.preventDefault(); setDragOver(false); void uploadFiles(e.dataTransfer.files); }}
-              className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-8 text-center transition-colors ${dragOver ? 'border-rose-500 bg-rose-50' : 'border-slate-300 bg-slate-50/60'}`}
+              className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-8 text-center transition-colors ${dragOver ? 'border-[#c8102e] bg-[#c8102e]/10' : 'border-neutral-800 bg-neutral-900/60'}`}
             >
-              {uploading ? <><RefreshCw className="h-7 w-7 animate-spin text-rose-600" /><p className="mt-2 text-sm font-medium">Uploading...</p></>
-                : <><Upload className="h-7 w-7 text-slate-400" /><p className="mt-2 text-sm font-medium">Drag & drop shoot photos here</p>
+              {uploading ? <><RefreshCw className="h-7 w-7 animate-spin text-[#c8102e]" /><p className="mt-2 text-sm font-medium">Uploading...</p></>
+                : <><Upload className="h-7 w-7 text-neutral-500" /><p className="mt-2 text-sm font-medium">Drag & drop shoot photos here</p>
                   <Button variant="outline" size="sm" className="mt-2" onClick={() => fileRef.current?.click()}><Plus className="mr-2 h-4 w-4" />Browse</Button></>}
               <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
                 onChange={(e) => { if (e.target.files) void uploadFiles(e.target.files); e.target.value = ''; }} />
@@ -241,14 +242,14 @@ const AdminGalleries: React.FC = () => {
         </Card>
 
         {/* Photos */}
-        <Card className="border-slate-200/80 shadow-sm">
+        <Card className="border-neutral-800 shadow-sm">
           <CardHeader><CardTitle className="text-[15px]">Photos ({photos.length})</CardTitle></CardHeader>
           <CardContent>
             {detailLoading ? <p className="text-sm text-muted-foreground">Loading...</p>
               : photos.length === 0 ? <p className="text-sm text-muted-foreground">No photos yet — upload the shoot above.</p>
               : <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {photos.map((p) => (
-                  <div key={p.id} className="group relative overflow-hidden rounded-lg border border-slate-200">
+                  <div key={p.id} className="group relative overflow-hidden rounded-lg border border-neutral-800">
                     <img src={p.thumbnail_url || p.url} alt={p.title || ''} className="aspect-square w-full object-cover" loading="lazy" />
                     <button onClick={() => deletePhoto(p.id)}
                       className="absolute right-2 top-2 rounded-md bg-slate-950/70 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100" aria-label="Delete photo">
@@ -261,10 +262,10 @@ const AdminGalleries: React.FC = () => {
         </Card>
 
         {/* Client selections */}
-        <Card className="border-slate-200/80 shadow-sm">
+        <Card className="border-neutral-800 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-[15px]">
-              <Heart className="h-4 w-4 text-rose-600" />Client Picks ({selections.length})
+              <Heart className="h-4 w-4 text-[#c8102e]" />Client Picks ({selections.length})
             </CardTitle>
             <CardDescription>Photos your client marked as favorites</CardDescription>
           </CardHeader>
@@ -273,7 +274,7 @@ const AdminGalleries: React.FC = () => {
               ? <p className="text-sm text-muted-foreground">No picks yet — they'll appear here when your client selects favorites.</p>
               : <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {selections.map((s) => (
-                  <div key={s.id} className="overflow-hidden rounded-lg border border-slate-200">
+                  <div key={s.id} className="overflow-hidden rounded-lg border border-neutral-800">
                     <img src={s.photo_url} alt={s.photo_title || ''} className="aspect-square w-full object-cover" loading="lazy" />
                     <div className="p-2">
                       <p className="truncate text-xs font-medium">{s.client_name || s.client_email || 'Client'}</p>
@@ -299,30 +300,30 @@ const AdminGalleries: React.FC = () => {
         </div>
         <div className="flex gap-2">
           <Button onClick={fetchGalleries} variant="outline" size="sm"><RefreshCw className="mr-2 h-4 w-4" />Refresh</Button>
-          <Button onClick={() => setCreateOpen(true)} size="sm" className="bg-rose-600 hover:bg-rose-700">
+          <Button onClick={() => setCreateOpen(true)} size="sm" className="bg-[#c8102e] hover:bg-[#a50d26]">
             <Plus className="mr-2 h-4 w-4" />New Gallery
           </Button>
         </div>
       </div>
 
-      {error && <div className="flex items-start gap-2 rounded-lg border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
+      {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
       {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
 
       {loading ? (
         <p className="text-sm text-muted-foreground">Loading galleries...</p>
       ) : galleries.length === 0 ? (
-        <Card className="border-slate-200/80">
+        <Card className="border-neutral-800">
           <CardContent className="flex flex-col items-center py-16 text-center">
             <Images className="h-10 w-10 text-slate-300" />
             <p className="mt-3 font-medium">No galleries yet</p>
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">Create a private gallery for a client's shoot, upload the photos, and send them the link to pick favorites.</p>
-            <Button className="mt-4 bg-rose-600 hover:bg-rose-700" onClick={() => setCreateOpen(true)}><Plus className="mr-2 h-4 w-4" />Create your first gallery</Button>
+            <Button className="mt-4 bg-[#c8102e] hover:bg-[#a50d26]" onClick={() => setCreateOpen(true)}><Plus className="mr-2 h-4 w-4" />Create your first gallery</Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {galleries.map((g) => (
-            <Card key={g.id} className="border-slate-200/80 shadow-sm transition-shadow hover:shadow-md">
+            <Card key={g.id} className="border-neutral-800 shadow-sm transition-shadow hover:shadow-md">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -338,7 +339,7 @@ const AdminGalleries: React.FC = () => {
                   <span className="inline-flex items-center gap-1"><Images className="h-3.5 w-3.5" />{g.photo_count}</span>
                   <span className="inline-flex items-center gap-1"><Heart className="h-3.5 w-3.5" />{g.selection_count} picks</span>
                 </div>
-                <div className="mt-3 flex items-center gap-1 rounded-lg bg-slate-50 px-2 py-1.5 text-[11px] text-muted-foreground">
+                <div className="mt-3 flex items-center gap-1 rounded-lg bg-neutral-900 px-2 py-1.5 text-[11px] text-muted-foreground">
                   <Link2 className="h-3 w-3 shrink-0" />
                   <span className="truncate">{window.location.origin}{g.share_url}</span>
                 </div>
@@ -363,6 +364,7 @@ const AdminGalleries: React.FC = () => {
             <DialogDescription>A private proofing page for one shoot. You'll get a shareable link.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
             <div><Label>Shoot title *</Label><Input className="mt-1.5" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. Smith Wedding — Previews" /></div>
             <div className="grid grid-cols-2 gap-4">
               <div><Label>Client name</Label><Input className="mt-1.5" value={form.client_name} onChange={(e) => setForm({ ...form, client_name: e.target.value })} placeholder="Jane Smith" /></div>
@@ -374,7 +376,7 @@ const AdminGalleries: React.FC = () => {
             </div>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
-              <Button onClick={createGallery} disabled={creating} className="bg-rose-600 hover:bg-rose-700">
+              <Button onClick={createGallery} disabled={creating} className="bg-[#c8102e] hover:bg-[#a50d26]">
                 {creating ? 'Creating...' : 'Create Gallery'}
               </Button>
             </div>

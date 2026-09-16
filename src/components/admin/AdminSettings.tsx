@@ -140,10 +140,20 @@ const AdminSettings: React.FC = () => {
 
       // Legacy site settings (best effort)
       try {
-        const res = await fetch(apiUrl('/api/v1/admin/settings'), { headers: authHeaders() });
+        const res = await fetch(apiUrl('/api/v1/settings'), { headers: authHeaders() });
         if (res.ok) {
           const d = await res.json();
-          if (d.success && d.data) setSettings({ ...DEFAULT_SITE, ...d.data });
+          if (d.success && d.data) {
+            // Worker stores snake_case keys — map the ones this form edits
+            const s = d.data as Record<string, string>;
+            setSettings((prev) => ({
+              ...prev,
+              siteName: s.site_name || prev.siteName,
+              siteDescription: s.site_description || prev.siteDescription,
+              adminEmail: s.contact_email || prev.adminEmail,
+            }));
+            if (s.contact_phone) setLocation((prev) => ({ ...prev, phone: s.contact_phone }));
+          }
         }
       } catch {
         /* non-fatal */
@@ -158,6 +168,7 @@ const AdminSettings: React.FC = () => {
   useEffect(() => { void fetchAll(); }, [fetchAll]);
 
   const saveLocation = async () => {
+    if (!location.city.trim() || !location.state.trim()) { setError('City and state are required.'); return; }
     try {
       setSavingLocation(true);
       setError(null);
@@ -184,10 +195,17 @@ const AdminSettings: React.FC = () => {
     try {
       setSavingSite(true);
       setError(null);
-      const res = await fetch(apiUrl('/api/v1/admin/settings'), {
+      // The worker only persists its allowed keys — map this form to them.
+      // (Theme, timezone, toggles etc. are display-only for now.)
+      const res = await fetch(apiUrl('/api/v1/settings'), {
         method: 'PUT',
         headers: authHeaders(),
-        body: JSON.stringify(settings),
+        body: JSON.stringify({
+          site_name: settings.siteName,
+          site_description: settings.siteDescription,
+          contact_email: settings.adminEmail,
+          contact_phone: location.phone,
+        }),
       });
       const d = await res.json().catch(() => ({}));
       if (!res.ok || !d.success) throw new Error(d.error || d.message || 'Failed to save settings');
@@ -232,18 +250,18 @@ const AdminSettings: React.FC = () => {
         </div>
       )}
       {error && (
-        <div className="flex items-start gap-2 rounded-lg border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+        <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}
         </div>
       )}
 
       {/* Studio Location — the headline feature */}
-      <Card className="border-rose-200/70 shadow-sm">
+      <Card className="border-[#c8102e]/30 shadow-sm">
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <div>
               <CardTitle className="flex items-center gap-2 text-[16px]">
-                <span className="rounded-lg bg-rose-100 p-1.5 text-rose-600"><MapPin className="h-4 w-4" /></span>
+                <span className="rounded-lg bg-[#c8102e]/15 p-1.5 text-[#c8102e]"><MapPin className="h-4 w-4" /></span>
                 Studio Location
               </CardTitle>
               <CardDescription className="mt-1">
@@ -278,7 +296,7 @@ const AdminSettings: React.FC = () => {
               <Input value={location.region} onChange={(e) => setLoc('region', e.target.value)} placeholder="New England" />
             </Field>
             <Field label="Display Preview" hint="How it appears on the site">
-              <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium">
+              <div className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2.5 text-sm font-medium">
                 {location.city}, {location.stateCode || location.state} · {location.country}
               </div>
             </Field>
@@ -300,7 +318,7 @@ const AdminSettings: React.FC = () => {
             </Field>
           </div>
           <div className="flex justify-end">
-            <Button onClick={saveLocation} disabled={savingLocation} className="bg-rose-600 hover:bg-rose-700">
+            <Button onClick={saveLocation} disabled={savingLocation} className="bg-[#c8102e] hover:bg-[#a50d26]">
               <Save className="mr-2 h-4 w-4" />{savingLocation ? 'Saving...' : 'Save Location'}
             </Button>
           </div>
@@ -308,10 +326,10 @@ const AdminSettings: React.FC = () => {
       </Card>
 
       {/* General site settings */}
-      <Card className="border-slate-200/80 shadow-sm">
+      <Card className="border-neutral-800 shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-[15px]">
-            <Globe className="h-4 w-4 text-slate-500" />General
+            <Globe className="h-4 w-4 text-neutral-500" />General
           </CardTitle>
           <CardDescription>Basic site configuration</CardDescription>
         </CardHeader>
@@ -349,10 +367,10 @@ const AdminSettings: React.FC = () => {
 
       {/* Appearance + Email + Security + System in a 2-col grid */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="border-slate-200/80 shadow-sm">
+        <Card className="border-neutral-800 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-[15px]">
-              <Palette className="h-4 w-4 text-slate-500" />Appearance
+              <Palette className="h-4 w-4 text-neutral-500" />Appearance
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -378,14 +396,14 @@ const AdminSettings: React.FC = () => {
                 </Select>
               </Field>
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3">
+            <div className="flex items-center justify-between rounded-lg border border-neutral-800 px-4 py-3">
               <div>
                 <p className="text-sm font-medium">Email Notifications</p>
                 <p className="text-xs text-muted-foreground">Alerts for new inquiries & bookings</p>
               </div>
               <Switch checked={settings.emailNotifications} onCheckedChange={(v) => setSite('emailNotifications', v)} />
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3">
+            <div className="flex items-center justify-between rounded-lg border border-neutral-800 px-4 py-3">
               <div>
                 <p className="text-sm font-medium">Analytics</p>
                 <p className="text-xs text-muted-foreground">Track visits and conversions</p>
@@ -395,21 +413,21 @@ const AdminSettings: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200/80 shadow-sm">
+        <Card className="border-neutral-800 shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-[15px]">
-              <Shield className="h-4 w-4 text-slate-500" />Security & System
+              <Shield className="h-4 w-4 text-neutral-500" />Security & System
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3">
+            <div className="flex items-center justify-between rounded-lg border border-neutral-800 px-4 py-3">
               <div>
                 <p className="text-sm font-medium">Maintenance Mode</p>
                 <p className="text-xs text-muted-foreground">Temporarily hide the public site</p>
               </div>
               <Switch checked={settings.maintenanceMode} onCheckedChange={(v) => setSite('maintenanceMode', v)} />
             </div>
-            <div className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3">
+            <div className="flex items-center justify-between rounded-lg border border-neutral-800 px-4 py-3">
               <div>
                 <p className="text-sm font-medium">Automatic Backups</p>
                 <p className="text-xs text-muted-foreground">Database & file backups</p>
@@ -438,25 +456,23 @@ const AdminSettings: React.FC = () => {
       </div>
 
       {/* Status strip */}
-      <Card className="border-slate-200/80 shadow-sm">
+      <Card className="border-neutral-800 shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-[15px]">
-            <Server className="h-4 w-4 text-slate-500" />System Status
+            <Server className="h-4 w-4 text-neutral-500" />System Status
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-            {(
-              [
-                ['Location', locationSource === 'supabase' ? 'Live' : 'Default', locationSource === 'supabase'],
-                ['Maintenance', settings.maintenanceMode ? 'On' : 'Off', !settings.maintenanceMode],
-                ['Email alerts', settings.emailNotifications ? 'On' : 'Off', settings.emailNotifications],
-                ['Analytics', settings.analyticsEnabled ? 'On' : 'Off', settings.analyticsEnabled],
-                ['Backups', settings.backupEnabled ? 'On' : 'Off', settings.backupEnabled],
-                ['Security', settings.securityLevel, true],
-              ] as [string, string, boolean][]
-            ).map(([label, value, good]) => (
-              <div key={label} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-2">
+            {[
+              ['Location', locationSource === 'supabase' ? 'Live' : 'Default', locationSource === 'supabase'],
+              ['Maintenance', settings.maintenanceMode ? 'On' : 'Off', !settings.maintenanceMode],
+              ['Email alerts', settings.emailNotifications ? 'On' : 'Off', settings.emailNotifications],
+              ['Analytics', settings.analyticsEnabled ? 'On' : 'Off', settings.analyticsEnabled],
+              ['Backups', settings.backupEnabled ? 'On' : 'Off', settings.backupEnabled],
+              ['Security', settings.securityLevel, true],
+            ].map(([label, value, good]) => (
+              <div key={label} className="flex items-center justify-between gap-2 rounded-lg border border-neutral-800 px-3 py-2">
                 <span className="text-xs font-medium text-muted-foreground">{label}</span>
                 <Badge variant="outline" className={good ? 'border-emerald-300 text-emerald-700 capitalize' : 'border-amber-300 text-amber-700 capitalize'}>
                   {value}
