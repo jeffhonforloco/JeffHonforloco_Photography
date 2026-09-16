@@ -1,1 +1,3 @@
-/* /app.html 200
+# SPA fallback handled by functions/[[path]].js
+# (Cloudflare rejects /* /index.html 200 as false-positive infinite loop,
+#  and /* /app.html 200 causes 308 normalization issues)
