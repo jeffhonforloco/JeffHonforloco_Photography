@@ -29,6 +29,7 @@ const DynamicPage = lazy(() => import("./pages/DynamicPage"));
 const Shop = lazy(() => import("./pages/Shop"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const ShopSuccess = lazy(() => import("./pages/ShopSuccess"));
+const SignContract = lazy(() => import("./pages/SignContract"));
 const CartDrawer = lazy(() => import("./components/shop/CartDrawer"));
 const CartProvider = lazy(() => import("./components/shop/CartContext").then((m) => ({ default: m.CartProvider })));
 const Services = lazy(() => import("./pages/Services"));
@@ -197,6 +198,8 @@ export const AppContent = () => {
                 <Route path="/admin/*" element={<AdminTransition />} />
                 {/* Client proofing galleries */}
                 <Route path="/proof/:slug" element={<ProofGallery />} />
+                {/* Public contract signing (token-gated, no login) */}
+                <Route path="/sign/:token" element={<SignContract />} />
                 {/* Shop — hidden (404) until Jeff flips it ON in Admin → Shop → Settings */}
                 <Route element={<ShopShell />}>
                   <Route path="/shop" element={<Shop />} />

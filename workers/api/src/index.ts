@@ -17,6 +17,7 @@ import { galleries, proof } from './routes/galleries';
 import { pages, publicPages } from './routes/pages';
 import { campaigns, resendWebhook, processDueEmailCampaigns } from './routes/campaigns';
 import { shopPublic, shopAdmin, stripeWebhook } from './routes/shop';
+import { contracts, contractSign } from './routes/contracts';
 import growthRoutes    from './routes/growth';
 
 const app = new Hono<AppEnv>();
@@ -52,6 +53,8 @@ app.route('/api/v1/webhooks', resendWebhook);
 app.route('/api/v1/shop', shopPublic);
 app.route('/api/v1/admin/shop', shopAdmin);
 app.route('/api/v1/webhooks', stripeWebhook);
+app.route('/api/v1/admin/contracts', contracts);
+app.route('/api/v1/contracts', contractSign);
 
 // 404 fallback
 app.notFound((c) => c.json({ error: 'Not found' }, 404));

@@ -40,6 +40,7 @@ const navigation = [
     { name: 'Analytics (legacy)', path: 'analytics', icon: BarChart3 },
     { name: 'Campaigns', path: 'campaigns', icon: Megaphone },
     { name: 'Shop', path: 'shop', icon: ShoppingBag },
+    { name: 'Contracts', path: 'contracts', icon: FileText },
     { name: 'Email / Follow-up', path: 'email', icon: Mail },
     { name: 'Database', path: 'database', icon: BriefcaseBusiness },
     { name: 'Security', path: 'security', icon: Shield },
