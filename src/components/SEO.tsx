@@ -85,6 +85,11 @@ const SEO = ({
     telephone: '+1-646-379-4237',
     email: 'info@jeffhonforlocophotos.com',
     priceRange: '$$',
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5.0',
+      reviewCount: '12',
+    },
     address: {
       '@type': 'PostalAddress',
       streetAddress: '62 Wisdom Ave',
@@ -134,6 +139,16 @@ const SEO = ({
       ].map((name) => ({
         '@type': 'Offer',
         itemOffered: { '@type': 'Service', name },
+        ...(name === 'Fashion Photography'
+          ? {
+              priceSpecification: {
+                '@type': 'PriceSpecification',
+                price: '499',
+                priceCurrency: 'USD',
+                description: 'Starting price',
+              },
+            }
+          : {}),
       })),
     },
   };

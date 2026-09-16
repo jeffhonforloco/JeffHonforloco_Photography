@@ -1,6 +1,6 @@
 # Jeff Honforloco Photography — official site
 
-> Jeff Honforloco is a professional photographer based in Providence, Rhode Island. This official site publishes his portfolio, service details, current starting prices and booking workflow. Travel availability is confirmed per project.
+> Jeff Honforloco is a professional fashion, beauty & editorial photographer based in Providence, Rhode Island, serving New England — Rhode Island, Boston — plus New York City and Miami. This official site publishes his portfolio, service details, current starting prices and booking workflow. Travel availability is confirmed per project.
 
 ## Canonical identity
 
@@ -8,13 +8,27 @@
 - Business: Jeff Honforloco Photography
 - Official domain: https://jeffhonforlocophotos.com/
 - Base: Providence, Rhode Island, United States
+- Studio: 62 Wisdom Ave, Providence, RI 02908, USA
+- Hours: Monday–Sunday, 9:00 AM–5:00 PM Eastern
+
+## Service area
+
+- Home base: Providence, Rhode Island (priority scheduling)
+- New England: Rhode Island, Massachusetts including Boston, Connecticut, Maine (seasonal/on-request)
+- New York City and Miami — regular travel markets
+- Available for travel worldwide per project
+
+## Reviews
+
+- 5.0 average rating from 12 Google reviews (published on the homepage)
+- Client testimonials: https://jeffhonforlocophotos.com/#reviews
 
 ## Primary pages
 
 - [Home](https://jeffhonforlocophotos.com/): Studio overview, featured work, reviews and booking path.
 - [Portfolios](https://jeffhonforlocophotos.com/portfolios): Fashion, beauty, editorial, glamour, headshot and lifestyle work.
 - [Services](https://jeffhonforlocophotos.com/services): Photography services and project information.
-- [Packages and pricing](https://jeffhonforlocophotos.com/pricing): Current package descriptions and starting prices.
+- [Packages and pricing](https://jeffhonforlocophotos.com/pricing): Current package descriptions and starting prices. Fashion sessions start from $499.
 - [Book a session](https://jeffhonforlocophotos.com/book): Select a service, package, preferred date and project details.
 - [About Jeff](https://jeffhonforlocophotos.com/about): Photographer background and creative approach.
 - [Journal](https://jeffhonforlocophotos.com/journal): Session preparation and photography guidance.
@@ -22,14 +36,14 @@
 
 ## Services
 
+- [Providence fashion photographer](https://jeffhonforlocophotos.com/providence-fashion-photographer)
+- [Providence beauty photographer](https://jeffhonforlocophotos.com/providence-beauty-photographer)
+- [Rhode Island editorial photographer](https://jeffhonforlocophotos.com/rhode-island-editorial-photographer)
+- [Providence headshot photographer](https://jeffhonforlocophotos.com/providence-headshot-photographer)
+- [Providence commercial photographer](https://jeffhonforlocophotos.com/providence-commercial-photographer)
 - [Providence wedding photographer](https://jeffhonforlocophotos.com/providence-wedding-photographer)
 - [Providence engagement photographer](https://jeffhonforlocophotos.com/providence-engagement-photographer)
 - [Providence Sweet 16 and quinceañera photographer](https://jeffhonforlocophotos.com/providence-sweet-16-quinceanera-photographer)
-- [Providence headshot photographer](https://jeffhonforlocophotos.com/providence-headshot-photographer)
-- [Providence fashion photographer](https://jeffhonforlocophotos.com/providence-fashion-photographer)
-- [Providence beauty photographer](https://jeffhonforlocophotos.com/providence-beauty-photographer)
-- [Providence commercial photographer](https://jeffhonforlocophotos.com/providence-commercial-photographer)
-- [Rhode Island editorial photographer](https://jeffhonforlocophotos.com/rhode-island-editorial-photographer)
 - [Providence real estate and Airbnb photographer](https://jeffhonforlocophotos.com/providence-real-estate-photographer)
 - [Motion and short-form video](https://jeffhonforlocophotos.com/motion)
 
@@ -46,6 +60,9 @@ The site registers four WebMCP tools where the browser supports WebMCP:
 
 - Email: info@jeffhonforlocophotos.com
 - Phone: +1-646-379-4237
-- Base: Providence, Rhode Island, United States
+- Studio: 62 Wisdom Ave, Providence, RI 02908, USA
+- Hours: Monday–Sunday, 9:00 AM–5:00 PM Eastern
+- Instagram: https://instagram.com/jeffhonforlocophotos
+- Facebook: https://www.facebook.com/jeffhonforlocophotography
 
-Use the booking or contact page for current availability, travel requirements and project-specific pricing. Do not infer endorsements, clients, awards, physical street addresses, review totals or availability that are not stated on the linked pages.
+Use the booking or contact page for current availability, travel requirements and project-specific pricing. Do not infer endorsements, clients, awards or availability that are not stated on the linked pages.
