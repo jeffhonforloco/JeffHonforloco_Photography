@@ -38,16 +38,17 @@ function getSupabaseConfig(): SupabaseConfig | null {
 /**
  * Insert a lead into Supabase. Returns true on success, false on any failure.
  */
-export async function insertLead(input: LeadInput): Promise<boolean> {
+export async function insertLead(input: LeadInput): Promise<{ok: boolean; error?: string}> {
   try {
     const config = getSupabaseConfig();
     if (!config) {
-      console.warn('[leads] Supabase not configured (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY missing) — skipping DB insert.');
-      return false;
+      const msg = 'Supabase not configured (URL/key missing)';
+      console.warn('[leads]', msg);
+      return {ok: false, error: msg};
     }
 
     const name = (input.name || '').trim();
-    if (!name) return false;
+    if (!name) return {ok: false, error: 'Name is empty'};
 
     const row = {
       name,
@@ -71,13 +72,15 @@ export async function insertLead(input: LeadInput): Promise<boolean> {
 
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      console.warn('[leads] Supabase insert failed:', res.status, text.slice(0, 200));
-      return false;
+      const msg = `HTTP ${res.status}: ${text.slice(0, 200)}`;
+      console.warn('[leads] Supabase insert failed:', msg);
+      return {ok: false, error: msg};
     }
 
-    return true;
+    return {ok: true};
   } catch (err) {
-    console.warn('[leads] Supabase insert error:', err);
-    return false;
+    const msg = `Exception: ${err instanceof Error ? err.message : String(err)}`;
+    console.warn('[leads] Supabase insert error:', msg);
+    return {ok: false, error: msg};
   }
 }
