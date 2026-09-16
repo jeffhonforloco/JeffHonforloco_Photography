@@ -14,7 +14,7 @@ const SITE_URL = 'https://jeffhonforlocophotos.com';
 const SITE_NAME = 'Jeff Honforloco Photography';
 const DEFAULT_IMAGE = '/images/optimized/IMG_7671-960.webp?v=20260901';
 const DEFAULT_DESCRIPTION =
-  'Fashion, beauty, editorial, headshot, event and commercial photography by Jeff Honforloco. Based in Providence, Rhode Island and available for travel.';
+  'Fashion, beauty & editorial photographer in Providence, RI — serving Rhode Island, Boston, NYC & Miami. Published pricing. Book your shoot today.';
 
 const normalizePath = (value: string): string => {
   if (value.startsWith('http')) return value;
@@ -23,7 +23,7 @@ const normalizePath = (value: string): string => {
 };
 
 const SEO = ({
-  title = 'Jeff Honforloco Photography | Fashion, Beauty & Editorial Photographer',
+  title = 'Providence Fashion Photographer | Jeff Honforloco Photography',
   description = DEFAULT_DESCRIPTION,
   image = DEFAULT_IMAGE,
   url,
@@ -84,12 +84,25 @@ const SEO = ({
     image: fullImage,
     telephone: '+1-646-379-4237',
     email: 'info@jeffhonforlocophotos.com',
-    priceRange: '$$$',
+    priceRange: '$$',
     address: {
       '@type': 'PostalAddress',
+      streetAddress: '62 Wisdom Ave',
       addressLocality: 'Providence',
       addressRegion: 'RI',
+      postalCode: '02908',
       addressCountry: 'US',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 41.828649,
+      longitude: -71.441646,
+    },
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '09:00',
+      closes: '17:00',
     },
     founder: { '@id': `${SITE_URL}/#person` },
     areaServed: [
