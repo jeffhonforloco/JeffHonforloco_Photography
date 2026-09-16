@@ -49,7 +49,7 @@ const FaqSection = () => {
 
   return (
     <section className="py-32 md:py-40 bg-photo-black relative overflow-hidden">
-      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="relative max-w-5xl mx-auto px-8 md:px-16">
         <div className="text-center mb-16">
           <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">
