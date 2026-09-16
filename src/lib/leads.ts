@@ -55,7 +55,7 @@ export async function insertLead(input: LeadInput): Promise<boolean> {
       email: (input.email || '').trim() || null,
       service_interest: (input.service_interest || input.serviceInterest || 'General inquiry').trim(),
       source: (input.source || 'jade_chat').trim(),
-      conversation_text: (input.conversation || input.conversationText || '').trim() || null,
+      conversation: (input.conversation || input.conversationText || '').trim() || null,
     };
 
     const res = await fetch(`${config.url}/rest/v1/leads`, {
