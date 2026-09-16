@@ -1,18 +1,11 @@
 import Layout from '../components/Layout';
 import BookingSystem from '../components/BookingSystem';
-import SEO from '../components/SEO';
 import { Card, CardContent } from '@/components/ui/card';
 import { Camera, Star, Users, Award, CheckCircle, Clock, Sparkles } from 'lucide-react';
 
 const Book = () => {
   return (
     <Layout>
-      <SEO 
-        title="Book Your Session - Jeff Honforloco Photography"
-        description="Ready to elevate your brand, campaign, or portfolio? Book a consultation with photographer Jeff Honforloco."
-        url="/book"
-      />
-      
       <main className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
         {/* Hero Section */}
         <section className="relative pt-24 pb-12 px-6">

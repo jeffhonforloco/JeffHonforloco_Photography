@@ -23,6 +23,7 @@ const Book = lazy(() => import("./pages/Book"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
 const Pricing = lazy(() => import("./pages/Pricing"));
+const Privacy = lazy(() => import("./pages/Privacy"));
 const Services = lazy(() => import("./pages/Services"));
 const SalesChatbot = lazy(() => import("./components/SalesChatbot"));
 const Toaster = lazy(() => import("./components/ui/toaster").then((module) => ({ default: module.Toaster })));
@@ -167,6 +168,7 @@ export const AppContent = () => {
                 <Route path="/book" element={<Book />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/prep-guide" element={<PrepGuidePage />} />
+                <Route path="/privacy" element={<Privacy />} />
                 <Route path="/admin" element={<AdminTransition />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 {/* Retired thin location pages converge on the verified service hub. */}

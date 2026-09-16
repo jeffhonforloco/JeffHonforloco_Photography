@@ -22,6 +22,7 @@ const routes = [
   ['/journal', 'Photography Journal | Jeff Honforloco Photography', 'Practical guidance about preparing for portrait, fashion, beauty and editorial photography sessions.'],
   ['/motion', 'Motion & Video Portfolio | Jeff Honforloco Photography', 'View motion, campaign and short-form video work from Jeff Honforloco Photography.'],
   ['/prep-guide', 'Photography Session Prep Guide | Jeff Honforloco Photography', 'Prepare wardrobe, styling and creative details for your upcoming photography session.'],
+  ['/privacy', 'Privacy Policy | Jeff Honforloco Photography', 'How Jeff Honforloco Photography handles your information: inquiries, analytics, cookies, and your rights.'],
   ...serviceAuthorityMeta.map(({ path: route, title, description, image }) => [route, title, description, image]),
   ...journalMeta.map(({ path: route, title, description }) => [route, title, description]),
   ...['beauty', 'fashion', 'editorial', 'glamour', 'headshots', 'lifestyle'].map((category) => [

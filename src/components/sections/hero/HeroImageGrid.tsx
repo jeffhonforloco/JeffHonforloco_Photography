@@ -84,8 +84,7 @@ const HeroImageGrid = () => {
         <img
           src={isInitiallyVisible ? image.src : TRANSPARENT_PIXEL}
           data-hero-src={isInitiallyVisible ? undefined : image.src}
-          alt=""
-          aria-hidden="true"
+          alt={image.alt}
           className="hero-image absolute inset-0 h-full w-full object-cover scale-[1.01]"
           loading={isPriority ? 'eager' : 'lazy'}
           decoding="async"

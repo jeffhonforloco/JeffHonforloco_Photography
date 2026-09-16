@@ -39,7 +39,7 @@ const STATIC_META: Record<string, RouteMeta> = {
   },
   '/pricing': {
     title: 'Photography Packages & Pricing | Jeff Honforloco Photography',
-    description: 'Compare photography packages for portraits, fashion, beauty, editorial, weddings, events, real estate and motion projects.',
+    description: 'Clear, honest photography pricing across New England — Rhode Island, Massachusetts, Maine & Connecticut. Portrait sessions from $499. Headshots, beauty, fashion, editorial, wedding, events, real estate & motion.',
   },
   '/journal': {
     title: 'Photography Journal | Jeff Honforloco Photography',
@@ -52,6 +52,10 @@ const STATIC_META: Record<string, RouteMeta> = {
   '/prep-guide': {
     title: 'Photography Session Prep Guide | Jeff Honforloco Photography',
     description: 'Prepare wardrobe, styling and creative details for your upcoming photography session.',
+  },
+  '/privacy': {
+    title: 'Privacy Policy | Jeff Honforloco Photography',
+    description: 'How Jeff Honforloco Photography handles your information: inquiries, analytics, cookies, and your rights.',
   },
   '/admin': { title: 'Studio Admin', description: 'Studio administration.', noIndex: true },
   '/dashboard': { title: 'Studio Dashboard', description: 'Studio dashboard.', noIndex: true },

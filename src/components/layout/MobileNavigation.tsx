@@ -17,6 +17,7 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
     { name: 'Portfolios', href: '/portfolios' },
     { name: 'Motion', href: '/motion' },
     { name: 'Services', href: '/services' },
+    { name: 'Pricing', href: '/pricing' },
     { name: 'About', href: '/about' },
     { name: 'Journal', href: '/journal' },
     { name: 'Contact', href: '/contact' },
@@ -33,6 +34,13 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
     <>
       {/* Mobile Header Icons and Menu Button */}
       <div className="xl:hidden flex items-center space-x-3">
+        {/* Persistent Book CTA - mobile */}
+        <Link
+          to="/book"
+          className="bg-photo-red hover:bg-photo-red-hover text-white px-4 py-2 font-inter font-medium tracking-[0.18em] uppercase text-[10px] transition-colors duration-300"
+        >
+          Book
+        </Link>
         {/* Mobile menu button */}
         <button
           className="z-50 flex items-center justify-center"
@@ -72,6 +80,14 @@ const MobileNavigation = ({ isMenuOpen, setIsMenuOpen, onShareClick }: MobileNav
               {item.name}
             </Link>
           ))}
+          <Link
+            to="/book"
+            onClick={() => setIsMenuOpen(false)}
+            className="bg-photo-red hover:bg-photo-red-hover text-white px-10 py-4 font-inter font-medium tracking-[0.2em] uppercase text-sm transition-colors duration-300"
+            style={{ animationDelay: `${navigation.length * 0.1}s` }}
+          >
+            Book Now
+          </Link>
           <button
             onClick={() => {
               onShareClick();

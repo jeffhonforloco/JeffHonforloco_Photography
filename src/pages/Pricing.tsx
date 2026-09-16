@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Layout from '../components/Layout';
-import SEO from '../components/SEO';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -49,12 +48,6 @@ const Pricing = () => {
 
   return (
     <Layout>
-      <SEO
-        title="Pricing — Jeff Honforloco Photography | Rhode Island · Massachusetts · Maine · Connecticut"
-        description="Clear, honest photography pricing. Portrait sessions from $499, premium corporate team headshots custom-quoted. Headshots, beauty, fashion, editorial, wedding, events, real estate & motion video across New England."
-        url="/pricing"
-      />
-
       <main className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white">
 
         {/* ── Hero ── */}
