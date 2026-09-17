@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,28 @@ const AdminLogin: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  // Password managers and browser autofill can fill the inputs without
+  // firing React's onChange. That left the controlled state empty, so the
+  // Sign In button stayed disabled even though credentials were visible.
+  // Sync the real DOM values into state shortly after mount so autofilled
+  // credentials register and enable the button.
+  useEffect(() => {
+    const syncAutofill = () => {
+      setFormData(prev => {
+        const username = usernameRef.current?.value ?? prev.username;
+        const password = passwordRef.current?.value ?? prev.password;
+        if (username === prev.username && password === prev.password) return prev;
+        return { username, password };
+      });
+    };
+    const timers = [100, 400, 1000, 2000].map(ms => window.setTimeout(syncAutofill, ms));
+    return () => {
+      timers.forEach(t => window.clearTimeout(t));
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,8 +56,18 @@ const AdminLogin: React.FC = () => {
     if (error) setError(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Read credentials from the form itself: autofill may have bypassed
+    // React state, so the DOM is the source of truth here.
+    const fd = new FormData(e.currentTarget);
+    const username = String(fd.get('username') || '').trim();
+    const password = String(fd.get('password') || '');
+    if (!username || !password) {
+      setError('Please enter your email and password.');
+      return;
+    }
+    setFormData({ username, password });
     setLoading(true);
     setError(null);
 
@@ -45,7 +77,7 @@ const AdminLogin: React.FC = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ username, password })
       });
 
       const data = await response.json();
@@ -108,7 +140,9 @@ const AdminLogin: React.FC = () => {
                       id="username"
                       name="username"
                       type="text"
+                      autoComplete="username"
                       required
+                      ref={usernameRef}
                       value={formData.username}
                       onChange={handleInputChange}
                       className="pl-10"
@@ -126,7 +160,9 @@ const AdminLogin: React.FC = () => {
                       id="password"
                       name="password"
                       type={showPassword ? 'text' : 'password'}
+                      autoComplete="current-password"
                       required
+                      ref={passwordRef}
                       value={formData.password}
                       onChange={handleInputChange}
                       className="pl-10 pr-10"
