@@ -415,7 +415,6 @@ servicesPublic.post('/capture', async (c) => {
       'Content-Type': 'application/json',
       'PayPal-Request-Id': crypto.randomUUID(),
     },
-    body: JSON.stringify(orderBody),
   });
   const cdata = (await cres.json().catch(() => null)) as any;
   if (!cres.ok) {
