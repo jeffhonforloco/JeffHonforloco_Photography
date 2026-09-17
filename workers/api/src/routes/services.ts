@@ -13,6 +13,7 @@ import { Hono } from 'hono';
 import { requireAuth, requireAdmin } from '../middleware/auth';
 import { SERVICE_PRICING, findServicePricing } from '../lib/pricing';
 import { getPayPalEnv, getPayPalAccessToken, paypalMoney, paypalNotConfigured } from '../lib/paypal';
+import { sendEmail, escapeHtml } from '../lib/email';
 import type { AppEnv } from '../types';
 
 export const servicesPublic = new Hono<AppEnv>();
@@ -45,7 +46,8 @@ export async function ensureServicesSchema(db: D1Database) {
       status TEXT NOT NULL DEFAULT 'pending',
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-      paid_at TEXT
+      paid_at TEXT,
+      receipt_sent_at TEXT
     )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS service_settings (
       key TEXT PRIMARY KEY,
@@ -139,9 +141,46 @@ export async function markServicePaid(
   return (res.meta?.changes ?? 0) > 0;
 }
 
+
+/**
+ * Sends a one-off Resend receipt to the customer the first time a service
+ * payment transitions to 'paid'. Safe no-op when email is not configured,
+ * the receipt was already sent, or the payment is not paid. Never throws —
+ * email delivery must not break payment processing.
+ */
+export async function sendServiceReceipt(
+  db: D1Database,
+  env: { RESEND_API_KEY?: string },
+  paymentId: number,
+): Promise<void> {
+  try {
+    if (!env.RESEND_API_KEY) return;
+    const p = await db.prepare(`SELECT * FROM service_payments WHERE id = ?`).bind(paymentId).first<any>();
+    if (!p || p.status !== 'paid' || p.receipt_sent_at || !p.email) return;
+    const amount = `$${(p.amount_cents / 100).toFixed(2)}`;
+    const name = escapeHtml(p.customer_name || 'there');
+    const ok = await sendEmail(env.RESEND_API_KEY, {
+      to: p.email,
+      subject: `Payment received — ${p.service_name} (${p.payment_type})`,
+      html: `<p>Hi ${name},</p>
+<p>Thank you — we've received your <strong>${escapeHtml(p.payment_type)}</strong> payment of <strong>${amount} ${escapeHtml(p.currency || 'USD')}</strong> for <strong>${escapeHtml(p.service_name)} — ${escapeHtml(p.tier_name)}</strong>.</p>
+<p>Payment reference: ${escapeHtml(p.paypal_capture_id || String(p.id))}</p>
+<p>Jeff's studio will be in touch shortly to confirm the details of your session.</p>
+<p style="color:#666">Jeff Honforloco Photography<br/>info@jeffhonforlocophotos.com · +1-646-379-4237</p>`,
+    });
+    if (ok) {
+      await db.prepare(`UPDATE service_payments SET receipt_sent_at = ?, updated_at = ? WHERE id = ?`)
+        .bind(new Date().toISOString(), new Date().toISOString(), paymentId).run();
+    }
+  } catch (e) {
+    console.error('[services] receipt email failed:', e);
+  }
+}
+
 /** Webhook fan-out for service payments (called from the PayPal webhook in shop.ts). */
 export async function handleServicePaymentEvent(
   db: D1Database,
+  env: { RESEND_API_KEY?: string },
   type: string,
   relatedOrderId: string,
   resource: any,
@@ -151,7 +190,9 @@ export async function handleServicePaymentEvent(
   const captureId = typeof resource?.id === 'string' ? resource.id : null;
   if (type === 'PAYMENT.CAPTURE.COMPLETED') {
     const p = await db.prepare(`SELECT id FROM service_payments WHERE paypal_order_id = ?`).bind(relatedOrderId).first<{ id: number }>();
-    if (p) await markServicePaid(db, p.id, { paypal_capture_id: captureId });
+    if (p && (await markServicePaid(db, p.id, { paypal_capture_id: captureId }))) {
+      await sendServiceReceipt(db, env, p.id);
+    }
   } else if (type === 'PAYMENT.CAPTURE.DENIED') {
     await db.prepare(`UPDATE service_payments SET status = 'failed', updated_at = ? WHERE paypal_order_id = ? AND status = 'pending'`)
       .bind(now, relatedOrderId).run();
@@ -386,7 +427,9 @@ servicesPublic.post('/capture', async (c) => {
 
   const capture = cdata?.purchase_units?.[0]?.payments?.captures?.[0];
   const captureId: string | null = typeof capture?.id === 'string' ? capture.id : null;
-  await markServicePaid(db, payment.id, { paypal_capture_id: captureId });
+  if (await markServicePaid(db, payment.id, { paypal_capture_id: captureId })) {
+    await sendServiceReceipt(db, c.env, payment.id);
+  }
   return c.json({ success: true, data: { payment_id: payment.id, status: 'paid', capture_id: captureId } });
 });
 

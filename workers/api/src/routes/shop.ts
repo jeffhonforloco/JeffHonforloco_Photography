@@ -567,20 +567,20 @@ paypalWebhook.post('/paypal', async (c) => {
         await markOrderPaid(db, order.id, { paypal_capture_id: typeof resource.id === 'string' ? resource.id : null });
       } else {
         // Not a shop order — it may be a service payment (deposit / balance / full).
-        await handleServicePaymentEvent(db, type, relatedOrderId, resource);
+        await handleServicePaymentEvent(db, c.env, type, relatedOrderId, resource);
       }
     }
   } else if (type === 'PAYMENT.CAPTURE.DENIED') {
     if (relatedOrderId) {
       await db.prepare(`UPDATE orders SET status = 'failed', updated_at = ? WHERE paypal_order_id = ? AND status = 'pending'`)
         .bind(now, relatedOrderId).run();
-      await handleServicePaymentEvent(db, type, relatedOrderId, resource);
+      await handleServicePaymentEvent(db, c.env, type, relatedOrderId, resource);
     }
   } else if (type === 'PAYMENT.CAPTURE.REFUNDED') {
     if (relatedOrderId) {
       await db.prepare(`UPDATE orders SET status = 'refunded', updated_at = ? WHERE paypal_order_id = ? AND status IN ('paid','pending')`)
         .bind(now, relatedOrderId).run();
-      await handleServicePaymentEvent(db, type, relatedOrderId, resource);
+      await handleServicePaymentEvent(db, c.env, type, relatedOrderId, resource);
     }
   }
 
