@@ -30,7 +30,7 @@ const CartDrawer: React.FC = () => {
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || 'Checkout failed');
-      if (data?.needsStripe) throw new Error('Online checkout is not connected yet — please contact the studio directly.');
+      if (data?.needsPayPal) throw new Error('Online checkout is not connected yet — please contact the studio directly.');
       if (data?.data?.url) {
         clear();
         window.location.href = data.data.url as string;
@@ -127,9 +127,9 @@ const CartDrawer: React.FC = () => {
               className="flex w-full items-center justify-center gap-2 rounded-full bg-white py-3 text-sm font-bold text-black hover:bg-zinc-200 disabled:opacity-60"
             >
               {checkingOut && <Loader2 className="h-4 w-4 animate-spin" />}
-              {checkingOut ? 'Starting secure checkout…' : 'Checkout securely'}
+              {checkingOut ? 'Connecting to PayPal…' : 'Checkout with PayPal'}
             </button>
-            <p className="mt-2 text-center text-[11px] text-zinc-600">Powered by Stripe — your payment details never touch our servers.</p>
+            <p className="mt-2 text-center text-[11px] text-zinc-600">Powered by PayPal — your payment details never touch our servers.</p>
           </div>
         )}
       </aside>

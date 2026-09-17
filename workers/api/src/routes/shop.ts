@@ -4,7 +4,7 @@ import type { AppEnv } from '../types';
 
 export const shopPublic = new Hono<AppEnv>();
 export const shopAdmin = new Hono<AppEnv>();
-export const stripeWebhook = new Hono<AppEnv>();
+export const paypalWebhook = new Hono<AppEnv>();
 
 /* ------------------------------------------------------------------ */
 /* Schema (D1) — auto-created on first hit                             */
@@ -51,6 +51,8 @@ export async function ensureShopSchema(db: D1Database) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       stripe_session_id TEXT UNIQUE,
       stripe_payment_intent TEXT,
+      paypal_order_id TEXT UNIQUE,
+      paypal_capture_id TEXT,
       email TEXT NOT NULL,
       customer_name TEXT,
       shipping_json TEXT,
@@ -86,8 +88,20 @@ export async function ensureShopSchema(db: D1Database) {
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_pimg_product ON product_images(product_id, sort_order)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_pvar_product ON product_variants(product_id)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status, created_at)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_orders_paypal ON orders(paypal_order_id)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_oitem_order ON order_items(order_id)`),
   ]);
+  // Migrate pre-existing DBs: add PayPal columns if they are missing.
+  for (const sql of [
+    `ALTER TABLE orders ADD COLUMN paypal_order_id TEXT`,
+    `ALTER TABLE orders ADD COLUMN paypal_capture_id TEXT`,
+  ]) {
+    try {
+      await db.prepare(sql).run();
+    } catch (e: any) {
+      if (!String(e?.message || e).toLowerCase().includes('duplicate column')) throw e;
+    }
+  }
   // Seed default shop settings on first run
   const existing = await db.prepare(`SELECT COUNT(*) AS n FROM shop_settings`).first<{ n: number }>();
   if (!existing || existing.n === 0) {
@@ -246,7 +260,73 @@ shopPublic.get('/settings/public', async (c) => {
 });
 
 /* ------------------------------------------------------------------ */
-/* CHECKOUT — POST /api/v1/shop/checkout (Stripe Checkout)              */
+/* PayPal helpers                                                       */
+/* ------------------------------------------------------------------ */
+
+function paypalBase(mode: string): string {
+  return mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
+}
+
+function paypalMode(env: Record<string, string | undefined>): string {
+  return (env.PAYPAL_MODE || '').toLowerCase() === 'live' ? 'live' : 'sandbox';
+}
+
+function paypalMoney(centsValue: number): string {
+  return (centsValue / 100).toFixed(2);
+}
+
+interface PayPalEnv { clientId: string; clientSecret: string; mode: string; base: string }
+
+function getPayPalEnv(c: any): PayPalEnv | null {
+  const clientId = (c.env.PAYPAL_CLIENT_ID || '').trim();
+  const clientSecret = (c.env.PAYPAL_CLIENT_SECRET || '').trim();
+  if (!clientId || !clientSecret) return null;
+  const mode = paypalMode(c.env);
+  return { clientId, clientSecret, mode, base: paypalBase(mode) };
+}
+
+async function getPayPalAccessToken(pp: PayPalEnv): Promise<string> {
+  const creds = btoa(`${pp.clientId}:${pp.clientSecret}`);
+  const res = await fetch(`${pp.base}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: { Authorization: `Basic ${creds}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'grant_type=client_credentials',
+  });
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    throw new Error(`PayPal auth failed (${res.status}): ${txt.slice(0, 200)}`);
+  }
+  const data = (await res.json()) as { access_token?: string };
+  if (!data.access_token) throw new Error('PayPal auth returned no access token');
+  return data.access_token;
+}
+
+/**
+ * Mark a pending order paid and decrement inventory. Idempotent: only
+ * transitions from 'pending', so the capture endpoint and the webhook
+ * can both call it safely.
+ */
+async function markOrderPaid(db: D1Database, orderId: number, captureId: string | null): Promise<boolean> {
+  const now = new Date().toISOString();
+  const order = await db.prepare(`SELECT * FROM orders WHERE id = ?`).bind(orderId).first<any>();
+  if (!order || order.status !== 'pending') return false;
+  await db.prepare(`UPDATE orders SET status = 'paid', paypal_capture_id = COALESCE(?, paypal_capture_id), updated_at = ? WHERE id = ?`)
+    .bind(captureId, now, orderId).run();
+  const items = await db.prepare(`SELECT * FROM order_items WHERE order_id = ?`).bind(orderId).all<any>();
+  const decs: D1PreparedStatement[] = [];
+  for (const it of (items.results ?? [])) {
+    if (it.variant_id) {
+      decs.push(db.prepare(`UPDATE product_variants SET inventory = MAX(0, COALESCE(inventory, 999999) - ?) WHERE id = ?`).bind(it.quantity, it.variant_id));
+    } else if (it.product_id) {
+      decs.push(db.prepare(`UPDATE products SET inventory = MAX(0, inventory - ?), updated_at = ? WHERE id = ?`).bind(it.quantity, now, it.product_id));
+    }
+  }
+  if (decs.length) await db.batch(decs);
+  return true;
+}
+
+/* ------------------------------------------------------------------ */
+/* CHECKOUT — POST /api/v1/shop/checkout (PayPal Orders v2)             */
 /* ------------------------------------------------------------------ */
 
 interface CheckoutItem { product_id: number; variant_id?: number | null; quantity: number }
@@ -256,8 +336,9 @@ shopPublic.post('/checkout', async (c) => {
   await ensureShopSchema(db);
   if (!(await shopEnabled(db))) return shopDisabledResponse(c);
 
-  if (!c.env.STRIPE_SECRET_KEY) {
-    return c.json({ success: false, needsStripe: true, error: 'Stripe is not configured yet — connect a Stripe account in the admin Shop settings.' }, 501);
+  const pp = getPayPalEnv(c);
+  if (!pp) {
+    return c.json({ success: false, needsPayPal: true, error: 'PayPal is not configured yet — connect a PayPal account in the admin Shop settings.' }, 501);
   }
 
   const body = await c.req.json().catch(() => null) as {
@@ -273,6 +354,7 @@ shopPublic.post('/checkout', async (c) => {
 
   const settings = await getSettings(db);
   const currency = (settings.currency ?? 'usd').toLowerCase();
+  const currencyCode = currency.toUpperCase();
   const origin = (c.req.header('origin') || 'https://jeffhonforlocophotos.com').replace(/\/+$/, '');
 
   // Validate every line server-side — never trust client prices.
@@ -309,59 +391,71 @@ shopPublic.post('/checkout', async (c) => {
   const tax = Math.round(subtotal * (taxRate / 100));
   const total = subtotal + shipping + tax;
 
-  // Build the Stripe Checkout Session via form-encoded API call.
-  const form = new URLSearchParams();
-  form.append('mode', 'payment');
-  form.append('customer_email', email);
-  form.append('success_url', `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`);
-  form.append('cancel_url', `${origin}/shop?canceled=1`);
-  form.append('shipping_address_collection[allowed_countries][0]', 'US');
-  form.append('shipping_address_collection[allowed_countries][1]', 'CA');
-  form.append('metadata[store]', 'jeffhonforloco');
-  lines.forEach((l, i) => {
-    const p = `line_items[${i}]`;
-    form.append(`${p}[price_data][currency]`, currency);
-    form.append(`${p}[price_data][product_data][name]`, variantLabelOf(l));
-    form.append(`${p}[price_data][unit_amount]`, String(l.unit_price_cents));
-    if (l.image_url) form.append(`${p}[price_data][product_data][images][0]`, l.image_url);
-    form.append(`${p}[quantity]`, String(l.quantity));
-  });
-  // Shipping + tax as line items so the Stripe total matches our math.
-  let extra = lines.length;
-  if (shipping > 0) {
-    form.append(`line_items[${extra}][price_data][currency]`, currency);
-    form.append(`line_items[${extra}][price_data][product_data][name]`, 'Shipping');
-    form.append(`line_items[${extra}][price_data][unit_amount]`, String(shipping));
-    form.append(`line_items[${extra}][quantity]`, '1');
-    extra++;
-  }
-  if (tax > 0) {
-    form.append(`line_items[${extra}][price_data][currency]`, currency);
-    form.append(`line_items[${extra}][price_data][product_data][name]`, `Sales tax (${taxRate}%)`);
-    form.append(`line_items[${extra}][price_data][unit_amount]`, String(tax));
-    form.append(`line_items[${extra}][quantity]`, '1');
-    extra++;
-  }
-
-  const sres = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${c.env.STRIPE_SECRET_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: form.toString(),
-  });
-  if (!sres.ok) {
-    const txt = await sres.text().catch(() => '');
-    console.error('[shop] Stripe session create failed:', sres.status, txt.slice(0, 300));
+  let accessToken: string;
+  try {
+    accessToken = await getPayPalAccessToken(pp);
+  } catch (e) {
+    console.error('[shop] PayPal auth failed:', e instanceof Error ? e.message : e);
     return c.json({ error: 'Could not start checkout — please try again' }, 502);
   }
-  const session = await sres.json() as { id: string; url: string; payment_intent?: string };
+
+  // Create the PayPal order (intent CAPTURE). Breakdown must sum to the total.
+  const orderBody = {
+    intent: 'CAPTURE',
+    purchase_units: [{
+      reference_id: `jh-shop-${Date.now()}`,
+      description: 'Jeff Honforloco Photography — shop order',
+      amount: {
+        currency_code: currencyCode,
+        value: paypalMoney(total),
+        breakdown: {
+          item_total: { currency_code: currencyCode, value: paypalMoney(subtotal) },
+          shipping: { currency_code: currencyCode, value: paypalMoney(shipping) },
+          tax_total: { currency_code: currencyCode, value: paypalMoney(tax) },
+        },
+      },
+      items: lines.map((l) => ({
+        name: variantLabelOf(l).slice(0, 127),
+        unit_amount: { currency_code: currencyCode, value: paypalMoney(l.unit_price_cents) },
+        quantity: String(l.quantity),
+      })),
+    }],
+    application_context: {
+      brand_name: 'Jeff Honforloco Photography',
+      return_url: `${origin}/shop/success`,
+      cancel_url: `${origin}/shop?canceled=1`,
+      user_action: 'PAY_NOW',
+    },
+  };
+
+  const pres = await fetch(`${pp.base}/v2/checkout/orders`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'PayPal-Request-Id': crypto.randomUUID(),
+    },
+    body: JSON.stringify(orderBody),
+  });
+  if (!pres.ok) {
+    const txt = await pres.text().catch(() => '');
+    console.error('[shop] PayPal order create failed:', pres.status, txt.slice(0, 300));
+    return c.json({ error: 'Could not start checkout — please try again' }, 502);
+  }
+  const pOrder = (await pres.json()) as { id: string; links?: { href: string; rel: string }[] };
+  const approveUrl = pOrder.links?.find((l) => l.rel === 'approve')?.href;
+  if (!pOrder.id || !approveUrl) {
+    console.error('[shop] PayPal order create returned no approval URL');
+    return c.json({ error: 'Could not start checkout — please try again' }, 502);
+  }
 
   // Persist a pending order so nothing is lost if the webhook is delayed.
   const now = new Date().toISOString();
   const ores = await db.prepare(
-    `INSERT INTO orders (stripe_session_id, stripe_payment_intent, email, customer_name, shipping_json, subtotal_cents, shipping_cents, tax_cents, total_cents, currency, status, fulfillment_status, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unfulfilled', ?, ?)`
+    `INSERT INTO orders (paypal_order_id, email, customer_name, shipping_json, subtotal_cents, shipping_cents, tax_cents, total_cents, currency, status, fulfillment_status, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unfulfilled', ?, ?)`
   ).bind(
-    session.id, session.payment_intent ?? null, email, (body?.customer_name || '').slice(0, 120) || null,
+    pOrder.id, email, (body?.customer_name || '').slice(0, 120) || null,
     body?.shipping ? JSON.stringify(body.shipping).slice(0, 2000) : null,
     subtotal, shipping, tax, total, currency, now, now
   ).run();
@@ -371,7 +465,62 @@ shopPublic.post('/checkout', async (c) => {
       .bind(orderId, l.product_id, l.variant_id, l.name, l.variant_label, l.quantity, l.unit_price_cents, l.unit_price_cents * l.quantity)
   ));
 
-  return c.json({ success: true, data: { url: session.url, session_id: session.id, order_id: orderId } });
+  return c.json({ success: true, data: { url: approveUrl, paypal_order_id: pOrder.id, order_id: orderId } });
+});
+
+/* ------------------------------------------------------------------ */
+/* CAPTURE — POST /api/v1/shop/capture (after PayPal approval)         */
+/* ------------------------------------------------------------------ */
+
+shopPublic.post('/capture', async (c) => {
+  const db = c.env.DB;
+  await ensureShopSchema(db);
+  if (!(await shopEnabled(db))) return shopDisabledResponse(c);
+
+  const pp = getPayPalEnv(c);
+  if (!pp) {
+    return c.json({ success: false, needsPayPal: true, error: 'PayPal is not configured yet.' }, 501);
+  }
+
+  const body = await c.req.json().catch(() => null) as { paypal_order_id?: string } | null;
+  const ppOrderId = (body?.paypal_order_id || '').trim();
+  if (!/^[A-Za-z0-9]{8,64}$/.test(ppOrderId)) return c.json({ error: 'Invalid PayPal order id' }, 400);
+
+  const order = await db.prepare(`SELECT * FROM orders WHERE paypal_order_id = ?`).bind(ppOrderId).first<any>();
+  if (!order) return c.json({ error: 'Order not found' }, 404);
+  if (order.status === 'paid') return c.json({ success: true, data: { order_id: order.id, status: 'paid' } });
+  if (order.status !== 'pending') return c.json({ error: `Order is ${order.status}` }, 409);
+
+  let accessToken: string;
+  try {
+    accessToken = await getPayPalAccessToken(pp);
+  } catch {
+    return c.json({ error: 'Payment service unavailable — please try again' }, 502);
+  }
+
+  const cres = await fetch(`${pp.base}/v2/checkout/orders/${encodeURIComponent(ppOrderId)}/capture`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'PayPal-Request-Id': crypto.randomUUID(),
+    },
+  });
+  const cdata = (await cres.json().catch(() => null)) as any;
+  if (!cres.ok) {
+    const issue = JSON.stringify(cdata?.details ?? cdata ?? '').toUpperCase();
+    console.error('[shop] PayPal capture failed:', cres.status, JSON.stringify(cdata).slice(0, 300));
+    const now = new Date().toISOString();
+    const nextStatus = /EXPIRED/.test(issue) ? 'expired' : 'failed';
+    await db.prepare(`UPDATE orders SET status = ?, updated_at = ? WHERE id = ? AND status = 'pending'`)
+      .bind(nextStatus, now, order.id).run();
+    return c.json({ error: nextStatus === 'expired' ? 'This PayPal order expired — please check out again' : 'Payment was not completed' }, 502);
+  }
+
+  const capture = cdata?.purchase_units?.[0]?.payments?.captures?.[0];
+  const captureId: string | null = typeof capture?.id === 'string' ? capture.id : null;
+  await markOrderPaid(db, order.id, captureId);
+  return c.json({ success: true, data: { order_id: order.id, status: 'paid', capture_id: captureId } });
 });
 
 function variantLabelOf(l: { name: string; variant_label: string | null }): string {
@@ -379,82 +528,77 @@ function variantLabelOf(l: { name: string; variant_label: string | null }): stri
 }
 
 /* ------------------------------------------------------------------ */
-/* STRIPE WEBHOOK — POST /api/v1/webhooks/stripe                       */
+/* PAYPAL WEBHOOK — POST /api/v1/webhooks/paypal                       */
 /* ------------------------------------------------------------------ */
 
-async function verifyStripeSignature(rawBody: string, header: string | null, secret: string): Promise<boolean> {
-  if (!header || !secret) return false;
-  const parts = Object.fromEntries(header.split(',').map((p) => p.split('=')) as [string, string][]);
-  const t = parts['t'];
-  const v1 = parts['v1'];
-  if (!t || !v1) return false;
-  // Reject stale signatures (>5 min) to blunt replay attacks.
-  if (Math.abs(Date.now() / 1000 - parseInt(t, 10)) > 300) return false;
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(`${t}.${rawBody}`));
-  const hex = [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, '0')).join('');
-  return hex.length === v1.length && crypto.subtle.timingSafeEqual
-    ? timingSafeEqualHex(hex, v1)
-    : hex === v1;
-}
-
-function timingSafeEqualHex(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
-
-stripeWebhook.post('/stripe', async (c) => {
+paypalWebhook.post('/paypal', async (c) => {
   const db = c.env.DB;
   await ensureShopSchema(db);
+  const pp = getPayPalEnv(c);
+  if (!pp) return c.json({ error: 'PayPal not configured' }, 501);
+  const webhookId = (c.env.PAYPAL_WEBHOOK_ID || '').trim();
+  if (!webhookId) return c.json({ error: 'PayPal webhook not configured' }, 501);
+
   const raw = await c.req.text();
-  const ok = await verifyStripeSignature(raw, c.req.header('stripe-signature'), c.env.STRIPE_WEBHOOK_SECRET ?? '');
-  if (!ok) return c.json({ error: 'Invalid signature' }, 400);
+  let event: any;
+  try {
+    event = JSON.parse(raw);
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400);
+  }
 
-  const event = JSON.parse(raw) as { type: string; data?: { object?: any } };
-  const obj = event.data?.object ?? {};
+  // Verify the webhook signature with PayPal before trusting anything.
+  let accessToken: string;
+  try {
+    accessToken = await getPayPalAccessToken(pp);
+  } catch {
+    return c.json({ error: 'Verification unavailable' }, 502);
+  }
 
-  if (event.type === 'checkout.session.completed') {
-    const sessionId: string | undefined = obj.id;
-    if (sessionId) {
-      const order = await db.prepare(`SELECT * FROM orders WHERE stripe_session_id = ?`).bind(sessionId).first<any>();
-      if (order && order.status === 'pending') {
-        const now = new Date().toISOString();
-        await db.prepare(`UPDATE orders SET status = 'paid', stripe_payment_intent = COALESCE(?, stripe_payment_intent), updated_at = ? WHERE id = ?`)
-          .bind(typeof obj.payment_intent === 'string' ? obj.payment_intent : null, now, order.id).run();
-        // Decrement inventory (variant-level when the line has a variant).
-        const items = await db.prepare(`SELECT * FROM order_items WHERE order_id = ?`).bind(order.id).all<any>();
-        const decs: D1PreparedStatement[] = [];
-        for (const it of (items.results ?? [])) {
-          if (it.variant_id) {
-            decs.push(db.prepare(`UPDATE product_variants SET inventory = MAX(0, COALESCE(inventory, 999999) - ?) WHERE id = ?`).bind(it.quantity, it.variant_id));
-          } else if (it.product_id) {
-            decs.push(db.prepare(`UPDATE products SET inventory = MAX(0, inventory - ?), updated_at = ? WHERE id = ?`).bind(it.quantity, now, it.product_id));
-          }
-        }
-        if (decs.length) await db.batch(decs);
-      }
+  const vres = await fetch(`${pp.base}/v1/notifications/verify-webhook-signature`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      transmission_id: c.req.header('paypal-transmission-id') ?? '',
+      transmission_time: c.req.header('paypal-transmission-time') ?? '',
+      cert_url: c.req.header('paypal-cert-url') ?? '',
+      auth_algo: c.req.header('paypal-auth-algo') ?? '',
+      transmission_sig: c.req.header('paypal-transmission-sig') ?? '',
+      webhook_id: webhookId,
+      webhook_event: event,
+    }),
+  });
+  const vdata = (await vres.json().catch(() => null)) as { verification_status?: string } | null;
+  if (vdata?.verification_status !== 'SUCCESS') {
+    console.error('[shop] PayPal webhook signature verification failed');
+    return c.json({ error: 'Invalid signature' }, 400);
+  }
+
+  const type: string = event.event_type ?? '';
+  const resource = event.resource ?? {};
+  const relatedOrderId: string | undefined = resource?.supplementary_data?.related_ids?.order_id;
+  const now = new Date().toISOString();
+
+  if (type === 'PAYMENT.CAPTURE.COMPLETED') {
+    if (relatedOrderId) {
+      const order = await db.prepare(`SELECT * FROM orders WHERE paypal_order_id = ?`).bind(relatedOrderId).first<any>();
+      if (order) await markOrderPaid(db, order.id, typeof resource.id === 'string' ? resource.id : null);
     }
-  } else if (event.type === 'checkout.session.expired' || event.type === 'checkout.session.async_payment_failed') {
-    const sessionId: string | undefined = obj.id;
-    if (sessionId) {
-      await db.prepare(`UPDATE orders SET status = 'cancelled', updated_at = ? WHERE stripe_session_id = ? AND status = 'pending'`)
-        .bind(new Date().toISOString(), sessionId).run();
+  } else if (type === 'PAYMENT.CAPTURE.DENIED') {
+    if (relatedOrderId) {
+      await db.prepare(`UPDATE orders SET status = 'failed', updated_at = ? WHERE paypal_order_id = ? AND status = 'pending'`)
+        .bind(now, relatedOrderId).run();
     }
-  } else if (event.type === 'charge.refunded') {
-    const pi: string | undefined = typeof obj.payment_intent === 'string' ? obj.payment_intent : obj.payment_intent?.id;
-    if (pi) {
-      await db.prepare(`UPDATE orders SET status = 'refunded', updated_at = ? WHERE stripe_payment_intent = ? AND status IN ('paid','pending')`)
-        .bind(new Date().toISOString(), pi).run();
+  } else if (type === 'PAYMENT.CAPTURE.REFUNDED') {
+    if (relatedOrderId) {
+      await db.prepare(`UPDATE orders SET status = 'refunded', updated_at = ? WHERE paypal_order_id = ? AND status IN ('paid','pending')`)
+        .bind(now, relatedOrderId).run();
     }
   }
 
   return c.json({ received: true });
 });
 
-/* ------------------------------------------------------------------ */
 /* ADMIN — /api/v1/admin/shop                                           */
 /* ------------------------------------------------------------------ */
 
@@ -690,17 +834,17 @@ shopAdmin.get('/settings', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
   await ensureShopSchema(db);
   const s = await getSettings(db);
-  const stripeConfigured = Boolean(c.env.STRIPE_SECRET_KEY);
-  const webhookConfigured = Boolean(c.env.STRIPE_WEBHOOK_SECRET);
+  const clientConfigured = Boolean(c.env.PAYPAL_CLIENT_ID && c.env.PAYPAL_CLIENT_SECRET);
+  const webhookConfigured = Boolean(c.env.PAYPAL_WEBHOOK_ID);
   return c.json({
     success: true,
     data: {
       settings: s,
-      stripe: {
-        secret_configured: stripeConfigured,
-        webhook_secret_configured: webhookConfigured,
-        publishable_key: c.env.STRIPE_PUBLISHABLE_KEY ?? null,
-        webhook_url: 'https://<worker-host>/api/v1/webhooks/stripe',
+      paypal: {
+        client_configured: clientConfigured,
+        webhook_id_configured: webhookConfigured,
+        mode: paypalMode(c.env),
+        webhook_url: 'https://<worker-host>/api/v1/webhooks/paypal',
       },
     },
   });
