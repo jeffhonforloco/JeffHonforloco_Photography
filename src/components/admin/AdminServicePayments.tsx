@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   BadgeDollarSign, Plus, Search, X, Loader2, ExternalLink,
-  CheckCircle2, RotateCcw, Settings2, Copy, Check,
+  CircleCheck, RotateCcw, Settings2, Copy, Check,
 } from 'lucide-react';
 import { apiUrl } from '@/lib/api-base';
 import { Badge } from '@/components/ui/badge';
@@ -331,7 +331,7 @@ const AdminServicePayments: React.FC = () => {
             </div>
             {invoiceResult && (
               <div className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
-                <p className="flex items-center gap-2 text-sm font-semibold text-emerald-200"><CheckCircle2 className="h-4 w-4" /> Invoice ready — {fmt(invoiceResult.amount_cents)}</p>
+                <p className="flex items-center gap-2 text-sm font-semibold text-emerald-200"><CircleCheck className="h-4 w-4" /> Invoice ready — {fmt(invoiceResult.amount_cents)}</p>
                 <div className="mt-2 flex items-center gap-2">
                   <code className="flex-1 truncate rounded bg-black/40 px-2 py-1 text-xs text-neutral-300">{invoiceResult.payment_url}</code>
                   <Button size="sm" variant="outline" onClick={() => copyLink(invoiceResult.payment_url)}>
