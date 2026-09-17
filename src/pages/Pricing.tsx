@@ -73,6 +73,13 @@ const Pricing = () => {
                 <a href="/book">Book a Session</a>
               </Button>
               <Button
+                asChild
+                variant="outline"
+                className="border-white/20 bg-white/5 text-white hover:bg-white/10 px-8 py-3 text-base"
+              >
+                <a href="/pay">Pay Deposit / Balance</a>
+              </Button>
+              <Button
                 variant="outline"
                 className="border-white/20 bg-white/5 text-white hover:bg-white/10 px-8 py-3 text-base"
                 onClick={() => {

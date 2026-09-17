@@ -29,6 +29,8 @@ const DynamicPage = lazy(() => import("./pages/DynamicPage"));
 const Shop = lazy(() => import("./pages/Shop"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
 const ShopSuccess = lazy(() => import("./pages/ShopSuccess"));
+const ServicePay = lazy(() => import("./pages/ServicePay"));
+const ServicePaySuccess = lazy(() => import("./pages/ServicePaySuccess"));
 const SignContract = lazy(() => import("./pages/SignContract"));
 const CartDrawer = lazy(() => import("./components/shop/CartDrawer"));
 const CartProvider = lazy(() => import("./components/shop/CartContext").then((m) => ({ default: m.CartProvider })));
@@ -200,6 +202,9 @@ export const AppContent = () => {
                 <Route path="/proof/:slug" element={<ProofGallery />} />
                 {/* Public contract signing (token-gated, no login) */}
                 <Route path="/sign/:token" element={<SignContract />} />
+                {/* Service payments — PayPal deposits / balances / full payments (always available) */}
+                <Route path="/pay" element={<ServicePay />} />
+                <Route path="/pay/success" element={<ServicePaySuccess />} />
                 {/* Shop — hidden (404) until Jeff flips it ON in Admin → Shop → Settings */}
                 <Route element={<ShopShell />}>
                   <Route path="/shop" element={<Shop />} />

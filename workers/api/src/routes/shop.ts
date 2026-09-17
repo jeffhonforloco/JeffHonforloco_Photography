@@ -268,46 +268,15 @@ shopPublic.get('/settings/public', async (c) => {
 });
 
 /* ------------------------------------------------------------------ */
-/* PayPal helpers                                                       */
+/* PayPal helpers — shared with service payments (lib/paypal)          */
 /* ------------------------------------------------------------------ */
 
-function paypalBase(mode: string): string {
-  return mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
-}
-
-function paypalMode(env: Record<string, string | undefined>): string {
-  return (env.PAYPAL_MODE || '').toLowerCase() === 'live' ? 'live' : 'sandbox';
-}
-
-function paypalMoney(centsValue: number): string {
-  return (centsValue / 100).toFixed(2);
-}
-
-interface PayPalEnv { clientId: string; clientSecret: string; mode: string; base: string }
-
-function getPayPalEnv(c: any): PayPalEnv | null {
-  const clientId = (c.env.PAYPAL_CLIENT_ID || '').trim();
-  const clientSecret = (c.env.PAYPAL_CLIENT_SECRET || '').trim();
-  if (!clientId || !clientSecret) return null;
-  const mode = paypalMode(c.env);
-  return { clientId, clientSecret, mode, base: paypalBase(mode) };
-}
-
-async function getPayPalAccessToken(pp: PayPalEnv): Promise<string> {
-  const creds = btoa(`${pp.clientId}:${pp.clientSecret}`);
-  const res = await fetch(`${pp.base}/v1/oauth2/token`, {
-    method: 'POST',
-    headers: { Authorization: `Basic ${creds}`, 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'grant_type=client_credentials',
-  });
-  if (!res.ok) {
-    const txt = await res.text().catch(() => '');
-    throw new Error(`PayPal auth failed (${res.status}): ${txt.slice(0, 200)}`);
-  }
-  const data = (await res.json()) as { access_token?: string };
-  if (!data.access_token) throw new Error('PayPal auth returned no access token');
-  return data.access_token;
-}
+import {
+  getPayPalEnv,
+  getPayPalAccessToken,
+  paypalMoney,
+} from '../lib/paypal';
+import { handleServicePaymentEvent } from './services';
 
 /**
  * Mark a pending order paid and decrement inventory. Idempotent: only
@@ -594,17 +563,24 @@ paypalWebhook.post('/paypal', async (c) => {
   if (type === 'PAYMENT.CAPTURE.COMPLETED') {
     if (relatedOrderId) {
       const order = await db.prepare(`SELECT * FROM orders WHERE paypal_order_id = ?`).bind(relatedOrderId).first<any>();
-      if (order) await markOrderPaid(db, order.id, { paypal_capture_id: typeof resource.id === 'string' ? resource.id : null });
+      if (order) {
+        await markOrderPaid(db, order.id, { paypal_capture_id: typeof resource.id === 'string' ? resource.id : null });
+      } else {
+        // Not a shop order — it may be a service payment (deposit / balance / full).
+        await handleServicePaymentEvent(db, type, relatedOrderId, resource);
+      }
     }
   } else if (type === 'PAYMENT.CAPTURE.DENIED') {
     if (relatedOrderId) {
       await db.prepare(`UPDATE orders SET status = 'failed', updated_at = ? WHERE paypal_order_id = ? AND status = 'pending'`)
         .bind(now, relatedOrderId).run();
+      await handleServicePaymentEvent(db, type, relatedOrderId, resource);
     }
   } else if (type === 'PAYMENT.CAPTURE.REFUNDED') {
     if (relatedOrderId) {
       await db.prepare(`UPDATE orders SET status = 'refunded', updated_at = ? WHERE paypal_order_id = ? AND status IN ('paid','pending')`)
         .bind(now, relatedOrderId).run();
+      await handleServicePaymentEvent(db, type, relatedOrderId, resource);
     }
   }
 

@@ -11,6 +11,7 @@ const AdminPortfolio = lazy(() => import('@/components/admin/AdminPortfolio'));
 const AdminGalleries = lazy(() => import('@/components/admin/AdminGalleries'));
 const AdminCampaigns = lazy(() => import('@/components/admin/AdminCampaigns'));
 const AdminShop = lazy(() => import('@/components/admin/AdminShop'));
+const AdminServicePayments = lazy(() => import('@/components/admin/AdminServicePayments'));
 const AdminContracts = lazy(() => import('@/components/admin/AdminContracts'));
 const AdminPages = lazy(() => import('@/components/admin/AdminPages'));
 const AdminAnalytics = lazy(() => import('@/components/admin/AdminAnalytics'));
@@ -60,6 +61,7 @@ const Admin: React.FC = () => {
         <Route path="galleries" element={<AdminGalleries />} />
         <Route path="campaigns" element={<AdminCampaigns />} />
         <Route path="shop" element={<AdminShop />} />
+        <Route path="service-payments" element={<AdminServicePayments />} />
         <Route path="contracts" element={<AdminContracts />} />
         <Route path="pages" element={<AdminPages />} />
         <Route path="blog" element={<AdminBlog />} />
