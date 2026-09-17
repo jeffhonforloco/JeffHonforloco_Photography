@@ -114,9 +114,12 @@ export default {
     };
     if (growthCadence[event.cron]) tasks.push(queueGrowthMonitoring(env, growthCadence[event.cron]));
     
-    // DST-safe SEO: run at 7:30 AM New York time on Mondays
-    // Cron runs at both 11:30 UTC (EDT) and 12:30 UTC (EST), we gate by actual NY time
-    if (event.cron === '30 11 * * 1' || event.cron === '30 12 * * 1') {
+    // DST-safe SEO: run at 7:30 AM New York time on Mondays.
+    // The every-15-min cron fires at both 11:30 UTC (7:30 AM EDT) and 12:30 UTC
+    // (7:30 AM EST), so gating it by actual NY time covers both DST legs with a
+    // single cron slot (free plan allows 5). The Monday 11:30 UTC cron above
+    // still handles the weekly growth-monitoring cadence.
+    if (event.cron === '*/15 * * * *') {
       const now = new Date();
       const dayOfWeek = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'short' }).format(now);
       if (dayOfWeek === 'Mon' && isNewYork730AM(now)) {
