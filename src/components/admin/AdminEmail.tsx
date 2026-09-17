@@ -67,6 +67,7 @@ const AdminEmail: React.FC = () => {
   const [sequences, setSequences] = useState<EmailSequence[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -248,6 +249,49 @@ const AdminEmail: React.FC = () => {
     }
   };
 
+  const clearFailedRows = async () => {
+    if (!window.confirm('Clear failed test rows? This deletes failed email-sequence rows and orphaned lead events left by deleted test contacts. Templates, sent, cancelled and pending rows are kept.')) {
+      return;
+    }
+    try {
+      setProcessing(true);
+      setNotice(null);
+      const token = localStorage.getItem('adminToken');
+      const headers = { 'Authorization': `Bearer ${token}` };
+
+      const seqResponse = await fetch('/api/v1/admin/email-sequences?status=all_failed', {
+        method: 'DELETE',
+        headers
+      });
+      if (!seqResponse.ok) {
+        throw new Error('Failed to clear failed email rows');
+      }
+      const seqData = await seqResponse.json();
+
+      const leadsResponse = await fetch('/api/v1/admin/analytics/orphaned-leads', {
+        method: 'DELETE',
+        headers
+      });
+      if (!leadsResponse.ok) {
+        throw new Error('Failed to clear orphaned lead events');
+      }
+      const leadsData = await leadsResponse.json();
+
+      setNotice({
+        type: 'ok',
+        text: `Cleared ${seqData.deleted ?? 0} failed email rows and ${leadsData.deleted ?? 0} orphaned lead events.`
+      });
+      fetchEmailData();
+    } catch (err) {
+      setNotice({
+        type: 'err',
+        text: err instanceof Error ? err.message : 'Failed to clear failed rows'
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const handleEdit = (template: EmailTemplate) => {
     setSelectedTemplate(template);
     setEditForm({
@@ -387,13 +431,27 @@ const AdminEmail: React.FC = () => {
         </CardContent>
       </Card>
 
+      {notice && (
+        <div className={notice.type === 'ok' ? 'rounded-md bg-green-50 p-3 text-sm text-green-800' : 'rounded-md bg-red-50 p-3 text-sm text-red-800'}>
+          {notice.text}
+        </div>
+      )}
+
       {/* Email Sequences */}
       <Card>
         <CardHeader>
-          <CardTitle>Email Sequences ({sequences.length})</CardTitle>
-          <CardDescription>
-            Track automated email sequences
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Email Sequences ({sequences.length})</CardTitle>
+              <CardDescription>
+                Track automated email sequences
+              </CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={clearFailedRows} disabled={processing}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Clear failed
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
