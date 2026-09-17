@@ -426,9 +426,18 @@ chat.post('/', async (c) => {
 
   if (!safeMessages.length) return c.json({ error: 'messages required' }, 400);
 
-  // Try SireIQ AI first (if token available) - real AI conversation
-  // Falls through to static/smart fallback if SireIQ unavailable or fails
-  if (c.env.SIREIQ_HF_TOKEN) {
+  const staticReply = getStaticEasyReply(safeMessages);
+  if (staticReply) {
+    return c.json({
+      message: staticReply,
+      leadCaptured: false,
+      needsApproval: false,
+      provider: 'worker_static',
+    });
+  }
+
+  const shouldTrySireIq = isEasyChatJob(safeMessages) && Boolean(c.env.SIREIQ_HF_TOKEN);
+  if (shouldTrySireIq && c.env.SIREIQ_HF_TOKEN) {
     try {
       const sireIqRes = await callSireIq(
         c.env.SIREIQ_HF_TOKEN,
@@ -449,22 +458,11 @@ chat.post('/', async (c) => {
         }
       } else {
         const errSnippet = await sireIqRes.text().catch(() => '');
-        console.error(`[chat] SIREIQ error ${sireIqRes.status}: ${errSnippet.slice(0, 300)}`);
+        console.error(`[chat] SIREIQ easy-job error ${sireIqRes.status}: ${errSnippet.slice(0, 300)}`);
       }
     } catch (error) {
-      console.error('[chat] SIREIQ request failed', error);
+      console.error('[chat] SIREIQ easy-job request failed', error);
     }
-  }
-
-  // Static fast replies for common FAQ (fallback when AI unavailable)
-  const staticReply = getStaticEasyReply(safeMessages);
-  if (staticReply) {
-    return c.json({
-      message: staticReply,
-      leadCaptured: false,
-      needsApproval: false,
-      provider: 'worker_static',
-    });
   }
 
 
