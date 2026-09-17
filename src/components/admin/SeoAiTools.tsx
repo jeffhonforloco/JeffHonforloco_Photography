@@ -105,8 +105,8 @@ const SeoAiTools = () => {
 
   useEffect(() => {
     (async () => {
+      const token = localStorage.getItem('adminToken');
       try {
-        const token = localStorage.getItem('adminToken');
         const res = await fetch(apiUrl('/api/v1/admin/growth/seo-auto-runs'), {
           headers: { Authorization: `Bearer ${token}` },
         });
