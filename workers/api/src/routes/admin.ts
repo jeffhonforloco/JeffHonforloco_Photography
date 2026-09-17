@@ -117,8 +117,14 @@ async function buildDatabaseExport(db: D1Database): Promise<string> {
     'BEGIN TRANSACTION;',
   ];
 
-  for (const table of await listUserTables(db)) {
-    const rows = await db.prepare(`SELECT * FROM ${table} LIMIT ?`).bind(DATABASE_EXPORT_LIMIT).all<Record<string, unknown>>();
+  const KNOWN_TABLES = ['contacts', 'blog_posts', 'portfolio_images', 'email_templates', 'email_sequences', 'analytics', 'leads', 'bookings', 'contracts', 'campaigns', 'galleries', 'media_views', 'pages', 'shop_products', 'shop_orders'];
+  for (const table of KNOWN_TABLES) {
+    let rows;
+    try {
+      rows = await db.prepare(`SELECT * FROM ${table} LIMIT ?`).bind(DATABASE_EXPORT_LIMIT).all<Record<string, unknown>>();
+    } catch (e) {
+      continue; // Table doesn't exist, skip
+    }
     lines.push('', `-- ${table}`);
 
     for (const row of rows.results ?? []) {
@@ -616,9 +622,26 @@ admin.get('/database/stats', requireAuth, async (c) => {
   } catch (e) {
     console.error('database/stats schema ensure failed (non-fatal):', e);
   }
+  // Known tables: query each directly (D1 sqlite_master can be unreliable via API)
+  const KNOWN_TABLES = ['contacts', 'blog_posts', 'portfolio_images', 'email_templates', 'email_sequences', 'analytics', 'leads', 'bookings', 'contracts', 'campaigns', 'galleries', 'media_views', 'pages', 'shop_products', 'shop_orders'];
   const tables: { name: string; rows: number }[] = [];
-  for (const name of await listUserTables(c.env.DB)) {
-    tables.push({ name, rows: await countRows(c.env.DB, name) });
+  for (const name of KNOWN_TABLES) {
+    try {
+      const rows = await countRows(c.env.DB, name);
+      tables.push({ name, rows });
+    } catch (e) {
+      // Table doesn't exist, skip it
+    }
+  }
+  // Also try sqlite_master as fallback for any other tables
+  try {
+    for (const name of await listUserTables(c.env.DB)) {
+      if (!tables.find(t => t.name === name)) {
+        tables.push({ name, rows: await countRows(c.env.DB, name) });
+      }
+    }
+  } catch (e) {
+    console.error('listUserTables fallback failed:', e);
   }
   const byName = new Map(tables.map((t) => [t.name, t.rows]));
   const pick = (n: string) => byName.get(n) ?? 0;
