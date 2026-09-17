@@ -68,6 +68,8 @@ const ServicePay: React.FC = () => {
             const qName = qs.get('name')?.trim() || '';
             const qEmail = qs.get('email')?.trim() || '';
             const qPhone = qs.get('phone')?.trim() || '';
+            const qDate = qs.get('date')?.trim() || '';
+            const qNotes = qs.get('notes')?.trim() || '';
 
             let advanced = false;
             if (qService) {
@@ -89,7 +91,13 @@ const ServicePay: React.FC = () => {
                   }
                   if (matchedTier) {
                     setTierName(matchedTier.name);
-                    if (matchedTier.price !== 'Custom') setStep(3);
+                    // Only jump to details (step 3) when the payment type was
+                    // explicitly chosen (e.g. Pricing "Pay Deposit" CTA). Otherwise
+                    // land on step 2 so the client taps deposit/full themselves —
+                    // one explicit choice, no silent defaults.
+                    if (matchedTier.price !== 'Custom' && (qPayRaw === 'deposit' || qPayRaw === 'full')) {
+                      setStep(3);
+                    }
                   }
                 }
               }
@@ -103,6 +111,8 @@ const ServicePay: React.FC = () => {
             if (qName) setName(qName);
             if (qEmail) setEmail(qEmail);
             if (qPhone) setPhone(qPhone);
+            if (qDate && /^\d{4}-\d{2}-\d{2}$/.test(qDate)) setShootDate(qDate);
+            if (qNotes) setNotes(qNotes.slice(0, 500));
             void advanced;
           } catch {
             // ignore malformed query params — user can still choose manually

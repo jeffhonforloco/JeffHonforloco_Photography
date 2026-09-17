@@ -6,17 +6,17 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, Clock, Camera, Users, Award, ArrowRight, ArrowLeft, Calendar as CalendarIcon, Mail, MapPin, Smartphone, Film } from 'lucide-react';
+import { CheckCircle, Clock, Camera, Users, Award, ArrowRight, ArrowLeft, Calendar as CalendarIcon, MapPin, Smartphone, Film } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
-import { apiService } from '@/lib/api-service';
 import {
   trackBookingIntent,
   trackBookingSelection,
   trackBookingStart,
   trackBookingStep,
 } from '@/components/Analytics';
-import { getAttribution, trackFunnelEvent } from '@/lib/acquisition';
+import { trackFunnelEvent } from '@/lib/acquisition';
+import { apiUrl } from '@/lib/api-base';
 import { PRICING_CATEGORIES } from '@/data/pricing-data';
 import { format } from 'date-fns';
 import { BOOKING_DRAFT_STORAGE_KEY } from '@/webmcp/constants';
@@ -41,7 +41,6 @@ const BOOKING_STEPS = [
   { id: 1, title: 'Your Session', icon: Camera },
   { id: 2, title: 'Date & Time', icon: CalendarIcon },
   { id: 3, title: 'Your Details', icon: Users },
-  { id: 4, title: 'Confirmed', icon: CheckCircle },
 ];
 
 const SERVICE_TYPES = [
@@ -137,7 +136,6 @@ const TIME_SLOTS = [
 
 const BookingSystem: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingData, setBookingData] = useState<BookingData>({
     serviceType: '',
     packageType: '',
@@ -249,58 +247,71 @@ const BookingSystem: React.FC = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
+  // Payment-first: the booking flows straight into secure checkout.
+  // Everything the client entered is handed to /pay prefilled — no re-typing,
+  // no "request submitted" dead-end. The payment record IS the booking.
+  // One invisible safety net: the lead is saved fire-and-forget BEFORE the
+  // redirect, so if the client abandons payment, Jeff still has the lead in
+  // Admin. This never blocks or slows the redirect — the client feels one
+  // continuous flow: details → pay → confirmed.
+  const saveBookingLead = (serviceName: string, dateStr: string) => {
     try {
-      trackBookingIntent('booking_system', bookingData.location);
-
-      const result = await apiService.sendContactEmail({
-        full_name: bookingData.fullName,
-        email: bookingData.email,
-        phone: bookingData.phone,
-        message: `Booking Request:
-Service: ${bookingData.serviceType}
-Package: ${bookingData.packageType}
-Date: ${formatDate(bookingData.selectedDate, 'MMMM dd, yyyy')}
-Time: ${bookingData.selectedTime}
-Location: ${bookingData.location} (${bookingData.locationType})
-Budget: ${bookingData.budget}
-
-${bookingData.message}`,
-        service_type: bookingData.serviceType,
-        budget_range: bookingData.budget,
-        event_date:
-          formatDate(bookingData.selectedDate, 'yyyy-MM-dd') === 'Not selected'
-            ? ''
-            : formatDate(bookingData.selectedDate, 'yyyy-MM-dd'),
-        location: bookingData.location,
-        attribution: JSON.stringify(getAttribution()),
-        qualification: JSON.stringify({
-          service: bookingData.serviceType,
-          package: bookingData.packageType,
-          requestedDate: formatDate(bookingData.selectedDate, 'yyyy-MM-dd'),
-          requestedTime: bookingData.selectedTime,
-          locationType: bookingData.locationType,
-          projectSize: bookingData.projectSize,
-          coverageNeeds: bookingData.coverageNeeds,
+      void fetch(apiUrl('/api/v1/contacts/'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: bookingData.fullName.trim(),
+          email: bookingData.email.trim(),
+          phone: bookingData.phone.trim() || undefined,
+          message: bookingData.message.trim(),
+          service_type: serviceName,
+          budget_range: bookingData.budget || undefined,
+          event_date: dateStr !== 'Not selected' ? dateStr : undefined,
+          location: bookingData.location || undefined,
+          qualification: 'booking_payment_handoff',
         }),
-      });
-
-      if (result.success) {
-        nextStep();
-        toast({ title: 'Booking Request Submitted!', description: "We'll confirm within 24 hours." });
-      } else {
-        throw new Error('Submission failed');
-      }
+        keepalive: true,
+      }).catch(() => {});
     } catch {
-      toast({
-        title: 'Error',
-        description: 'There was an issue submitting your booking. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSubmitting(false);
+      // Lead save must never block the payment handoff.
     }
+  };
+
+  const handleContinueToPayment = () => {
+    trackBookingIntent('booking_system', bookingData.location);
+    // Funnel step 4 = payment handoff (details completed, client sent to /pay).
+    // trackBookingStep only accepts numeric steps, so payment is tracked as step 4.
+    trackBookingStep(4, bookingData.serviceType, bookingData.packageType);
+
+    const serviceName =
+      SERVICE_TYPES.find((s) => s.id === bookingData.serviceType)?.name || bookingData.serviceType;
+    const dateStr = formatDate(bookingData.selectedDate, 'yyyy-MM-dd');
+
+    // Invisible lead capture — fire-and-forget, never blocks the redirect.
+    if (bookingData.fullName.trim() && bookingData.email.trim()) {
+      saveBookingLead(serviceName, dateStr);
+    }
+
+    const params = new URLSearchParams();
+    params.set('service', bookingData.serviceType);
+    if (bookingData.packageType) params.set('tier', bookingData.packageType);
+    if (bookingData.fullName.trim()) params.set('name', bookingData.fullName.trim());
+    if (bookingData.email.trim()) params.set('email', bookingData.email.trim());
+    if (bookingData.phone.trim()) params.set('phone', bookingData.phone.trim());
+    if (dateStr !== 'Not selected') params.set('date', dateStr);
+
+    const notesParts: string[] = [];
+    if (bookingData.selectedTime) notesParts.push(`Preferred time: ${bookingData.selectedTime}`);
+    if (bookingData.location) {
+      const locType = bookingData.locationType && bookingData.locationType !== 'both'
+        ? ` (${bookingData.locationType})` : '';
+      notesParts.push(`Location: ${bookingData.location}${locType}`);
+    }
+    if (bookingData.budget) notesParts.push(`Budget: ${bookingData.budget}`);
+    if (bookingData.message.trim()) notesParts.push(bookingData.message.trim());
+    if (notesParts.length) params.set('notes', notesParts.join(' · '));
+
+    window.location.href = `/pay?${params.toString()}`;
   };
 
   const canProceed = (): boolean => {
@@ -662,151 +673,11 @@ ${bookingData.message}`,
     </div>
   );
 
-  const renderConfirmation = () => {
-    const selectedService = SERVICE_TYPES.find((s) => s.id === bookingData.serviceType);
-    const selectedTier = PRICING_CATEGORIES
-      .find(c => c.id === bookingData.serviceType)
-      ?.tiers.find(t => t.id === bookingData.packageType);
-
-    const isCustomTier = selectedTier?.price === 'Custom';
-    const canPayNow = !!selectedTier && !isCustomTier;
-    const payBase = canPayNow
-      ? `/pay?service=${encodeURIComponent(bookingData.serviceType)}&tier=${encodeURIComponent(selectedTier.name)}`
-      : '';
-    const customerQs = canPayNow
-      ? `&name=${encodeURIComponent(bookingData.fullName || '')}&email=${encodeURIComponent(bookingData.email || '')}${bookingData.phone ? `&phone=${encodeURIComponent(bookingData.phone)}` : ''}`
-      : '';
-    const payDepositUrl = canPayNow ? `${payBase}&pay=deposit${customerQs}` : '';
-    const payFullUrl = canPayNow ? `${payBase}&pay=full${customerQs}` : '';
-
-    const nextSteps = [
-      {
-        step: '01',
-        title: 'Jeff Reviews Your Request',
-        subtitle: 'Within 24 hours',
-        description: 'Every inquiry is reviewed personally. Jeff looks at your vision, goals, and preferred date before reaching out.',
-      },
-      {
-        step: '02',
-        title: 'Creative Consult',
-        subtitle: 'Scheduled together',
-        description: 'You\'ll connect with Jeff to align on concept, location, wardrobe, and creative direction before the shoot.',
-      },
-      {
-        step: '03',
-        title: 'Shoot Day Confirmed',
-        subtitle: 'You\'re on the calendar',
-        description: 'Once everything is dialed in, your session date is locked and you\'ll receive a prep guide to get ready.',
-      },
-    ];
-
-    return (
-      <div className="space-y-10">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-green-500" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Request Submitted</h2>
-          <p className="text-gray-300 text-base max-w-md mx-auto">
-            You're in. A confirmation has been sent to <span className="text-white font-medium">{bookingData.email}</span>.
-          </p>
-        </div>
-
-        <Card className="bg-white/5 border-white/10 text-left">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-white text-base tracking-wide uppercase text-xs font-semibold text-gray-500">Booking Summary</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm pt-0">
-            <div className="flex justify-between border-b border-white/5 pb-3">
-              <span className="text-gray-500">Service</span>
-              <span className="text-white">{selectedService?.name}</span>
-            </div>
-            <div className="flex justify-between border-b border-white/5 pb-3">
-              <span className="text-gray-500">Package</span>
-              <span className="text-white">{selectedTier?.name ?? bookingData.packageType}</span>
-            </div>
-            <div className="flex justify-between border-b border-white/5 pb-3">
-              <span className="text-gray-500">Investment</span>
-              <span className="text-photo-red font-semibold">{selectedTier?.price ?? '—'}</span>
-            </div>
-            <div className="flex justify-between border-b border-white/5 pb-3">
-              <span className="text-gray-500">Requested Date</span>
-              <span className="text-white">{formatDate(bookingData.selectedDate, 'MMMM dd, yyyy')} · {bookingData.selectedTime}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Location</span>
-              <span className="text-white">{bookingData.location}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {canPayNow && (
-          <div className="rounded-xl border border-photo-red/30 bg-photo-red/5 p-6 text-center">
-            <h3 className="text-white font-semibold text-lg mb-2">Want to secure your date now?</h3>
-            <p className="text-gray-300 text-sm mb-4 max-w-md mx-auto">
-              Secure your date with a 75% deposit, or pay in full if you prefer — no need to wait for the consult.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href={payDepositUrl}
-                className="inline-flex items-center justify-center bg-photo-red hover:bg-photo-red-hover text-white px-6 py-3 text-sm font-semibold rounded-full transition-colors"
-              >
-                Pay 75% Deposit
-              </a>
-              <a
-                href={payFullUrl}
-                className="inline-flex items-center justify-center border border-white/20 bg-white/5 hover:bg-white/10 text-white px-6 py-3 text-sm font-semibold rounded-full transition-colors"
-              >
-                Pay in Full
-              </a>
-            </div>
-            <p className="text-gray-500 text-xs mt-3">
-              You&apos;ll be taken to secure PayPal checkout. Your date is confirmed once payment and details are finalized with Jeff.
-            </p>
-          </div>
-        )}
-        {isCustomTier && (
-          <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
-            <p className="text-gray-300 text-sm">
-              This package is custom-priced — Jeff will send a personal invoice after reviewing your request.
-            </p>
-          </div>
-        )}
-
-        <div>
-          <p className="text-xs tracking-[0.3em] text-photo-red uppercase font-semibold mb-6">What Happens Next</p>
-          <div className="space-y-6">
-            {nextSteps.map((item) => (
-              <div key={item.step} className="flex gap-5">
-                <div className="flex-shrink-0">
-                  <span className="font-mono text-3xl font-extralight text-photo-red/40 leading-none">{item.step}</span>
-                </div>
-                <div>
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <p className="text-white font-medium text-base">{item.title}</p>
-                    <span className="text-photo-red text-xs">· {item.subtitle}</span>
-                  </div>
-                  <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center justify-center gap-2 text-sm text-gray-500 pt-2 border-t border-white/10">
-          <Mail className="w-4 h-4" />
-          <span>Confirmation email sent to {bookingData.email}</span>
-        </div>
-      </div>
-    );
-  };
-
   const renderStepContent = () => {
     switch (currentStep) {
       case 1: return renderServiceSelection();
       case 2: return renderDateTimeSelection();
       case 3: return renderDetails();
-      case 4: return renderConfirmation();
       default: return null;
     }
   };
@@ -853,17 +724,14 @@ ${bookingData.message}`,
             );
           })}
         </div>
-        {currentStep < 4 && (
-          <p className="mt-4 text-center text-xs text-gray-500">Step {currentStep} of 3</p>
-        )}
+        <p className="mt-4 text-center text-xs text-gray-500">Step {currentStep} of 3</p>
       </div>
 
       <Card className="bg-black/50 border-white/10 backdrop-blur-sm">
         <CardContent className="p-4 sm:p-8">{renderStepContent()}</CardContent>
       </Card>
 
-      {currentStep < 4 && (
-        <div className="flex justify-between mt-6">
+      <div className="flex justify-between mt-6">
           <Button
             variant="outline"
             onClick={prevStep}
@@ -876,11 +744,11 @@ ${bookingData.message}`,
 
           {currentStep === 3 ? (
             <Button
-              onClick={handleSubmit}
-              disabled={!canProceed() || isSubmitting}
-              className="bg-photo-red hover:bg-photo-red-hover text-white min-w-[160px]"
+              onClick={handleContinueToPayment}
+              disabled={!canProceed()}
+              className="bg-photo-red hover:bg-photo-red-hover text-white min-w-[200px]"
             >
-              {isSubmitting ? 'Submitting...' : 'Submit Booking'}
+              Continue to Payment
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
@@ -894,7 +762,6 @@ ${bookingData.message}`,
             </Button>
           )}
         </div>
-      )}
     </div>
   );
 };
