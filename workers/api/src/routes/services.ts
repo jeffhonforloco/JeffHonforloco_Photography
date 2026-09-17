@@ -59,8 +59,10 @@ export async function ensureServicesSchema(db: D1Database) {
   ]);
   const existing = await db.prepare(`SELECT COUNT(*) AS n FROM service_settings`).first<{ n: number }>();
   if (!existing || existing.n === 0) {
-    await db.prepare(`INSERT OR IGNORE INTO service_settings (key, value) VALUES ('deposit_percent', '25')`).run();
+    await db.prepare(`INSERT OR IGNORE INTO service_settings (key, value) VALUES ('deposit_percent', '75')`).run();
   }
+  // Migrate the previous 25% default to the new 75% default (admin-customized values are untouched).
+  await db.prepare(`UPDATE service_settings SET value = '75' WHERE key = 'deposit_percent' AND value = '25'`).run();
 }
 
 async function getServiceSettings(db: D1Database): Promise<Record<string, string>> {
@@ -71,8 +73,8 @@ async function getServiceSettings(db: D1Database): Promise<Record<string, string
 }
 
 function depositPercent(s: Record<string, string>): number {
-  const v = parseInt(s.deposit_percent ?? '25', 10);
-  return Number.isFinite(v) && v > 0 && v < 100 ? v : 25;
+  const v = parseInt(s.deposit_percent ?? '75', 10);
+  return Number.isFinite(v) && v > 0 && v < 100 ? v : 75;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -373,7 +375,7 @@ servicesPublic.post('/my-payments', async (c) => {
   if (!EMAIL_RE.test(email)) return c.json({ error: 'A valid email is required' }, 400);
   const rows = await db.prepare(
     `SELECT id, service_id, service_name, tier_name, payment_type, amount_cents, total_agreed_cents,
-            currency, status, booking_id, paid_at, created_at
+            linked_payment_id, currency, status, booking_id, paid_at, created_at
      FROM service_payments WHERE lower(email) = ? AND status IN ('paid', 'pending')
      ORDER BY created_at DESC LIMIT 20`
   ).bind(email).all();
@@ -413,6 +415,7 @@ servicesPublic.post('/capture', async (c) => {
       'Content-Type': 'application/json',
       'PayPal-Request-Id': crypto.randomUUID(),
     },
+    body: JSON.stringify(orderBody),
   });
   const cdata = (await cres.json().catch(() => null)) as any;
   if (!cres.ok) {
