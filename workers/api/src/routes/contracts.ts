@@ -424,8 +424,9 @@ contracts.post('/:id/send', requireAuth, requireAdmin, async (c) => {
     `UPDATE contracts SET token = ?, token_expires_at = ?, status = 'sent', sent_at = datetime('now'), updated_at = datetime('now') WHERE id = ?`
   ).bind(token, expires, row.id).run();
 
-  const origin = c.req.header('origin') || 'https://jeffhonforlocophotos.com';
-  const signUrl = `${origin}/sign/${token}`;
+  // Sign links must always point at the public site, never the caller's origin:
+  // an admin-domain link forces clients onto the admin login page.
+  const signUrl = `https://jeffhonforlocophotos.com/sign/${token}`;
   let emailed = false;
   let emailError: string | null = null;
   if (c.env.RESEND_API_KEY) {

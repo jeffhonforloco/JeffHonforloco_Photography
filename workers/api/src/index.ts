@@ -28,10 +28,14 @@ const app = new Hono<AppEnv>();
 // SOC 2 Security: Apply security headers to all responses
 app.use('*', securityHeaders);
 
-// CORS — use ALLOWED_ORIGIN when set in Worker secrets; fall back to * until it is configured
+// CORS — use ALLOWED_ORIGIN when set in Worker secrets; fall back to the known site origins
 app.use('*', async (c, next) => {
-  const configured = c.env.ALLOWED_ORIGINS || c.env.ALLOWED_ORIGIN || 'https://jeffhonforlocophotos.com,https://admin.jeffhonforlocophotos.com';
+  const configured = c.env.ALLOWED_ORIGINS || c.env.ALLOWED_ORIGIN || 'https://jeffhonforlocophotos.com,https://www.jeffhonforlocophotos.com,https://admin.jeffhonforlocophotos.com';
   const origins = configured.split(',').map((origin) => origin.trim()).filter(Boolean);
+  // The www subdomain serves the same public site — always allow it alongside the bare domain
+  if (origins.includes('https://jeffhonforlocophotos.com') && !origins.includes('https://www.jeffhonforlocophotos.com')) {
+    origins.push('https://www.jeffhonforlocophotos.com');
+  }
   return cors({ origin: origins, allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], allowHeaders: ['Authorization', 'Content-Type'] })(c, next);
 });
 
