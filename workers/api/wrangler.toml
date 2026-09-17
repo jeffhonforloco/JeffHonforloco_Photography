@@ -4,7 +4,9 @@ compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [triggers]
-crons = ["*/15 * * * *", "0 8 * * *", "15 7 * * *", "30 11 * * 1", "30 12 * * 1", "0 8 1 * *"]
+# 5 crons (Workers Free limit). The Monday SEO run is DST-safe via a NY-time
+# gate on the every-15-min cron (fires 11:30 UTC in EDT and 12:30 UTC in EST).
+crons = ["*/15 * * * *", "0 8 * * *", "15 7 * * *", "30 11 * * 1", "0 8 1 * *"]
 
 # Run: npx wrangler d1 create photography_db
 # Paste the database_id output below
