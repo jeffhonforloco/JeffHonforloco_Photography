@@ -7,17 +7,13 @@ type CaptureState = 'capturing' | 'success' | 'failed' | 'no-token';
 
 const ShopSuccess: React.FC = () => {
   const [params] = useSearchParams();
-  // Stripe appends ?session_id=<checkout session id>; PayPal appends ?token=<orderId>&PayerID=<payerId>.
-  const sessionId = params.get('session_id');
+  // PayPal appends ?token=<orderId>&PayerID=<payerId> on return from approval.
   const token = params.get('token');
-  const provider = sessionId ? 'stripe' : token ? 'paypal' : null;
   const [state, setState] = useState<CaptureState>(
-    provider === 'paypal' ? 'capturing' : provider === 'stripe' ? 'success' : 'no-token'
+    token ? 'capturing' : 'no-token'
   );
   const [detail, setDetail] = useState('');
-  const [orderRef, setOrderRef] = useState<string | null>(
-    sessionId ? `${sessionId.slice(0, 32)}…` : null
-  );
+  const [orderRef, setOrderRef] = useState<string | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -93,7 +89,7 @@ const ShopSuccess: React.FC = () => {
             <ShoppingBag className="mx-auto mb-6 h-16 w-16 text-zinc-600" />
             <h1 className="text-3xl font-bold">No payment found</h1>
             <p className="mt-3 text-zinc-400">
-              This page is reached after completing a card or PayPal checkout.
+              This page is reached after completing a PayPal checkout.
             </p>
           </>
         )}

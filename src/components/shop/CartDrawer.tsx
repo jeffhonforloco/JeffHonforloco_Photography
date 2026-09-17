@@ -12,7 +12,7 @@ const CartDrawer: React.FC = () => {
 
   if (!isOpen) return null;
 
-  const checkout = async (provider: 'stripe' | 'paypal') => {
+  const checkout = async () => {
     setError(null);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
       setError('Enter a valid email for your receipt.');
@@ -20,7 +20,7 @@ const CartDrawer: React.FC = () => {
     }
     setCheckingOut(true);
     try {
-      const res = await fetch(apiUrl(provider === 'stripe' ? '/api/v1/shop/checkout/stripe' : '/api/v1/shop/checkout'), {
+      const res = await fetch(apiUrl('/api/v1/shop/checkout'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -30,7 +30,7 @@ const CartDrawer: React.FC = () => {
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || 'Checkout failed');
-      if (data?.needsPayPal || data?.needsStripe) throw new Error('Online checkout is not connected yet — please contact the studio directly.');
+      if (data?.needsPayPal) throw new Error('Online checkout is not connected yet — please contact the studio directly.');
       if (data?.data?.url) {
         clear();
         window.location.href = data.data.url as string;
@@ -123,23 +123,15 @@ const CartDrawer: React.FC = () => {
             {error && <p className="mb-3 rounded-lg bg-red-500/10 px-3 py-2 text-xs text-red-300">{error}</p>}
             <div className="flex flex-col gap-2">
               <button
-                onClick={() => checkout('stripe')}
+                onClick={() => checkout()}
                 disabled={checkingOut}
                 className="flex w-full items-center justify-center gap-2 rounded-full bg-white py-3 text-sm font-bold text-black hover:bg-zinc-200 disabled:opacity-60"
-              >
-                {checkingOut && <Loader2 className="h-4 w-4 animate-spin" />}
-                {checkingOut ? 'Starting secure checkout…' : 'Pay with Card'}
-              </button>
-              <button
-                onClick={() => checkout('paypal')}
-                disabled={checkingOut}
-                className="flex w-full items-center justify-center gap-2 rounded-full border border-white/25 py-3 text-sm font-bold text-white hover:bg-white/10 disabled:opacity-60"
               >
                 {checkingOut && <Loader2 className="h-4 w-4 animate-spin" />}
                 {checkingOut ? 'Connecting to PayPal…' : 'Pay with PayPal'}
               </button>
             </div>
-            <p className="mt-2 text-center text-[11px] text-zinc-600">Powered by Stripe &amp; PayPal — your payment details never touch our servers.</p>
+            <p className="mt-2 text-center text-[11px] text-zinc-600">Secured by PayPal — your payment details never touch our servers.</p>
           </div>
         )}
       </aside>

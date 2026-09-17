@@ -58,7 +58,6 @@ const AdminShop: React.FC = () => {
   /* ---------- settings (incl. the ON/OFF toggle) ---------- */
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [paypalInfo, setPaypalInfo] = useState<any>(null);
-  const [stripeInfo, setStripeInfo] = useState<any>(null);
   const [settingsSaving, setSettingsSaving] = useState(false);
   const shopEnabled = settings.shop_enabled === '1';
 
@@ -88,7 +87,6 @@ const AdminShop: React.FC = () => {
     if (!res.ok) throw new Error(data.error || 'Failed to load settings');
     setSettings(data.data.settings);
     setPaypalInfo(data.data.paypal);
-    setStripeInfo(data.data.stripe);
   }, []);
 
   const reload = useCallback(async () => {
@@ -460,25 +458,6 @@ const AdminShop: React.FC = () => {
               </div>
 
               <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-5">
-                <h2 className="text-lg font-bold">Stripe payments</h2>
-                {stripeInfo ? (
-                  <ul className="mt-3 space-y-2 text-sm">
-                    <li className="flex items-center gap-2">
-                      {stripeInfo.secret_configured ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
-                      Secret key {stripeInfo.secret_configured ? 'connected' : 'missing — add STRIPE_SECRET_KEY to worker secrets'}
-                    </li>
-                    <li className="flex items-center gap-2">
-                      {stripeInfo.webhook_secret_configured ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
-                      Webhook secret {stripeInfo.webhook_secret_configured ? 'connected' : 'missing — add STRIPE_WEBHOOK_SECRET to worker secrets'}
-                    </li>
-                    <li className="text-xs text-neutral-400">Register this webhook URL in Stripe → Developers → Webhooks:<br />
-                      <code className="rounded bg-neutral-900 px-1.5 py-0.5">https://&lt;worker-host&gt;/api/v1/webhooks/stripe</code>
-                    </li>
-                  </ul>
-                ) : <p className="mt-2 text-sm text-neutral-400">Loading…</p>}
-              </div>
-
-              <div className="rounded-xl border border-neutral-800 bg-neutral-950 p-5">
                 <h2 className="text-lg font-bold">PayPal payments</h2>
                 {paypalInfo ? (
                   <ul className="mt-3 space-y-2 text-sm">
@@ -685,20 +664,13 @@ const AdminShop: React.FC = () => {
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               <Button size="sm" variant="outline" disabled={orderSaving}
-                onClick={() => { if (confirm(`Refund order #${selectedOrder.id}? This marks it refunded locally — process the actual refund in ${selectedOrder.provider === 'stripe' ? 'Stripe' : 'PayPal'}.`)) updateOrder(selectedOrder.id, { status: 'refunded' }); }}>
+                onClick={() => { if (confirm(`Refund order #${selectedOrder.id}? This marks it refunded locally — process the actual refund in PayPal.`)) updateOrder(selectedOrder.id, { status: 'refunded' }); }}>
                 Mark refunded
               </Button>
-              {selectedOrder.provider === 'stripe' ? (
-                <a href={`https://dashboard.stripe.com/search?query=${encodeURIComponent(selectedOrder.email)}`} target="_blank" rel="noreferrer"
-                  className="inline-flex items-center gap-1 rounded-lg border border-neutral-800 px-3 py-1.5 text-sm hover:bg-neutral-900">
-                  Open in Stripe <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              ) : (
-                <a href="https://www.paypal.com/mep/dashboard" target="_blank" rel="noreferrer"
-                  className="inline-flex items-center gap-1 rounded-lg border border-neutral-800 px-3 py-1.5 text-sm hover:bg-neutral-900">
-                  Open in PayPal <ExternalLink className="h-3.5 w-3.5" />
-                </a>
-              )}
+              <a href="https://www.paypal.com/mep/dashboard" target="_blank" rel="noreferrer"
+                className="inline-flex items-center gap-1 rounded-lg border border-neutral-800 px-3 py-1.5 text-sm hover:bg-neutral-900">
+                Open in PayPal <ExternalLink className="h-3.5 w-3.5" />
+              </a>
             </div>
           </div>
         </div>

@@ -11,9 +11,6 @@ export interface Env {
   RESEND_API_KEY: string;
   STREAM_API_TOKEN?: string;
   STREAM_ACCOUNT_ID?: string;
-  STRIPE_SECRET_KEY?: string;
-  STRIPE_WEBHOOK_SECRET?: string;
-  STRIPE_PUBLISHABLE_KEY?: string;
   PAYPAL_CLIENT_ID?: string;
   PAYPAL_CLIENT_SECRET?: string;
   PAYPAL_WEBHOOK_ID?: string;
