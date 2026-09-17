@@ -19,7 +19,7 @@ import { galleries, proof } from './routes/galleries';
 import { pages, publicPages } from './routes/pages';
 import { campaigns, resendWebhook, processDueEmailCampaigns } from './routes/campaigns';
 import { shopPublic, shopAdmin, paypalWebhook } from './routes/shop';
-import { servicesPublic, servicesAdmin } from './routes/services';
+import { servicesPublic, servicesAdmin, sendShootReminders } from './routes/services';
 import { contracts, contractSign } from './routes/contracts';
 import growthRoutes    from './routes/growth';
 import mcpRoutes, { mcpDiscovery } from './routes/mcp';
@@ -116,6 +116,7 @@ export default {
     const tasks: Promise<unknown>[] = [processDueEmailSequences(env), processDueEmailCampaigns(env)];
     if (event.cron === '0 8 * * *') {
       tasks.push(generateDailyPosts(env));
+      tasks.push(sendShootReminders(env.DB, env));
     }
     const growthCadence: Record<string, MonitoringCadence> = {
       '15 7 * * *': 'daily',

@@ -14,6 +14,7 @@ import { requireAuth, requireAdmin } from '../middleware/auth';
 import { SERVICE_PRICING, findServicePricing } from '../lib/pricing';
 import { getPayPalEnv, getPayPalAccessToken, paypalMoney, paypalNotConfigured } from '../lib/paypal';
 import { sendEmail, escapeHtml } from '../lib/email';
+import { sendSms } from '../lib/twilio';
 import type { AppEnv } from '../types';
 
 export const servicesPublic = new Hono<AppEnv>();
@@ -39,6 +40,7 @@ export async function ensureServicesSchema(db: D1Database) {
       email TEXT NOT NULL,
       phone TEXT,
       booking_id INTEGER,
+      shoot_date TEXT,
       notes TEXT,
       provider TEXT NOT NULL DEFAULT 'paypal',
       paypal_order_id TEXT UNIQUE,
@@ -47,7 +49,10 @@ export async function ensureServicesSchema(db: D1Database) {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now')),
       paid_at TEXT,
-      receipt_sent_at TEXT
+      receipt_sent_at TEXT,
+      sms_sent_at TEXT,
+      reminder_7d_sent_at TEXT,
+      reminder_1d_sent_at TEXT
     )`),
     db.prepare(`CREATE TABLE IF NOT EXISTS service_settings (
       key TEXT PRIMARY KEY,
@@ -56,7 +61,19 @@ export async function ensureServicesSchema(db: D1Database) {
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_paypal ON service_payments(paypal_order_id)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_status ON service_payments(status, created_at)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_email ON service_payments(email)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_shoot_date ON service_payments(shoot_date)`),
   ]);
+  // Migrate existing tables: add new columns if they don't exist
+  const cols = await db.prepare(`PRAGMA table_info(service_payments)`).all<{ name: string }>();
+  const colNames = new Set((cols.results ?? []).map((c) => c.name));
+  const migrations: string[] = [];
+  if (!colNames.has('shoot_date')) migrations.push(`ALTER TABLE service_payments ADD COLUMN shoot_date TEXT`);
+  if (!colNames.has('sms_sent_at')) migrations.push(`ALTER TABLE service_payments ADD COLUMN sms_sent_at TEXT`);
+  if (!colNames.has('reminder_7d_sent_at')) migrations.push(`ALTER TABLE service_payments ADD COLUMN reminder_7d_sent_at TEXT`);
+  if (!colNames.has('reminder_1d_sent_at')) migrations.push(`ALTER TABLE service_payments ADD COLUMN reminder_1d_sent_at TEXT`);
+  for (const sql of migrations) {
+    await db.prepare(sql).run();
+  }
   const existing = await db.prepare(`SELECT COUNT(*) AS n FROM service_settings`).first<{ n: number }>();
   if (!existing || existing.n === 0) {
     await db.prepare(`INSERT OR IGNORE INTO service_settings (key, value) VALUES ('deposit_percent', '75')`).run();
@@ -179,6 +196,93 @@ export async function sendServiceReceipt(
   }
 }
 
+/**
+ * Sends a one-off Twilio SMS confirmation the first time a service payment
+ * transitions to 'paid'. Safe no-op when Twilio is not configured, the SMS
+ * was already sent, or the payment is not paid / has no phone. Never throws —
+ * SMS delivery must not break payment processing.
+ */
+export async function sendServiceSms(
+  db: D1Database,
+  env: { TWILIO_ACCOUNT_SID?: string; TWILIO_AUTH_TOKEN?: string; TWILIO_FROM_NUMBER?: string },
+  paymentId: number,
+): Promise<void> {
+  try {
+    const p = await db.prepare(`SELECT * FROM service_payments WHERE id = ?`).bind(paymentId).first<any>();
+    if (!p || p.status !== 'paid' || p.sms_sent_at || !p.phone) return;
+    const amount = `$${(p.amount_cents / 100).toFixed(2)}`;
+    const name = (p.customer_name || 'there').split(' ')[0];
+    const payLabel = p.payment_type === 'deposit' ? 'deposit' : p.payment_type === 'balance' ? 'balance' : 'full payment';
+    const shootBit = p.shoot_date ? ` Shoot date: ${p.shoot_date}.` : '';
+    const msg = `Hi ${name}! Jeff Honforloco Photography received your ${payLabel} of ${amount} for ${p.service_name} (${p.tier_name}).${shootBit} Receipt sent to ${p.email}. Questions? +1-646-379-4237`;
+    const ok = await sendSms(env, p.phone, msg);
+    if (ok) {
+      const now = new Date().toISOString();
+      await db.prepare(`UPDATE service_payments SET sms_sent_at = ?, updated_at = ? WHERE id = ?`)
+        .bind(now, now, paymentId).run();
+    }
+  } catch (e) {
+    console.error('[services] sms failed:', e);
+  }
+}
+
+/**
+ * Sends shoot reminders (7 days and 1 day before) for paid bookings with a
+ * shoot_date. Called from the daily cron. Sends both email and SMS where
+ * contact info exists. Never throws.
+ */
+export async function sendShootReminders(
+  db: D1Database,
+  env: { RESEND_API_KEY?: string; TWILIO_ACCOUNT_SID?: string; TWILIO_AUTH_TOKEN?: string; TWILIO_FROM_NUMBER?: string },
+): Promise<void> {
+  try {
+    await ensureServicesSchema(db);
+    const today = new Date().toISOString().split('T')[0];
+    const in7 = new Date(Date.now() + 7 * 864e5).toISOString().split('T')[0];
+    const in1 = new Date(Date.now() + 1 * 864e5).toISOString().split('T')[0];
+
+    const targets = await db.prepare(
+      `SELECT * FROM service_payments
+       WHERE status = 'paid' AND shoot_date IN (?, ?)
+         AND (reminder_7d_sent_at IS NULL OR reminder_1d_sent_at IS NULL)`
+    ).bind(in7, in1).all<any>();
+
+    for (const p of (targets.results ?? [])) {
+      const is7d = p.shoot_date === in7;
+      const flagCol = is7d ? 'reminder_7d_sent_at' : 'reminder_1d_sent_at';
+      if (p[flagCol]) continue; // already reminded for this window
+
+      const name = (p.customer_name || 'there').split(' ')[0];
+      const when = is7d ? 'in 7 days' : 'tomorrow';
+      const dateStr = p.shoot_date;
+
+      // SMS
+      if (p.phone) {
+        const sms = `Hi ${name}! Reminder: your ${p.service_name} shoot (${p.tier_name}) is ${when} on ${dateStr}. Reply to confirm or reschedule. — Jeff Honforloco Photography, +1-646-379-4237`;
+        await sendSms(env, p.phone, sms);
+      }
+      // Email
+      if (p.email && env.RESEND_API_KEY) {
+        const safeName = escapeHtml(p.customer_name || 'there');
+        await sendEmail(env.RESEND_API_KEY, {
+          to: p.email,
+          subject: `Reminder: your shoot is ${when} — ${p.service_name}`,
+          html: `<p>Hi ${safeName},</p>
+<p>Just a friendly reminder — your <strong>${escapeHtml(p.service_name)} (${escapeHtml(p.tier_name)})</strong> shoot is <strong>${when}</strong> on <strong>${escapeHtml(dateStr)}</strong>.</p>
+<p>Please reply to this email or text +1-646-379-4237 to confirm or reschedule.</p>
+<p style="color:#666">Jeff Honforloco Photography<br/>info@jeffhonforlocophotos.com · +1-646-379-4237</p>`,
+        }).catch((e) => console.error('[services] reminder email failed:', e));
+      }
+
+      const now = new Date().toISOString();
+      await db.prepare(`UPDATE service_payments SET ${flagCol} = ?, updated_at = ? WHERE id = ?`)
+        .bind(now, now, p.id).run();
+    }
+  } catch (e) {
+    console.error('[services] shoot reminders failed:', e);
+  }
+}
+
 /** Webhook fan-out for service payments (called from the PayPal webhook in shop.ts). */
 export async function handleServicePaymentEvent(
   db: D1Database,
@@ -194,6 +298,7 @@ export async function handleServicePaymentEvent(
     const p = await db.prepare(`SELECT id FROM service_payments WHERE paypal_order_id = ?`).bind(relatedOrderId).first<{ id: number }>();
     if (p && (await markServicePaid(db, p.id, { paypal_capture_id: captureId }))) {
       await sendServiceReceipt(db, env, p.id);
+      await sendServiceSms(db, env, p.id);
     }
   } else if (type === 'PAYMENT.CAPTURE.DENIED') {
     await db.prepare(`UPDATE service_payments SET status = 'failed', updated_at = ? WHERE paypal_order_id = ? AND status = 'pending'`)
@@ -292,7 +397,7 @@ servicesPublic.post('/checkout', async (c) => {
   const body = await c.req.json().catch(() => null) as {
     service_id?: string; tier_name?: string; payment_type?: string;
     linked_payment_id?: number; customer_name?: string; email?: string;
-    phone?: string; booking_id?: number; notes?: string;
+    phone?: string; booking_id?: number; shoot_date?: string; notes?: string;
   } | null;
 
   const resolved = resolveServiceTier(body?.service_id || '', body?.tier_name || '');
@@ -337,15 +442,23 @@ servicesPublic.post('/checkout', async (c) => {
   }
 
   const now = new Date().toISOString();
+  // Validate shoot_date (YYYY-MM-DD, not in the past)
+  let shootDate: string | null = null;
+  const rawShootDate = (body?.shoot_date || '').trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(rawShootDate)) {
+    const today = new Date().toISOString().split('T')[0];
+    if (rawShootDate >= today) shootDate = rawShootDate;
+  }
   const ins = await db.prepare(
     `INSERT INTO service_payments
        (service_id, service_name, tier_name, payment_type, amount_cents, total_agreed_cents, linked_payment_id,
-        currency, customer_name, email, phone, booking_id, notes, provider, status, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 'usd', ?, ?, ?, ?, ?, 'paypal', 'pending', ?, ?)`
+        currency, customer_name, email, phone, booking_id, shoot_date, notes, provider, status, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 'usd', ?, ?, ?, ?, ?, ?, 'paypal', 'pending', ?, ?)`
   ).bind(
     resolved.id, resolved.name, resolved.tier.name, paymentType, amountCents, totalAgreedCents, linkedPaymentId,
     customerName, email, (body?.phone || '').trim().slice(0, 40) || null,
     Number.isFinite(parseInt(String(body?.booking_id), 10)) ? parseInt(String(body?.booking_id), 10) : null,
+    shootDate,
     (body?.notes || '').trim().slice(0, 1000) || null, now, now
   ).run();
   const paymentId = Number(ins.meta.last_row_id);
@@ -431,6 +544,7 @@ servicesPublic.post('/capture', async (c) => {
   const captureId: string | null = typeof capture?.id === 'string' ? capture.id : null;
   if (await markServicePaid(db, payment.id, { paypal_capture_id: captureId })) {
     await sendServiceReceipt(db, c.env, payment.id);
+    await sendServiceSms(db, c.env, payment.id);
   }
   return c.json({ success: true, data: { payment_id: payment.id, status: 'paid', capture_id: captureId } });
 });
