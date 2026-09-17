@@ -5,6 +5,7 @@ import { generateDailyPosts } from './lib/journal';
 import { processDueEmailSequences } from './lib/leadAutomation';
 import { queueGrowthMonitoring, type MonitoringCadence } from './lib/growthMonitoring';
 import { runAutoSeoChecks } from './lib/autoSeo';
+import { securityHeaders, rateLimit } from './lib/security';
 import authRoutes      from './routes/auth';
 import contactsRoutes  from './routes/contacts';
 import emailRoutes     from './routes/email';
@@ -20,8 +21,12 @@ import { campaigns, resendWebhook, processDueEmailCampaigns } from './routes/cam
 import { shopPublic, shopAdmin, stripeWebhook } from './routes/shop';
 import { contracts, contractSign } from './routes/contracts';
 import growthRoutes    from './routes/growth';
+import mcpRoutes       from './routes/mcp';
 
 const app = new Hono<AppEnv>();
+
+// SOC 2 Security: Apply security headers to all responses
+app.use('*', securityHeaders);
 
 // CORS — use ALLOWED_ORIGIN when set in Worker secrets; fall back to * until it is configured
 app.use('*', async (c, next) => {
@@ -29,6 +34,19 @@ app.use('*', async (c, next) => {
   const origins = configured.split(',').map((origin) => origin.trim()).filter(Boolean);
   return cors({ origin: origins, allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], allowHeaders: ['Authorization', 'Content-Type'] })(c, next);
 });
+
+// Rate limiting: protect against abuse
+// Public endpoints: 100 requests per minute
+app.use('/api/v1/email/*', rateLimit(100, 60000));
+app.use('/api/v1/contacts/*', rateLimit(100, 60000));
+app.use('/api/v1/chat/*', rateLimit(200, 60000));
+// Auth endpoints: stricter - 20 attempts per 15 minutes
+app.use('/api/v1/auth/*', rateLimit(20, 900000));
+app.use('/api/v1/admin-auth/*', rateLimit(20, 900000));
+// Admin endpoints: 500 per minute (authenticated users)
+app.use('/api/v1/admin/*', rateLimit(500, 60000));
+// MCP: 200 per minute
+app.use('/api/v1/mcp/*', rateLimit(200, 60000));
 
 // Health check
 app.get('/health', (c) => c.json({ ok: true, ts: new Date().toISOString() }));
@@ -57,9 +75,28 @@ app.route('/api/v1/admin/shop', shopAdmin);
 app.route('/api/v1/webhooks', stripeWebhook);
 app.route('/api/v1/admin/contracts', contracts);
 app.route('/api/v1/contracts', contractSign);
+app.route('/api/v1/mcp', mcpRoutes);
 
 // 404 fallback
 app.notFound((c) => c.json({ error: 'Not found' }, 404));
+
+/**
+ * Check if current time is 7:30 AM in America/New_York timezone.
+ * DST-safe: works correctly in both EST (UTC-5) and EDT (UTC-4).
+ */
+function isNewYork730AM(date: Date): boolean {
+  // Get New York time components
+  const nyTime = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/New_York',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  }).format(date);
+  
+  const [hour, minute] = nyTime.split(':').map(Number);
+  // Allow 7:30-7:34 window to account for cron timing variance
+  return hour === 7 && minute >= 30 && minute < 35;
+}
 
 export default {
   fetch: app.fetch,
@@ -76,7 +113,16 @@ export default {
       '0 8 1 * *': 'monthly',
     };
     if (growthCadence[event.cron]) tasks.push(queueGrowthMonitoring(env, growthCadence[event.cron]));
-    if (event.cron === '30 11 * * 1') tasks.push(runAutoSeoChecks(env));
+    
+    // DST-safe SEO: run at 7:30 AM New York time on Mondays
+    // Cron runs at both 11:30 UTC (EDT) and 12:30 UTC (EST), we gate by actual NY time
+    if (event.cron === '30 11 * * 1' || event.cron === '30 12 * * 1') {
+      const now = new Date();
+      const dayOfWeek = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', weekday: 'short' }).format(now);
+      if (dayOfWeek === 'Mon' && isNewYork730AM(now)) {
+        tasks.push(runAutoSeoChecks(env));
+      }
+    }
 
     const results = await Promise.allSettled(tasks);
     for (const result of results) {
