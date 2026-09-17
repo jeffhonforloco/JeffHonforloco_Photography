@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { FileText, Loader2, CheckCircle2, AlertTriangle, PenLine } from 'lucide-react';
+import { FileText, Loader2, CircleCheck, AlertTriangle, PenLine } from 'lucide-react';
 import { apiUrl } from '@/lib/api-base';
 
 interface ContractData {
@@ -101,7 +101,7 @@ const SignContract: React.FC = () => {
 
             {signed ? (
               <div className="p-8 text-center">
-                <CheckCircle2 className="mx-auto mb-3 h-12 w-12 text-emerald-400" />
+                <CircleCheck className="mx-auto mb-3 h-12 w-12 text-emerald-400" />
                 <p className="text-lg font-bold text-emerald-300">Contract signed</p>
                 <p className="mt-1 text-sm text-slate-400">
                   Signed by {contract.signer_name}{contract.signed_at ? ` on ${contract.signed_at.slice(0, 10)}` : ''}.
