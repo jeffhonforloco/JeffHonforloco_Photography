@@ -52,7 +52,7 @@ const AdminServicePayments: React.FC = () => {
     amount: '', customer_name: '', email: '', phone: '', notes: '',
   });
   const [invoiceResult, setInvoiceResult] = useState<{ payment_id: number; payment_url: string; amount_cents: number } | null>(null);
-  const [depositPct, setDepositPct] = useState('25');
+  const [depositPct, setDepositPct] = useState('75');
   const [settingsSaving, setSettingsSaving] = useState(false);
 
   const loadPayments = useCallback(async () => {
