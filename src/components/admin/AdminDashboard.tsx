@@ -267,11 +267,14 @@ const AdminDashboard: React.FC = () => {
   const [revenueByProduct, setRevenueByProduct] = useState<RevenueRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const fetchAll = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+      setNotice(null);
       const [statsRes, contactsRes, analyticsRes, portfolioRes, topRes, shopRes, revRes] = await Promise.all([
         fetch(apiUrl('/api/v1/admin/dashboard'), { headers: authHeaders() }),
         fetch(apiUrl('/api/v1/contacts?limit=500'), { headers: authHeaders() }),
@@ -318,6 +321,7 @@ const AdminDashboard: React.FC = () => {
       setError(err instanceof Error ? err.message : 'Failed to load dashboard');
     } finally {
       setLoading(false);
+      setLastUpdated(new Date());
     }
   }, []);
 
@@ -336,6 +340,7 @@ const AdminDashboard: React.FC = () => {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+      setNotice(`Downloaded ${type}_export.csv`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Export failed');
     }
@@ -404,6 +409,9 @@ const AdminDashboard: React.FC = () => {
         <div>
           <h1 className="text-[26px] font-bold tracking-tight text-white">Command Center</h1>
           <p className="text-sm text-neutral-500">Bookings, leads and revenue at a glance</p>
+          {lastUpdated && (
+            <p className="mt-1 text-xs text-neutral-600">Updated {lastUpdated.toLocaleTimeString()}</p>
+          )}
         </div>
         <div className="flex gap-2">
           <Button onClick={fetchAll} variant="outline" size="sm" className="border-neutral-800 bg-transparent text-neutral-300 hover:bg-neutral-900 hover:text-white">
@@ -419,6 +427,11 @@ const AdminDashboard: React.FC = () => {
         <div className="rounded-lg border border-neutral-800 bg-neutral-950 p-3 text-sm text-red-400">
           Some data couldn't refresh: {error}{' '}
           <button onClick={fetchAll} className="font-semibold underline">Retry</button>
+        </div>
+      )}
+      {notice && (
+        <div className="rounded-lg border border-emerald-900 bg-emerald-950 p-3 text-sm text-emerald-300">
+          {notice}
         </div>
       )}
 
