@@ -16,7 +16,7 @@ import { apiUrl } from '@/lib/api-base';
 import {
   Plus, RefreshCw, Trash2, Eye, Pencil, Save, X,
   Type, Image as ImageIcon, LayoutGrid, MousePointerClick, Star,
-  ArrowUp, ArrowDown, CheckCircle2, AlertCircle, Globe,
+  ArrowUp, ArrowDown, CircleCheck, AlertCircle, Globe,
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -315,7 +315,7 @@ const AdminPages: React.FC = () => {
       </div>
 
       {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
-      {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
+      {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CircleCheck className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
 
       {loading ? <p className="text-sm text-muted-foreground">Loading pages...</p>
         : pages.length === 0 ? (
