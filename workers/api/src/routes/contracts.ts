@@ -463,7 +463,8 @@ contracts.post('/:id/send', requireAuth, requireAdmin, async (c) => {
     try {
       const waBody =
         `Hi ${row.client_name}, Jeff Honforloco Photography sent you a ${row.type === 'paid' ? 'photography services agreement' : 'collaboration agreement'}${row.title ? ` — ${row.title}` : ''} to review and sign: ${signUrl} (expires in 30 days)`;
-      await twilioSendSms(twilioSid, twilioToken, `whatsapp:${twilioFrom}`, `whatsapp:${row.client_phone}`, waBody);
+      const whatsappFrom = (c.env as Record<string, string | undefined>).TWILIO_WHATSAPP_FROM || 'whatsapp:+14155238886';
+      await twilioSendSms(twilioSid, twilioToken, whatsappFrom, `whatsapp:${row.client_phone}`, waBody);
       whatsappSent = true;
     } catch (e) {
       whatsappError = e instanceof Error ? e.message : 'whatsapp send failed';
