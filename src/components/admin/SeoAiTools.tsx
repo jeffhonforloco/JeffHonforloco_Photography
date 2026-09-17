@@ -41,6 +41,18 @@ const SeoAiTools = () => {
       } finally {
         setAutoLoading(false);
       }
+      try {
+        const scRes = await fetch(apiUrl('/api/v1/admin/growth/search-console'), {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const scJson = await scRes.json();
+        if (scJson.success) setScData(scJson.data);
+        else setScError(scJson.error || 'Search Console unavailable');
+      } catch (e) {
+        setScError(e instanceof Error ? e.message : 'Search Console unavailable');
+      } finally {
+        setScLoading(false);
+      }
     })();
   }, []);
   const [seoInput, setSeoInput] = useState('');
@@ -51,6 +63,14 @@ const SeoAiTools = () => {
   const [aiResult, setAiResult] = useState<string | null>(null);
   const [autoRuns, setAutoRuns] = useState<{ run_type: string; target: string; analysis: string; created_at: string }[]>([]);
   const [autoLoading, setAutoLoading] = useState(true);
+  const [scData, setScData] = useState<{
+    site: string; days: number; fetchedAt: string;
+    totals: { clicks: number; impressions: number };
+    topQueries: { query: string; clicks: number; impressions: number; ctr: number; position: number }[];
+    topPages: { page: string; clicks: number; impressions: number; ctr: number; position: number }[];
+  } | null>(null);
+  const [scLoading, setScLoading] = useState(true);
+  const [scError, setScError] = useState<string | null>(null);
 
   const runSeoAnalysis = async () => {
     if (!seoInput.trim()) {
@@ -92,6 +112,77 @@ const SeoAiTools = () => {
 
   return (
     <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Search className="h-5 w-5" />
+            Google Search Console
+          </CardTitle>
+          <CardDescription>
+            Real clicks and impressions from Google Search for jeffhonforlocophotos.com (last 28 days).
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {scLoading ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" /> Loading Search Console metrics…
+            </div>
+          ) : scError ? (
+            <div className="flex items-start gap-2 text-sm">
+              <AlertTriangle className="h-4 w-4 mt-0.5 text-amber-500" />
+              <div>
+                <p className="font-medium">Search Console unavailable</p>
+                <p className="text-muted-foreground">{scError}</p>
+              </div>
+            </div>
+          ) : scData ? (
+            <div className="space-y-4">
+              <div className="flex gap-6">
+                <div>
+                  <p className="text-2xl font-bold">{scData.totals.clicks.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">Clicks (28d)</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{scData.totals.impressions.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">Impressions (28d)</p>
+                </div>
+              </div>
+              {scData.topQueries.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium mb-2">Top queries</p>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-muted-foreground">
+                          <th className="py-1 pr-4 font-medium">Query</th>
+                          <th className="py-1 pr-4 font-medium">Clicks</th>
+                          <th className="py-1 pr-4 font-medium">Impr.</th>
+                          <th className="py-1 font-medium">Avg. pos.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scData.topQueries.slice(0, 10).map((q) => (
+                          <tr key={q.query} className="border-t">
+                            <td className="py-1 pr-4">{q.query}</td>
+                            <td className="py-1 pr-4">{q.clicks}</td>
+                            <td className="py-1 pr-4">{q.impressions}</td>
+                            <td className="py-1">{q.position}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              {scData.topQueries.length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  No search data yet for the last 28 days. Data appears here once Google records impressions.
+                </p>
+              )}
+            </div>
+          ) : null}
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { requireAdmin, requireAuth } from '../middleware/auth';
 import type { AppEnv } from '../types';
+import { getSearchConsoleMetrics } from '../lib/searchConsole';
 
 const growth = new Hono<AppEnv>();
 growth.use('*', requireAuth);
@@ -261,6 +262,16 @@ Would Jeff Honforloco Photography likely appear in an AI answer to this? Provide
   } catch (err) {
     console.error('[ai-visibility-check] Error:', err);
     return c.json({ error: 'AI analysis failed' }, 500);
+  }
+});
+
+growth.get('/search-console', async (c) => {
+  try {
+    const metrics = await getSearchConsoleMetrics(c.env);
+    return c.json({ success: true, data: metrics });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Search Console unavailable';
+    return c.json({ success: false, error: message }, 502);
   }
 });
 
