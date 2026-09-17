@@ -68,13 +68,13 @@ const AdminSecurity: React.FC = () => {
       const token = localStorage.getItem('adminToken');
       
       const [eventsResponse, statsResponse] = await Promise.all([
-        fetch('/api/v1/admin/activity', {
+        fetch(apiUrl('/api/v1/admin/activity'), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }),
-        fetch('/api/v1/admin/security/stats', {
+        fetch(apiUrl('/api/v1/admin/security/stats'), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

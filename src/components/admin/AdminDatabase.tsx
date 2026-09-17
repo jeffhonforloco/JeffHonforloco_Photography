@@ -19,6 +19,7 @@ import {
   ChevronRight,
   X
 } from 'lucide-react';
+import apiUrl from '../../lib/api-base';
 
 interface TableStat {
   name: string;
@@ -87,8 +88,8 @@ const AdminDatabase: React.FC = () => {
       setError(null);
 
       const [statsResponse, healthResponse] = await Promise.all([
-        fetch('/api/v1/admin/database/stats', { headers: authHeaders() }),
-        fetch('/api/v1/admin/health', { headers: authHeaders() })
+        fetch(apiUrl('/api/v1/admin/database/stats'), { headers: authHeaders() }),
+        fetch(apiUrl('/api/v1/admin/health'), { headers: authHeaders() })
       ]);
 
       if (statsResponse.ok) {
@@ -115,7 +116,7 @@ const AdminDatabase: React.FC = () => {
     try {
       setRowsLoading(true);
       const response = await fetch(
-        `/api/v1/admin/database/tables/${encodeURIComponent(table)}/rows?limit=${PAGE_SIZE}&offset=${offset}`,
+        apiUrl(`/api/v1/admin/database/tables/${encodeURIComponent(table)}/rows?limit=${PAGE_SIZE}&offset=${offset}`),
         { headers: authHeaders() }
       );
       if (!response.ok) {
@@ -135,7 +136,7 @@ const AdminDatabase: React.FC = () => {
 
   const downloadSqlDump = async (filename: string) => {
     const token = localStorage.getItem('adminToken');
-    const response = await fetch('/api/v1/admin/export/database?format=sql', {
+    const response = await fetch(apiUrl('/api/v1/admin/export/database?format=sql'), {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!response.ok) {

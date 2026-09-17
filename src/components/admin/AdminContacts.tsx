@@ -39,6 +39,7 @@ import {
   Trash2,
   RefreshCw
 } from 'lucide-react';
+import apiUrl from '../../lib/api-base';
 
 interface Contact {
   id: number;
@@ -110,7 +111,7 @@ const AdminContacts: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/contacts', {
+      const response = await fetch(apiUrl('/api/v1/contacts'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -157,7 +158,7 @@ const AdminContacts: React.FC = () => {
   const updateContactStatus = async (contactId: number, newStatus: string) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/contacts/${contactId}`, {
+      const response = await fetch(apiUrl(`/api/v1/contacts/${contactId}`), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -182,7 +183,7 @@ const AdminContacts: React.FC = () => {
   const deleteContact = async (contactId: number) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/contacts/${contactId}`, {
+      const response = await fetch(apiUrl(`/api/v1/contacts/${contactId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -204,7 +205,7 @@ const AdminContacts: React.FC = () => {
   const exportContacts = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/admin/export/contacts?format=csv', {
+      const response = await fetch(apiUrl('/api/v1/admin/export/contacts?format=csv'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

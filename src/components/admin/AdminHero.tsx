@@ -6,6 +6,7 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Switch } from '../ui/switch';
 import { Save, Upload, Image, RefreshCw } from 'lucide-react';
+import apiUrl from '../../lib/api-base';
 import { useToast } from '../../hooks/use-toast';
 
 const DEFAULT_SETTINGS = {
@@ -56,8 +57,8 @@ const AdminHero = () => {
         const token = localStorage.getItem('adminToken');
         const headers: HeadersInit = { 'Authorization': `Bearer ${token}` };
         const [settingsRes, imagesRes] = await Promise.all([
-          fetch('/api/v1/settings/hero_settings', { headers }),
-          fetch('/api/v1/settings/hero_images', { headers }),
+          fetch(apiUrl('/api/v1/settings/hero_settings'), { headers }),
+          fetch(apiUrl('/api/v1/settings/hero_images'), { headers }),
         ]);
         const settingsData = await settingsRes.json();
         const imagesData = await imagesRes.json();
@@ -81,12 +82,12 @@ const AdminHero = () => {
         'Content-Type': 'application/json',
       };
       await Promise.all([
-        fetch('/api/v1/settings/hero_settings', {
+        fetch(apiUrl('/api/v1/settings/hero_settings'), {
           method: 'PUT',
           headers,
           body: JSON.stringify(heroSettings),
         }),
-        fetch('/api/v1/settings/hero_images', {
+        fetch(apiUrl('/api/v1/settings/hero_images'), {
           method: 'PUT',
           headers,
           body: JSON.stringify(portfolioImages),
@@ -126,7 +127,7 @@ const AdminHero = () => {
       const token = localStorage.getItem('adminToken');
       const formData = new FormData();
       formData.append('image', file);
-      const res = await fetch('/api/v1/upload', {
+      const res = await fetch(apiUrl('/api/v1/upload'), {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData,

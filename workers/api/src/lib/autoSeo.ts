@@ -2,7 +2,7 @@ import type { Env } from '../types';
 
 const SEO_QUERIES = [
   'photographer Providence RI',
-  'fashion photographer Providence Rhode Island',
+  'fashion photographer Providence',
   'photographer Rhode Island',
   'photographer New England',
 ];

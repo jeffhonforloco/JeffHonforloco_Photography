@@ -13,13 +13,16 @@ blog.get('/', async (c) => {
   const search   = c.req.query('search');
   const status   = c.req.query('status') ?? 'published';
 
-  let where = 'WHERE status = ?';
-  const params: (string | number)[] = [status];
+  // status=all: return every post regardless of status (used by the admin
+  // blog manager). Any other value filters to that exact status.
+  let where = 'WHERE 1 = 1';
+  const params: (string | number)[] = [];
+  if (status !== 'all') { where += ' AND status = ?'; params.push(status); }
   if (category) { where += ' AND category = ?'; params.push(category); }
   if (search)   { where += ' AND (title LIKE ? OR excerpt LIKE ?)'; params.push(`%${search}%`, `%${search}%`); }
 
   const [rows, total, cats] = await Promise.all([
-    c.env.DB.prepare(`SELECT id, title, slug, excerpt, featured_image_url, category, read_time, published_at, created_at
+    c.env.DB.prepare(`SELECT id, title, slug, excerpt, featured_image_url, category, status, read_time, published_at, created_at
                       FROM blog_posts ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
       .bind(...params, limit, offset).all(),
     c.env.DB.prepare(`SELECT COUNT(*) as n FROM blog_posts ${where}`).bind(...params).first<{ n: number }>(),

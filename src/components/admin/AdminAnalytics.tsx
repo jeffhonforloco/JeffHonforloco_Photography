@@ -21,6 +21,7 @@ import {
   Calendar,
   Activity
 } from 'lucide-react';
+import apiUrl from '../../lib/api-base';
 
 interface AnalyticsData {
   pageViews: number;
@@ -48,7 +49,7 @@ const AdminAnalytics: React.FC = () => {
       setLoading(true);
       setNotice(null);
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/admin/analytics?period=${period}`, {
+      const response = await fetch(apiUrl(`/api/v1/admin/analytics?period=${period}`), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -80,7 +81,7 @@ const AdminAnalytics: React.FC = () => {
   const exportAnalytics = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/admin/export/analytics?format=csv', {
+      const response = await fetch(apiUrl('/api/v1/admin/export/analytics?format=csv'), {
         headers: {
           'Authorization': `Bearer ${token}`
         }

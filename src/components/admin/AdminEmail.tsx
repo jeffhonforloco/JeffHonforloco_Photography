@@ -36,6 +36,7 @@ import {
   Save,
   X
 } from 'lucide-react';
+import apiUrl from '../../lib/api-base';
 
 interface EmailTemplate {
   id: number;
@@ -84,13 +85,13 @@ const AdminEmail: React.FC = () => {
       const token = localStorage.getItem('adminToken');
       
       const [templatesResponse, sequencesResponse] = await Promise.all([
-        fetch('/api/v1/admin/email-templates', {
+        fetch(apiUrl('/api/v1/admin/email-templates'), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         }),
-        fetch('/api/v1/admin/email-sequences', {
+        fetch(apiUrl('/api/v1/admin/email-sequences'), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -121,7 +122,7 @@ const AdminEmail: React.FC = () => {
   const createTemplate = async (templateData: Partial<EmailTemplate>) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/admin/email-templates', {
+      const response = await fetch(apiUrl('/api/v1/admin/email-templates'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -150,7 +151,7 @@ const AdminEmail: React.FC = () => {
   const updateTemplate = async (templateId: number, templateData: Partial<EmailTemplate>) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/admin/email-templates/${templateId}`, {
+      const response = await fetch(apiUrl(`/api/v1/admin/email-templates/${templateId}`), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -184,7 +185,7 @@ const AdminEmail: React.FC = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/admin/email-templates/${templateId}`, {
+      const response = await fetch(apiUrl(`/api/v1/admin/email-templates/${templateId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -207,7 +208,7 @@ const AdminEmail: React.FC = () => {
     try {
       setProcessing(true);
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/admin/email-sequences/process', {
+      const response = await fetch(apiUrl('/api/v1/admin/email-sequences/process'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -230,7 +231,7 @@ const AdminEmail: React.FC = () => {
   const cancelSequence = async (sequenceId: number) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/admin/email-sequences/cancel', {
+      const response = await fetch(apiUrl('/api/v1/admin/email-sequences/cancel'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -252,7 +253,7 @@ const AdminEmail: React.FC = () => {
   const deleteSequence = async (sequenceId: number) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/admin/email-sequences/${sequenceId}`, {
+      const response = await fetch(apiUrl(`/api/v1/admin/email-sequences/${sequenceId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -279,7 +280,7 @@ const AdminEmail: React.FC = () => {
       setTestSending(true);
       setNotice(null);
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/admin/email/test', {
+      const response = await fetch(apiUrl('/api/v1/admin/email/test'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -310,7 +311,7 @@ const AdminEmail: React.FC = () => {
       const token = localStorage.getItem('adminToken');
       const headers = { 'Authorization': `Bearer ${token}` };
 
-      const seqResponse = await fetch('/api/v1/admin/email-sequences?status=all', {
+      const seqResponse = await fetch(apiUrl('/api/v1/admin/email-sequences?status=all'), {
         method: 'DELETE',
         headers
       });
@@ -319,7 +320,7 @@ const AdminEmail: React.FC = () => {
       }
       const seqData = await seqResponse.json();
 
-      const leadsResponse = await fetch('/api/v1/admin/analytics/orphaned-leads', {
+      const leadsResponse = await fetch(apiUrl('/api/v1/admin/analytics/orphaned-leads'), {
         method: 'DELETE',
         headers
       });

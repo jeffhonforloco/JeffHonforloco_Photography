@@ -732,10 +732,21 @@ admin.get('/export/:type', requireAuth, async (c) => {
     // Always return a real CSV when requested — even with zero rows, so the
     // downloaded file matches its .csv name instead of JSON in disguise.
     const results = rows.results as Record<string, unknown>[];
-    const keys = results.length > 0 ? Object.keys(results[0] as object) : [];
+    let keys = results.length > 0 ? Object.keys(results[0] as object) : [];
+    if (keys.length === 0) {
+      // Empty table: fall back to the real column names from the schema so
+      // the file still carries headers. `table` comes from a fixed allowlist
+      // above, so it is safe to interpolate here.
+      try {
+        const cols = await c.env.DB.prepare(`PRAGMA table_info(${table})`).all<{ name: string }>();
+        keys = (cols.results ?? []).map((col) => col.name);
+      } catch {
+        keys = [];
+      }
+    }
     const header = keys.join(',');
     const body = results.map(r => keys.map(k => JSON.stringify(r[k] ?? '')).join(',')).join('\n');
-    const csv = results.length > 0 ? `${header}\n${body}` : '';
+    const csv = body ? `${header}\n${body}` : header;
     return new Response(csv, {
       headers: { 'Content-Type': 'text/csv', 'Content-Disposition': `attachment; filename="${type}.csv"` },
     });

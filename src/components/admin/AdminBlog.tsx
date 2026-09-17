@@ -39,6 +39,7 @@ import {
   Save,
   X
 } from 'lucide-react';
+import apiUrl from '../../lib/api-base';
 
 interface BlogPost {
   id: number;
@@ -91,7 +92,7 @@ const AdminBlog: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/blog', {
+      const response = await fetch(apiUrl('/api/v1/blog'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -138,7 +139,7 @@ const AdminBlog: React.FC = () => {
   const createBlogPost = async (postData: Partial<BlogPost>) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/v1/blog', {
+      const response = await fetch(apiUrl('/api/v1/blog'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -167,7 +168,7 @@ const AdminBlog: React.FC = () => {
   const updateBlogPost = async (postId: number, postData: Partial<BlogPost>) => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/blog/${postId}`, {
+      const response = await fetch(apiUrl(`/api/v1/blog/${postId}`), {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -201,7 +202,7 @@ const AdminBlog: React.FC = () => {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/v1/blog/${postId}`, {
+      const response = await fetch(apiUrl(`/api/v1/blog/${postId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -243,14 +244,23 @@ const AdminBlog: React.FC = () => {
   };
 
   const getStatusBadge = (status: string) => {
-    const normalized = (status || 'draft').toString().trim().toLowerCase();
+    const normalized = (status || '').toString().trim().toLowerCase();
     const statusConfig = {
       draft: { variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800', label: 'Draft' },
       published: { variant: 'default' as const, color: 'bg-green-100 text-green-800', label: 'Published' },
       archived: { variant: 'outline' as const, color: 'bg-yellow-100 text-yellow-800', label: 'Archived' }
     };
 
-    const config = statusConfig[normalized as keyof typeof statusConfig] || statusConfig.draft;
+    const config = statusConfig[normalized as keyof typeof statusConfig];
+
+    // Never guess: a post without a known status shows "Not set", not "Draft".
+    if (!config) {
+      return (
+        <Badge variant="outline" className="bg-gray-50 text-gray-500">
+          Not set
+        </Badge>
+      );
+    }
 
     return (
       <Badge variant={config.variant} className={config.color}>
