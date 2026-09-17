@@ -18,7 +18,7 @@ import {
 import { apiUrl } from '@/lib/api-base';
 import {
   Mail, CalendarDays, Megaphone, Send, Clock, RefreshCw, Eye, MousePointerClick,
-  Plus, Users, AlertCircle, CheckCircle2, FlaskConical, Trash2, Target,
+  Plus, Users, AlertCircle, CircleCheck, FlaskConical, Trash2, Target,
   Image as ImageIcon, ExternalLink, Info,
 } from 'lucide-react';
 
@@ -190,7 +190,7 @@ const EmailTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {error && <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
-      {notice && <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{notice}</div>}
+      {notice && <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700"><CircleCheck className="mt-0.5 h-4 w-4 shrink-0" />{notice}</div>}
 
       <Card>
         <CardHeader>
@@ -460,7 +460,7 @@ const SocialTab: React.FC = () => {
   return (
     <div className="space-y-6">
       {error && <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
-      {notice && <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{notice}</div>}
+      {notice && <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700"><CircleCheck className="mt-0.5 h-4 w-4 shrink-0" />{notice}</div>}
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
