@@ -249,6 +249,60 @@ const AdminEmail: React.FC = () => {
     }
   };
 
+  const deleteSequence = async (sequenceId: number) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/v1/admin/email-sequences/${sequenceId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete email sequence row');
+      }
+
+      fetchEmailData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete email sequence row');
+    }
+  };
+
+  const [testTo, setTestTo] = useState('');
+  const [testSending, setTestSending] = useState(false);
+
+  const sendTestEmail = async () => {
+    try {
+      setTestSending(true);
+      setNotice(null);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch('/api/v1/admin/email/test', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ to: testTo.trim() })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send test email');
+      }
+      setNotice({ type: 'ok', text: `Test email sent to ${testTo.trim()}. Check the inbox (and spam folder).` });
+      setTestTo('');
+    } catch (err) {
+      setNotice({
+        type: 'err',
+        text: err instanceof Error ? err.message : 'Failed to send test email'
+      });
+    } finally {
+      setTestSending(false);
+    }
+  };
+
   const clearFailedRows = async () => {
     try {
       setProcessing(true);
@@ -256,12 +310,12 @@ const AdminEmail: React.FC = () => {
       const token = localStorage.getItem('adminToken');
       const headers = { 'Authorization': `Bearer ${token}` };
 
-      const seqResponse = await fetch('/api/v1/admin/email-sequences?status=all_failed', {
+      const seqResponse = await fetch('/api/v1/admin/email-sequences?status=all', {
         method: 'DELETE',
         headers
       });
       if (!seqResponse.ok) {
-        throw new Error('Failed to clear failed email rows');
+        throw new Error('Failed to clear email rows');
       }
       const seqData = await seqResponse.json();
 
@@ -276,13 +330,13 @@ const AdminEmail: React.FC = () => {
 
       setNotice({
         type: 'ok',
-        text: `Cleared ${seqData.deleted ?? 0} failed email rows and ${leadsData.deleted ?? 0} orphaned lead events.`
+        text: `Cleared ${seqData.deleted ?? 0} failed/cancelled email rows and ${leadsData.deleted ?? 0} orphaned lead events.`
       });
       fetchEmailData();
     } catch (err) {
       setNotice({
         type: 'err',
-        text: err instanceof Error ? err.message : 'Failed to clear failed rows'
+        text: err instanceof Error ? err.message : 'Failed to clear rows'
       });
     } finally {
       setProcessing(false);
@@ -434,6 +488,34 @@ const AdminEmail: React.FC = () => {
         </div>
       )}
 
+      {/* Send Test Email */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Send Test Email</CardTitle>
+          <CardDescription>
+            Verify email delivery instantly — sends one test email through the provider, no lead or contact needed.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="flex-1">
+              <label className="text-sm font-medium text-gray-500">Recipient email</label>
+              <Input
+                value={testTo}
+                onChange={(e) => setTestTo(e.target.value)}
+                placeholder="you@example.com"
+                type="email"
+                className="mt-1"
+              />
+            </div>
+            <Button onClick={sendTestEmail} disabled={testSending || !testTo.trim()}>
+              <Send className="h-4 w-4 mr-2" />
+              {testSending ? 'Sending...' : 'Send test'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Email Sequences */}
       <Card>
         <CardHeader>
@@ -446,7 +528,7 @@ const AdminEmail: React.FC = () => {
             </div>
             <Button variant="outline" size="sm" onClick={clearFailedRows} disabled={processing}>
               <Trash2 className="h-4 w-4 mr-2" />
-              Clear failed
+              Clear failed & cancelled
             </Button>
           </div>
         </CardHeader>
@@ -489,10 +571,16 @@ const AdminEmail: React.FC = () => {
                       {sequence.sent_at ? new Date(sequence.sent_at).toLocaleString() : sequence.last_error || 'Not sent'}
                     </TableCell>
                     <TableCell>
-                      {sequence.status === 'pending' && (
+                      {sequence.status === 'pending' ? (
                         <Button variant="outline" size="sm" onClick={() => cancelSequence(sequence.id)} className="text-red-600 hover:text-red-700">
                           Cancel
                         </Button>
+                      ) : (
+                        sequence.status !== 'sent' && (
+                          <Button variant="outline" size="sm" onClick={() => deleteSequence(sequence.id)} className="text-red-600 hover:text-red-700">
+                            <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
+                          </Button>
+                        )
                       )}
                     </TableCell>
                   </TableRow>
