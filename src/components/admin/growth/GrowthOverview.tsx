@@ -44,7 +44,7 @@ const GrowthOverview = () => {
 
   return (
     <div>
-      <PageHeader eyebrow="Executive view" title="Growth Command Center" description="Discovery, demand, conversion, and operating priorities from the existing site funnel and CRM." action={<Select value={days} onValueChange={changeRange}><SelectTrigger className="w-32 bg-white"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="7">7 days</SelectItem><SelectItem value="30">30 days</SelectItem><SelectItem value="90">90 days</SelectItem></SelectContent></Select>} />
+      <PageHeader eyebrow="Executive view" title="Growth Command Center" description="Discovery, demand, conversion, and operating priorities from the existing site funnel and CRM." action={<Select value={days} onValueChange={changeRange}><SelectTrigger className="w-32 bg-white text-neutral-900"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="7">7 days</SelectItem><SelectItem value="30">30 days</SelectItem><SelectItem value="90">90 days</SelectItem></SelectContent></Select>} />
       {error && <ErrorNotice message={error} />}
       {loading && <div className="flex h-40 items-center justify-center text-sm text-slate-500"><RefreshCw className="mr-2 h-4 w-4 animate-spin" />Loading real business data…</div>}
       {data && !loading && <>
