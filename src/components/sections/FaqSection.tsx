@@ -48,7 +48,7 @@ const FaqSection = () => {
   };
 
   return (
-    <section id="faq" className="py-32 md:py-40 bg-photo-black relative overflow-hidden scroll-mt-28">
+    <section id="faq" className="py-32 md:py-40 bg-photo-black relative overflow-hidden scroll-mt-44">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="relative max-w-5xl mx-auto px-8 md:px-16">
         <div className="text-center mb-16">
@@ -67,7 +67,7 @@ const FaqSection = () => {
             return (
               <div
                 key={faq.question}
-                className="bg-photo-gray-900 border border-photo-gray-700 hover:border-photo-red/40 rounded-2xl transition-colors duration-300 overflow-hidden"
+                className="bg-photo-gray-900 border border-photo-gray-700 hover:border-photo-red/40 rounded-2xl transition-colors duration-300 overflow-hidden scroll-mt-44"
               >
                 <button
                   type="button"

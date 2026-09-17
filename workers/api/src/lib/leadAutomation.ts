@@ -17,6 +17,13 @@ export const LEAD_PIPELINE_STATUSES = [
 
 export const PAUSE_FOLLOWUP_STATUSES = new Set(['deposit_paid', 'booked', 'lost', 'completed', 'closed']);
 
+/**
+ * Placeholder service labels emitted by the chat widget (Jade) — never a real
+ * service the visitor chose. A repeat lead carrying one of these must not
+ * overwrite the contact's existing service_type.
+ */
+export const PLACEHOLDER_SERVICE_TYPES = new Set(['chat inquiry', 'general inquiry']);
+
 const DEFAULT_BUSINESS_ADDRESS = 'Jeff Honforloco Photography, Providence, RI';
 const SITE_BASE_URL = 'https://jeffhonforlocophotos.com';
 
@@ -223,6 +230,15 @@ export async function scheduleLeadFollowups(env: Env, contactId: number): Promis
     `SELECT id FROM email_suppression WHERE lower(email) = ?`
   ).bind(contact.email.toLowerCase()).first();
   if (suppressed) return;
+
+  // A reopened lead cancels its pending steps first; those cancelled rows still
+  // occupy UNIQUE(contact_id, sequence_type, step_number), which would make the
+  // INSERT OR IGNORE below a silent no-op and leave the lead with no follow-ups.
+  // Clear the stale rows so the lead genuinely gets a fresh pending sequence.
+  await env.DB.prepare(
+    `DELETE FROM email_sequences
+     WHERE contact_id = ? AND sequence_type = 'lead_nurture' AND status IN ('cancelled', 'failed')`
+  ).bind(contactId).run();
 
   const sequence = [
     ['lead_nurture', 1, 'inquiry_next_steps', addMs(15 * 60 * 1000)],

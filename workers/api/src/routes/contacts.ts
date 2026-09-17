@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { requireAuth } from '../middleware/auth';
 import type { AppEnv } from '../types';
-import { cancelPendingFollowups, LEAD_PIPELINE_STATUSES, PAUSE_FOLLOWUP_STATUSES, scheduleLeadFollowups } from '../lib/leadAutomation';
+import { cancelPendingFollowups, LEAD_PIPELINE_STATUSES, PAUSE_FOLLOWUP_STATUSES, PLACEHOLDER_SERVICE_TYPES, scheduleLeadFollowups } from '../lib/leadAutomation';
 
 const contacts = new Hono<AppEnv>();
 
@@ -75,13 +75,18 @@ contacts.post('/', async (c) => {
   ).bind(body.email).first<{ id: number }>();
 
   if (existingContact) {
+    // Placeholder service labels from the chat widget ("Chat Inquiry", ...) must
+    // never overwrite the real service a visitor already chose on the form.
+    const incomingService = (body.service_type || '').trim();
+    const isPlaceholderService =
+      !incomingService || PLACEHOLDER_SERVICE_TYPES.has(incomingService.toLowerCase());
     await c.env.DB.prepare(
       `UPDATE contacts SET full_name = ?, phone = COALESCE(?, phone), message = ?,
        service_type = COALESCE(?, service_type), budget_range = COALESCE(?, budget_range),
        event_date = COALESCE(?, event_date), location = COALESCE(?, location),
        status = 'new', updated_at = datetime('now') WHERE id = ?`
     ).bind(body.full_name, body.phone ?? null, body.message,
-           body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null,
+           isPlaceholderService ? null : incomingService, body.budget_range ?? null, body.event_date ?? null,
            body.location ?? null, existingContact.id).run();
 
     const reopenedId = existingContact.id;

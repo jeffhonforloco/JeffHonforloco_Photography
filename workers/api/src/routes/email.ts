@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { sendEmail, contactNotificationHtml, contactConfirmationHtml, newsletterWelcomeHtml, escapeHtml } from '../lib/email';
-import { scheduleLeadFollowups, suppressEmail, cancelPendingFollowups } from '../lib/leadAutomation';
+import { scheduleLeadFollowups, suppressEmail, cancelPendingFollowups, PLACEHOLDER_SERVICE_TYPES } from '../lib/leadAutomation';
 import type { AppEnv } from '../types';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -31,13 +31,21 @@ email.post('/contact', async (c) => {
       'SELECT id FROM contacts WHERE email = ?'
     ).bind(body.email).first<{ id: number }>();
     if (existingContact) {
+      // Jade's notification email arrives with placeholder values ("Chat Inquiry",
+      // "[NEW CHAT LEAD — Jade]...") under the same visitor's email. Never let a
+      // placeholder overwrite the real service/message the visitor already gave.
+      const incomingService = (body.service_type || '').trim();
+      const isPlaceholderService =
+        !incomingService || PLACEHOLDER_SERVICE_TYPES.has(incomingService.toLowerCase());
+      const isChatNotification = (body.message || '').startsWith('[NEW CHAT LEAD');
       await c.env.DB.prepare(
-        `UPDATE contacts SET full_name = ?, phone = COALESCE(?, phone), message = ?,
+        `UPDATE contacts SET full_name = ?, phone = COALESCE(?, phone),
+         message = COALESCE(?, message),
          service_type = COALESCE(?, service_type), budget_range = COALESCE(?, budget_range),
          event_date = COALESCE(?, event_date), location = COALESCE(?, location),
          status = 'new', updated_at = datetime('now') WHERE id = ?`
-      ).bind(body.full_name, body.phone ?? null, body.message,
-             body.service_type ?? null, body.budget_range ?? null, body.event_date ?? null,
+      ).bind(body.full_name, body.phone ?? null, isChatNotification ? null : body.message,
+             isPlaceholderService ? null : incomingService, body.budget_range ?? null, body.event_date ?? null,
              body.location ?? null, existingContact.id).run();
       contactId = existingContact.id;
       wasReopened = true;
