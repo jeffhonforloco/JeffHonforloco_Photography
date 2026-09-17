@@ -695,11 +695,15 @@ admin.get('/export/:type', requireAuth, async (c) => {
 
   const rows = await c.env.DB.prepare(`SELECT * FROM ${table} ORDER BY created_at DESC LIMIT 1000`).all();
 
-  if (fmt === 'csv' && rows.results.length > 0) {
-    const keys   = Object.keys(rows.results[0] as object);
+  if (fmt === 'csv') {
+    // Always return a real CSV when requested — even with zero rows, so the
+    // downloaded file matches its .csv name instead of JSON in disguise.
+    const results = rows.results as Record<string, unknown>[];
+    const keys = results.length > 0 ? Object.keys(results[0] as object) : [];
     const header = keys.join(',');
-    const body   = rows.results.map(r => keys.map(k => JSON.stringify((r as Record<string, unknown>)[k] ?? '')).join(',')).join('\n');
-    return new Response(`${header}\n${body}`, {
+    const body = results.map(r => keys.map(k => JSON.stringify(r[k] ?? '')).join(',')).join('\n');
+    const csv = results.length > 0 ? `${header}\n${body}` : '';
+    return new Response(csv, {
       headers: { 'Content-Type': 'text/csv', 'Content-Disposition': `attachment; filename="${type}.csv"` },
     });
   }
