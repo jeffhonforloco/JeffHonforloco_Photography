@@ -29,7 +29,7 @@ function publicUrl(c: { req: { url: string } }, key: string) {
 /* dashboard section. Auto-created on first hit of /track or /top.    */
 /* ------------------------------------------------------------------ */
 
-async function ensureMediaViewsSchema(db: D1Database) {
+export async function ensureMediaViewsSchema(db: D1Database) {
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS media_views (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

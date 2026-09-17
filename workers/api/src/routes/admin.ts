@@ -3,35 +3,18 @@ import { requireAuth } from '../middleware/auth';
 import type { AppEnv } from '../types';
 import { ensureLeadAutomationSchema, processDueEmailSequences } from '../lib/leadAutomation';
 import { sendEmail, escapeHtml } from '../lib/email';
+import { ensureCampaignSchema } from './campaigns';
+import { ensureContractSchema } from './contracts';
+import { ensureGallerySchema } from './galleries';
+import { ensureMediaViewsSchema } from './media';
+import { ensurePagesSchema } from './pages';
+import { ensureShopSchema } from './shop';
+import { ensureLoginRateLimitSchema } from './auth';
 
 const admin = new Hono<AppEnv>();
 
 const EVENT_TYPE_RE = /^[a-zA-Z0-9_.:-]{1,100}$/;
 const TEMPLATE_NAME_RE = /^[a-zA-Z0-9_-]{2,80}$/;
-const EXPORT_TABLES = [
-  'users',
-  'contacts',
-  'blog_posts',
-  'portfolio_images',
-  'analytics',
-  'newsletter_subscribers',
-  'email_templates',
-  'email_sequences',
-  'email_suppression',
-  'growth_recommendations',
-  'competitors',
-  'competitor_snapshots',
-  'competitor_change_events',
-  'search_query_snapshots',
-  'ai_visibility_tests',
-  'authority_tasks',
-  'performance_snapshots',
-  'site_health_snapshots',
-  'growth_fix_proposals',
-  'growth_experiments',
-  'monitoring_runs',
-  'growth_notifications',
-] as const;
 const DATABASE_EXPORT_LIMIT = 10000;
 
 type TemplateInput = {
@@ -115,8 +98,15 @@ function sqlValue(value: unknown): string {
 }
 
 async function countRows(db: D1Database, table: string): Promise<number> {
-  const row = await db.prepare(`SELECT COUNT(*) as count FROM ${table}`).first<{ count: number }>();
+  const row = await db.prepare(`SELECT COUNT(*) as count FROM ${sqlIdentifier(table)}`).first<{ count: number }>();
   return row?.count ?? 0;
+}
+
+async function listUserTables(db: D1Database): Promise<string[]> {
+  const res = await db.prepare(
+    "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+  ).all<{ name: string }>();
+  return (res.results ?? []).map((r) => r.name);
 }
 
 async function buildDatabaseExport(db: D1Database): Promise<string> {
@@ -127,7 +117,7 @@ async function buildDatabaseExport(db: D1Database): Promise<string> {
     'BEGIN TRANSACTION;',
   ];
 
-  for (const table of EXPORT_TABLES) {
+  for (const table of await listUserTables(db)) {
     const rows = await db.prepare(`SELECT * FROM ${table} LIMIT ?`).bind(DATABASE_EXPORT_LIMIT).all<Record<string, unknown>>();
     lines.push('', `-- ${table}`);
 
@@ -609,27 +599,69 @@ admin.delete('/analytics/orphaned-leads', requireAuth, async (c) => {
 
 // GET /api/v1/admin/database/stats (auth required)
 admin.get('/database/stats', requireAuth, async (c) => {
-  await ensureLeadAutomationSchema(c.env);
-  const [contacts, blogPosts, portfolioImages, emailTemplates, emailSequences, analytics] = await Promise.all([
-    countRows(c.env.DB, 'contacts'),
-    countRows(c.env.DB, 'blog_posts'),
-    countRows(c.env.DB, 'portfolio_images'),
-    countRows(c.env.DB, 'email_templates'),
-    countRows(c.env.DB, 'email_sequences'),
-    countRows(c.env.DB, 'analytics'),
+  // Make sure every feature table exists so the listing is complete,
+  // then report live row counts for all of them.
+  await Promise.all([
+    ensureLeadAutomationSchema(c.env),
+    ensureCampaignSchema(c.env.DB),
+    ensureContractSchema(c.env.DB),
+    ensureGallerySchema(c.env.DB),
+    ensureMediaViewsSchema(c.env.DB),
+    ensurePagesSchema(c.env.DB),
+    ensureShopSchema(c.env.DB),
+    ensureLoginRateLimitSchema(c.env.DB),
   ]);
+  const tables: { name: string; rows: number }[] = [];
+  for (const name of await listUserTables(c.env.DB)) {
+    tables.push({ name, rows: await countRows(c.env.DB, name) });
+  }
+  const byName = new Map(tables.map((t) => [t.name, t.rows]));
+  const pick = (n: string) => byName.get(n) ?? 0;
 
   return c.json({
     success: true,
     data: {
-      contacts,
-      blogPosts,
-      portfolioImages,
-      emailTemplates,
-      emailSequences,
-      analytics,
-      totalSize: 0,
+      contacts: pick('contacts'),
+      blogPosts: pick('blog_posts'),
+      portfolioImages: pick('portfolio_images'),
+      emailTemplates: pick('email_templates'),
+      emailSequences: pick('email_sequences'),
+      analytics: pick('analytics'),
+      tables,
+      totalTables: tables.length,
+      totalRows: tables.reduce((sum, t) => sum + t.rows, 0),
+      // D1 does not expose a database file size over SQL; null = "not reported".
+      totalSize: null,
       lastBackup: null,
+    },
+  });
+});
+
+// GET /api/v1/admin/database/tables/:name/rows (auth required) — paginated row browser
+admin.get('/database/tables/:name/rows', requireAuth, async (c) => {
+  const name = c.req.param('name');
+  const known = await c.env.DB.prepare(
+    "SELECT 1 AS ok FROM sqlite_master WHERE type = 'table' AND name = ? AND name NOT LIKE 'sqlite_%'"
+  ).bind(name).first<{ ok: number }>();
+  if (!known) return c.json({ success: false, error: 'Unknown table' }, 404);
+
+  const limit = Math.min(100, Math.max(1, parseInt(c.req.query('limit') || '25', 10) || 25));
+  const offset = Math.max(0, parseInt(c.req.query('offset') || '0', 10) || 0);
+  const quoted = sqlIdentifier(name);
+  const [countRow, rowsRes] = await Promise.all([
+    c.env.DB.prepare(`SELECT COUNT(*) as count FROM ${quoted}`).first<{ count: number }>(),
+    c.env.DB.prepare(`SELECT * FROM ${quoted} LIMIT ? OFFSET ?`).bind(limit, offset).all<Record<string, unknown>>(),
+  ]);
+  const rows = rowsRes.results ?? [];
+  return c.json({
+    success: true,
+    data: {
+      table: name,
+      total: countRow?.count ?? 0,
+      limit,
+      offset,
+      columns: rows.length > 0 ? Object.keys(rows[0] as object) : [],
+      rows,
     },
   });
 });
@@ -643,7 +675,8 @@ admin.get('/health', requireAuth, async (c) => {
       health: {
         status: 'healthy',
         message: 'D1 database is reachable',
-        fileSize: 0,
+        // D1 does not expose a file size over SQL; null = "not reported".
+        fileSize: null,
         timestamp: new Date().toISOString(),
       },
     });
@@ -654,7 +687,7 @@ admin.get('/health', requireAuth, async (c) => {
       health: {
         status: 'error',
         message: 'D1 database check failed',
-        fileSize: 0,
+        fileSize: null,
         timestamp: new Date().toISOString(),
       },
     });

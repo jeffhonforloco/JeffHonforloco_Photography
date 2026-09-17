@@ -243,17 +243,18 @@ const AdminBlog: React.FC = () => {
   };
 
   const getStatusBadge = (status: string) => {
+    const normalized = (status || 'draft').toString().trim().toLowerCase();
     const statusConfig = {
-      draft: { variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800' },
-      published: { variant: 'default' as const, color: 'bg-green-100 text-green-800' },
-      archived: { variant: 'outline' as const, color: 'bg-yellow-100 text-yellow-800' }
+      draft: { variant: 'secondary' as const, color: 'bg-gray-100 text-gray-800', label: 'Draft' },
+      published: { variant: 'default' as const, color: 'bg-green-100 text-green-800', label: 'Published' },
+      archived: { variant: 'outline' as const, color: 'bg-yellow-100 text-yellow-800', label: 'Archived' }
     };
 
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
-    
+    const config = statusConfig[normalized as keyof typeof statusConfig] || statusConfig.draft;
+
     return (
       <Badge variant={config.variant} className={config.color}>
-        {status}
+        {config.label}
       </Badge>
     );
   };

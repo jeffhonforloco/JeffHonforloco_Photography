@@ -173,7 +173,7 @@ Collaborator: ________________________________       Date: _______________
 
 Parent/Guardian (if Collaborator under 18): _____    Date: _______________`;
 
-async function ensureSchema(db: D1Database) {
+export async function ensureContractSchema(db: D1Database) {
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS contracts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -305,7 +305,7 @@ function clientIp(c: { req: { header: (n: string) => string | undefined } }): st
 /* Admin routes                                                        */
 /* ------------------------------------------------------------------ */
 
-contracts.use('*', async (c, next) => { await ensureSchema(c.env.DB); return next(); });
+contracts.use('*', async (c, next) => { await ensureContractSchema(c.env.DB); return next(); });
 
 // List contracts
 contracts.get('/', requireAuth, requireAdmin, async (c) => {
@@ -477,7 +477,7 @@ contracts.post('/:id/send', requireAuth, requireAdmin, async (c) => {
 /* Public signing routes (token-gated, no login)                       */
 /* ------------------------------------------------------------------ */
 
-contractSign.use('*', async (c, next) => { await ensureSchema(c.env.DB); return next(); });
+contractSign.use('*', async (c, next) => { await ensureContractSchema(c.env.DB); return next(); });
 
 async function findByToken(db: D1Database, token: string) {
   return db.prepare(`SELECT id, type, title, client_name, status, body_text, token_expires_at, signer_name, signed_at FROM contracts WHERE token = ?`).bind(token).first<{

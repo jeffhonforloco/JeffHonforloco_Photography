@@ -8,7 +8,7 @@ const auth = new Hono<AppEnv>();
 const LOGIN_WINDOW_MINUTES = 15;
 const LOGIN_ATTEMPT_LIMIT = 8;
 
-async function ensureLoginRateLimitSchema(db: D1Database): Promise<void> {
+export async function ensureLoginRateLimitSchema(db: D1Database): Promise<void> {
   await db.prepare(`CREATE TABLE IF NOT EXISTS admin_login_attempts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     attempt_key TEXT NOT NULL,

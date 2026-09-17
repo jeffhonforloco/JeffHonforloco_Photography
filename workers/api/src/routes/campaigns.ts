@@ -9,7 +9,7 @@ export const resendWebhook = new Hono<AppEnv>();
 /* Schema (D1)                                                         */
 /* ------------------------------------------------------------------ */
 
-async function ensureSchema(db: D1Database) {
+export async function ensureCampaignSchema(db: D1Database) {
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS email_campaigns (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -251,7 +251,7 @@ async function sendCampaignNow(env: AppEnv['Bindings'], campaignId: number): Pro
 /** Fires scheduled campaigns whose time has come. Called from the worker cron. */
 export async function processDueEmailCampaigns(env: AppEnv['Bindings']): Promise<number> {
   const db = env.DB;
-  await ensureSchema(db);
+  await ensureCampaignSchema(db);
   const due = await db.prepare(
     `SELECT id FROM email_campaigns WHERE status = 'scheduled' AND scheduled_for IS NOT NULL AND scheduled_for <= datetime('now') LIMIT 10`
   ).all<{ id: number }>();
@@ -272,14 +272,14 @@ export async function processDueEmailCampaigns(env: AppEnv['Bindings']): Promise
 /* ------------------------------------------------------------------ */
 
 campaigns.get('/email/audience-count', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const audience = c.req.query('audience') || 'all';
   const recips = await resolveRecipients(c.env.DB, c.env, audience, []);
   return c.json({ success: true, data: { audience, count: recips.length } });
 });
 
 campaigns.get('/email', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const rows = await c.env.DB.prepare(
     `SELECT ec.*,
       (SELECT COUNT(*) FROM email_events e WHERE e.campaign_id = ec.id AND e.event_type = 'opened') AS opens,
@@ -292,7 +292,7 @@ campaigns.get('/email', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.get('/email/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const id = Number(c.req.param('id'));
   const camp = await c.env.DB.prepare('SELECT * FROM email_campaigns WHERE id = ?').bind(id).first();
   if (!camp) return c.json({ error: 'Campaign not found' }, 404);
@@ -306,7 +306,7 @@ campaigns.get('/email/:id', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.post('/email', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const body = await c.req.json<{
     subject?: string; body_html?: string; audience?: string;
     custom_emails?: string[]; schedule_for?: string | null;
@@ -371,7 +371,7 @@ campaigns.post('/email', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.post('/email/:id/send-now', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const id = Number(c.req.param('id'));
   if (!c.env.RESEND_API_KEY) {
     return c.json({ success: false, needsResend: true, message: 'Add RESEND_API_KEY to worker secrets to send.' });
@@ -416,7 +416,7 @@ const RESEND_EVENT_MAP: Record<string, string> = {
 };
 
 resendWebhook.post('/resend', async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   try {
     const body = (await c.req.json()) as { type?: string; data?: { email_id?: string; to?: string[] | string } };
     const eventType = RESEND_EVENT_MAP[body.type || ''];
@@ -470,7 +470,7 @@ function planCalendar(startDate: string, endDate: string, postsPerWeek: number, 
 }
 
 campaigns.get('/social', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const rows = await c.env.DB.prepare(
     `SELECT sc.*,
       (SELECT COUNT(*) FROM social_campaign_posts p WHERE p.campaign_id = sc.id) AS post_count,
@@ -481,7 +481,7 @@ campaigns.get('/social', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.get('/social/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const id = Number(c.req.param('id'));
   const camp = await c.env.DB.prepare('SELECT * FROM social_campaigns WHERE id = ?').bind(id).first();
   if (!camp) return c.json({ error: 'Campaign not found' }, 404);
@@ -492,7 +492,7 @@ campaigns.get('/social/:id', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.post('/social', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const body = await c.req.json<{
     name?: string; theme?: string; start_date?: string; end_date?: string;
     posts_per_week?: number; notes?: string;
@@ -522,7 +522,7 @@ campaigns.post('/social', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.patch('/social/posts/:postId', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const postId = Number(c.req.param('postId'));
   const body = await c.req.json<{ status?: string; publish_queue_ref?: string }>().catch(() => null);
   if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
@@ -546,7 +546,7 @@ const AD_PLATFORMS = ['meta', 'google'];
 const AD_OBJECTIVES = ['traffic', 'leads', 'bookings', 'awareness', 'engagement'];
 
 campaigns.get('/ads/drafts', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const rows = await c.env.DB.prepare(`SELECT * FROM ad_campaign_drafts ORDER BY created_at DESC LIMIT 100`).all();
   const drafts = (rows.results || []).map((d: Record<string, unknown>) => ({
     ...d,
@@ -557,7 +557,7 @@ campaigns.get('/ads/drafts', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.post('/ads/draft', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   const body = await c.req.json<{
     platform?: string; name?: string; objective?: string;
     budget_amount?: number; budget_type?: string; currency?: string;
@@ -597,7 +597,7 @@ campaigns.post('/ads/draft', requireAuth, requireAdmin, async (c) => {
 });
 
 campaigns.delete('/ads/draft/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureCampaignSchema(c.env.DB);
   await c.env.DB.prepare('DELETE FROM ad_campaign_drafts WHERE id = ?').bind(Number(c.req.param('id'))).run();
   return c.json({ success: true });
 });

@@ -21,7 +21,7 @@ import { campaigns, resendWebhook, processDueEmailCampaigns } from './routes/cam
 import { shopPublic, shopAdmin, stripeWebhook } from './routes/shop';
 import { contracts, contractSign } from './routes/contracts';
 import growthRoutes    from './routes/growth';
-import mcpRoutes       from './routes/mcp';
+import mcpRoutes, { mcpDiscovery } from './routes/mcp';
 
 const app = new Hono<AppEnv>();
 
@@ -76,6 +76,9 @@ app.route('/api/v1/webhooks', stripeWebhook);
 app.route('/api/v1/admin/contracts', contracts);
 app.route('/api/v1/contracts', contractSign);
 app.route('/api/v1/mcp', mcpRoutes);
+
+// Root MCP discovery (the same document also lives at /api/v1/mcp/.well-known/mcp)
+app.get('/.well-known/mcp', (c) => c.json(mcpDiscovery()));
 
 // 404 fallback
 app.notFound((c) => c.json({ error: 'Not found' }, 404));

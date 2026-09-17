@@ -10,7 +10,7 @@ export const stripeWebhook = new Hono<AppEnv>();
 /* Schema (D1) — auto-created on first hit                             */
 /* ------------------------------------------------------------------ */
 
-async function ensureSchema(db: D1Database) {
+export async function ensureShopSchema(db: D1Database) {
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS products (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -191,7 +191,7 @@ function shopDisabledResponse(c: any) {
 
 shopPublic.get('/products', async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   if (!(await shopEnabled(db))) return shopDisabledResponse(c);
   const category = c.req.query('category');
   const featured = c.req.query('featured');
@@ -220,7 +220,7 @@ shopPublic.get('/products', async (c) => {
 
 shopPublic.get('/products/:slug', async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   if (!(await shopEnabled(db))) return shopDisabledResponse(c);
   const row = await db.prepare(`SELECT * FROM products WHERE slug = ? AND active = 1`).bind(c.req.param('slug')).first<ProductRow>();
   if (!row) return c.json({ error: 'Product not found' }, 404);
@@ -229,7 +229,7 @@ shopPublic.get('/products/:slug', async (c) => {
 
 shopPublic.get('/settings/public', async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const s = await getSettings(db);
   return c.json({
     success: true,
@@ -253,7 +253,7 @@ interface CheckoutItem { product_id: number; variant_id?: number | null; quantit
 
 shopPublic.post('/checkout', async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   if (!(await shopEnabled(db))) return shopDisabledResponse(c);
 
   if (!c.env.STRIPE_SECRET_KEY) {
@@ -408,7 +408,7 @@ function timingSafeEqualHex(a: string, b: string): boolean {
 
 stripeWebhook.post('/stripe', async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const raw = await c.req.text();
   const ok = await verifyStripeSignature(raw, c.req.header('stripe-signature'), c.env.STRIPE_WEBHOOK_SECRET ?? '');
   if (!ok) return c.json({ error: 'Invalid signature' }, 400);
@@ -460,7 +460,7 @@ stripeWebhook.post('/stripe', async (c) => {
 
 shopAdmin.get('/products', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const q = (c.req.query('q') || '').trim();
   const category = c.req.query('category');
   const active = c.req.query('active');
@@ -479,7 +479,7 @@ shopAdmin.get('/products', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.get('/products/:id', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const row = await db.prepare(`SELECT * FROM products WHERE id = ?`).bind(c.req.param('id')).first<ProductRow>();
   if (!row) return c.json({ error: 'Product not found' }, 404);
   return c.json({ success: true, data: { product: await hydrateProduct(db, row) } });
@@ -567,7 +567,7 @@ async function saveProduct(db: D1Database, id: number | null, input: ProductInpu
 
 shopAdmin.post('/products', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   try {
     const input = await c.req.json().catch(() => null) as ProductInput | null;
     if (!input) return c.json({ error: 'Invalid JSON body' }, 400);
@@ -580,7 +580,7 @@ shopAdmin.post('/products', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.put('/products/:id', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   try {
     const input = await c.req.json().catch(() => null) as ProductInput | null;
     if (!input) return c.json({ error: 'Invalid JSON body' }, 400);
@@ -594,7 +594,7 @@ shopAdmin.put('/products/:id', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.delete('/products/:id', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const row = await db.prepare(`SELECT id FROM products WHERE id = ?`).bind(c.req.param('id')).first();
   if (!row) return c.json({ error: 'Product not found' }, 404);
   await db.prepare(`DELETE FROM products WHERE id = ?`).bind(c.req.param('id')).run();
@@ -603,7 +603,7 @@ shopAdmin.delete('/products/:id', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.get('/orders', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const status = c.req.query('status');
   const limit = Math.min(parseInt(c.req.query('limit') || '50', 10) || 50, 200);
   let sql = `SELECT * FROM orders`;
@@ -623,7 +623,7 @@ shopAdmin.get('/orders', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.get('/orders/:id', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const o = await db.prepare(`SELECT * FROM orders WHERE id = ?`).bind(c.req.param('id')).first<any>();
   if (!o) return c.json({ error: 'Order not found' }, 404);
   const items = await db.prepare(`SELECT * FROM order_items WHERE order_id = ?`).bind(o.id).all();
@@ -632,7 +632,7 @@ shopAdmin.get('/orders/:id', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.patch('/orders/:id', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const o = await db.prepare(`SELECT * FROM orders WHERE id = ?`).bind(c.req.param('id')).first<any>();
   if (!o) return c.json({ error: 'Order not found' }, 404);
   const body = await c.req.json().catch(() => ({})) as { fulfillment_status?: string; tracking_number?: string; notes?: string; status?: string };
@@ -667,7 +667,7 @@ shopAdmin.patch('/orders/:id', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.get('/revenue-by-product', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const rows = await db.prepare(
     `SELECT oi.name AS name,
             COALESCE(SUM(oi.total_cents), 0) AS revenue_cents,
@@ -688,7 +688,7 @@ shopAdmin.get('/revenue-by-product', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.get('/settings', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const s = await getSettings(db);
   const stripeConfigured = Boolean(c.env.STRIPE_SECRET_KEY);
   const webhookConfigured = Boolean(c.env.STRIPE_WEBHOOK_SECRET);
@@ -708,7 +708,7 @@ shopAdmin.get('/settings', requireAuth, requireAdmin, async (c) => {
 
 shopAdmin.put('/settings', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
-  await ensureSchema(db);
+  await ensureShopSchema(db);
   const body = await c.req.json().catch(() => null) as Record<string, string> | null;
   if (!body) return c.json({ error: 'Invalid JSON body' }, 400);
   const allowed = ['store_name', 'flat_shipping_cents', 'free_shipping_over_cents', 'tax_rate_percent', 'currency', 'store_email', 'shop_enabled'];

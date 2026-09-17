@@ -9,7 +9,7 @@ const publicPages = new Hono<AppEnv>();
 /* Schema (D1)                                                         */
 /* ------------------------------------------------------------------ */
 
-async function ensureSchema(db: D1Database) {
+export async function ensurePagesSchema(db: D1Database) {
   await db.prepare(`CREATE TABLE IF NOT EXISTS pages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     slug TEXT UNIQUE NOT NULL,
@@ -69,7 +69,7 @@ const RESERVED = new Set([
 /* ------------------------------------------------------------------ */
 
 pages.get('/', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensurePagesSchema(c.env.DB);
   const rows = await c.env.DB.prepare(
     'SELECT id, slug, title, is_published, updated_at, created_at FROM pages ORDER BY updated_at DESC LIMIT 200'
   ).all();
@@ -77,7 +77,7 @@ pages.get('/', requireAuth, requireAdmin, async (c) => {
 });
 
 pages.post('/', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensurePagesSchema(c.env.DB);
   const body = await c.req.json<{
     title?: string; slug?: string; content?: unknown[];
     meta_description?: string; is_published?: boolean;
@@ -105,7 +105,7 @@ pages.post('/', requireAuth, requireAdmin, async (c) => {
 });
 
 pages.get('/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensurePagesSchema(c.env.DB);
   const row = await c.env.DB.prepare('SELECT * FROM pages WHERE id = ?').bind(Number(c.req.param('id'))).first();
   if (!row) return c.json({ error: 'Page not found' }, 404);
   const r = row as Record<string, unknown>;
@@ -116,7 +116,7 @@ pages.get('/:id', requireAuth, requireAdmin, async (c) => {
 });
 
 pages.put('/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensurePagesSchema(c.env.DB);
   const id = Number(c.req.param('id'));
   const body = await c.req.json<{
     title?: string; slug?: string; content?: unknown[];
@@ -155,7 +155,7 @@ pages.put('/:id', requireAuth, requireAdmin, async (c) => {
 });
 
 pages.delete('/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensurePagesSchema(c.env.DB);
   await c.env.DB.prepare('DELETE FROM pages WHERE id = ?').bind(Number(c.req.param('id'))).run();
   return c.json({ success: true });
 });
@@ -165,7 +165,7 @@ pages.delete('/:id', requireAuth, requireAdmin, async (c) => {
 /* ------------------------------------------------------------------ */
 
 publicPages.get('/:slug', async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensurePagesSchema(c.env.DB);
   const slug = c.req.param('slug').toLowerCase();
   if (!SLUG_RE.test(slug)) return c.json({ error: 'Not found' }, 404);
   const row = await c.env.DB.prepare(

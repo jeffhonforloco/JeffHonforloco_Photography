@@ -219,15 +219,21 @@ mcp.post('/', async (c) => {
   });
 });
 
-// WebMCP discovery endpoint - advertises MCP capability to browsers
-mcp.get('/.well-known/mcp', (c) => {
-  return c.json({
+// WebMCP discovery document - served both at /api/v1/mcp/.well-known/mcp
+// and at the root /.well-known/mcp for standard discovery.
+export function mcpDiscovery() {
+  return {
     name: 'jeffhonforloco-photography',
     version: '1.0.0',
     endpoint: '/api/v1/mcp',
     capabilities: ['tools'],
     tools: TOOLS.map((t) => t.name),
-  });
+  };
+}
+
+// WebMCP discovery endpoint - advertises MCP capability to browsers
+mcp.get('/.well-known/mcp', (c) => {
+  return c.json(mcpDiscovery());
 });
 
 export default mcp;

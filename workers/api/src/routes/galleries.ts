@@ -9,7 +9,7 @@ const galleries = new Hono<AppEnv>();
 /* Schema (D1)                                                         */
 /* ------------------------------------------------------------------ */
 
-async function ensureSchema(db: D1Database) {
+export async function ensureGallerySchema(db: D1Database) {
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS galleries (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -96,7 +96,7 @@ async function checkPassword(g: GalleryRow, password: string | null): Promise<bo
 /* ------------------------------------------------------------------ */
 
 galleries.get('/', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const rows = await c.env.DB.prepare(
     `SELECT g.*, 
       (SELECT COUNT(*) FROM gallery_photos p WHERE p.gallery_id = g.id) AS photo_count,
@@ -116,7 +116,7 @@ galleries.get('/', requireAuth, requireAdmin, async (c) => {
 });
 
 galleries.post('/', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const body = await c.req.json<{
     title?: string; client_name?: string; client_email?: string;
     password?: string; expires_at?: string;
@@ -155,7 +155,7 @@ galleries.post('/', requireAuth, requireAdmin, async (c) => {
 });
 
 galleries.get('/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const id = Number(c.req.param('id'));
   const g = await c.env.DB.prepare('SELECT * FROM galleries WHERE id = ?').bind(id).first<GalleryRow>();
   if (!g) return c.json({ error: 'Gallery not found' }, 404);
@@ -179,7 +179,7 @@ galleries.get('/:id', requireAuth, requireAdmin, async (c) => {
 });
 
 galleries.put('/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const id = Number(c.req.param('id'));
   const body = await c.req.json<{
     title?: string; client_name?: string; client_email?: string;
@@ -212,7 +212,7 @@ galleries.put('/:id', requireAuth, requireAdmin, async (c) => {
 });
 
 galleries.delete('/:id', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const id = Number(c.req.param('id'));
 
   // Delete R2 objects first (best effort)
@@ -234,7 +234,7 @@ const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/g
 const MAX_BYTES = 15 * 1024 * 1024;
 
 galleries.post('/:id/photos', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   if (!c.env.MEDIA_BUCKET) return c.json({ error: 'Media storage (R2) is not configured' }, 500);
   const id = Number(c.req.param('id'));
   const g = await c.env.DB.prepare('SELECT id FROM galleries WHERE id = ?').bind(id).first();
@@ -284,7 +284,7 @@ galleries.post('/:id/photos', requireAuth, requireAdmin, async (c) => {
 });
 
 galleries.delete('/:id/photos/:photoId', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const id = Number(c.req.param('id'));
   const photoId = Number(c.req.param('photoId'));
   const p = await c.env.DB.prepare('SELECT r2_key, r2_thumb_key FROM gallery_photos WHERE id = ? AND gallery_id = ?').bind(photoId, id).first<{ r2_key: string; r2_thumb_key: string | null }>();
@@ -300,7 +300,7 @@ galleries.delete('/:id/photos/:photoId', requireAuth, requireAdmin, async (c) =>
 
 /* Jeff views what the client selected */
 galleries.get('/:id/selections', requireAuth, requireAdmin, async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const id = Number(c.req.param('id'));
   const rows = await c.env.DB.prepare(
     `SELECT s.id, s.photo_id, s.client_name, s.client_email, s.note, s.created_at,
@@ -322,7 +322,7 @@ galleries.get('/:id/selections', requireAuth, requireAdmin, async (c) => {
 const proof = new Hono<AppEnv>();
 
 proof.get('/:slug', async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const g = await getGallery(c.env.DB, c.req.param('slug'));
   if (!g || isExpired(g)) return c.json({ error: 'Gallery not found or expired' }, 404);
 
@@ -357,7 +357,7 @@ proof.get('/:slug', async (c) => {
 
 /* Client marks a favorite */
 proof.post('/:slug/select', async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const g = await getGallery(c.env.DB, c.req.param('slug'));
   if (!g || isExpired(g)) return c.json({ error: 'Gallery not found or expired' }, 404);
 
@@ -384,7 +384,7 @@ proof.post('/:slug/select', async (c) => {
 
 /* Client un-marks a favorite */
 proof.delete('/:slug/select/:photoId', async (c) => {
-  await ensureSchema(c.env.DB);
+  await ensureGallerySchema(c.env.DB);
   const g = await getGallery(c.env.DB, c.req.param('slug'));
   if (!g || isExpired(g)) return c.json({ error: 'Gallery not found or expired' }, 404);
 

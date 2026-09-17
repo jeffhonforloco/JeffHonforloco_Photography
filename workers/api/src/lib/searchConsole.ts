@@ -21,6 +21,7 @@ function pemToDer(pem: string): Uint8Array {
 }
 
 async function getAccessToken(clientEmail: string, privateKey: string): Promise<string> {
+  try {
   const now = Math.floor(Date.now() / 1000);
   const header = base64UrlEncode(new TextEncoder().encode(JSON.stringify({ alg: 'RS256', typ: 'JWT' })));
   const payload = base64UrlEncode(new TextEncoder().encode(JSON.stringify({
@@ -55,6 +56,11 @@ async function getAccessToken(clientEmail: string, privateKey: string): Promise<
   const data = (await res.json()) as { access_token?: string; error_description?: string };
   if (!data.access_token) throw new Error(data.error_description || 'Google returned no access token');
   return data.access_token;
+  } catch (e) {
+    // Preserve the underlying message but label the step, so the Admin panel
+    // shows exactly where the Search Console flow broke.
+    throw new Error(`Search Console token exchange failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
 }
 
 interface ScRow {
@@ -66,6 +72,7 @@ interface ScRow {
 }
 
 async function searchAnalytics(accessToken: string, dimensions: string[], rowLimit: number): Promise<ScRow[]> {
+  try {
   const end = new Date();
   const start = new Date();
   start.setDate(start.getDate() - 28);
@@ -84,6 +91,9 @@ async function searchAnalytics(accessToken: string, dimensions: string[], rowLim
   }
   const data = (await res.json()) as { rows?: ScRow[] };
   return data.rows ?? [];
+  } catch (e) {
+    throw new Error(`Search Console analytics query failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
 }
 
 export interface SearchConsoleMetrics {
