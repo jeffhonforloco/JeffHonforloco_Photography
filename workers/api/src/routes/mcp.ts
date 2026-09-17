@@ -1,5 +1,9 @@
 import { Hono } from 'hono';
 import type { AppEnv } from './types';
+import { SERVICE_PRICING, findServicePricing } from '../lib/pricing';
+import { scheduleLeadFollowups } from '../lib/leadAutomation';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const mcp = new Hono<AppEnv>();
 
@@ -13,7 +17,7 @@ const mcp = new Hono<AppEnv>();
 const TOOLS = [
   {
     name: 'get_pricing',
-    description: 'Get photography service pricing',
+    description: 'Get real photography service pricing from the studio price list',
     inputSchema: {
       type: 'object',
       properties: {
@@ -23,7 +27,7 @@ const TOOLS = [
   },
   {
     name: 'check_availability',
-    description: 'Check photographer availability for a date',
+    description: 'Check photographer availability for a date (based on confirmed bookings)',
     inputSchema: {
       type: 'object',
       properties: {
@@ -65,13 +69,6 @@ const TOOLS = [
   },
 ];
 
-const PRICING: Record<string, { starting: number; description: string }> = {
-  headshots: { starting: 299, description: 'Professional headshots, 1-hour session, 10 retouched images' },
-  fashion: { starting: 499, description: 'Fashion/editorial shoot, half-day, 20 retouched images' },
-  portrait: { starting: 349, description: 'Portrait session, 1.5 hours, 15 retouched images' },
-  wedding: { starting: 1499, description: 'Wedding coverage, 6 hours, 200+ edited images' },
-  event: { starting: 599, description: 'Corporate event coverage, 3 hours, 100+ edited images' },
-};
 
 // MCP handshake - list available tools
 mcp.post('/', async (c) => {
@@ -109,25 +106,42 @@ mcp.post('/', async (c) => {
       switch (name) {
         case 'get_pricing': {
           const service = args?.service?.toLowerCase() || 'all';
-          result = service === 'all' ? PRICING : PRICING[service] || { error: 'Service not found' };
+          if (service === 'all') {
+            result = SERVICE_PRICING.map((sp) => ({ id: sp.id, name: sp.name, starting_price: sp.starting, tiers: sp.tiers }));
+          } else {
+            const found = findServicePricing(service);
+            result = found || { error: `Service not found: ${service}. Available: ${SERVICE_PRICING.map((sp) => sp.id).join(', ')}` };
+          }
           break;
         }
-        
+
         case 'get_services': {
-          result = Object.keys(PRICING).map((key) => ({
-            name: key,
-            starting_price: PRICING[key].starting,
-            description: PRICING[key].description,
+          result = SERVICE_PRICING.map((sp) => ({
+            id: sp.id,
+            name: sp.name,
+            tagline: sp.tagline,
+            starting_price: sp.starting,
+            tiers: sp.tiers,
           }));
           break;
         }
         
         case 'check_availability': {
-          // In production, check against bookings table
+          const date = args?.date;
+          if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+            throw new Error('date is required in YYYY-MM-DD format');
+          }
+          const booked = await c.env.DB.prepare(
+            `SELECT COUNT(*) value FROM contacts
+             WHERE event_date = ? AND status IN ('booked', 'deposit_paid', 'completed')`
+          ).bind(date).first<{ value: number }>();
+          const count = booked?.value ?? 0;
           result = {
-            date: args.date,
-            available: true,
-            note: 'Contact for confirmation. Weekends book 2-3 weeks out.',
+            date,
+            available: count === 0,
+            note: count === 0
+              ? 'No confirmed booking on this date. Contact the studio to confirm.'
+              : 'Already booked on this date. Ask about nearby dates.',
           };
           break;
         }
@@ -143,14 +157,40 @@ mcp.post('/', async (c) => {
         }
         
         case 'submit_lead': {
-          const { name, email, phone, service, message } = args;
+          const { name, email, phone, service, message } = args || {};
           if (!name || !email || !message) {
             throw new Error('name, email, and message are required');
           }
-          const lead = await c.env.DB.prepare(
-            `INSERT INTO contacts (full_name, email, phone, service_type, message, source, created_at) VALUES (?, ?, ?, ?, ?, 'mcp', ?)`
-          ).bind(name, email, phone || null, service || null, message, new Date().toISOString()).run();
-          result = { success: true, lead_id: lead.meta.last_row_id, message: 'Lead submitted successfully' };
+          if (!EMAIL_RE.test(email)) {
+            throw new Error('Invalid email address');
+          }
+          const existing = await c.env.DB.prepare(
+            'SELECT id FROM contacts WHERE email = ?'
+          ).bind(email).first<{ id: number }>();
+          const attribution = JSON.stringify({ source: 'mcp' });
+          let leadId: number;
+          if (existing) {
+            leadId = existing.id;
+            await c.env.DB.prepare(
+              `UPDATE contacts SET full_name = ?, phone = COALESCE(?, phone), message = ?,
+               service_type = COALESCE(?, service_type), attribution = ?, status = 'new', updated_at = datetime('now') WHERE id = ?`
+            ).bind(name, phone || null, message, service || null, attribution, leadId).run();
+          } else {
+            const lead = await c.env.DB.prepare(
+              `INSERT INTO contacts (full_name, email, phone, service_type, message, attribution, status)
+               VALUES (?, ?, ?, ?, ?, ?, 'new')`
+            ).bind(name, email, phone || null, service || null, message, attribution).run();
+            leadId = Number(lead.meta.last_row_id);
+          }
+          await c.env.DB.prepare(
+            `INSERT INTO analytics (event_type, event_data) VALUES ('Lead', ?)`
+          ).bind(JSON.stringify({ contactId: leadId, service: service || null, source: 'mcp' })).run();
+          try {
+            await scheduleLeadFollowups(c.env, leadId);
+          } catch (e) {
+            console.error('[mcp] Failed to schedule follow-ups:', e);
+          }
+          result = { success: true, lead_id: leadId, message: 'Lead submitted successfully' };
           break;
         }
         
