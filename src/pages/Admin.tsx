@@ -23,6 +23,7 @@ const FunnelDashboard = lazy(() => import('@/components/admin/growth/FunnelDashb
 const BookingsDashboard = lazy(() => import('@/components/admin/growth/BookingsDashboard'));
 const GrowthWorkspace = lazy(() => import('@/components/admin/growth/GrowthWorkspace'));
 const AdminSEO = lazy(() => import('@/components/admin/AdminSEO'));
+const AdminHero = lazy(() => import('@/components/admin/AdminHero'));
 
 const AdminLoading = () => (
   <div className="flex min-h-64 items-center justify-center text-sm text-slate-500" role="status">
@@ -78,6 +79,7 @@ const Admin: React.FC = () => {
         <Route path="database" element={<AdminDatabase />} />
         <Route path="security" element={<AdminSecurity />} />
         <Route path="settings" element={<AdminSettings />} />
+        <Route path="hero" element={<AdminHero />} />
       </Route>
       <Route path="*" element={<Navigate to={adminPath('overview')} replace />} />
       </Routes>

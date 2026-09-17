@@ -261,11 +261,11 @@ function escapeHtml(s: string): string {
   return String(s).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m] || m));
 }
 
-/** Replace {placeholders} in template with values from data. Unknown keys stay as-is. */
+/** Replace {placeholders} in template with values from data. Empty values render as TBD (never show raw placeholders to clients). */
 function renderTemplate(template: string, data: Record<string, unknown>): string {
   return template.replace(/\{([a-z_]+)\}/g, (m, key: string) => {
     const v = data[key];
-    if (v === undefined || v === null || v === '') return m;
+    if (v === undefined || v === null || v === '') return 'TBD';
     return String(v);
   });
 }

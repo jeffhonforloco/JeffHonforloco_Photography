@@ -24,6 +24,13 @@ const SignContract: React.FC = () => {
   const [signing, setSigning] = useState(false);
   const [signed, setSigned] = useState(false);
 
+  // Proper tab title (was showing "Page Not Found")
+  useEffect(() => {
+    document.title = contract
+      ? `${contract.title} | Jeff Honforloco Photography`
+      : 'Contract Signing | Jeff Honforloco Photography';
+  }, [contract]);
+
   useEffect(() => {
     (async () => {
       if (!token) { setError('Invalid signing link.'); setLoading(false); return; }
@@ -86,7 +93,10 @@ const SignContract: React.FC = () => {
             </div>
 
             <div className="max-h-[50vh] overflow-y-auto border-b border-slate-800 bg-white p-6">
-              <pre className="whitespace-pre-wrap font-serif text-sm leading-relaxed text-slate-800">{contract.body_text}</pre>
+              <pre className="whitespace-pre-wrap font-serif text-sm leading-relaxed text-slate-800">{
+                // Safety net: never show raw {placeholders} to signers
+                contract.body_text.replace(/\{[a-z_]+\}/g, 'TBD')
+              }</pre>
             </div>
 
             {signed ? (
