@@ -173,7 +173,16 @@ contacts.put('/:id', requireAuth, async (c) => {
 
 // DELETE /api/v1/contacts/:id (auth required)
 contacts.delete('/:id', requireAuth, async (c) => {
-  await c.env.DB.prepare('DELETE FROM contacts WHERE id = ?').bind(c.req.param('id')).run();
+  const id = Number(c.req.param('id'));
+  if (!Number.isInteger(id)) return c.json({ error: 'Invalid id' }, 400);
+  await c.env.DB.prepare('DELETE FROM contacts WHERE id = ?').bind(id).run();
+  // Keep tracking consistent: drop this contact's lead events and sequences
+  // so deleted (e.g. test) contacts can't leave orphaned dashboard counts.
+  await c.env.DB.prepare(
+    `DELETE FROM analytics WHERE event_type IN ('Lead', 'BookingConfirmed')
+     AND CAST(json_extract(event_data, '$.contactId') AS INTEGER) = ?`
+  ).bind(id).run();
+  await c.env.DB.prepare('DELETE FROM email_sequences WHERE contact_id = ?').bind(id).run();
   return c.json({ ok: true, success: true });
 });
 

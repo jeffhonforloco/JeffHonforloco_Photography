@@ -589,6 +589,14 @@ function getSmartFallbackReply(messages: AnthropicMessage[]): string {
       ).bind('Chat Lead', capturedEmail, conversationLog, serviceType).run();
       const contactId = Number(result.meta.last_row_id);
       if (contactId) {
+        // Count chat captures in the funnel (the dashboard Leads KPI reads Lead events)
+        try {
+          await c.env.DB.prepare(
+            `INSERT INTO analytics (event_type, event_data) VALUES ('Lead', ?)`
+          ).bind(JSON.stringify({ contactId, service: serviceType ?? null, source: 'chat' })).run();
+        } catch (e) {
+          console.error('[chat] Lead analytics insert failed:', e);
+        }
         await scheduleLeadFollowups(c.env, contactId);
       }
     } catch (error) {

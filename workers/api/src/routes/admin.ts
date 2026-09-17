@@ -520,6 +520,45 @@ admin.post('/email-sequences/cancel', requireAuth, async (c) => {
   return c.json({ success: true, cancelled });
 });
 
+// DELETE /api/v1/admin/email-sequences?status=all_failed (auth required)
+// Permanently deletes email-sequence rows with terminal failure statuses.
+// Only 'failed' / 'resend_send_failed' rows can be removed here — pending,
+// sent, and cancelled rows are never touched by this endpoint.
+admin.delete('/email-sequences', requireAuth, async (c) => {
+  await ensureLeadAutomationSchema(c.env);
+  const FAILED_STATUSES = ['failed', 'resend_send_failed'];
+  const status = c.req.query('status');
+  let targets: string[];
+  if (status === 'all_failed') {
+    targets = FAILED_STATUSES;
+  } else if (status && FAILED_STATUSES.includes(status)) {
+    targets = [status];
+  } else {
+    return c.json({ error: 'status must be failed, resend_send_failed, or all_failed' }, 400);
+  }
+  const placeholders = targets.map(() => '?').join(',');
+  const res = await c.env.DB.prepare(
+    `DELETE FROM email_sequences WHERE status IN (${placeholders})`
+  ).bind(...targets).run();
+  return c.json({ success: true, deleted: res.meta.changes ?? 0 });
+});
+
+// DELETE /api/v1/admin/analytics/orphaned-leads (auth required)
+// Removes Lead/BookingConfirmed analytics events whose contact no longer
+// exists (e.g. QA test contacts that were deleted), so the dashboard Leads
+// KPI reconciles with the contacts CRM.
+admin.delete('/analytics/orphaned-leads', requireAuth, async (c) => {
+  const res = await c.env.DB.prepare(
+    `DELETE FROM analytics
+     WHERE event_type IN ('Lead', 'BookingConfirmed')
+     AND NOT EXISTS (
+       SELECT 1 FROM contacts
+       WHERE contacts.id = CAST(json_extract(analytics.event_data, '$.contactId') AS INTEGER)
+     )`
+  ).run();
+  return c.json({ success: true, deleted: res.meta.changes ?? 0 });
+});
+
 // GET /api/v1/admin/database/stats (auth required)
 admin.get('/database/stats', requireAuth, async (c) => {
   await ensureLeadAutomationSchema(c.env);
