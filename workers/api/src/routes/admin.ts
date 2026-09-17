@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { requireAuth } from '../middleware/auth';
 import type { AppEnv } from '../types';
 import { ensureLeadAutomationSchema, processDueEmailSequences } from '../lib/leadAutomation';
+import { sendEmail, escapeHtml } from '../lib/email';
 
 const admin = new Hono<AppEnv>();
 
@@ -520,27 +521,74 @@ admin.post('/email-sequences/cancel', requireAuth, async (c) => {
   return c.json({ success: true, cancelled });
 });
 
-// DELETE /api/v1/admin/email-sequences?status=all_failed (auth required)
-// Permanently deletes email-sequence rows with terminal failure statuses.
-// Only 'failed' / 'resend_send_failed' rows can be removed here — pending,
-// sent, and cancelled rows are never touched by this endpoint.
+// DELETE /api/v1/admin/email-sequences?status=all (auth required)
+// Permanently deletes email-sequence rows with terminal statuses.
+// Accepts: failed, resend_send_failed, cancelled, all_failed, all.
+// 'pending' and 'sent' rows are never touched — cancel pending rows first,
+// sent rows are history.
 admin.delete('/email-sequences', requireAuth, async (c) => {
   await ensureLeadAutomationSchema(c.env);
-  const FAILED_STATUSES = ['failed', 'resend_send_failed'];
+  const TERMINAL_STATUSES = ['failed', 'resend_send_failed', 'cancelled'];
   const status = c.req.query('status');
   let targets: string[];
-  if (status === 'all_failed') {
-    targets = FAILED_STATUSES;
-  } else if (status && FAILED_STATUSES.includes(status)) {
+  if (status === 'all') {
+    targets = TERMINAL_STATUSES;
+  } else if (status === 'all_failed') {
+    targets = ['failed', 'resend_send_failed'];
+  } else if (status && TERMINAL_STATUSES.includes(status)) {
     targets = [status];
   } else {
-    return c.json({ error: 'status must be failed, resend_send_failed, or all_failed' }, 400);
+    return c.json({ error: 'status must be failed, resend_send_failed, cancelled, all_failed, or all' }, 400);
   }
   const placeholders = targets.map(() => '?').join(',');
   const res = await c.env.DB.prepare(
     `DELETE FROM email_sequences WHERE status IN (${placeholders})`
   ).bind(...targets).run();
   return c.json({ success: true, deleted: res.meta.changes ?? 0 });
+});
+
+// DELETE /api/v1/admin/email-sequences/:id (auth required)
+// Deletes a single sequence row. Only terminal rows (failed /
+// resend_send_failed / cancelled) can be deleted — pending rows must be
+// cancelled first, sent rows are history.
+admin.delete('/email-sequences/:id', requireAuth, async (c) => {
+  await ensureLeadAutomationSchema(c.env);
+  const id = Number(c.req.param('id'));
+  if (!Number.isInteger(id)) return c.json({ error: 'Invalid id' }, 400);
+  const res = await c.env.DB.prepare(
+    `DELETE FROM email_sequences WHERE id = ? AND status IN ('failed', 'resend_send_failed', 'cancelled')`
+  ).bind(id).run();
+  if ((res.meta.changes ?? 0) === 0) {
+    return c.json({ error: 'Row not found, or only failed/cancelled rows can be deleted' }, 400);
+  }
+  return c.json({ success: true, deleted: 1 });
+});
+
+const TEST_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+// POST /api/v1/admin/email/test (auth required)
+// Sends a one-off test email through Resend so delivery can be verified
+// without needing a real lead or contact.
+admin.post('/email/test', requireAuth, async (c) => {
+  const body = await c.req.json<{ to?: string; subject?: string; message?: string }>().catch(() => ({}));
+  const to = String(body.to || '').trim();
+  if (!TEST_EMAIL_RE.test(to)) {
+    return c.json({ error: 'A valid "to" email address is required' }, 400);
+  }
+  if (!c.env.RESEND_API_KEY) {
+    return c.json({ error: 'Email is not configured (missing RESEND_API_KEY)' }, 500);
+  }
+  const subject = String(body.subject || '').trim() || 'Test email — Jeff Honforloco Photography';
+  const message = String(body.message || '').trim() || 'This is a test email from your admin panel. If you received it, sending works.';
+  const ok = await sendEmail(c.env.RESEND_API_KEY, {
+    to,
+    subject,
+    html: `<p>${escapeHtml(message).replace(/\n/g, '<br>')}</p><p style="color:#888;font-size:12px;">Sent from the Admin panel email test.</p>`,
+  });
+  if (!ok) {
+    return c.json({ error: 'The email provider rejected the send. Check RESEND_API_KEY and domain verification.' }, 502);
+  }
+  return c.json({ success: true, sent: true });
 });
 
 // DELETE /api/v1/admin/analytics/orphaned-leads (auth required)
