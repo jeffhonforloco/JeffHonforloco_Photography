@@ -5,6 +5,7 @@ import type { AppEnv } from '../types';
 export const shopPublic = new Hono<AppEnv>();
 export const shopAdmin = new Hono<AppEnv>();
 export const paypalWebhook = new Hono<AppEnv>();
+export const stripeWebhook = new Hono<AppEnv>();
 
 /* ------------------------------------------------------------------ */
 /* Schema (D1) — auto-created on first hit                             */
@@ -53,6 +54,7 @@ export async function ensureShopSchema(db: D1Database) {
       stripe_payment_intent TEXT,
       paypal_order_id TEXT UNIQUE,
       paypal_capture_id TEXT,
+      provider TEXT NOT NULL DEFAULT 'paypal',
       email TEXT NOT NULL,
       customer_name TEXT,
       shipping_json TEXT,
@@ -95,6 +97,7 @@ export async function ensureShopSchema(db: D1Database) {
   for (const sql of [
     `ALTER TABLE orders ADD COLUMN paypal_order_id TEXT`,
     `ALTER TABLE orders ADD COLUMN paypal_capture_id TEXT`,
+    `ALTER TABLE orders ADD COLUMN provider TEXT`,
   ]) {
     try {
       await db.prepare(sql).run();
@@ -102,6 +105,10 @@ export async function ensureShopSchema(db: D1Database) {
       if (!String(e?.message || e).toLowerCase().includes('duplicate column')) throw e;
     }
   }
+  // Backfill the provider for orders created before the column existed.
+  await db.prepare(
+    `UPDATE orders SET provider = CASE WHEN stripe_session_id IS NOT NULL THEN 'stripe' ELSE 'paypal' END WHERE provider IS NULL`
+  ).run().catch(() => {});
   // Seed default shop settings on first run
   const existing = await db.prepare(`SELECT COUNT(*) AS n FROM shop_settings`).first<{ n: number }>();
   if (!existing || existing.n === 0) {
@@ -303,15 +310,19 @@ async function getPayPalAccessToken(pp: PayPalEnv): Promise<string> {
 
 /**
  * Mark a pending order paid and decrement inventory. Idempotent: only
- * transitions from 'pending', so the capture endpoint and the webhook
- * can both call it safely.
+ * transitions from 'pending', so capture endpoints and webhooks from
+ * either provider can all call it safely (inventory decrements once).
  */
-async function markOrderPaid(db: D1Database, orderId: number, captureId: string | null): Promise<boolean> {
+async function markOrderPaid(
+  db: D1Database,
+  orderId: number,
+  patch: { paypal_capture_id?: string | null; stripe_payment_intent?: string | null } = {},
+): Promise<boolean> {
   const now = new Date().toISOString();
   const order = await db.prepare(`SELECT * FROM orders WHERE id = ?`).bind(orderId).first<any>();
   if (!order || order.status !== 'pending') return false;
-  await db.prepare(`UPDATE orders SET status = 'paid', paypal_capture_id = COALESCE(?, paypal_capture_id), updated_at = ? WHERE id = ?`)
-    .bind(captureId, now, orderId).run();
+  await db.prepare(`UPDATE orders SET status = 'paid', paypal_capture_id = COALESCE(?, paypal_capture_id), stripe_payment_intent = COALESCE(?, stripe_payment_intent), updated_at = ? WHERE id = ?`)
+    .bind(patch.paypal_capture_id ?? null, patch.stripe_payment_intent ?? null, now, orderId).run();
   const items = await db.prepare(`SELECT * FROM order_items WHERE order_id = ?`).bind(orderId).all<any>();
   const decs: D1PreparedStatement[] = [];
   for (const it of (items.results ?? [])) {
@@ -452,8 +463,8 @@ shopPublic.post('/checkout', async (c) => {
   // Persist a pending order so nothing is lost if the webhook is delayed.
   const now = new Date().toISOString();
   const ores = await db.prepare(
-    `INSERT INTO orders (paypal_order_id, email, customer_name, shipping_json, subtotal_cents, shipping_cents, tax_cents, total_cents, currency, status, fulfillment_status, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unfulfilled', ?, ?)`
+    `INSERT INTO orders (provider, paypal_order_id, email, customer_name, shipping_json, subtotal_cents, shipping_cents, tax_cents, total_cents, currency, status, fulfillment_status, created_at, updated_at)
+     VALUES ('paypal', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unfulfilled', ?, ?)`
   ).bind(
     pOrder.id, email, (body?.customer_name || '').slice(0, 120) || null,
     body?.shipping ? JSON.stringify(body.shipping).slice(0, 2000) : null,
@@ -471,6 +482,132 @@ shopPublic.post('/checkout', async (c) => {
 /* ------------------------------------------------------------------ */
 /* CAPTURE — POST /api/v1/shop/capture (after PayPal approval)         */
 /* ------------------------------------------------------------------ */
+
+/* STRIPE CHECKOUT — POST /api/v1/shop/checkout/stripe              */
+/* ------------------------------------------------------------------ */
+
+shopPublic.post('/checkout/stripe', async (c) => {
+  const db = c.env.DB;
+  await ensureShopSchema(db);
+  if (!(await shopEnabled(db))) return shopDisabledResponse(c);
+
+  if (!c.env.STRIPE_SECRET_KEY) {
+    return c.json({ success: false, needsStripe: true, error: 'Stripe is not configured yet — connect a Stripe account in the admin Shop settings.' }, 501);
+  }
+
+  const body = await c.req.json().catch(() => null) as {
+    items?: CheckoutItem[]; email?: string; customer_name?: string;
+    shipping?: { name?: string; line1?: string; line2?: string; city?: string; state?: string; postal_code?: string; country?: string };
+  } | null;
+  const items = Array.isArray(body?.items) ? body!.items : [];
+  if (items.length === 0) return c.json({ error: 'Cart is empty' }, 400);
+  if (items.length > 50) return c.json({ error: 'Too many line items' }, 400);
+
+  const email = (body?.email || '').trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return c.json({ error: 'A valid email is required for the receipt' }, 400);
+
+  const settings = await getSettings(db);
+  const currency = (settings.currency ?? 'usd').toLowerCase();
+  const origin = (c.req.header('origin') || 'https://jeffhonforlocophotos.com').replace(/\/+$/, '');
+
+  // Validate every line server-side — never trust client prices.
+  const lines: { name: string; variant_label: string | null; unit_price_cents: number; quantity: number; product_id: number; variant_id: number | null; image_url: string | null }[] = [];
+  for (const it of items) {
+    const qty = Math.min(Math.max(parseInt(String(it.quantity), 10) || 1, 1), 99);
+    const prod = await db.prepare(`SELECT * FROM products WHERE id = ? AND active = 1`).bind(it.product_id).first<ProductRow>();
+    if (!prod) return c.json({ error: `Product #${it.product_id} is not available` }, 400);
+    if (prod.product_type === 'affiliate') return c.json({ error: `"${prod.name}" is an affiliate product — buy it on the retailer's site` }, 400);
+
+    let unit = prod.price_cents;
+    let variantLabel: string | null = null;
+    let variantId: number | null = null;
+    if (it.variant_id) {
+      const v = await db.prepare(`SELECT * FROM product_variants WHERE id = ? AND product_id = ?`).bind(it.variant_id, prod.id).first<any>();
+      if (!v) return c.json({ error: `Variant not found for "${prod.name}"` }, 400);
+      unit += v.price_adjust_cents || 0;
+      variantLabel = `${v.name}: ${v.value}`;
+      variantId = v.id;
+      if (v.inventory != null && v.inventory < qty) return c.json({ error: `Only ${v.inventory} left of "${prod.name} (${variantLabel})"` }, 400);
+    } else if (prod.inventory < qty) {
+      return c.json({ error: `Only ${prod.inventory} left of "${prod.name}"` }, 400);
+    }
+
+    const img = await db.prepare(`SELECT image_url FROM product_images WHERE product_id = ? ORDER BY sort_order ASC LIMIT 1`).bind(prod.id).first<{ image_url: string }>();
+    lines.push({ name: prod.name, variant_label: variantLabel, unit_price_cents: unit, quantity: qty, product_id: prod.id, variant_id: variantId, image_url: img?.image_url ?? null });
+  }
+
+  const subtotal = lines.reduce((s, l) => s + l.unit_price_cents * l.quantity, 0);
+  const flatShip = cents(settings.flat_shipping_cents, 795);
+  const freeOver = cents(settings.free_shipping_over_cents, 15000);
+  const shipping = subtotal >= freeOver ? 0 : flatShip;
+  const taxRate = parseFloat(settings.tax_rate_percent ?? '0') || 0;
+  const tax = Math.round(subtotal * (taxRate / 100));
+  const total = subtotal + shipping + tax;
+
+  // Build the Stripe Checkout Session via form-encoded API call.
+  const form = new URLSearchParams();
+  form.append('mode', 'payment');
+  form.append('customer_email', email);
+  form.append('success_url', `${origin}/shop/success?session_id={CHECKOUT_SESSION_ID}`);
+  form.append('cancel_url', `${origin}/shop?canceled=1`);
+  form.append('shipping_address_collection[allowed_countries][0]', 'US');
+  form.append('shipping_address_collection[allowed_countries][1]', 'CA');
+  form.append('metadata[store]', 'jeffhonforloco');
+  lines.forEach((l, i) => {
+    const p = `line_items[${i}]`;
+    form.append(`${p}[price_data][currency]`, currency);
+    form.append(`${p}[price_data][product_data][name]`, variantLabelOf(l));
+    form.append(`${p}[price_data][unit_amount]`, String(l.unit_price_cents));
+    if (l.image_url) form.append(`${p}[price_data][product_data][images][0]`, l.image_url);
+    form.append(`${p}[quantity]`, String(l.quantity));
+  });
+  // Shipping + tax as line items so the Stripe total matches our math.
+  let extra = lines.length;
+  if (shipping > 0) {
+    form.append(`line_items[${extra}][price_data][currency]`, currency);
+    form.append(`line_items[${extra}][price_data][product_data][name]`, 'Shipping');
+    form.append(`line_items[${extra}][price_data][unit_amount]`, String(shipping));
+    form.append(`line_items[${extra}][quantity]`, '1');
+    extra++;
+  }
+  if (tax > 0) {
+    form.append(`line_items[${extra}][price_data][currency]`, currency);
+    form.append(`line_items[${extra}][price_data][product_data][name]`, `Sales tax (${taxRate}%)`);
+    form.append(`line_items[${extra}][price_data][unit_amount]`, String(tax));
+    form.append(`line_items[${extra}][quantity]`, '1');
+    extra++;
+  }
+
+  const sres = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${c.env.STRIPE_SECRET_KEY}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: form.toString(),
+  });
+  if (!sres.ok) {
+    const txt = await sres.text().catch(() => '');
+    console.error('[shop] Stripe session create failed:', sres.status, txt.slice(0, 300));
+    return c.json({ error: 'Could not start checkout — please try again' }, 502);
+  }
+  const session = await sres.json() as { id: string; url: string; payment_intent?: string };
+
+  // Persist a pending order so nothing is lost if the webhook is delayed.
+  const now = new Date().toISOString();
+  const ores = await db.prepare(
+    `INSERT INTO orders (provider, stripe_session_id, stripe_payment_intent, email, customer_name, shipping_json, subtotal_cents, shipping_cents, tax_cents, total_cents, currency, status, fulfillment_status, created_at, updated_at)
+     VALUES ('stripe', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unfulfilled', ?, ?)`
+  ).bind(
+    session.id, session.payment_intent ?? null, email, (body?.customer_name || '').slice(0, 120) || null,
+    body?.shipping ? JSON.stringify(body.shipping).slice(0, 2000) : null,
+    subtotal, shipping, tax, total, currency, now, now
+  ).run();
+  const orderId = Number(ores.meta.last_row_id);
+  await db.batch(lines.map((l) =>
+    db.prepare(`INSERT INTO order_items (order_id, product_id, variant_id, name, variant_label, quantity, unit_price_cents, total_cents) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(orderId, l.product_id, l.variant_id, l.name, l.variant_label, l.quantity, l.unit_price_cents, l.unit_price_cents * l.quantity)
+  ));
+
+  return c.json({ success: true, data: { url: session.url, session_id: session.id, order_id: orderId } });
+});
 
 shopPublic.post('/capture', async (c) => {
   const db = c.env.DB;
@@ -519,7 +656,7 @@ shopPublic.post('/capture', async (c) => {
 
   const capture = cdata?.purchase_units?.[0]?.payments?.captures?.[0];
   const captureId: string | null = typeof capture?.id === 'string' ? capture.id : null;
-  await markOrderPaid(db, order.id, captureId);
+  await markOrderPaid(db, order.id, { paypal_capture_id: captureId });
   return c.json({ success: true, data: { order_id: order.id, status: 'paid', capture_id: captureId } });
 });
 
@@ -582,7 +719,7 @@ paypalWebhook.post('/paypal', async (c) => {
   if (type === 'PAYMENT.CAPTURE.COMPLETED') {
     if (relatedOrderId) {
       const order = await db.prepare(`SELECT * FROM orders WHERE paypal_order_id = ?`).bind(relatedOrderId).first<any>();
-      if (order) await markOrderPaid(db, order.id, typeof resource.id === 'string' ? resource.id : null);
+      if (order) await markOrderPaid(db, order.id, { paypal_capture_id: typeof resource.id === 'string' ? resource.id : null });
     }
   } else if (type === 'PAYMENT.CAPTURE.DENIED') {
     if (relatedOrderId) {
@@ -602,6 +739,73 @@ paypalWebhook.post('/paypal', async (c) => {
 /* ADMIN — /api/v1/admin/shop                                           */
 /* ------------------------------------------------------------------ */
 
+
+/* ------------------------------------------------------------------ */
+/* STRIPE WEBHOOK — POST /api/v1/webhooks/stripe                       */
+/* ------------------------------------------------------------------ */
+
+async function verifyStripeSignature(rawBody: string, header: string | null, secret: string): Promise<boolean> {
+  if (!header || !secret) return false;
+  const parts = Object.fromEntries(header.split(',').map((p) => p.split('=')) as [string, string][]);
+  const t = parts['t'];
+  const v1 = parts['v1'];
+  if (!t || !v1) return false;
+  // Reject stale signatures (>5 min) to blunt replay attacks.
+  if (Math.abs(Date.now() / 1000 - parseInt(t, 10)) > 300) return false;
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(`${t}.${rawBody}`));
+  const hex = [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  return hex.length === v1.length && crypto.subtle.timingSafeEqual
+    ? timingSafeEqualHex(hex, v1)
+    : hex === v1;
+}
+
+function timingSafeEqualHex(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+stripeWebhook.post('/stripe', async (c) => {
+  const db = c.env.DB;
+  await ensureShopSchema(db);
+  const raw = await c.req.text();
+  const ok = await verifyStripeSignature(raw, c.req.header('stripe-signature'), c.env.STRIPE_WEBHOOK_SECRET ?? '');
+  if (!ok) return c.json({ error: 'Invalid signature' }, 400);
+
+  const event = JSON.parse(raw) as { type: string; data?: { object?: any } };
+  const obj = event.data?.object ?? {};
+
+  if (event.type === 'checkout.session.completed') {
+    const sessionId: string | undefined = obj.id;
+    if (sessionId) {
+      const order = await db.prepare(`SELECT * FROM orders WHERE stripe_session_id = ?`).bind(sessionId).first<any>();
+      if (order) {
+        await markOrderPaid(db, order.id, {
+          stripe_payment_intent: typeof obj.payment_intent === 'string' ? obj.payment_intent : null,
+        });
+      }
+    }
+  } else if (event.type === 'checkout.session.expired' || event.type === 'checkout.session.async_payment_failed') {
+    const sessionId: string | undefined = obj.id;
+    if (sessionId) {
+      await db.prepare(`UPDATE orders SET status = 'cancelled', updated_at = ? WHERE stripe_session_id = ? AND status = 'pending'`)
+        .bind(new Date().toISOString(), sessionId).run();
+    }
+  } else if (event.type === 'charge.refunded') {
+    const pi: string | undefined = typeof obj.payment_intent === 'string' ? obj.payment_intent : obj.payment_intent?.id;
+    if (pi) {
+      await db.prepare(`UPDATE orders SET status = 'refunded', updated_at = ? WHERE stripe_payment_intent = ? AND status IN ('paid','pending')`)
+        .bind(new Date().toISOString(), pi).run();
+    }
+  }
+
+  return c.json({ received: true });
+});
+
+/* ------------------------------------------------------------------ */
 shopAdmin.get('/products', requireAuth, requireAdmin, async (c) => {
   const db = c.env.DB;
   await ensureShopSchema(db);
@@ -845,6 +1049,12 @@ shopAdmin.get('/settings', requireAuth, requireAdmin, async (c) => {
         webhook_id_configured: webhookConfigured,
         mode: paypalMode(c.env),
         webhook_url: 'https://<worker-host>/api/v1/webhooks/paypal',
+      },
+      stripe: {
+        secret_configured: Boolean(c.env.STRIPE_SECRET_KEY),
+        webhook_secret_configured: Boolean(c.env.STRIPE_WEBHOOK_SECRET),
+        publishable_key: c.env.STRIPE_PUBLISHABLE_KEY ?? null,
+        webhook_url: 'https://<worker-host>/api/v1/webhooks/stripe',
       },
     },
   });
