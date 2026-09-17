@@ -87,9 +87,9 @@ const GrowthOverview = () => {
 
   return (
     <div>
-      <PageHeader eyebrow="Executive view" title="Growth Command Center" description="Discovery, demand, conversion, and operating priorities from the existing site funnel and CRM." action={<Select value={days} onValueChange={changeRange}><SelectTrigger className="w-32 bg-white text-neutral-900"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="7">7 days</SelectItem><SelectItem value="30">30 days</SelectItem><SelectItem value="90">90 days</SelectItem></SelectContent></Select>} />
+      <PageHeader eyebrow="Executive view" title="Growth Command Center" description="Discovery, demand, conversion, and operating priorities from the existing site funnel and CRM." action={<Select value={days} onValueChange={changeRange}><SelectTrigger className="w-32 border-neutral-700 bg-neutral-900 text-white"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="7">7 days</SelectItem><SelectItem value="30">30 days</SelectItem><SelectItem value="90">90 days</SelectItem></SelectContent></Select>} />
       {error && <ErrorNotice message={error} />}
-      {loading && <div className="flex h-40 items-center justify-center text-sm text-slate-500"><RefreshCw className="mr-2 h-4 w-4 animate-spin" />Loading real business data…</div>}
+      {loading && <div className="flex h-40 items-center justify-center text-sm text-neutral-400"><RefreshCw className="mr-2 h-4 w-4 animate-spin" />Loading real business data…</div>}
       {data && !loading && <>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard label="Visitors" value={data.metrics.visitors} detail="Unique visitors are shown only when a reliable visitor identifier exists." />
@@ -104,13 +104,13 @@ const GrowthOverview = () => {
 
         <div className="mt-6 grid gap-6 xl:grid-cols-3">
           {[['Top services', data.topServices], ['Top lead sources', data.topSources], ['Top landing pages', data.topLandingPages]].map(([title, rows]) => (
-            <Card key={title as string}><CardHeader><CardTitle className="text-base">{title as string}</CardTitle><CardDescription>Verified events in this period</CardDescription></CardHeader><CardContent>{(rows as Array<{ label: string; count: number }>).length ? <div className="space-y-3">{(rows as Array<{ label: string; count: number }>).map((row) => <div key={row.label} className="flex items-center justify-between gap-3 text-sm"><span className="min-w-0 truncate text-slate-700">{row.label}</span><Badge variant="secondary">{row.count}</Badge></div>)}</div> : <EmptyState />}</CardContent></Card>
+            <Card key={title as string}><CardHeader><CardTitle className="text-base">{title as string}</CardTitle><CardDescription>Verified events in this period</CardDescription></CardHeader><CardContent>{(rows as Array<{ label: string; count: number }>).length ? <div className="space-y-3">{(rows as Array<{ label: string; count: number }>).map((row) => <div key={row.label} className="flex items-center justify-between gap-3 text-sm"><span className="min-w-0 truncate text-neutral-300">{row.label}</span><Badge variant="secondary">{row.count}</Badge></div>)}</div> : <EmptyState />}</CardContent></Card>
           ))}
         </div>
 
         <div className="mt-6 grid gap-6 xl:grid-cols-[1.4fr_1fr]">
-          <Card><CardHeader><CardTitle className="text-base">Recent leads and bookings</CardTitle><CardDescription>Latest records from the existing contacts CRM</CardDescription></CardHeader><CardContent>{data.recentLeads.length ? <div className="divide-y">{data.recentLeads.map((lead) => <div className="flex items-center gap-3 py-3" key={lead.id}><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{lead.full_name}</p><p className="text-xs text-slate-500">{lead.service_type || 'Service not provided'} · {new Date(lead.created_at).toLocaleDateString()}</p></div><Badge variant="outline">{lead.status}</Badge></div>)}</div> : <EmptyState />}</CardContent></Card>
-          <Card><CardHeader><CardTitle className="text-base">Decision queue</CardTitle><CardDescription>Evidence-based actions awaiting review</CardDescription></CardHeader><CardContent>{data.recentRecommendations.length ? <div className="space-y-3">{data.recentRecommendations.map((item) => <div className="rounded-lg border p-3" key={item.id}><div className="flex items-start justify-between gap-2"><p className="text-sm font-medium">{item.title}</p><Badge>{item.priority}</Badge></div><p className="mt-2 text-xs text-slate-500">{item.status}</p></div>)}</div> : <EmptyState text="Recommendations appear only after evidence is recorded and reviewed." />}</CardContent></Card>
+          <Card><CardHeader><CardTitle className="text-base">Recent leads and bookings</CardTitle><CardDescription>Latest records from the existing contacts CRM</CardDescription></CardHeader><CardContent>{data.recentLeads.length ? <div className="divide-y">{data.recentLeads.map((lead) => <div className="flex items-center gap-3 py-3" key={lead.id}><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{lead.full_name}</p><p className="text-xs text-neutral-400">{lead.service_type || 'Service not provided'} · {new Date(lead.created_at).toLocaleDateString()}</p></div><Badge variant="outline">{lead.status}</Badge></div>)}</div> : <EmptyState />}</CardContent></Card>
+          <Card><CardHeader><CardTitle className="text-base">Decision queue</CardTitle><CardDescription>Evidence-based actions awaiting review</CardDescription></CardHeader><CardContent>{data.recentRecommendations.length ? <div className="space-y-3">{data.recentRecommendations.map((item) => <div className="rounded-lg border p-3" key={item.id}><div className="flex items-start justify-between gap-2"><p className="text-sm font-medium">{item.title}</p><Badge>{item.priority}</Badge></div><p className="mt-2 text-xs text-neutral-400">{item.status}</p></div>)}</div> : <EmptyState text="Recommendations appear only after evidence is recorded and reviewed." />}</CardContent></Card>
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -121,7 +121,7 @@ const GrowthOverview = () => {
 
       {selectedInfo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setSelectedIntegration(null)}>
-          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-lg border border-neutral-800 bg-neutral-950 p-6 text-white shadow-xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-start justify-between">
               <h3 className="text-lg font-semibold text-neutral-900">{selectedInfo.title}</h3>
               <button type="button" onClick={() => setSelectedIntegration(null)} className="rounded p-1 text-neutral-500 hover:bg-neutral-100" aria-label="Close"><X className="h-5 w-5" /></button>

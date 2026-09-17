@@ -5,17 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export const PageHeader = ({ eyebrow, title, description, action }: { eyebrow: string; title: string; description: string; action?: ReactNode }) => (
   <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-    <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-600">{eyebrow}</p><h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1><p className="mt-2 max-w-3xl text-sm text-slate-600">{description}</p></div>
+    <div><p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-600">{eyebrow}</p><h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1><p className="mt-2 max-w-3xl text-sm text-neutral-400">{description}</p></div>
     {action}
   </div>
 );
 
 export const MetricCard = ({ label, value, detail }: { label: string; value: string | number | null; detail?: string }) => (
-  <Card className="border-slate-200 shadow-sm"><CardHeader className="pb-2"><CardDescription>{label}</CardDescription><CardTitle className="text-2xl">{value ?? 'No data yet'}</CardTitle></CardHeader>{detail && <CardContent><p className="text-xs text-slate-500">{detail}</p></CardContent>}</Card>
+  <Card className="border-neutral-800 bg-neutral-950 shadow-sm"><CardHeader className="pb-2"><CardDescription className="text-neutral-400">{label}</CardDescription><CardTitle className="text-2xl text-white">{value ?? 'No data yet'}</CardTitle></CardHeader>{detail && <CardContent><p className="text-xs text-neutral-400">{detail}</p></CardContent>}</Card>
 );
 
 export const EmptyState = ({ title = 'No data yet', text = 'The data model is ready. Add a verified observation or connect the named source to begin history.' }: { title?: string; text?: string }) => (
-  <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-5 py-10 text-center"><DatabaseZap className="mx-auto h-7 w-7 text-slate-400" /><p className="mt-3 font-semibold">{title}</p><p className="mx-auto mt-1 max-w-lg text-sm text-slate-500">{text}</p></div>
+  <div className="rounded-xl border border-dashed border-neutral-700 bg-neutral-900 px-5 py-10 text-center"><DatabaseZap className="mx-auto h-7 w-7 text-neutral-500" /><p className="mt-3 font-semibold text-white">{title}</p><p className="mx-auto mt-1 max-w-lg text-sm text-neutral-400">{text}</p></div>
 );
 
 export const SourceBadge = ({ source, status }: { source?: string | null; status?: string | null }) => (
