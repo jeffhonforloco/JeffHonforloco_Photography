@@ -250,9 +250,6 @@ const AdminEmail: React.FC = () => {
   };
 
   const clearFailedRows = async () => {
-    if (!window.confirm('Clear failed test rows? This deletes failed email-sequence rows and orphaned lead events left by deleted test contacts. Templates, sent, cancelled and pending rows are kept.')) {
-      return;
-    }
     try {
       setProcessing(true);
       setNotice(null);
