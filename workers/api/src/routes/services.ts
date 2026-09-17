@@ -61,7 +61,6 @@ export async function ensureServicesSchema(db: D1Database) {
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_paypal ON service_payments(paypal_order_id)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_status ON service_payments(status, created_at)`),
     db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_email ON service_payments(email)`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_shoot_date ON service_payments(shoot_date)`),
   ]);
   // Migrate existing tables: add new columns if they don't exist
   const cols = await db.prepare(`PRAGMA table_info(service_payments)`).all<{ name: string }>();
@@ -74,6 +73,8 @@ export async function ensureServicesSchema(db: D1Database) {
   for (const sql of migrations) {
     await db.prepare(sql).run();
   }
+  // Create index on shoot_date AFTER the column is guaranteed to exist
+  await db.prepare(`CREATE INDEX IF NOT EXISTS idx_svc_shoot_date ON service_payments(shoot_date)`).run();
   const existing = await db.prepare(`SELECT COUNT(*) AS n FROM service_settings`).first<{ n: number }>();
   if (!existing || existing.n === 0) {
     await db.prepare(`INSERT OR IGNORE INTO service_settings (key, value) VALUES ('deposit_percent', '75')`).run();
