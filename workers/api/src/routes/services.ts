@@ -355,8 +355,16 @@ async function createPayPalOrder(
     throw new Error('Could not start checkout — please try again');
   }
   const pOrder = (await pres.json()) as { id: string; links?: { href: string; rel: string }[] };
-  const approveUrl = pOrder.links?.find((l) => l.rel === 'approve')?.href;
+  let approveUrl = pOrder.links?.find((l) => l.rel === 'approve')?.href;
+  // Also accept 'payer-action' rel (newer PayPal API uses this instead of 'approve')
+  if (!approveUrl) {
+    approveUrl = pOrder.links?.find((l) => l.rel === 'payer-action')?.href;
+  }
   if (!pOrder.id || !approveUrl) throw new Error('PayPal did not return an approval link');
+  // Enable guest checkout: show credit/debit card form directly instead of PayPal login.
+  // Appending fundingSource=card makes PayPal render the card form (no PayPal account required).
+  const sep = approveUrl.includes('?') ? '&' : '?';
+  approveUrl = `${approveUrl}${sep}fundingSource=card`;
   await db.prepare(`UPDATE service_payments SET paypal_order_id = ?, updated_at = ? WHERE id = ?`)
     .bind(pOrder.id, new Date().toISOString(), paymentId).run();
   return { approveUrl, ppOrderId: pOrder.id };
