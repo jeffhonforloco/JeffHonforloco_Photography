@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ShoppingBag, Plus, Search, Pencil, Trash2, X, Loader2, Package,
   Truck, ExternalLink, ImagePlus, GripVertical, Power, AlertTriangle,
-  CheckCircle2, DollarSign, Store,
+  CircleCheck, DollarSign, Store,
 } from 'lucide-react';
 import { apiUrl } from '@/lib/api-base';
 import { optimizeImageForUpload } from '@/lib/image-optimize';
@@ -453,7 +453,7 @@ const AdminShop: React.FC = () => {
                   </label>
                 </div>
                 <Button className="mt-4" onClick={() => saveSettings(settings)} disabled={settingsSaving}>
-                  {settingsSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2 h-4 w-4" />} Save settings
+                  {settingsSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CircleCheck className="mr-2 h-4 w-4" />} Save settings
                 </Button>
               </div>
 
@@ -462,11 +462,11 @@ const AdminShop: React.FC = () => {
                 {paypalInfo ? (
                   <ul className="mt-3 space-y-2 text-sm">
                     <li className="flex items-center gap-2">
-                      {paypalInfo.client_configured ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
+                      {paypalInfo.client_configured ? <CircleCheck className="h-4 w-4 text-emerald-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
                       API credentials {paypalInfo.client_configured ? `connected (${paypalInfo.mode})` : 'missing — add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET to worker secrets'}
                     </li>
                     <li className="flex items-center gap-2">
-                      {paypalInfo.webhook_id_configured ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
+                      {paypalInfo.webhook_id_configured ? <CircleCheck className="h-4 w-4 text-emerald-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
                       Webhook ID {paypalInfo.webhook_id_configured ? 'configured' : 'missing — add PAYPAL_WEBHOOK_ID to worker secrets'}
                     </li>
                     <li className="text-xs text-neutral-400">Register this webhook URL in the PayPal Developer Dashboard → your app → Webhooks:<br />
