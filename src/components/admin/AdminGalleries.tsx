@@ -11,7 +11,7 @@ import { apiUrl } from '@/lib/api-base';
 import { optimizeImageForUpload } from '@/lib/image-optimize';
 import {
   Plus, RefreshCw, Images, Link2, Copy, Trash2, Upload,
-  Heart, ArrowLeft, CheckCircle2, AlertCircle, Eye, Lock,
+  Heart, ArrowLeft, CircleCheck, AlertCircle, Eye, Lock,
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -221,7 +221,7 @@ const AdminGalleries: React.FC = () => {
         </div>
 
         {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
-        {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
+        {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CircleCheck className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
 
         {/* Upload */}
         <Card className="border-[#c8102e]/30">
@@ -307,7 +307,7 @@ const AdminGalleries: React.FC = () => {
       </div>
 
       {error && <div className="flex items-start gap-2 rounded-lg border border-[#c8102e]/40 bg-[#c8102e]/10 px-4 py-3 text-sm text-[#f2a3b1]"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
-      {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
+      {success && <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"><CircleCheck className="mt-0.5 h-4 w-4 shrink-0" />{success}</div>}
 
       {loading ? (
         <p className="text-sm text-muted-foreground">Loading galleries...</p>
