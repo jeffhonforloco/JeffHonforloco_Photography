@@ -40,10 +40,13 @@ const AdminAnalytics: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [period, setPeriod] = useState('30d');
   const [selectedMetric, setSelectedMetric] = useState('all');
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const fetchAnalytics = useCallback(async () => {
     try {
       setLoading(true);
+      setNotice(null);
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`/api/v1/admin/analytics?period=${period}`, {
         headers: {
@@ -66,6 +69,7 @@ const AdminAnalytics: React.FC = () => {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
+      setLastUpdated(new Date());
     }
   }, [period]);
 
@@ -95,6 +99,7 @@ const AdminAnalytics: React.FC = () => {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+      setNotice('Downloaded analytics_export.csv');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Export failed');
     }
@@ -137,6 +142,9 @@ const AdminAnalytics: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
           <p className="text-muted-foreground">Track your website performance and user engagement</p>
+          {lastUpdated && (
+            <p className="mt-1 text-xs text-muted-foreground">Updated {lastUpdated.toLocaleTimeString()}</p>
+          )}
         </div>
         <div className="flex space-x-2">
           <Button onClick={fetchAnalytics} variant="outline">
@@ -149,6 +157,12 @@ const AdminAnalytics: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {notice && (
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
+          {notice}
+        </div>
+      )}
 
       {/* Filters */}
       <Card>
