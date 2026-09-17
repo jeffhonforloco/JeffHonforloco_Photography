@@ -184,6 +184,7 @@ growth.get('/integration-status', (c) => c.json({ success: true, data: {
   searchConsole: { status: c.env.GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL && c.env.GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY ? 'connected' : 'not_connected' },
   googleBusiness: { status: c.env.GOOGLE_BUSINESS_PROFILE_ACCOUNT_ID ? 'connected' : 'not_connected' },
   github: { status: c.env.GITHUB_APP_ID ? 'connected' : 'not_connected', prepareOnly: true, autoMerge: false },
+  seoAgentPro: { status: c.env.SEOAGENTPRO_HF_TOKEN ? 'connected' : 'not_connected', provider: 'SEOAgentPro (Hugging Face)' },
 } }));
 
 
