@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -22,6 +22,82 @@ async function authedPost(path: string, body: unknown) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
   return data;
+}
+
+// Minimal safe markdown renderer for AI-generated analysis text.
+// React escapes all string output by default, so no raw HTML is injected.
+// Supports headings, bold, italic, inline code, bullet/numbered lists,
+// and paragraph breaks.
+function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*\n]+\*|`[^`]+`)/g);
+  return parts.map((part, i) => {
+    const key = `${keyPrefix}-${i}`;
+    if (part.length > 4 && part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={key}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.length > 2 && part.startsWith('*') && part.endsWith('*')) {
+      return <em key={key}>{part.slice(1, -1)}</em>;
+    }
+    if (part.length > 2 && part.startsWith('`') && part.endsWith('`')) {
+      return <code key={key} className="rounded bg-neutral-800 px-1 py-0.5 text-xs">{part.slice(1, -1)}</code>;
+    }
+    return <React.Fragment key={key}>{part}</React.Fragment>;
+  });
+}
+
+function Markdown({ text }: { text: string }) {
+  const lines = text.replace(/\r\n/g, '\n').split('\n');
+  const blocks: React.ReactNode[] = [];
+  let listItems: string[] = [];
+  let listOrdered: boolean[] = [];
+  const flushList = () => {
+    if (listItems.length === 0) return;
+    const ordered = listOrdered[0];
+    const items = listItems.map((t, i) => (
+      <li key={i}>{renderInline(t, `li-${blocks.length}-${i}`)}</li>
+    ));
+    blocks.push(
+      ordered ? (
+        <ol key={`b-${blocks.length}`} className="my-2 list-decimal space-y-1 pl-5">{items}</ol>
+      ) : (
+        <ul key={`b-${blocks.length}`} className="my-2 list-disc space-y-1 pl-5">{items}</ul>
+      )
+    );
+    listItems = [];
+    listOrdered = [];
+  };
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    const bullet = /^[-*]\s+(.*)/.exec(trimmed);
+    const numbered = /^\d+[.)]\s+(.*)/.exec(trimmed);
+    const heading = /^(#{1,3})\s+(.*)/.exec(trimmed);
+    if (bullet || numbered) {
+      listItems.push(((bullet && bullet[1]) || (numbered && numbered[1]) || '').trim());
+      listOrdered.push(!!numbered);
+      return;
+    }
+    flushList();
+    if (!trimmed) return;
+    if (heading) {
+      const level = heading[1].length;
+      const content = renderInline(heading[2], `h-${blocks.length}`);
+      const cls = 'mt-3 mb-1 font-semibold ' + (level === 1 ? 'text-base' : level === 2 ? 'text-[15px]' : 'text-sm');
+      const key = `b-${blocks.length}`;
+      blocks.push(
+        level === 1 ? <h4 key={key} className={cls}>{content}</h4>
+        : level === 2 ? <h5 key={key} className={cls}>{content}</h5>
+        : <h6 key={key} className={cls}>{content}</h6>
+      );
+      return;
+    }
+    blocks.push(
+      <p key={`b-${blocks.length}`} className="my-1.5 leading-relaxed">
+        {renderInline(trimmed, `p-${blocks.length}`)}
+      </p>
+    );
+  });
+  flushList();
+  return <div className="text-sm">{blocks}</div>;
 }
 
 const SeoAiTools = () => {
@@ -237,7 +313,7 @@ const SeoAiTools = () => {
                       {new Date(run.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  <p className="text-sm whitespace-pre-wrap">{run.analysis}</p>
+                  <Markdown text={run.analysis} />
                 </div>
               ))}
             </div>
@@ -269,7 +345,7 @@ const SeoAiTools = () => {
             {seoLoading ? 'Analyzing…' : 'Analyze'}
           </Button>
           {seoResult && (
-            <div className="rounded-md border p-4 whitespace-pre-wrap text-sm">{seoResult}</div>
+            <div className="rounded-md border p-4"><Markdown text={seoResult} /></div>
           )}
         </CardContent>
       </Card>
@@ -304,7 +380,7 @@ const SeoAiTools = () => {
             {aiLoading ? 'Checking…' : 'Check visibility'}
           </Button>
           {aiResult && (
-            <div className="rounded-md border p-4 whitespace-pre-wrap text-sm">{aiResult}</div>
+            <div className="rounded-md border p-4"><Markdown text={aiResult} /></div>
           )}
         </CardContent>
       </Card>
