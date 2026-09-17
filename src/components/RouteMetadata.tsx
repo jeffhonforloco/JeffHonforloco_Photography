@@ -53,6 +53,11 @@ const STATIC_META: Record<string, RouteMeta> = {
     title: 'Photography Session Prep Guide | Jeff Honforloco Photography',
     description: 'Prepare wardrobe, styling and creative details for your upcoming photography session.',
   },
+  '/pay': {
+    title: 'Book & Pay — Secure Your Session | Jeff Honforloco Photography',
+    description: 'Pay your photography session deposit or in full securely with PayPal. Pick your package, choose deposit or full, and check out in one smooth flow.',
+    noIndex: true,
+  },
   '/privacy': {
     title: 'Privacy Policy | Jeff Honforloco Photography',
     description: 'How Jeff Honforloco Photography handles your information: inquiries, analytics, cookies, and your rights.',
