@@ -72,11 +72,11 @@ export default {
     }
     const growthCadence: Record<string, MonitoringCadence> = {
       '15 7 * * *': 'daily',
-      '30 7 * * 1': 'weekly',
+      '30 11 * * 1': 'weekly',
       '0 8 1 * *': 'monthly',
     };
     if (growthCadence[event.cron]) tasks.push(queueGrowthMonitoring(env, growthCadence[event.cron]));
-    if (event.cron === '30 7 * * 1') tasks.push(runAutoSeoChecks(env));
+    if (event.cron === '30 11 * * 1') tasks.push(runAutoSeoChecks(env));
 
     const results = await Promise.allSettled(tasks);
     for (const result of results) {
