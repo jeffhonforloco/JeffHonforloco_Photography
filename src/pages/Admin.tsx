@@ -22,6 +22,7 @@ const GrowthOverview = lazy(() => import('@/components/admin/growth/GrowthOvervi
 const FunnelDashboard = lazy(() => import('@/components/admin/growth/FunnelDashboard'));
 const BookingsDashboard = lazy(() => import('@/components/admin/growth/BookingsDashboard'));
 const GrowthWorkspace = lazy(() => import('@/components/admin/growth/GrowthWorkspace'));
+const AdminSEO = lazy(() => import('@/components/admin/AdminSEO'));
 
 const AdminLoading = () => (
   <div className="flex min-h-64 items-center justify-center text-sm text-slate-500" role="status">
@@ -45,7 +46,7 @@ const Admin: React.FC = () => {
         <Route path="contacts" element={<Navigate to={adminPath('leads')} replace />} />
         <Route path="bookings" element={<BookingsDashboard />} />
         <Route path="funnels" element={<FunnelDashboard />} />
-        <Route path="search" element={<GrowthWorkspace kind="search" />} />
+        <Route path="search" element={<><AdminSEO /><div className="mt-8"><GrowthWorkspace kind="search" /></div></>} />
         <Route path="ai-visibility" element={<GrowthWorkspace kind="ai" />} />
         <Route path="competitors" element={<GrowthWorkspace kind="competitors" />} />
         <Route path="recommendations" element={<GrowthWorkspace kind="recommendations" />} />
