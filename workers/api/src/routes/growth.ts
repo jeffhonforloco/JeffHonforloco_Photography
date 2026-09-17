@@ -272,9 +272,9 @@ growth.get('/search-console', async (c) => {
     return c.json({ success: true, data: metrics });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Search Console unavailable';
-    const stack = err instanceof Error ? err.stack : undefined;
+    const stackLines = err instanceof Error && err.stack ? err.stack.split('\n').slice(0, 5).join(' | ') : '';
     console.error('[search-console] Error:', err);
-    return c.json({ success: false, error: message, stack }, 502);
+    return c.json({ success: false, error: stackLines ? `${message} :: ${stackLines}` : message }, 502);
   }
 });
 
