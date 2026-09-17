@@ -12,6 +12,7 @@ export const stripeWebhook = new Hono<AppEnv>();
 /* ------------------------------------------------------------------ */
 
 export async function ensureShopSchema(db: D1Database) {
+  // Phase 1: create tables only.
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS products (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -85,15 +86,8 @@ export async function ensureShopSchema(db: D1Database) {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     )`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug)`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_products_active ON products(active, category)`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_pimg_product ON product_images(product_id, sort_order)`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_pvar_product ON product_variants(product_id)`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status, created_at)`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_orders_paypal ON orders(paypal_order_id)`),
-    db.prepare(`CREATE INDEX IF NOT EXISTS idx_oitem_order ON order_items(order_id)`),
   ]);
-  // Migrate pre-existing DBs: add PayPal columns if they are missing.
+  // Phase 2: migrate pre-existing DBs — add PayPal columns before any index references them.
   for (const sql of [
     `ALTER TABLE orders ADD COLUMN paypal_order_id TEXT`,
     `ALTER TABLE orders ADD COLUMN paypal_capture_id TEXT`,
@@ -105,6 +99,16 @@ export async function ensureShopSchema(db: D1Database) {
       if (!String(e?.message || e).toLowerCase().includes('duplicate column')) throw e;
     }
   }
+  // Phase 3: indexes (columns are now guaranteed to exist).
+  await db.batch([
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_products_slug ON products(slug)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_products_active ON products(active, category)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_pimg_product ON product_images(product_id, sort_order)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_pvar_product ON product_variants(product_id)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status, created_at)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_orders_paypal ON orders(paypal_order_id)`),
+    db.prepare(`CREATE INDEX IF NOT EXISTS idx_oitem_order ON order_items(order_id)`),
+  ]);
   // Backfill the provider for orders created before the column existed.
   await db.prepare(
     `UPDATE orders SET provider = CASE WHEN stripe_session_id IS NOT NULL THEN 'stripe' ELSE 'paypal' END WHERE provider IS NULL`
