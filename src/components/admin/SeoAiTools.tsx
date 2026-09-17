@@ -63,6 +63,7 @@ const SeoAiTools = () => {
   const [aiResult, setAiResult] = useState<string | null>(null);
   const [autoRuns, setAutoRuns] = useState<{ run_type: string; target: string; analysis: string; created_at: string }[]>([]);
   const [autoLoading, setAutoLoading] = useState(true);
+  const [autoTriggering, setAutoTriggering] = useState(false);
   const [scData, setScData] = useState<{
     site: string; days: number; fetchedAt: string;
     totals: { clicks: number; impressions: number };
@@ -192,6 +193,27 @@ const SeoAiTools = () => {
           <CardDescription>
             Runs every Monday at 7:30 AM ET on your key search queries. Latest results below.
           </CardDescription>
+          <div className="pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={autoTriggering}
+              onClick={async () => {
+                try {
+                  setAutoTriggering(true);
+                  await authedPost('/api/v1/admin/growth/seo-auto-runs/trigger', {});
+                  toast({ title: 'Analysis started', description: 'Results will appear below within a few minutes.' });
+                } catch (e) {
+                  toast({ title: 'Could not start analysis', description: e instanceof Error ? e.message : 'Unknown error', variant: 'destructive' });
+                } finally {
+                  setAutoTriggering(false);
+                }
+              }}
+            >
+              {autoTriggering ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Sparkles className="h-4 w-4 mr-2" />}
+              Run now
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {autoLoading ? (

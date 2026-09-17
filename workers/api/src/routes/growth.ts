@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { requireAdmin, requireAuth } from '../middleware/auth';
 import type { AppEnv } from '../types';
 import { getSearchConsoleMetrics } from '../lib/searchConsole';
+import { runAutoSeoChecks } from '../lib/autoSeo';
 
 const growth = new Hono<AppEnv>();
 growth.use('*', requireAuth);
@@ -273,6 +274,12 @@ growth.get('/search-console', async (c) => {
     const message = err instanceof Error ? err.message : 'Search Console unavailable';
     return c.json({ success: false, error: message }, 502);
   }
+});
+
+growth.post('/seo-auto-runs/trigger', async (c) => {
+  // Fire-and-forget: 7 AI calls take minutes; results land in seo_auto_runs for the UI to poll.
+  c.executionCtx.waitUntil(runAutoSeoChecks(c.env).catch((e) => console.error('[seo-trigger] Auto-run failed:', e)));
+  return c.json({ success: true, data: { started: true, message: 'Weekly analysis started — results appear below within a few minutes.' } }, 202);
 });
 
 growth.get('/seo-auto-runs', async (c) => {
