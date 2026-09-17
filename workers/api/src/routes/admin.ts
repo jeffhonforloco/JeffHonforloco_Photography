@@ -601,16 +601,21 @@ admin.delete('/analytics/orphaned-leads', requireAuth, async (c) => {
 admin.get('/database/stats', requireAuth, async (c) => {
   // Make sure every feature table exists so the listing is complete,
   // then report live row counts for all of them.
-  await Promise.all([
-    ensureLeadAutomationSchema(c.env),
-    ensureCampaignSchema(c.env.DB),
-    ensureContractSchema(c.env.DB),
-    ensureGallerySchema(c.env.DB),
-    ensureMediaViewsSchema(c.env.DB),
-    ensurePagesSchema(c.env.DB),
-    ensureShopSchema(c.env.DB),
-    ensureLoginRateLimitSchema(c.env.DB),
-  ]);
+  // Schema ensures are best-effort: a failure here must not break stats.
+  try {
+    await Promise.all([
+      ensureLeadAutomationSchema(c.env),
+      ensureCampaignSchema(c.env.DB),
+      ensureContractSchema(c.env.DB),
+      ensureGallerySchema(c.env.DB),
+      ensureMediaViewsSchema(c.env.DB),
+      ensurePagesSchema(c.env.DB),
+      ensureShopSchema(c.env.DB),
+      ensureLoginRateLimitSchema(c.env.DB),
+    ]);
+  } catch (e) {
+    console.error('database/stats schema ensure failed (non-fatal):', e);
+  }
   const tables: { name: string; rows: number }[] = [];
   for (const name of await listUserTables(c.env.DB)) {
     tables.push({ name, rows: await countRows(c.env.DB, name) });
@@ -713,7 +718,7 @@ admin.get('/export/:type', requireAuth, async (c) => {
   const fmt  = c.req.query('format') ?? 'json';
 
   if (type === 'database') {
-    await ensureLeadAutomationSchema(c.env);
+    try { await ensureLeadAutomationSchema(c.env); } catch (e) { console.error('export schema ensure failed (non-fatal):', e); }
     const sql = await buildDatabaseExport(c.env.DB);
     return new Response(sql, {
       headers: {
