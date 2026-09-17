@@ -783,4 +783,58 @@ admin.get('/export/:type', requireAuth, async (c) => {
   return c.json({ success: true, data: rows.results, total: rows.results.length });
 });
 
+// GET /api/v1/admin/activity (auth required)
+// Security activity feed, backed by the admin login-attempt log.
+admin.get('/activity', requireAuth, async (c) => {
+  try { await ensureLoginRateLimitSchema(c.env.DB); } catch (e) { console.error('[admin/activity] schema ensure failed (non-fatal):', e); }
+  try {
+    const rows = await c.env.DB.prepare(
+      `SELECT id, succeeded, created_at FROM admin_login_attempts ORDER BY created_at DESC LIMIT 50`
+    ).all<{ id: number; succeeded: number; created_at: string }>();
+    const events = (rows.results ?? []).map((r) => ({
+      id: r.id,
+      user_id: 0,
+      action: r.succeeded ? 'Admin login' : 'Failed login attempt',
+      ip_address: '\u2014',
+      user_agent: '\u2014',
+      success: r.succeeded === 1,
+      created_at: r.created_at,
+    }));
+    return c.json({ success: true, data: events });
+  } catch (e) {
+    console.error('[admin/activity] failed:', e);
+    return c.json({ success: true, data: [] });
+  }
+});
+
+// GET /api/v1/admin/security/stats (auth required)
+admin.get('/security/stats', requireAuth, async (c) => {
+  const stats = {
+    totalEvents: 0,
+    failedLogins: 0,
+    successfulLogins: 0,
+    suspiciousActivity: 0,
+    lastSecurityCheck: new Date().toISOString(),
+  };
+  try { await ensureLoginRateLimitSchema(c.env.DB); } catch (e) { console.error('[admin/security/stats] schema ensure failed (non-fatal):', e); }
+  try {
+    const failed = await c.env.DB.prepare(
+      `SELECT COUNT(*) n FROM admin_login_attempts WHERE succeeded = 0`
+    ).first<{ n: number }>();
+    const ok = await c.env.DB.prepare(
+      `SELECT COUNT(*) n FROM admin_login_attempts WHERE succeeded = 1`
+    ).first<{ n: number }>();
+    const recent = await c.env.DB.prepare(
+      `SELECT COUNT(*) n FROM admin_login_attempts WHERE succeeded = 0 AND created_at >= datetime('now', '-1 day')`
+    ).first<{ n: number }>();
+    stats.failedLogins = failed?.n ?? 0;
+    stats.successfulLogins = ok?.n ?? 0;
+    stats.totalEvents = stats.failedLogins + stats.successfulLogins;
+    stats.suspiciousActivity = recent?.n ?? 0;
+  } catch (e) {
+    console.error('[admin/security/stats] failed:', e);
+  }
+  return c.json({ success: true, data: stats });
+});
+
 export default admin;

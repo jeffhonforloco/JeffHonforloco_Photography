@@ -66,6 +66,13 @@ auth.post('/login', async (c) => {
     return c.json({ error: 'Invalid credentials' }, 401);
   }
   await c.env.DB.prepare(`DELETE FROM admin_login_attempts WHERE attempt_key = ?`).bind(attemptKey).run();
+  // Record the successful login for the Security Center activity feed.
+  // Rate limiting only counts rows with succeeded = 0, so this is purely informational.
+  try {
+    await c.env.DB.prepare(`INSERT INTO admin_login_attempts (attempt_key, succeeded) VALUES (?, 1)`).bind(attemptKey).run();
+  } catch (e) {
+    console.error('[auth/login] success-record insert failed (non-fatal):', e);
+  }
 
   const payload = { id: user.id, username: user.username, role: user.role };
   const [accessToken, refreshToken] = await Promise.all([

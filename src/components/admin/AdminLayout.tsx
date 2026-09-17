@@ -57,6 +57,7 @@ const AdminLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -74,13 +75,26 @@ const AdminLayout: React.FC = () => {
     }
     try {
       const response = await fetch(apiUrl('/api/v1/admin-auth/verify'), { headers: { Authorization: `Bearer ${token}` } });
-      if (!response.ok) throw new Error('Session expired');
+      if (response.status === 401 || response.status === 403) {
+        // Token is invalid, expired, or revoked: this is a genuine logout.
+        clearSession();
+        navigate(adminPath('login'), { replace: true });
+        return;
+      }
+      if (!response.ok) throw new Error(`verification request failed (HTTP ${response.status})`);
       const data = await response.json();
-      if (!data.success || !data.data?.user || data.data.user.role !== 'admin') throw new Error('Administrator access required');
+      if (!data.success || !data.data?.user || data.data.user.role !== 'admin') {
+        // Server no longer recognizes this account as an admin: log out.
+        clearSession();
+        navigate(adminPath('login'), { replace: true });
+        return;
+      }
       setUser(data.data.user);
-    } catch {
-      clearSession();
-      navigate(adminPath('login'), { replace: true });
+      setAuthError(null);
+    } catch (err) {
+      // Transient problem (network blip, rate limit, server hiccup): do NOT
+      // wipe the saved session. Stay signed in and let the user retry.
+      setAuthError(err instanceof Error ? err.message : 'Could not reach the server');
     } finally {
       setLoading(false);
     }
@@ -105,6 +119,26 @@ const AdminLayout: React.FC = () => {
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-800" style={{ borderTopColor: CRIMSON }} />
           <p className="text-sm">Verifying secure session…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (authError && !user) {
+    return (
+      <div className="admin-dark flex min-h-screen items-center justify-center bg-black px-6 text-neutral-300">
+        <div className="flex max-w-sm flex-col items-center gap-3 text-center">
+          <p className="text-sm font-semibold text-white">Connection issue</p>
+          <p className="text-sm text-neutral-400">
+            Couldn&apos;t verify your session ({authError}). You&apos;re still signed in — check your connection and try again.
+          </p>
+          <Button
+            variant="outline"
+            className="border-neutral-800 bg-transparent text-neutral-200 hover:bg-neutral-900 hover:text-white"
+            onClick={() => { setAuthError(null); setLoading(true); void checkAuth(); }}
+          >
+            Try again
+          </Button>
         </div>
       </div>
     );

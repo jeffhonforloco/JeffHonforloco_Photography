@@ -8,9 +8,15 @@ export const requireAuth = createMiddleware<AppEnv>(async (c, next) => {
   const payload = await verifyJWT(header.slice(7), c.env.JWT_SECRET);
   if (!payload) return c.json({ error: 'Invalid or expired token' }, 401);
   if (payload.jti) {
-    await ensureRevocationSchema(c.env.DB);
-    const revoked = await c.env.DB.prepare('SELECT 1 revoked FROM admin_revoked_tokens WHERE jti = ? LIMIT 1').bind(payload.jti).first();
-    if (revoked) return c.json({ error: 'Invalid or expired token' }, 401);
+    try {
+      await ensureRevocationSchema(c.env.DB);
+      const revoked = await c.env.DB.prepare('SELECT 1 revoked FROM admin_revoked_tokens WHERE jti = ? LIMIT 1').bind(payload.jti).first();
+      if (revoked) return c.json({ error: 'Invalid or expired token' }, 401);
+    } catch (e) {
+      // Best-effort revocation check: the JWT signature above is already
+      // verified, so a transient DB hiccup must not fail the request.
+      console.error('[auth] revocation check failed (non-fatal):', e);
+    }
   }
   c.set('userId', payload.id);
   c.set('userRole', payload.role);
