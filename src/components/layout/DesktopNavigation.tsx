@@ -19,6 +19,7 @@ const DesktopNavigation = ({
     { name: 'Motion', href: '/motion' },
     { name: 'Services', href: '/services' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Pay', href: '/pay' },
     { name: 'About', href: '/about' },
     { name: 'Journal', href: '/journal' },
     { name: 'Contact', href: '/contact' },

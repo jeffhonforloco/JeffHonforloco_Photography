@@ -320,6 +320,28 @@ const Pricing = () => {
                               Book This Package
                             </a>
                           </Button>
+                          {tier.price !== 'Custom' && (
+                            <div className="grid grid-cols-2 gap-2">
+                              <Button
+                                asChild
+                                variant="outline"
+                                className="w-full border-photo-red/40 bg-photo-red/10 text-white hover:bg-photo-red/20 text-xs px-2"
+                              >
+                                <a href={`/pay?service=${current.id}&tier=${encodeURIComponent(tier.name)}&pay=deposit`}>
+                                  Pay 75% Deposit
+                                </a>
+                              </Button>
+                              <Button
+                                asChild
+                                variant="outline"
+                                className="w-full border-white/20 bg-white/5 text-white hover:bg-white/10 text-xs px-2"
+                              >
+                                <a href={`/pay?service=${current.id}&tier=${encodeURIComponent(tier.name)}&pay=full`}>
+                                  Pay in Full
+                                </a>
+                              </Button>
+                            </div>
+                          )}
                         </CardContent>
                       </Card>
                     );

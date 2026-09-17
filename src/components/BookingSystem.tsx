@@ -668,6 +668,17 @@ ${bookingData.message}`,
       .find(c => c.id === bookingData.serviceType)
       ?.tiers.find(t => t.id === bookingData.packageType);
 
+    const isCustomTier = selectedTier?.price === 'Custom';
+    const canPayNow = !!selectedTier && !isCustomTier;
+    const payBase = canPayNow
+      ? `/pay?service=${encodeURIComponent(bookingData.serviceType)}&tier=${encodeURIComponent(selectedTier.name)}`
+      : '';
+    const customerQs = canPayNow
+      ? `&name=${encodeURIComponent(bookingData.fullName || '')}&email=${encodeURIComponent(bookingData.email || '')}${bookingData.phone ? `&phone=${encodeURIComponent(bookingData.phone)}` : ''}`
+      : '';
+    const payDepositUrl = canPayNow ? `${payBase}&pay=deposit${customerQs}` : '';
+    const payFullUrl = canPayNow ? `${payBase}&pay=full${customerQs}` : '';
+
     const nextSteps = [
       {
         step: '01',
@@ -728,6 +739,39 @@ ${bookingData.message}`,
             </div>
           </CardContent>
         </Card>
+
+        {canPayNow && (
+          <div className="rounded-xl border border-photo-red/30 bg-photo-red/5 p-6 text-center">
+            <h3 className="text-white font-semibold text-lg mb-2">Want to secure your date now?</h3>
+            <p className="text-gray-300 text-sm mb-4 max-w-md mx-auto">
+              Secure your date with a 75% deposit, or pay in full if you prefer — no need to wait for the consult.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a
+                href={payDepositUrl}
+                className="inline-flex items-center justify-center bg-photo-red hover:bg-photo-red-hover text-white px-6 py-3 text-sm font-semibold rounded-full transition-colors"
+              >
+                Pay 75% Deposit
+              </a>
+              <a
+                href={payFullUrl}
+                className="inline-flex items-center justify-center border border-white/20 bg-white/5 hover:bg-white/10 text-white px-6 py-3 text-sm font-semibold rounded-full transition-colors"
+              >
+                Pay in Full
+              </a>
+            </div>
+            <p className="text-gray-500 text-xs mt-3">
+              You&apos;ll be taken to secure PayPal checkout. Your date is confirmed once payment and details are finalized with Jeff.
+            </p>
+          </div>
+        )}
+        {isCustomTier && (
+          <div className="rounded-xl border border-white/10 bg-white/5 p-5 text-center">
+            <p className="text-gray-300 text-sm">
+              This package is custom-priced — Jeff will send a personal invoice after reviewing your request.
+            </p>
+          </div>
+        )}
 
         <div>
           <p className="text-xs tracking-[0.3em] text-photo-red uppercase font-semibold mb-6">What Happens Next</p>

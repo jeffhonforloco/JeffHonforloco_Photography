@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, BadgeCheck, Camera, Loader2, Lock, Search } from 'lucide-react';
 import { apiUrl } from '@/lib/api-base';
+import { PRICING_CATEGORIES } from '@/data/pricing-data';
 
 interface Tier { name: string; price: string; starting: number }
 interface Service { id: string; name: string; tagline: string; starting: number; tiers: Tier[] }
@@ -43,8 +44,51 @@ const ServicePay: React.FC = () => {
         const res = await fetch(apiUrl('/api/v1/services/pricing'));
         const data = await res.json().catch(() => null);
         if (res.ok && data?.success) {
-          setServices(data.data.services || []);
+          const svcList: Service[] = data.data.services || [];
+          setServices(svcList);
           setDepositPct(data.data.deposit_percent || 75);
+
+          // Preselect from query params (Pricing page / Booking handoff)
+          // Validates against API data — never trusts client prices.
+          try {
+            const qs = new URLSearchParams(window.location.search);
+            const qService = qs.get('service')?.trim() || '';
+            const qTier = qs.get('tier')?.trim() || '';
+            const qPayRaw = (qs.get('pay') || qs.get('payment_type') || qs.get('type') || '').toLowerCase().trim();
+            const qName = qs.get('name')?.trim() || '';
+            const qEmail = qs.get('email')?.trim() || '';
+            const qPhone = qs.get('phone')?.trim() || '';
+
+            if (qService) {
+              const matchedService = svcList.find((s) => s.id === qService);
+              if (matchedService) {
+                setServiceId(matchedService.id);
+                if (qTier) {
+                  // 1) direct tier name match (what Pricing / Booking links send)
+                  let matchedTier = matchedService.tiers.find(
+                    (t) => t.name.toLowerCase() === qTier.toLowerCase()
+                  );
+                  // 2) fallback: tier id like "headshots-starter" -> map via pricing-data
+                  if (!matchedTier) {
+                    const cat = PRICING_CATEGORIES.find((c) => c.id === matchedService.id);
+                    const tierById = cat?.tiers.find((t) => t.id === qTier);
+                    if (tierById) {
+                      matchedTier = matchedService.tiers.find((t) => t.name === tierById.name);
+                    }
+                  }
+                  if (matchedTier) setTierName(matchedTier.name);
+                }
+              }
+            }
+            if (qPayRaw === 'deposit' || qPayRaw === 'full' || qPayRaw === 'balance') {
+              setPayKind(qPayRaw as PayKind);
+            }
+            if (qName) setName(qName);
+            if (qEmail) setEmail(qEmail);
+            if (qPhone) setPhone(qPhone);
+          } catch {
+            // ignore malformed query params — user can still choose manually
+          }
         } else {
           setLoadError('Could not load services — please try again.');
         }
