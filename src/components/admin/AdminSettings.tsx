@@ -22,7 +22,7 @@ import {
   Palette,
   Server,
   MapPin,
-  CheckCircle2,
+  CircleCheck,
   AlertCircle,
 } from 'lucide-react';
 
@@ -246,7 +246,7 @@ const AdminSettings: React.FC = () => {
 
       {success && (
         <div className="flex items-start gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />{success}
+          <CircleCheck className="mt-0.5 h-4 w-4 shrink-0" />{success}
         </div>
       )}
       {error && (
