@@ -13,7 +13,7 @@ const money = (cents: number) =>
 
 const ServicePay: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
-  const [depositPct, setDepositPct] = useState(25);
+  const [depositPct, setDepositPct] = useState(75);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
 
@@ -44,7 +44,7 @@ const ServicePay: React.FC = () => {
         const data = await res.json().catch(() => null);
         if (res.ok && data?.success) {
           setServices(data.data.services || []);
-          setDepositPct(data.data.deposit_percent || 25);
+          setDepositPct(data.data.deposit_percent || 75);
         } else {
           setLoadError('Could not load services — please try again.');
         }
@@ -68,7 +68,7 @@ const ServicePay: React.FC = () => {
       const linked = priorPayments.find((p) => p.id === linkedPaymentId);
       if (!linked) return 0;
       const paidSoFar = priorPayments
-        .filter((p) => p.status === 'paid' && (p.id === linked.id))
+        .filter((p) => p.status === 'paid' && (p.id === linked.id || p.linked_payment_id === linked.id))
         .reduce((s, p) => s + p.amount_cents, 0);
       return Math.max(0, linked.total_agreed_cents - paidSoFar);
     }
