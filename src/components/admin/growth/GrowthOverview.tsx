@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, CheckCircle2, PlugZap, RefreshCw } from 'lucide-react';
+import { ArrowRight, CheckCircle2, PlugZap, RefreshCw, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,11 +22,51 @@ type OverviewData = {
 
 const percent = (value: number | null) => value === null ? 'No data yet' : `${value.toFixed(1)}%`;
 
+const INTEGRATION_INFO: Record<string, { title: string; connected: string; setup: string[] }> = {
+  google_search_console: {
+    title: 'Google Search Console',
+    connected: 'Search Console data is flowing. Rankings and impressions appear on the SEO page.',
+    setup: [
+      '1. Go to Google Cloud Console → create a service account',
+      '2. Enable the Search Console API for your project',
+      '3. Download the JSON key for the service account',
+      '4. In Search Console, add the service account email as a user on your property',
+      '5. In Cloudflare → Workers → api-jeffhonforloco-photography → Settings → Variables, add GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL and GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY as encrypted secrets',
+    ],
+  },
+  google_business_profile: {
+    title: 'Google Business Profile',
+    connected: 'Business Profile is linked. Reviews and local insights are available.',
+    setup: [
+      '1. Get your Google Business Profile account ID from business.google.com',
+      '2. In Cloudflare → Workers → api-jeffhonforloco-photography → Settings → Variables, add GOOGLE_BUSINESS_PROFILE_ACCOUNT_ID as an encrypted secret',
+    ],
+  },
+  github_prepare_fix: {
+    title: 'GitHub Prepare Fix',
+    connected: 'GitHub App is linked. Automated fix PRs can be prepared.',
+    setup: [
+      '1. Create a GitHub App with contents:write and pull_requests:write permissions',
+      '2. Install it on the JeffHonforloco_Photography repository',
+      '3. In Cloudflare → Workers → api-jeffhonforloco-photography → Settings → Variables, add GITHUB_APP_ID as an encrypted secret',
+    ],
+  },
+  email_notifications: {
+    title: 'Email Notifications',
+    connected: 'Resend is configured. Contact confirmations, campaigns, and contract emails send from your domain.',
+    setup: [
+      '1. Get an API key from resend.com → API Keys',
+      '2. In Cloudflare → Workers → api-jeffhonforloco-photography → Settings → Variables, add RESEND_API_KEY as an encrypted secret',
+    ],
+  },
+};
+
 const GrowthOverview = () => {
   const [days, setDays] = useState('30');
   const [data, setData] = useState<OverviewData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
 
   useEffect(() => {
     growthGet<OverviewData>(`overview?days=${days}`)
@@ -41,6 +81,9 @@ const GrowthOverview = () => {
     setError(null);
     setDays(value);
   };
+
+  const selectedInfo = selectedIntegration ? INTEGRATION_INFO[selectedIntegration] : null;
+  const selectedStatus = selectedIntegration && data ? data.integrations[selectedIntegration] : null;
 
   return (
     <div>
@@ -71,10 +114,37 @@ const GrowthOverview = () => {
         </div>
 
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
-          <Card><CardHeader><CardTitle className="text-base">Integration status</CardTitle><CardDescription>No connection is treated as a status, never as invented data.</CardDescription></CardHeader><CardContent className="grid gap-2 sm:grid-cols-2">{Object.entries(data.integrations).map(([name, status]) => <div className="flex items-center gap-2 rounded-lg border p-3 text-sm" key={name}>{status === 'connected' ? <CheckCircle2 className="h-4 w-4 text-emerald-600" /> : <PlugZap className="h-4 w-4 text-amber-600" />}<span className="flex-1 capitalize">{name.replaceAll('_', ' ')}</span><Badge variant="outline">{status === 'connected' ? 'Connected' : 'Not connected'}</Badge></div>)}</CardContent></Card>
+          <Card><CardHeader><CardTitle className="text-base">Integration status</CardTitle><CardDescription>Tap an integration to connect or manage it. No connection is treated as a status, never as invented data.</CardDescription></CardHeader><CardContent className="grid gap-2 sm:grid-cols-2">{Object.entries(data.integrations).map(([name, status]) => <button type="button" onClick={() => setSelectedIntegration(name)} className="flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm text-left transition-colors hover:border-neutral-400 hover:bg-neutral-50" key={name}>{status === 'connected' ? <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" /> : <PlugZap className="h-4 w-4 shrink-0 text-amber-600" />}<span className="flex-1 capitalize">{name.replaceAll('_', ' ')}</span><Badge variant="outline">{status === 'connected' ? 'Connected' : 'Not connected'}</Badge></button>)}</CardContent></Card>
           <Card><CardHeader><CardTitle className="text-base">Technical watch</CardTitle><CardDescription>Latest recorded health—not a live claim unless timestamped.</CardDescription></CardHeader><CardContent className="space-y-3"><div className="flex justify-between text-sm"><span>Open P0 recommendations</span><strong>{data.health.openP0}</strong></div><div className="flex justify-between text-sm"><span>Failed health checks</span><strong>{data.health.failedChecks}</strong></div><div className="flex justify-between text-sm"><span>Latest performance snapshot</span><strong>{data.health.lastPerformance || 'No data yet'}</strong></div><Button variant="outline" className="mt-2 w-full" asChild><a href={data.health.failedChecks ? '#health-alerts' : '#technical-watch'}>Review technical health<ArrowRight className="ml-2 h-4 w-4" /></a></Button></CardContent></Card>
         </div>
       </>}
+
+      {selectedInfo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setSelectedIntegration(null)}>
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex items-start justify-between">
+              <h3 className="text-lg font-semibold text-neutral-900">{selectedInfo.title}</h3>
+              <button type="button" onClick={() => setSelectedIntegration(null)} className="rounded p-1 text-neutral-500 hover:bg-neutral-100" aria-label="Close"><X className="h-5 w-5" /></button>
+            </div>
+            <div className="mb-4">
+              <Badge variant={selectedStatus === 'connected' ? 'default' : 'outline'}>{selectedStatus === 'connected' ? 'Connected' : 'Not connected'}</Badge>
+            </div>
+            {selectedStatus === 'connected' ? (
+              <p className="text-sm text-neutral-700">{selectedInfo.connected}</p>
+            ) : (
+              <div>
+                <p className="mb-3 text-sm font-medium text-neutral-900">To connect:</p>
+                <ol className="space-y-2">
+                  {selectedInfo.setup.map((step, i) => (
+                    <li key={i} className="text-sm text-neutral-700">{step}</li>
+                  ))}
+                </ol>
+              </div>
+            )}
+            <Button className="mt-6 w-full" onClick={() => setSelectedIntegration(null)}>Done</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
