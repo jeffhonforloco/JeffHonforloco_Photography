@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircle2, XCircle2, Loader2, ShoppingBag } from 'lucide-react';
+import { CircleCheck, CircleX, Loader2, ShoppingBag } from 'lucide-react';
 import { apiUrl } from '@/lib/api-base';
 
 type CaptureState = 'capturing' | 'success' | 'failed' | 'no-token';
@@ -61,7 +61,7 @@ const ShopSuccess: React.FC = () => {
 
         {state === 'success' && (
           <>
-            <CheckCircle2 className="mx-auto mb-6 h-16 w-16 text-emerald-400" />
+            <CircleCheck className="mx-auto mb-6 h-16 w-16 text-emerald-400" />
             <h1 className="text-3xl font-bold">Thank you!</h1>
             <p className="mt-3 text-zinc-400">
               Your order is confirmed. A receipt was sent to your email, and the studio will
@@ -77,7 +77,7 @@ const ShopSuccess: React.FC = () => {
 
         {state === 'failed' && (
           <>
-            <XCircle2 className="mx-auto mb-6 h-16 w-16 text-red-400" />
+            <CircleX className="mx-auto mb-6 h-16 w-16 text-red-400" />
             <h1 className="text-3xl font-bold">Payment not completed</h1>
             <p className="mt-3 text-zinc-400">{detail || 'Something went wrong.'}</p>
             <p className="mt-2 text-sm text-zinc-500">No charge was made. You can try again or contact the studio.</p>
