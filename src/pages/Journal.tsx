@@ -357,14 +357,6 @@ const Journal = () => {
               </Link>
             ))}
           </div>
-
-          {/* Load More Button */}
-          <div className="text-center mt-16">
-            <button className="group inline-flex items-center px-8 py-4 bg-transparent border-2 border-photo-red text-photo-red font-semibold rounded-full hover:bg-photo-red hover:text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-photo-red/25">
-              <span>Load More Articles</span>
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-            </button>
-          </div>
         </div>
       </section>
 
