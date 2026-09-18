@@ -71,6 +71,7 @@ const AdminEmail: React.FC = () => {
   const [notice, setNotice] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [deleteTemplateId, setDeleteTemplateId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [editForm, setEditForm] = useState<Partial<EmailTemplate>>({});
@@ -179,10 +180,6 @@ const AdminEmail: React.FC = () => {
   };
 
   const deleteTemplate = async (templateId: number) => {
-    if (!confirm('Are you sure you want to delete this email template?')) {
-      return;
-    }
-
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(apiUrl(`/api/v1/admin/email-templates/${templateId}`), {
@@ -199,6 +196,7 @@ const AdminEmail: React.FC = () => {
 
       // Update local state
       setTemplates(prev => prev.filter(template => template.id !== templateId));
+      setDeleteTemplateId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete email template');
     }
@@ -469,7 +467,7 @@ const AdminEmail: React.FC = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => deleteTemplate(template.id)}
+                          onClick={() => setDeleteTemplateId(template.id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -665,6 +663,22 @@ const AdminEmail: React.FC = () => {
                 {isEditing ? 'Update' : 'Create'}
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete template confirmation (in-page; native confirm() never fires reliably) */}
+      <Dialog open={deleteTemplateId !== null} onOpenChange={(open) => { if (!open) setDeleteTemplateId(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete email template?</DialogTitle>
+            <DialogDescription>This template will be permanently removed. This cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setDeleteTemplateId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => { if (deleteTemplateId !== null) void deleteTemplate(deleteTemplateId); }}>
+              Delete Template
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
