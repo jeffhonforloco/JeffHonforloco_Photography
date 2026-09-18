@@ -44,6 +44,7 @@ const AdminServicePayments: React.FC = () => {
   const [selected, setSelected] = useState<Payment | null>(null);
   const [actionBusy, setActionBusy] = useState(false);
   const [actionMsg, setActionMsg] = useState('');
+  const [refundTarget, setRefundTarget] = useState<Payment | null>(null);
   const [copied, setCopied] = useState(false);
 
   const [services, setServices] = useState<any[]>([]);
@@ -95,7 +96,6 @@ const AdminServicePayments: React.FC = () => {
   };
 
   const doRefund = async (p: Payment) => {
-    if (!window.confirm(`Refund ${fmt(p.amount_cents)} to ${p.email} via PayPal?`)) return;
     setActionBusy(true);
     setActionMsg('');
     try {
@@ -106,6 +106,7 @@ const AdminServicePayments: React.FC = () => {
       if (!res.ok) throw new Error(data?.error || 'Refund failed');
       setActionMsg(`Refunded ${fmt(p.amount_cents)} — status is now ${data.data.status}.`);
       setSelected({ ...p, status: data.data.status });
+      setRefundTarget(null);
       await refresh();
     } catch (e) {
       setActionMsg(e instanceof Error ? e.message : 'Refund failed');
@@ -386,7 +387,7 @@ const AdminServicePayments: React.FC = () => {
               </dl>
               <div className="mt-5 flex gap-2">
                 {selected.status === 'paid' && (
-                  <Button onClick={() => doRefund(selected)} disabled={actionBusy} variant="outline" size="sm">
+                  <Button onClick={() => setRefundTarget(selected)} disabled={actionBusy} variant="outline" size="sm">
                     <RotateCcw className="h-3.5 w-3.5" /> Refund via PayPal
                   </Button>
                 )}
@@ -396,6 +397,20 @@ const AdminServicePayments: React.FC = () => {
           </div>
         )}
       </div>
+      {refundTarget && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4" role="alertdialog" aria-modal="true" aria-label="Confirm refund">
+          <div className="w-full max-w-sm rounded-lg border border-neutral-800 bg-neutral-950 p-6 shadow-xl">
+            <h3 className="text-lg font-bold">Refund payment?</h3>
+            <p className="mt-2 text-sm text-neutral-400">Refund {fmt(refundTarget.amount_cents)} to {refundTarget.email} via PayPal? This moves real money.</p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setRefundTarget(null)} disabled={actionBusy}>Cancel</Button>
+              <Button onClick={() => void doRefund(refundTarget)} disabled={actionBusy} className="bg-red-600 text-white hover:bg-red-700">
+                {actionBusy ? 'Refunding…' : 'Refund via PayPal'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
