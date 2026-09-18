@@ -44,16 +44,14 @@ const HeroImageGrid = () => {
     };
 
     // The server-rendered initial ranges cover the viewport plus several
-    // upcoming tiles. Let those priority decisions settle before sampling the
-    // animated columns; an immediate full-grid layout read competes with LCP.
-    // The sampler loads upcoming tiles as the user scrolls. It must NOT run
-    // on a timer during initial load: firing it at 4s perturbs the LCP
-    // measurement (mobile Performance 91 -> 85). Interaction triggers it;
-    // native loading="lazy" covers the auto-animated columns.
+    // upcoming tiles. The images use data-hero-src (not src), so JS must swap
+    // them in — run once on mount so visible tiles load immediately. The
+    // repeating interval only starts after user interaction to avoid perturbing
+    // the LCP measurement during initial load.
     let interval: number | undefined;
+    loadUpcomingImages();
     const startSampling = () => {
       if (interval !== undefined) return;
-      loadUpcomingImages();
       interval = window.setInterval(loadUpcomingImages, 1500);
     };
     const stopInteractionListeners = () => {
