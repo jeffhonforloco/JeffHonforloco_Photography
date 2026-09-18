@@ -81,26 +81,44 @@ const JournalArticle = () => {
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [publishedIso, setPublishedIso] = useState<string>('');
   const [shareCopied, setShareCopied] = useState(false);
+  const [shareMenuOpen, setShareMenuOpen] = useState(false);
+
+  const getShareLinks = () => {
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(article?.title ?? document.title);
+    return [
+      { name: 'WhatsApp', url: `https://wa.me/?text=${title}%20${url}`, icon: '💬' },
+      { name: 'Facebook', url: `https://www.facebook.com/sharer/sharer.php?u=${url}`, icon: '📘' },
+      { name: 'X (Twitter)', url: `https://twitter.com/intent/tweet?text=${title}&url=${url}`, icon: '🐦' },
+      { name: 'LinkedIn', url: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`, icon: '💼' },
+      { name: 'Telegram', url: `https://t.me/share/url?url=${url}&text=${title}`, icon: '✈️' },
+      { name: 'Email', url: `mailto:?subject=${title}&body=${url}`, icon: '✉️' },
+    ];
+  };
 
   const handleShare = async () => {
-    const url = window.location.href;
-    const title = article?.title ?? document.title;
-    // Native share sheet on mobile; clipboard fallback on desktop.
+    // Native share sheet on mobile (includes all installed apps);
+    // custom menu on desktop.
     if (navigator.share) {
       try {
-        await navigator.share({ title, url });
+        await navigator.share({ title: article?.title ?? document.title, url: window.location.href });
       } catch {
-        // User dismissed the share sheet — no action needed.
+        // User dismissed — no action needed.
       }
       return;
     }
+    setShareMenuOpen(v => !v);
+  };
+
+  const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(window.location.href);
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
     } catch {
-      toast({ title: 'Copy this link', description: url });
+      toast({ title: 'Copy this link', description: window.location.href });
     }
+    setShareMenuOpen(false);
   };
 
   useEffect(() => {
@@ -314,13 +332,42 @@ const JournalArticle = () => {
           </div>
           
           {/* Share Button */}
-          <button
-            onClick={handleShare}
-            className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-white hover:bg-white/20 transition-all duration-300"
-          >
-            <Share2 className="w-4 h-4 mr-2" />
-            {shareCopied ? 'Link Copied!' : 'Share Article'}
-          </button>
+          <div className="relative">
+            <button
+              onClick={handleShare}
+              className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-white hover:bg-white/20 transition-all duration-300"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              {shareCopied ? 'Link Copied!' : 'Share Article'}
+            </button>
+            {shareMenuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShareMenuOpen(false)} />
+                <div className="absolute left-1/2 -translate-x-1/2 mt-3 z-50 w-56 rounded-2xl bg-photo-gray-900 border border-white/10 shadow-2xl overflow-hidden">
+                  {getShareLinks().map(link => (
+                    <a
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setShareMenuOpen(false)}
+                      className="flex items-center gap-3 px-5 py-3 text-white hover:bg-white/10 transition-colors"
+                    >
+                      <span className="text-lg">{link.icon}</span>
+                      <span className="text-sm">{link.name}</span>
+                    </a>
+                  ))}
+                  <button
+                    onClick={handleCopyLink}
+                    className="flex items-center gap-3 px-5 py-3 w-full text-left text-white hover:bg-white/10 transition-colors border-t border-white/10"
+                  >
+                    <span className="text-lg">🔗</span>
+                    <span className="text-sm">Copy Link</span>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </section>
 
