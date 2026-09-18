@@ -104,6 +104,13 @@ const JournalArticle = () => {
     }
   }, [slug]);
 
+  // Real article title in the tab (helps SEO; previously only a generic slug-based title)
+  useEffect(() => {
+    if (article) {
+      document.title = `${article.title} | Jeff Honforloco Photography`;
+    }
+  }, [article]);
+
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterEmail) return;
