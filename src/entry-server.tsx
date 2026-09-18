@@ -59,21 +59,36 @@ export const renderJournal = async () => {
     ssrData = JSON.parse(readFileSync(blogJsonPath, 'utf8')) as BlogData;
   }
   // Map API shape to the public BlogPost shape (same as mapApiPost in Journal.tsx).
-  const mapped: BlogData = {
-    categories: ssrData.categories ?? [],
-    posts: (ssrData.posts ?? []).map((p: any) => ({
-      id: String(p.id ?? p.slug),
-      title: p.title,
-      excerpt: p.excerpt ?? '',
-      content: p.content ?? '',
-      category: p.category ?? '',
-      image: p.featured_image_url ?? p.image ?? '',
-      galleryImages: p.gallery_images ?? p.galleryImages ?? [],
-      date: p.published_at ?? p.created_at ?? p.date ?? '',
-      readTime: p.read_time ?? p.readTime ?? '',
-      slug: p.slug ?? p.id,
-    })),
-  };
+  const mapPost = (p: any) => ({
+    id: String(p.id ?? p.slug),
+    title: p.title,
+    excerpt: p.excerpt ?? '',
+    content: p.content ?? '',
+    category: p.category ?? '',
+    image: p.featured_image_url ?? p.image ?? '',
+    galleryImages: p.gallery_images ?? p.galleryImages ?? [],
+    date: p.published_at ?? p.created_at ?? p.date ?? '',
+    readTime: p.read_time ?? p.readTime ?? '',
+    slug: p.slug ?? p.id,
+  });
+  const apiPosts = (ssrData.posts ?? []).map(mapPost);
+
+  // Merge with static JSON so older articles aren't lost (API wins on slug conflicts).
+  const blogJsonPath = path.join(process.cwd(), 'public', 'data', 'blog-posts.json');
+  let staticPosts: any[] = [];
+  let staticCategories: string[] = [];
+  try {
+    const staticData = JSON.parse(readFileSync(blogJsonPath, 'utf8'));
+    staticPosts = (staticData.posts ?? []).map(mapPost);
+    staticCategories = staticData.categories ?? [];
+  } catch {
+    // static JSON unreadable — API posts alone are fine
+  }
+  const seen = new Set(apiPosts.map((p: { slug: string }) => p.slug));
+  const mergedPosts = [...apiPosts, ...staticPosts.filter((p: { slug: string }) => !seen.has(p.slug))];
+  const mergedCategories = [...new Set([...(ssrData.categories ?? []), ...staticCategories])];
+
+  const mapped: BlogData = { categories: mergedCategories, posts: mergedPosts };
   (globalThis as { __JOURNAL_SSR_DATA__?: BlogData }).__JOURNAL_SSR_DATA__ = mapped;
 
   try {

@@ -64,27 +64,50 @@ const Journal = () => {
   };
 
   useEffect(() => {
-    // Live blog API first (admin-published posts); static JSON as fallback.
+    // Live blog API + static JSON merged: API has the newer admin-published
+    // posts, static JSON has the older ones. Merge both so no article is lost.
     const apiBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
+
+    const mergePosts = (apiPosts: BlogPost[], staticPosts: BlogPost[]): BlogPost[] => {
+      const seen = new Set(apiPosts.map(p => p.slug || p.id));
+      const merged = [...apiPosts];
+      for (const p of staticPosts) {
+        if (!seen.has(p.slug || p.id)) merged.push(p);
+      }
+      return merged;
+    };
 
     const apply = (data: BlogData) => {
       setBlogData(data);
       setTimeout(() => setIsLoaded(true), 300);
     };
-    const fallback = () => {
+
+    const loadStatic = (): Promise<BlogData> =>
       fetch('/data/blog-posts.json')
         .then(res => res.json())
-        .then((data: BlogData) => apply(data))
-        .catch(() => setIsLoaded(true));
-    };
+        .catch((): BlogData => ({ posts: [], categories: [] }));
 
     if (apiBase) {
-      fetch(`${apiBase}/api/v1/blog?limit=50`)
-        .then(res => { if (!res.ok) throw new Error('blog api failed'); return res.json(); })
-        .then((d) => apply({ posts: (d.posts ?? []).map(mapApiPost), categories: d.categories ?? [] }))
-        .catch(fallback);
+      Promise.all([
+        fetch(`${apiBase}/api/v1/blog?limit=50`)
+          .then(res => { if (!res.ok) throw new Error('blog api failed'); return res.json(); })
+          .then((d): BlogData => ({ posts: (d.posts ?? []).map(mapApiPost), categories: d.categories ?? [] }))
+          .catch((): BlogData => ({ posts: [], categories: [] })),
+        loadStatic(),
+      ]).then(([apiData, staticData]) => {
+        const posts = mergePosts(apiData.posts, staticData.posts);
+        const categories = [...new Set([...apiData.categories, ...staticData.categories])];
+        if (posts.length > 0) {
+          apply({ posts, categories });
+        } else {
+          setIsLoaded(true);
+        }
+      });
     } else {
-      fallback();
+      loadStatic().then((data) => {
+        if (data.posts.length > 0) apply(data);
+        else setIsLoaded(true);
+      });
     }
   }, []);
 
