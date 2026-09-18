@@ -56,10 +56,11 @@ const Header = () => {
 
           {/* Right side - Book CTA, Social Media Icons and Mobile Menu */}
           <div className="flex items-center justify-end min-w-0 flex-1 md:flex-initial md:absolute md:right-4 lg:right-8 xl:right-16">
-            {/* Book Now CTA - desktop */}
+            {/* Book Now CTA - desktop (xl+ to match DesktopNavigation breakpoint;
+                MobileNavigation shows its own Book button below xl) */}
             <Link
               to="/book"
-              className="hidden md:inline-flex items-center mr-4 bg-photo-red hover:bg-photo-red-hover text-white px-5 py-2.5 font-inter font-medium tracking-[0.18em] uppercase text-[10px] transition-colors duration-300"
+              className="hidden xl:inline-flex items-center mr-4 bg-photo-red hover:bg-photo-red-hover text-white px-5 py-2.5 font-inter font-medium tracking-[0.18em] uppercase text-[10px] transition-colors duration-300"
             >
               Book Now
             </Link>
