@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 const projectRoot = process.cwd();
 const distIndex = path.join(projectRoot, 'dist', 'index.html');
 const serverBundle = path.join(projectRoot, '.ssr-dist', 'entry-server.js');
-const { renderHomepage, renderServiceRoute } = await import(pathToFileURL(serverBundle).href);
+const { renderHomepage, renderServiceRoute, renderJournal } = await import(pathToFileURL(serverBundle).href);
 
 const html = await readFile(distIndex, 'utf8');
 const { body: homepage, structuredData: homepageStructuredData } = renderHomepage();
@@ -37,4 +37,17 @@ for (const { path: route } of serviceAuthorityMeta) {
 }
 
 await rm(path.join(projectRoot, '.ssr-dist'), { recursive: true, force: true });
-console.log(`Injected the homepage and ${serviceAuthorityMeta.length} service authority pages.`);
+
+// Prerender the Journal listing page with articles baked in so it loads
+// instantly instead of waiting for the client-side API waterfall.
+const journalIndex = path.join(projectRoot, 'dist', 'journal', 'index.html');
+const journalHtml = await readFile(journalIndex, 'utf8');
+const { body: journalBody, structuredData: journalStructuredData } = renderJournal();
+const journalWithBody = journalHtml.replace('<div id="root"></div>', `<div id="root">${journalBody}</div>`);
+const journalRendered = journalWithBody.replace('</head>', `    ${journalStructuredData}\n  </head>`);
+if (journalRendered === journalHtml) {
+  throw new Error('Could not inject prerendered content for /journal.');
+}
+await writeFile(journalIndex, journalRendered);
+
+console.log(`Injected the homepage, journal, and ${serviceAuthorityMeta.length} service authority pages.`);

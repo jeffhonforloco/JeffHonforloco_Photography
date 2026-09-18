@@ -26,9 +26,20 @@ const mapApiPost = (p: any): BlogPost => ({
   slug: p.slug,
 });
 
+// SSR: the build-time prerender sets this global with the static blog data
+// so the Journal renders articles immediately instead of waiting for the API.
+declare global {
+  // eslint-disable-next-line no-var
+  var __JOURNAL_SSR_DATA__: BlogData | undefined;
+}
+const getSsrBlogData = (): BlogData | null =>
+  typeof globalThis !== 'undefined' && globalThis.__JOURNAL_SSR_DATA__
+    ? globalThis.__JOURNAL_SSR_DATA__
+    : null;
+
 const Journal = () => {
-  const [blogData, setBlogData] = useState<BlogData | null>(null);  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [blogData, setBlogData] = useState<BlogData | null>(getSsrBlogData);  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(() => getSsrBlogData() !== null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
