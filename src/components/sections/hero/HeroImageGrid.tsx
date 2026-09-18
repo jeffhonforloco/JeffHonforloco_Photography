@@ -136,9 +136,12 @@ const HeroImageGrid = () => {
         {mobileImages.map((images, columnIndex) => (
           <div key={`mobile-column-${columnIndex}`} className={`flex flex-col gap-2 hero-col-${columnIndex + 1}`}>
             {images.map((image, index) => {
+              // Only the tiles actually in the initial viewport get a real src.
+              // The rest use data-hero-src and load via JS on mount (loadUpcomingImages).
+              // Loading 13 images eagerly was starving the LCP image on Slow 4G.
               const isInitiallyVisible = columnIndex === 0
-                ? index <= 5
-                : index >= 4 && index <= 10;
+                ? index <= 2
+                : index >= 4 && index <= 6;
               return renderImage(
                 image,
                 `mobile-${columnIndex}-${index}`,
@@ -156,7 +159,9 @@ const HeroImageGrid = () => {
         {[0, 1, 2].map((columnIndex) => (
           <div key={`desktop-column-${columnIndex}`} className={`flex flex-col gap-3 hero-col-${columnIndex + 1}`}>
             {createColumn(columnIndex).map((image, index) => {
-              const initialRanges = [[0, 4], [2, 7], [5, 10]];
+              // Tightened: only viewport-visible tiles get real src (was 17 total,
+              // starving bandwidth). The rest load via JS on mount.
+              const initialRanges = [[0, 2], [2, 4], [5, 7]];
               const [start, end] = initialRanges[columnIndex];
               return renderImage(
                 image,
