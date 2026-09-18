@@ -42,7 +42,7 @@ await rm(path.join(projectRoot, '.ssr-dist'), { recursive: true, force: true });
 // instantly instead of waiting for the client-side API waterfall.
 const journalIndex = path.join(projectRoot, 'dist', 'journal', 'index.html');
 const journalHtml = await readFile(journalIndex, 'utf8');
-const { body: journalBody, structuredData: journalStructuredData } = renderJournal();
+const { body: journalBody, structuredData: journalStructuredData } = await renderJournal();
 const journalWithBody = journalHtml.replace('<div id="root"></div>', `<div id="root">${journalBody}</div>`);
 const journalRendered = journalWithBody.replace('</head>', `    ${journalStructuredData}\n  </head>`);
 if (journalRendered === journalHtml) {
