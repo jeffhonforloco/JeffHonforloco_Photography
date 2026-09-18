@@ -44,17 +44,22 @@ export async function onRequest(context) {
 
   // Prerendered pages: if a static HTML file exists for this path, serve it
   // instead of the SPA shell (fixes SEO: service pages get their own content).
-  // Try {path}/index.html first (e.g. /providence-wedding-photographer/index.html).
-  const prerenderedUrl = new URL(path.endsWith('/') ? `${path}index.html` : `${path}/index.html`, url.origin);
-  const prerenderedResponse = await env.ASSETS.fetch(prerenderedUrl);
-  if (prerenderedResponse.ok) {
-    return new Response(prerenderedResponse.body, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=0, must-revalidate',
-      },
-    });
+  // Skip for the homepage itself (path '/') — it IS index.html, no lookup needed.
+  if (path !== '/') {
+    // Normalize: strip trailing slash to avoid malformed '//index.html' URLs
+    // (new URL() would interpret '//index.html' as host 'index.html').
+    const cleanPath = path.endsWith('/') ? path.slice(0, -1) : path;
+    const prerenderedUrl = new URL(`${cleanPath}/index.html`, url.origin);
+    const prerenderedResponse = await env.ASSETS.fetch(prerenderedUrl);
+    if (prerenderedResponse.ok) {
+      return new Response(prerenderedResponse.body, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'public, max-age=0, must-revalidate',
+        },
+      });
+    }
   }
 
   // Serve index.html content with 200; URL stays as-is for the router.
