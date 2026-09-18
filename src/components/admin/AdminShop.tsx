@@ -124,6 +124,7 @@ const AdminShop: React.FC = () => {
 
   /* ---------- product editor ---------- */
   const [editing, setEditing] = useState<Product | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ ...emptyForm });
   const [formError, setFormError] = useState<string | null>(null);
@@ -220,9 +221,9 @@ const AdminShop: React.FC = () => {
   };
 
   const deleteProduct = async (p: Product) => {
-    if (!confirm(`Delete “${p.name}”? This cannot be undone.`)) return;
     const res = await fetch(apiUrl(`/api/v1/admin/shop/products/${p.id}`), { method: 'DELETE', headers: authHeaders() });
     if (!res.ok) { const d = await res.json(); setError(d.error || 'Delete failed'); return; }
+    setDeleteTarget(null);
     await loadProducts();
   };
 
@@ -331,7 +332,7 @@ const AdminShop: React.FC = () => {
                         </p>
                         <div className="mt-2 flex gap-1">
                           <Button size="sm" variant="outline" className="flex-1" onClick={() => openEdit(p)}><Pencil className="mr-1 h-3.5 w-3.5" /> Edit</Button>
-                          <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => deleteProduct(p)} aria-label={`Delete ${p.name}`}>
+                          <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => setDeleteTarget(p)} aria-label={`Delete ${p.name}`}>
                             <Trash2 className="h-3.5 w-3.5" />
                           </Button>
                         </div>
@@ -679,6 +680,25 @@ const AdminShop: React.FC = () => {
                 className="inline-flex items-center gap-1 rounded-lg border border-neutral-800 px-3 py-1.5 text-sm hover:bg-neutral-900">
                 Open in PayPal <ExternalLink className="h-3.5 w-3.5" />
               </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------- delete product confirmation (in-page; native confirm() never fires reliably) ---------- */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-[90] overflow-y-auto" role="dialog" aria-modal="true" aria-label="Delete product">
+          <div className="fixed inset-0 bg-slate-950/60" onClick={() => setDeleteTarget(null)} />
+          <div className="relative mx-auto my-24 w-[calc(100%-2rem)] max-w-md rounded-2xl bg-neutral-950 p-6 shadow-2xl">
+            <h2 className="text-xl font-bold">Delete product?</h2>
+            <p className="mt-2 text-sm text-neutral-400">
+              Delete &ldquo;{deleteTarget.name}&rdquo;? This cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+              <Button variant="destructive" onClick={() => deleteProduct(deleteTarget)}>
+                Delete Product
+              </Button>
             </div>
           </div>
         </div>
