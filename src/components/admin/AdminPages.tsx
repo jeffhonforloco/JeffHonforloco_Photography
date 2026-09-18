@@ -123,6 +123,7 @@ const AdminPages: React.FC = () => {
   const [editing, setEditing] = useState<PageDetail | null>(null);
   const [editLoading, setEditLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deletePage, setDeletePage] = useState<PageItem | null>(null);
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
   const [meta, setMeta] = useState('');
@@ -207,11 +208,11 @@ const AdminPages: React.FC = () => {
   };
 
   const remove = async (p: PageItem) => {
-    if (!confirm(`Delete "${p.title}"?`)) return;
     try {
       const res = await fetch(apiUrl(`/api/v1/admin/pages/${p.id}`), { method: 'DELETE', headers: authHeaders() });
       if (!res.ok) throw new Error('Delete failed');
       flash('Page deleted');
+      setDeletePage(null);
       void fetchPages();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');
@@ -346,13 +347,30 @@ const AdminPages: React.FC = () => {
                       </a>
                     )}
                     <Button variant="outline" size="sm" onClick={() => openEdit(p)}><Pencil className="h-3.5 w-3.5" /></Button>
-                    <Button variant="outline" size="sm" onClick={() => remove(p)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                    <Button variant="outline" size="sm" onClick={() => setDeletePage(p)}><Trash2 className="h-3.5 w-3.5" /></Button>
                   </div>
                 </div>
               ))}
             </CardContent>
           </Card>
         )}
+      {/* Delete page confirmation (in-page; native confirm() never fires reliably) */}
+      <Dialog open={deletePage !== null} onOpenChange={(open) => { if (!open) setDeletePage(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete page?</DialogTitle>
+            <DialogDescription>
+              {deletePage && <>Delete &ldquo;{deletePage.title}&rdquo;? This cannot be undone.</>}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDeletePage(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => { if (deletePage) void remove(deletePage); }}>
+              Delete Page
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
