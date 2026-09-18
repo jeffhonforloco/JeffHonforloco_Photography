@@ -229,6 +229,7 @@ const AdminShop: React.FC = () => {
 
   /* ---------- orders ---------- */
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [confirmRefund, setConfirmRefund] = useState(false);
   const [orderSaving, setOrderSaving] = useState(false);
 
   const updateOrder = async (id: number, patch: Record<string, string>) => {
@@ -673,7 +674,7 @@ const AdminShop: React.FC = () => {
             </div>
             <div className="mt-3 flex flex-wrap gap-2">
               <Button size="sm" variant="outline" disabled={orderSaving}
-                onClick={() => { if (confirm(`Refund order #${selectedOrder.id}? This marks it refunded locally — process the actual refund in PayPal.`)) updateOrder(selectedOrder.id, { status: 'refunded' }); }}>
+                onClick={() => setConfirmRefund(true)}>
                 Mark refunded
               </Button>
               <a href="https://www.paypal.com/mep/dashboard" target="_blank" rel="noreferrer"
@@ -698,6 +699,23 @@ const AdminShop: React.FC = () => {
               <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
               <Button variant="destructive" onClick={() => deleteProduct(deleteTarget)}>
                 Delete Product
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {confirmRefund && selectedOrder && (
+        <div className="fixed inset-0 z-[95] overflow-y-auto" role="dialog" aria-modal="true" aria-label="Confirm refund">
+          <div className="fixed inset-0 bg-slate-950/60" onClick={() => setConfirmRefund(false)} />
+          <div className="relative mx-auto my-24 w-[calc(100%-2rem)] max-w-md rounded-2xl bg-neutral-950 p-6 shadow-2xl">
+            <h2 className="text-xl font-bold">Mark refunded?</h2>
+            <p className="mt-2 text-sm text-neutral-400">
+              Mark order #{selectedOrder.id} as refunded? This only marks it refunded here &mdash; process the actual refund in PayPal.
+            </p>
+            <div className="mt-6 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setConfirmRefund(false)}>Cancel</Button>
+              <Button variant="destructive" disabled={orderSaving} onClick={() => { setConfirmRefund(false); updateOrder(selectedOrder.id, { status: 'refunded' }); }}>
+                Mark refunded
               </Button>
             </div>
           </div>
