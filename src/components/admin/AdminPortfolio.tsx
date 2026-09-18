@@ -72,6 +72,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const [editForm, setEditForm] = useState<Partial<PortfolioImage>>({});
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mediaInputRef = useRef<HTMLInputElement>(null);
   const [viewImage, setViewImage] = useState<PortfolioImage | null>(null);
   const [dialogError, setDialogError] = useState<string | null>(null);
 
@@ -429,12 +430,24 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
               <><Upload className="h-8 w-8 text-neutral-500" />
               <p className="mt-2 text-sm font-medium">Drag & drop images here</p>
               <p className="text-xs text-muted-foreground">or</p>
-              <Button variant="outline" size="sm" className="mt-2" onClick={() => fileInputRef.current?.click()}>
+              <Button variant="outline" size="sm" className="mt-2" onClick={() => mediaInputRef.current?.click()}>
                 <Plus className="mr-2 h-4 w-4" />Browse files
               </Button>
               <p className="mt-2 text-[11px] text-muted-foreground">JPG, PNG, WebP up to 15 MB</p></>
             )}
           </div>
+          <input
+            ref={mediaInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+              const files = e.target.files;
+              if (files && files.length > 0) void handleDropFiles(files);
+              e.target.value = '';
+            }}
+          />
           {mediaLoading ? (
             <p className="mt-4 text-sm text-muted-foreground">Loading media...</p>
           ) : mediaItems.length > 0 ? (
