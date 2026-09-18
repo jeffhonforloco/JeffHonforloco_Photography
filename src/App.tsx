@@ -24,6 +24,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const PrepGuidePage = lazy(() => import("./pages/PrepGuide"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
 const ProofGallery = lazy(() => import("./pages/ProofGallery"));
 const DynamicPage = lazy(() => import("./pages/DynamicPage"));
 const Shop = lazy(() => import("./pages/Shop"));
@@ -189,6 +190,7 @@ export const AppContent = () => {
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/prep-guide" element={<PrepGuidePage />} />
                 <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
                 <Route path="/admin" element={<AdminTransition />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 {/* Retired thin location pages converge on the verified service hub. */}

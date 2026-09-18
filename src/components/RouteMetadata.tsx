@@ -62,6 +62,10 @@ const STATIC_META: Record<string, RouteMeta> = {
     title: 'Privacy Policy | Jeff Honforloco Photography',
     description: 'How Jeff Honforloco Photography handles your information: inquiries, analytics, cookies, and your rights.',
   },
+  '/terms': {
+    title: 'Terms & Conditions | Jeff Honforloco Photography',
+    description: 'Booking, payment, rescheduling, image use, and text-message (SMS) terms for Jeff Honforloco Photography.',
+  },
   '/admin': { title: 'Studio Admin', description: 'Studio administration.', noIndex: true },
   '/dashboard': { title: 'Studio Dashboard', description: 'Studio dashboard.', noIndex: true },
 };
