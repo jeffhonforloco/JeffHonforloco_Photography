@@ -47,6 +47,7 @@ interface BlogPost {
   slug: string;
   content: string;
   excerpt: string;
+  category?: string;
   featured_image_url?: string;
   gallery_images?: string;
   author_id: number;
