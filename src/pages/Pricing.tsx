@@ -54,11 +54,11 @@ const Pricing = () => {
         <section className="pt-28 pb-14 px-6 text-center">
           <div className="max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-photo-red/10 border border-photo-red/30 rounded-full px-4 py-2 mb-6">
-              <CheckCircle className="w-4 h-4 text-photo-red" />
-              <span className="text-sm text-photo-red font-medium">Transparent Pricing · No Surprises</span>
+              <CheckCircle className="w-4 h-4 text-photo-red-bright" />
+              <span className="text-sm text-photo-red-bright font-medium">Transparent Pricing · No Surprises</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-5 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight">
-              Editorial Craft.<br /><span className="text-photo-red">Transparent</span> Pricing.
+              Editorial Craft.<br /><span className="text-photo-red-bright">Transparent</span> Pricing.
             </h1>
             <p className="text-xl text-gray-300 leading-relaxed mb-8">
               Portrait sessions start at $499, and commercial and corporate productions are
@@ -103,7 +103,7 @@ const Pricing = () => {
         <section className="py-8 px-6 border-y border-white/10 bg-white/2">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-center gap-2 mb-6">
-              <MapPin className="w-5 h-5 text-photo-red" />
+              <MapPin className="w-5 h-5 text-photo-red-bright" />
               <h2 className="text-lg font-semibold text-white">Serving All of New England</h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -131,7 +131,7 @@ const Pricing = () => {
           <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-photo-red/20 rounded-full flex items-center justify-center flex-shrink-0">
-                <Smartphone className="w-5 h-5 text-photo-red" />
+                <Smartphone className="w-5 h-5 text-photo-red-bright" />
               </div>
               <div>
                 <p className="text-white font-semibold text-sm">Corporate Team Headshots — We Come to You</p>
@@ -239,7 +239,7 @@ const Pricing = () => {
                           <div className="flex items-start justify-between">
                             <div>
                               <CardTitle className="text-white text-xl">{tier.name}</CardTitle>
-                              <p className="text-photo-red font-bold text-2xl mt-1">{tier.price}</p>
+                              <p className="text-photo-red-bright font-bold text-2xl mt-1">{tier.price}</p>
                               {(tier.duration || tier.images) && (
                                 <p className="text-gray-500 text-xs mt-0.5">
                                   {[tier.duration, tier.images].filter(Boolean).join(' · ')}
@@ -261,7 +261,7 @@ const Pricing = () => {
                               {(isExpanded ? tier.deliverables : tier.deliverables.slice(0, 2)).map(
                                 (item, i) => (
                                   <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
-                                    <CheckCircle className="w-4 h-4 text-photo-red flex-shrink-0 mt-0.5" />
+                                    <CheckCircle className="w-4 h-4 text-photo-red-bright flex-shrink-0 mt-0.5" />
                                     {item}
                                   </li>
                                 ),
@@ -352,7 +352,7 @@ const Pricing = () => {
                 <p className="mt-5 text-center text-gray-500 text-sm">
                   Every package can be extended with additional hours or services —{' '}
                   <button
-                    className="text-photo-red hover:underline"
+                    className="text-photo-red-bright hover:underline"
                     onClick={() => {
                       const btn = document.querySelector<HTMLButtonElement>('[aria-label="Chat with Jeff\'s studio"]');
                       btn?.click();
@@ -460,7 +460,7 @@ const Pricing = () => {
 
             <div className="mt-8 text-center">
               <p className="text-white text-lg font-semibold mb-1">
-                Starting at <span className="text-photo-red">$3,500</span>
+                Starting at <span className="text-photo-red-bright">$3,500</span>
               </p>
               <p className="text-gray-400 text-sm max-w-xl mx-auto mb-6">
                 Every organization is unique — final pricing is tailored to team size, location,
@@ -569,7 +569,7 @@ const Pricing = () => {
         <section className="py-20 px-6 border-t border-white/10 bg-gradient-to-br from-gray-900/60 to-black/60">
           <div className="max-w-3xl mx-auto text-center">
             <div className="w-16 h-16 bg-photo-red/20 rounded-full flex items-center justify-center mx-auto mb-5">
-              <MessageCircle className="w-8 h-8 text-photo-red" />
+              <MessageCircle className="w-8 h-8 text-photo-red-bright" />
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
               Budget Doesn't Quite Fit?

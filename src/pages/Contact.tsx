@@ -125,11 +125,11 @@ const Contact = () => {
 
             <div className="flex justify-center gap-8 mt-8 text-gray-400">
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-photo-red" />
+                <Users className="w-4 h-4 text-photo-red-bright" />
                 <span className="text-sm">Personally Reviewed Inquiries</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-photo-red" />
+                <Clock className="w-4 h-4 text-photo-red-bright" />
                 <span className="text-sm">24hr Response Time</span>
               </div>
             </div>
@@ -156,7 +156,7 @@ const Contact = () => {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                        Full Name <span className="text-photo-red">*</span>
+                        Full Name <span className="text-photo-red-bright">*</span>
                       </label>
                       <input
                         id="name"
@@ -171,7 +171,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                        Email Address <span className="text-photo-red">*</span>
+                        Email Address <span className="text-photo-red-bright">*</span>
                       </label>
                       <input
                         id="email"
@@ -204,7 +204,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <label htmlFor="service" className="block text-sm font-medium text-gray-300 mb-2">
-                        Photography Service <span className="text-photo-red">*</span>
+                        Photography Service <span className="text-photo-red-bright">*</span>
                       </label>
                       <select
                         id="service"
@@ -280,7 +280,7 @@ const Contact = () => {
                   {/* Message */}
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                      Project Details <span className="text-photo-red">*</span>
+                      Project Details <span className="text-photo-red-bright">*</span>
                     </label>
                     <textarea
                       id="message"
@@ -296,7 +296,7 @@ const Contact = () => {
 
                   {/* Error state */}
                   {submitError && (
-                    <p className="text-photo-red text-sm" role="alert">
+                    <p className="text-photo-red-bright text-sm" role="alert">
                       {submitError}
                     </p>
                   )}
@@ -338,7 +338,7 @@ const Contact = () => {
                       className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group"
                     >
                       <span className="w-10 h-10 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center group-hover:border-photo-red transition-colors shrink-0">
-                        <Phone className="w-4 h-4 text-photo-red" />
+                        <Phone className="w-4 h-4 text-photo-red-bright" />
                       </span>
                       +1-646-379-4237
                     </a>
@@ -347,13 +347,13 @@ const Contact = () => {
                       className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group"
                     >
                       <span className="w-10 h-10 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center group-hover:border-photo-red transition-colors shrink-0">
-                        <Mail className="w-4 h-4 text-photo-red" />
+                        <Mail className="w-4 h-4 text-photo-red-bright" />
                       </span>
                       info@jeffhonforlocophotos.com
                     </a>
                     <div className="flex items-center gap-3 text-gray-300">
                       <span className="w-10 h-10 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center shrink-0">
-                        <MapPin className="w-4 h-4 text-photo-red" />
+                        <MapPin className="w-4 h-4 text-photo-red-bright" />
                       </span>
                       Based in Providence, RI &bull; Travel by project
                     </div>
@@ -366,7 +366,7 @@ const Contact = () => {
                   <div className="grid grid-cols-2 gap-2 text-sm text-gray-300">
                     {SERVICE_AREAS.map((area) => (
                       <div key={area} className="flex items-center gap-1">
-                        <span className="text-photo-red text-xs">•</span> {area}
+                        <span className="text-photo-red-bright text-xs">•</span> {area}
                       </div>
                     ))}
                   </div>
@@ -379,7 +379,7 @@ const Contact = () => {
                     {PROCESS_STEPS.map((item, idx) => (
                       <div key={item.step} className="flex gap-4">
                         <div className="shrink-0 w-10 h-10 rounded-full bg-photo-red/10 border border-photo-red/30 flex items-center justify-center">
-                          <span className="text-photo-red text-xs font-bold">{item.step}</span>
+                          <span className="text-photo-red-bright text-xs font-bold">{item.step}</span>
                         </div>
                         <div>
                           <div className="flex items-center gap-2 mb-1">

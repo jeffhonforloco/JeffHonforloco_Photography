@@ -24,9 +24,9 @@ const ServiceAuthority = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-16">
             <nav aria-label="Breadcrumb" className="mb-8 text-xs sm:text-sm text-gray-400">
               <ol className="flex min-w-0 flex-wrap items-center gap-2">
-                <li><Link className="hover:text-photo-red" to="/">Home</Link></li>
+                <li><Link className="hover:text-photo-red-bright" to="/">Home</Link></li>
                 <li aria-hidden="true">/</li>
-                <li><Link className="hover:text-photo-red" to="/services">Services</Link></li>
+                <li><Link className="hover:text-photo-red-bright" to="/services">Services</Link></li>
                 <li aria-hidden="true">/</li>
                 <li aria-current="page" className="min-w-0 break-words text-gray-200">{page.h1}</li>
               </ol>
@@ -71,7 +71,7 @@ const ServiceAuthority = () => {
               <ul className="space-y-4">
                 {page.audiences.map((audience) => (
                   <li key={audience} className="flex gap-3 text-gray-300 leading-relaxed">
-                    <Check className="w-5 h-5 text-photo-red flex-none mt-0.5" aria-hidden="true" />
+                    <Check className="w-5 h-5 text-photo-red-bright flex-none mt-0.5" aria-hidden="true" />
                     <span>{audience}</span>
                   </li>
                 ))}
@@ -135,7 +135,7 @@ const ServiceAuthority = () => {
               <div>
                 <h2 className="font-playfair text-4xl font-light mb-7">{page.deliverablesTitle}</h2>
                 <ul className="space-y-3 text-gray-300">
-                  {page.deliverables.map((item) => <li key={item} className="flex gap-3"><span className="text-photo-red" aria-hidden="true">—</span>{item}</li>)}
+                  {page.deliverables.map((item) => <li key={item} className="flex gap-3"><span className="text-photo-red-bright" aria-hidden="true">—</span>{item}</li>)}
                 </ul>
               </div>
               <div>
@@ -169,10 +169,10 @@ const ServiceAuthority = () => {
             <h2 className="font-playfair text-3xl font-light mb-6">Related photography services</h2>
             <nav aria-label="Related photography services" className="flex flex-wrap gap-x-6 gap-y-3">
               {SERVICE_AUTHORITY_LINKS.filter((link) => link.path !== page.path).map((link) => (
-                <Link key={link.path} to={link.path} className="text-gray-300 hover:text-photo-red underline underline-offset-4">{link.label}</Link>
+                <Link key={link.path} to={link.path} className="text-gray-300 hover:text-photo-red-bright underline underline-offset-4">{link.label}</Link>
               ))}
-              <Link to="/services" className="text-gray-300 hover:text-photo-red underline underline-offset-4">All services</Link>
-              <Link to="/contact" className="text-gray-300 hover:text-photo-red underline underline-offset-4">Contact the studio</Link>
+              <Link to="/services" className="text-gray-300 hover:text-photo-red-bright underline underline-offset-4">All services</Link>
+              <Link to="/contact" className="text-gray-300 hover:text-photo-red-bright underline underline-offset-4">Contact the studio</Link>
             </nav>
           </div>
         </section>

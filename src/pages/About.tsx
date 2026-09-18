@@ -17,11 +17,11 @@ const About = () => {
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
             {/* Left — Text */}
             <div className="order-2 lg:order-1 lg:pt-8">
-              <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-6">About Jeff</p>
+              <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-6">About Jeff</p>
               <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight tracking-wide text-white mb-10 leading-tight">
                 Photographer,<br />
                 Creative,<br />
-                <span className="text-photo-red">Entrepreneur.</span>
+                <span className="text-photo-red-bright">Entrepreneur.</span>
               </h1>
 
               <div className="space-y-6 font-inter font-light text-gray-300 text-base md:text-lg leading-relaxed">
@@ -87,7 +87,7 @@ const About = () => {
         <div className="relative max-w-7xl mx-auto px-8 md:px-16">
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             <div>
-              <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">The Approach</p>
+              <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">The Approach</p>
               <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-extralight tracking-wide text-white mb-8 leading-tight">
                 Vision First,<br />Camera Second.
               </h2>
@@ -137,7 +137,7 @@ const About = () => {
           <section className="py-20 md:py-32 bg-photo-gray-900">
             <div className="max-w-6xl mx-auto px-8 md:px-16">
               <div className="text-center mb-16">
-                <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">Process</p>
+                <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">Process</p>
                 <h2 className="font-playfair text-4xl md:text-5xl font-extralight tracking-wide text-white">Behind the Lens</h2>
               </div>
               <div className="aspect-video bg-black rounded-2xl overflow-hidden border border-photo-gray-700">
@@ -166,7 +166,7 @@ const About = () => {
       {/* CTA */}
       <section className="py-32 bg-photo-black border-t border-photo-gray-800">
         <div className="max-w-3xl mx-auto px-8 md:px-16 text-center">
-          <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">Work Together</p>
+          <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">Work Together</p>
           <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-extralight tracking-wide text-white mb-8 leading-tight">
             Ready When You Are
           </h2>

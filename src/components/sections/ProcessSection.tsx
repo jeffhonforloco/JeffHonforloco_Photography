@@ -28,7 +28,7 @@ const ProcessSection = () => {
 
       <div className="relative max-w-7xl mx-auto px-8 md:px-16">
         <div className="text-center mb-24">
-          <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">
+          <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">
             How It Works
           </p>
           <h2 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight tracking-wide text-white leading-tight">
@@ -45,7 +45,7 @@ const ProcessSection = () => {
                 <div className="hidden md:block absolute top-6 left-full w-full h-px bg-photo-red/20 z-0" style={{ width: 'calc(100% - 3rem)', left: '3rem' }} />
               )}
 
-              <span className="font-playfair text-7xl md:text-8xl font-extralight text-photo-red/20 leading-none mb-6 select-none">
+              <span className="font-playfair text-7xl md:text-8xl font-extralight text-photo-red-bright/20 leading-none mb-6 select-none">
                 {step.number}
               </span>
               <div className="w-8 h-px bg-photo-red mb-6" />

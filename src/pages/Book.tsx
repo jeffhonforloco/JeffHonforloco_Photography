@@ -11,8 +11,8 @@ const Book = () => {
         <section className="relative pt-24 pb-12 px-6">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-photo-red/10 border border-photo-red/30 rounded-full px-4 py-2 mb-6">
-              <Sparkles className="w-4 h-4 text-photo-red" />
-              <span className="text-sm text-photo-red font-medium">Easy Booking Process</span>
+              <Sparkles className="w-4 h-4 text-photo-red-bright" />
+              <span className="text-sm text-photo-red-bright font-medium">Easy Booking Process</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
               Let's Create Magic Together
@@ -40,7 +40,7 @@ const Book = () => {
               <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
                 <CardContent className="p-8 text-center">
                   <div className="w-16 h-16 bg-photo-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Camera className="w-8 h-8 text-photo-red" />
+                    <Camera className="w-8 h-8 text-photo-red-bright" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-white">Creative Direction</h3>
                   <p className="text-gray-300 text-sm">Full moodboarding and concept development tailored to your vision</p>
@@ -50,7 +50,7 @@ const Book = () => {
               <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
                 <CardContent className="p-8 text-center">
                   <div className="w-16 h-16 bg-photo-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Star className="w-8 h-8 text-photo-red" />
+                    <Star className="w-8 h-8 text-photo-red-bright" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-white">The Experience</h3>
                   <p className="text-gray-300 text-sm">Professional styling, lighting, and premium service throughout</p>
@@ -60,7 +60,7 @@ const Book = () => {
               <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
                 <CardContent className="p-8 text-center">
                   <div className="w-16 h-16 bg-photo-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-photo-red" />
+                    <Users className="w-8 h-8 text-photo-red-bright" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-white">Expert Team</h3>
                   <p className="text-gray-300 text-sm">Access to top-tier makeup artists, stylists, and creative professionals</p>
@@ -70,7 +70,7 @@ const Book = () => {
               <Card className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
                 <CardContent className="p-8 text-center">
                   <div className="w-16 h-16 bg-photo-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Award className="w-8 h-8 text-photo-red" />
+                    <Award className="w-8 h-8 text-photo-red-bright" />
                   </div>
                   <h3 className="text-xl font-semibold mb-3 text-white">Gallery-Ready Results</h3>
                   <p className="text-gray-300 text-sm">Professional retouching and images that exceed your expectations</p>

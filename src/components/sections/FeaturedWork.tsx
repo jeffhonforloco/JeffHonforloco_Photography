@@ -64,7 +64,7 @@ const FeaturedWork = () => {
                 </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
                 <div className="absolute bottom-10 left-10 right-10 transform translate-y-8 group-hover:translate-y-0 transition-all duration-700 opacity-0 group-hover:opacity-100">
-                  <p className="text-photo-red font-medium text-sm tracking-[0.25em] uppercase mb-3">
+                  <p className="text-photo-red-bright font-medium text-sm tracking-[0.25em] uppercase mb-3">
                     {work.category}
                   </p>
                   <h3 className="font-playfair text-2xl md:text-3xl font-light text-white leading-tight">

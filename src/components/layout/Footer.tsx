@@ -22,10 +22,10 @@ const Footer = () => {
             </p>
             <div className="mt-6 space-y-2 text-gray-400 font-light">
               <p>Providence, Rhode Island</p>
-              <a href="tel:+16463794237" className="block hover:text-photo-red transition-colors duration-300">
+              <a href="tel:+16463794237" className="block hover:text-photo-red-bright transition-colors duration-300">
                 +1 (646) 379-4237
               </a>
-              <a href="mailto:info@jeffhonforlocophotos.com" className="block hover:text-photo-red transition-colors duration-300">
+              <a href="mailto:info@jeffhonforlocophotos.com" className="block hover:text-photo-red-bright transition-colors duration-300">
                 info@jeffhonforlocophotos.com
               </a>
             </div>
@@ -34,7 +34,7 @@ const Footer = () => {
             <h4 className="font-inter font-medium mb-6 tracking-wider uppercase text-sm">Providence Services</h4>
             <div className="space-y-4">
               {SERVICE_AUTHORITY_LINKS.map((item) => (
-                <Link key={item.path} to={item.path} className="block text-gray-400 hover:text-photo-red transition-colors duration-300 font-light">
+                <Link key={item.path} to={item.path} className="block text-gray-400 hover:text-photo-red-bright transition-colors duration-300 font-light">
                   {item.label}
                 </Link>
               ))}
@@ -47,7 +47,7 @@ const Footer = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="block text-gray-400 hover:text-photo-red transition-colors duration-300 font-light"
+                  className="block text-gray-400 hover:text-photo-red-bright transition-colors duration-300 font-light"
                 >
                   {item.name}
                 </Link>
@@ -63,7 +63,7 @@ const Footer = () => {
           </p>
           <Link
             to="/privacy"
-            className="inline-block mt-3 text-sm text-gray-500 hover:text-photo-red transition-colors duration-300 font-light"
+            className="inline-block mt-3 text-sm text-gray-500 hover:text-photo-red-bright transition-colors duration-300 font-light"
           >
             Privacy Policy
           </Link>

@@ -534,14 +534,14 @@ export default function SalesChatbot() {
               className="flex items-center justify-between px-4 py-2 text-xs text-photo-gray-400 hover:text-photo-white hover:bg-photo-gray-800 transition-colors group border-b border-photo-gray-800"
             >
               <span>View all session packages</span>
-              <span className="text-photo-red group-hover:translate-x-0.5 transition-transform">→</span>
+              <span className="text-photo-red-bright group-hover:translate-x-0.5 transition-transform">→</span>
             </a>
             <a
               href="/book"
               className="flex items-center justify-between px-4 py-2 text-xs text-photo-gray-400 hover:text-photo-white hover:bg-photo-gray-800 transition-colors group"
             >
               <span>Ready to book? Go straight to the booking form</span>
-              <span className="text-photo-red group-hover:translate-x-0.5 transition-transform">→</span>
+              <span className="text-photo-red-bright group-hover:translate-x-0.5 transition-transform">→</span>
             </a>
           </div>
 
@@ -569,7 +569,7 @@ export default function SalesChatbot() {
               <button
                 onClick={submitQuoteToJeff}
                 disabled={isSubmittingQuote}
-                className="w-full flex items-center justify-center gap-2 bg-photo-red/10 hover:bg-photo-red/20 border border-photo-red/30 hover:border-photo-red text-photo-red text-xs px-3 py-2 rounded-xl transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+                className="w-full flex items-center justify-center gap-2 bg-photo-red/10 hover:bg-photo-red/20 border border-photo-red/30 hover:border-photo-red text-photo-red-bright text-xs px-3 py-2 rounded-xl transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mb-2"
               >
                 {isSubmittingQuote ? (
                   <Loader2 size={13} className="animate-spin" />

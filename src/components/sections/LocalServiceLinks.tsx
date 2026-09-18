@@ -9,7 +9,7 @@ const LocalServiceLinks = () => (
       <p className="text-gray-400 text-lg max-w-3xl leading-relaxed mb-9">Explore focused information, published pricing and portfolio examples for the service that matches your project.</p>
       <nav aria-label="Providence photography services" className="grid sm:grid-cols-2 lg:grid-cols-5 border-l border-t border-white/10">
         {SERVICE_AUTHORITY_LINKS.map((link) => (
-          <Link key={link.path} to={link.path} className="group border-r border-b border-white/10 p-5 text-gray-200 hover:bg-white/5 hover:text-photo-red transition-colors">
+          <Link key={link.path} to={link.path} className="group border-r border-b border-white/10 p-5 text-gray-200 hover:bg-white/5 hover:text-photo-red-bright transition-colors">
             <span>{link.label}</span><span aria-hidden="true" className="ml-2 group-hover:ml-3 transition-all">→</span>
           </Link>
         ))}

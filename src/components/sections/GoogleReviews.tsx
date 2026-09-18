@@ -81,7 +81,7 @@ const GoogleReviews = () => {
       <div className="relative max-w-7xl mx-auto px-8 md:px-16">
         {/* Header */}
         <div className="text-center mb-20">
-          <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">
+          <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">
             Client Reviews
           </p>
           <h2 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight tracking-wide text-white mb-8 leading-tight">

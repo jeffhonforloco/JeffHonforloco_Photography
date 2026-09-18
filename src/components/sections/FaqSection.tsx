@@ -52,7 +52,7 @@ const FaqSection = () => {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <div className="relative max-w-5xl mx-auto px-8 md:px-16">
         <div className="text-center mb-16">
-          <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">
+          <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">
             Common Questions
           </p>
           <h2 className="font-playfair text-5xl md:text-6xl font-extralight tracking-wide text-white mb-8 leading-tight">
@@ -80,7 +80,7 @@ const FaqSection = () => {
                   </span>
                   <ChevronDown
                     size={22}
-                    className={`flex-shrink-0 text-photo-red transition-transform duration-300 ${
+                    className={`flex-shrink-0 text-photo-red-bright transition-transform duration-300 ${
                       isOpen ? 'rotate-180' : ''
                     }`}
                   />

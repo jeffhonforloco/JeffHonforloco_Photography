@@ -16,7 +16,7 @@ const DefaultPortfolio = ({ title, description, images, serviceLink }: DefaultPo
         <div className="fixed top-24 left-4 z-10">
           <Link
             to="/portfolios"
-            className="inline-flex items-center text-photo-red hover:text-white transition-colors duration-300 text-lg bg-black/80 backdrop-blur px-3 py-1 rounded"
+            className="inline-flex items-center text-photo-red-bright hover:text-white transition-colors duration-300 text-lg bg-black/80 backdrop-blur px-3 py-1 rounded"
           >
             <span className="mr-2">←</span>
             Back to Portfolios
@@ -24,7 +24,7 @@ const DefaultPortfolio = ({ title, description, images, serviceLink }: DefaultPo
         </div>
         {serviceLink && (
           <div className="fixed top-24 right-4 z-10">
-            <Link to={serviceLink.path} className="text-sm text-white hover:text-photo-red bg-black/80 backdrop-blur px-3 py-2 rounded transition-colors">
+            <Link to={serviceLink.path} className="text-sm text-white hover:text-photo-red-bright bg-black/80 backdrop-blur px-3 py-2 rounded transition-colors">
               {serviceLink.label} →
             </Link>
           </div>

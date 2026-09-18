@@ -102,7 +102,7 @@ const ImageGallery = ({ images, className = "", enable4K = true, enable8K = fals
           {/* Close button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-8 right-8 text-white hover:text-photo-red z-20 transition-colors duration-300 p-2 hover:bg-white/10 rounded-full"
+            className="absolute top-8 right-8 text-white hover:text-photo-red-bright z-20 transition-colors duration-300 p-2 hover:bg-white/10 rounded-full"
             aria-label="Close lightbox"
           >
             <X size={32} />
@@ -114,7 +114,7 @@ const ImageGallery = ({ images, className = "", enable4K = true, enable8K = fals
               e.stopPropagation();
               prevImage();
             }}
-            className="absolute left-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red z-20 transition-colors duration-300 p-3 hover:bg-white/10 rounded-full"
+            className="absolute left-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red-bright z-20 transition-colors duration-300 p-3 hover:bg-white/10 rounded-full"
             aria-label="Previous image"
           >
             <ChevronLeft size={48} />
@@ -125,7 +125,7 @@ const ImageGallery = ({ images, className = "", enable4K = true, enable8K = fals
               e.stopPropagation();
               nextImage();
             }}
-            className="absolute right-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red z-20 transition-colors duration-300 p-3 hover:bg-white/10 rounded-full"
+            className="absolute right-8 top-1/2 -translate-y-1/2 text-white hover:text-photo-red-bright z-20 transition-colors duration-300 p-3 hover:bg-white/10 rounded-full"
             aria-label="Next image"
           >
             <ChevronRight size={48} />
@@ -160,7 +160,7 @@ const ImageGallery = ({ images, className = "", enable4K = true, enable8K = fals
 
           {/* Image counter */}
           <div className="absolute top-8 left-8 text-white font-light tracking-wider z-20 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-lg">
-            <span className="text-photo-red font-semibold">{selectedImage + 1}</span> / {images.length}
+            <span className="text-photo-red-bright font-semibold">{selectedImage + 1}</span> / {images.length}
           </div>
         </div>
       )}

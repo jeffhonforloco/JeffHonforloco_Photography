@@ -399,13 +399,13 @@ const JournalArticle = () => {
                         <Calendar className="w-4 h-4" />
                         <span>{relatedArticle.date}</span>
                       </div>
-                      <h3 className="font-bold text-lg text-white mb-3 group-hover:text-photo-red transition-colors">
+                      <h3 className="font-bold text-lg text-white mb-3 group-hover:text-photo-red-bright transition-colors">
                         {relatedArticle.title}
                       </h3>
                       <p className="text-gray-400 text-sm line-clamp-3">
                         {relatedArticle.excerpt}
                       </p>
-                      <div className="flex items-center mt-4 text-photo-red text-sm font-medium">
+                      <div className="flex items-center mt-4 text-photo-red-bright text-sm font-medium">
                         <span>Read More</span>
                         <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                       </div>

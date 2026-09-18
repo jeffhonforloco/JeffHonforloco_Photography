@@ -370,10 +370,10 @@ const BookingSystem: React.FC = () => {
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <Icon className="w-5 h-5 text-photo-red flex-shrink-0" />
+                      <Icon className="w-5 h-5 text-photo-red-bright flex-shrink-0" />
                       <CardTitle className="text-white text-base break-words">{service.name}</CardTitle>
                     </div>
-                    {isSelected && <CheckCircle className="w-5 h-5 text-photo-red flex-shrink-0 ml-2" />}
+                    {isSelected && <CheckCircle className="w-5 h-5 text-photo-red-bright flex-shrink-0 ml-2" />}
                   </div>
                   <CardDescription className="text-gray-400 text-sm">{service.description}</CardDescription>
                 </CardHeader>
@@ -395,7 +395,7 @@ const BookingSystem: React.FC = () => {
                       <Clock className="w-3 h-3" />
                       {service.duration}
                     </span>
-                    <span className="font-semibold text-photo-red">{service.startingPrice}</span>
+                    <span className="font-semibold text-photo-red-bright">{service.startingPrice}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -441,9 +441,9 @@ const BookingSystem: React.FC = () => {
                             <Badge className="bg-photo-red text-white text-[10px] mt-1">{tier.badge}</Badge>
                           )}
                         </div>
-                        {isSelected && <CheckCircle className="w-4 h-4 text-photo-red flex-shrink-0" />}
+                        {isSelected && <CheckCircle className="w-4 h-4 text-photo-red-bright flex-shrink-0" />}
                       </div>
-                      <p className="text-photo-red font-semibold text-sm mt-1">{tier.price}</p>
+                      <p className="text-photo-red-bright font-semibold text-sm mt-1">{tier.price}</p>
                       {(tier.duration || (!isMotion && tier.images)) && (
                         <p className="text-gray-500 text-xs">
                           {[tier.duration, !isMotion ? tier.images : undefined]
@@ -456,7 +456,7 @@ const BookingSystem: React.FC = () => {
                       <ul className="space-y-1.5">
                         {tier.deliverables.slice(0, 4).map((item, idx) => (
                           <li key={idx} className="flex items-center gap-2 text-xs text-gray-300">
-                            <CheckCircle className="w-3 h-3 text-photo-red flex-shrink-0" />
+                            <CheckCircle className="w-3 h-3 text-photo-red-bright flex-shrink-0" />
                             {item}
                           </li>
                         ))}
@@ -524,7 +524,7 @@ const BookingSystem: React.FC = () => {
 
           {bookingData.selectedDate && bookingData.selectedTime && (
             <div className="mt-6 p-4 bg-photo-red/10 border border-photo-red/30 rounded-lg">
-              <p className="text-xs text-photo-red font-semibold uppercase tracking-wide mb-1">Selected</p>
+              <p className="text-xs text-photo-red-bright font-semibold uppercase tracking-wide mb-1">Selected</p>
               <p className="text-white font-medium">
                 {formatDate(bookingData.selectedDate, 'MMMM dd, yyyy')}
               </p>

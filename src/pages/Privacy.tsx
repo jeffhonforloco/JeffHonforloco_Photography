@@ -7,7 +7,7 @@ const Privacy = () => {
       <main className="min-h-screen bg-photo-black text-white">
         <section className="pt-36 pb-24 md:pt-44 md:pb-32">
           <div className="max-w-4xl mx-auto px-8 md:px-16">
-            <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">
+            <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">
               Privacy Policy
             </p>
             <h1 className="font-playfair text-5xl md:text-6xl font-extralight tracking-wide mb-8 leading-tight">
@@ -59,7 +59,7 @@ const Privacy = () => {
                   client and would like an image of you removed from the public portfolio, email{' '}
                   <a
                     href="mailto:info@jeffhonforlocophotos.com"
-                    className="text-photo-red hover:underline"
+                    className="text-photo-red-bright hover:underline"
                   >
                     info@jeffhonforlocophotos.com
                   </a>{' '}
@@ -76,7 +76,7 @@ const Privacy = () => {
                   corrected, or ask for it to be deleted at any time by emailing{' '}
                   <a
                     href="mailto:info@jeffhonforlocophotos.com"
-                    className="text-photo-red hover:underline"
+                    className="text-photo-red-bright hover:underline"
                   >
                     info@jeffhonforlocophotos.com
                   </a>
@@ -92,14 +92,14 @@ const Privacy = () => {
                   Jeff Honforloco Photography, Providence, Rhode Island.{' '}
                   <a
                     href="mailto:info@jeffhonforlocophotos.com"
-                    className="text-photo-red hover:underline"
+                    className="text-photo-red-bright hover:underline"
                   >
                     info@jeffhonforlocophotos.com
                   </a>{' '}
                   · +1 (646) 379-4237.
                 </p>
                 <p className="mt-6">
-                  <Link to="/book" className="text-photo-red hover:underline">
+                  <Link to="/book" className="text-photo-red-bright hover:underline">
                     Ready to book your shoot? →
                   </Link>
                 </p>

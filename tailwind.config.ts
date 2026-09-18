@@ -71,6 +71,8 @@ export default {
 				'photo-white': '#FFFFFF',
 				'photo-red': '#C8102E',
 				'photo-red-hover': '#A00D25',
+				// Brighter red for small text on dark backgrounds (5.06:1 on black, passes WCAG AA)
+				'photo-red-bright': '#E5385D',
 				'photo-gray': {
 					100: '#F8F8F8',
 					200: '#E8E8E8',

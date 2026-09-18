@@ -266,7 +266,7 @@ const Journal = () => {
         <div className="max-w-7xl mx-auto px-8 md:px-16">
           <div className="text-center mb-16">
             <h2 className="font-bold text-4xl md:text-5xl text-white mb-6 animate-fade-in">
-              Explore by <span className="text-photo-red">Category</span>
+              Explore by <span className="text-photo-red-bright">Category</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto animate-fade-in animation-delay-200">
               Navigate through specialized topics and find exactly what inspires you
@@ -360,7 +360,7 @@ const Journal = () => {
                       <span>{post.date}</span>
                     </div>
 
-                    <h3 className="font-bold text-xl md:text-2xl text-white mb-4 leading-tight group-hover:text-photo-red transition-colors duration-300">
+                    <h3 className="font-bold text-xl md:text-2xl text-white mb-4 leading-tight group-hover:text-photo-red-bright transition-colors duration-300">
                       {post.title}
                     </h3>
 
@@ -368,7 +368,7 @@ const Journal = () => {
                       {post.excerpt}
                     </p>
 
-                    <div className="flex items-center text-photo-red font-medium text-sm group-hover:gap-3 transition-all duration-300">
+                    <div className="flex items-center text-photo-red-bright font-medium text-sm group-hover:gap-3 transition-all duration-300">
                       <span>Read Article</span>
                       <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
                     </div>
@@ -392,7 +392,7 @@ const Journal = () => {
         <div className="relative z-10 text-center max-w-4xl mx-auto px-8 md:px-16">
           <div className="animate-fade-in">
             <h2 className="font-bold text-5xl md:text-6xl text-white mb-6">
-              Stay <span className="text-photo-red">Inspired</span>
+              Stay <span className="text-photo-red-bright">Inspired</span>
             </h2>
             <p className="text-gray-300 text-xl mb-12 leading-relaxed max-w-2xl mx-auto">
               Join our community of photographers and creatives. Get exclusive tips, 

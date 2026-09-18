@@ -27,19 +27,19 @@ const Recognition = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-20">
           <div className="text-center">
-            <div className="text-photo-red font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight mb-6">
+            <div className="text-photo-red-bright font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight mb-6">
               {contentData.experience.publishedWorks}
             </div>
             <p className="font-light text-lg md:text-xl text-gray-300 tracking-[0.1em] uppercase">Published Works</p>
           </div>
           <div className="text-center">
-            <div className="text-photo-red font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight mb-6">
+            <div className="text-photo-red-bright font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight mb-6">
               {contentData.experience.years}
             </div>
             <p className="font-light text-lg md:text-xl text-gray-300 tracking-[0.1em] uppercase">Years Experience</p>
           </div>
           <div className="text-center">
-            <div className="text-photo-red font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight mb-6">
+            <div className="text-photo-red-bright font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight mb-6">
               {contentData.experience.happyClients}
             </div>
             <p className="font-light text-lg md:text-xl text-gray-300 tracking-[0.1em] uppercase">Happy Clients</p>

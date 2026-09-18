@@ -43,12 +43,12 @@ const PricingPreview = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-photo-red/10 border border-photo-red/30 rounded-full px-4 py-2 mb-5">
-            <CheckCircle className="w-4 h-4 text-photo-red" />
-            <span className="text-sm text-photo-red font-medium">Simple, Honest Pricing</span>
+            <CheckCircle className="w-4 h-4 text-photo-red-bright" />
+            <span className="text-sm text-photo-red-bright font-medium">Simple, Honest Pricing</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Photography Starting at{' '}
-            <span className="text-photo-red">$499</span>
+            <span className="text-photo-red-bright">$499</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             No hidden fees. No gatekeeping. Pick a session that works for your budget and
@@ -74,9 +74,9 @@ const PricingPreview = () => {
               <div className="flex items-end justify-between">
                 <div>
                   <p className="text-gray-500 text-xs">Starting at</p>
-                  <p className="text-photo-red font-bold text-xl">{cat.startingAt}</p>
+                  <p className="text-photo-red-bright font-bold text-xl">{cat.startingAt}</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-photo-red group-hover:translate-x-0.5 transition-all" />
+                <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-photo-red-bright group-hover:translate-x-0.5 transition-all" />
               </div>
               <p className="text-xs text-gray-500 mt-2 pt-2 border-t border-white/5">{cat.highlight}</p>
             </a>

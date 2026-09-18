@@ -152,7 +152,7 @@ const Services = () => {
       <section className="pt-32 pb-20 md:pt-40 md:pb-28 bg-photo-black relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-photo-gray-900/30 to-photo-black" />
         <div className="relative max-w-7xl mx-auto px-8 md:px-16 text-center">
-          <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">
+          <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">
             What We Offer
           </p>
           <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-extralight tracking-wide text-white mb-8 leading-tight">
@@ -180,7 +180,7 @@ const Services = () => {
                 {/* Text */}
                 <div className={isEven ? 'lg:col-start-2' : ''}>
                   <div className="flex items-center gap-3 mb-5">
-                    <Icon className="w-5 h-5 text-photo-red flex-shrink-0" />
+                    <Icon className="w-5 h-5 text-photo-red-bright flex-shrink-0" />
                     {service.isMobile && (
                       <span className="text-[10px] tracking-widest uppercase text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full">Mobile</span>
                     )}
@@ -191,7 +191,7 @@ const Services = () => {
                   <h2 className="font-playfair text-4xl md:text-5xl font-light text-white mb-3 leading-tight">
                     {service.name}
                   </h2>
-                  <p className="font-inter text-photo-red text-sm tracking-wide mb-6">{service.tagline}</p>
+                  <p className="font-inter text-photo-red-bright text-sm tracking-wide mb-6">{service.tagline}</p>
                   <p className="font-inter font-light text-gray-300 leading-relaxed mb-8 text-base">
                     {service.description}
                   </p>
@@ -203,7 +203,7 @@ const Services = () => {
                     </div>
                     <div>
                       <p className="text-gray-600 text-xs uppercase tracking-widest mb-1">Starting At</p>
-                      <p className="text-photo-red font-semibold">{service.startingAt}</p>
+                      <p className="text-photo-red-bright font-semibold">{service.startingAt}</p>
                     </div>
                   </div>
 
@@ -224,7 +224,7 @@ const Services = () => {
                 {/* Details panel */}
                 <div className={`space-y-6 ${isEven ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
                   <div className="bg-photo-gray-900 border border-photo-gray-700 rounded-2xl p-8">
-                    <p className="text-xs tracking-[0.3em] text-photo-red uppercase font-semibold mb-5">Who It's For</p>
+                    <p className="text-xs tracking-[0.3em] text-photo-red-bright uppercase font-semibold mb-5">Who It's For</p>
                     <ul className="space-y-3">
                       {service.forWho.map((item) => (
                         <li key={item} className="flex items-start gap-3 text-gray-300 text-sm leading-relaxed">
@@ -236,7 +236,7 @@ const Services = () => {
                   </div>
 
                   <div className="bg-photo-gray-900 border border-photo-gray-700 rounded-2xl p-8">
-                    <p className="text-xs tracking-[0.3em] text-photo-red uppercase font-semibold mb-5">What's Included</p>
+                    <p className="text-xs tracking-[0.3em] text-photo-red-bright uppercase font-semibold mb-5">What's Included</p>
                     <ul className="space-y-3">
                       {service.includes.map((item) => (
                         <li key={item} className="flex items-start gap-3 text-gray-300 text-sm leading-relaxed">
@@ -257,7 +257,7 @@ const Services = () => {
       <section className="py-32 bg-photo-gray-900 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-photo-black/60 to-photo-gray-900" />
         <div className="relative max-w-3xl mx-auto px-8 md:px-16 text-center">
-          <p className="font-inter text-xs tracking-[0.4em] text-photo-red uppercase mb-4">Ready to Start?</p>
+          <p className="font-inter text-xs tracking-[0.4em] text-photo-red-bright uppercase mb-4">Ready to Start?</p>
           <h2 className="font-playfair text-4xl md:text-5xl lg:text-6xl font-extralight tracking-wide text-white mb-8 leading-tight">
             Let's Create Something Worth Keeping
           </h2>
