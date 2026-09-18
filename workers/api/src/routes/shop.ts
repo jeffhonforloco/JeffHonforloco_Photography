@@ -279,6 +279,20 @@ import {
 import { handleServicePaymentEvent } from './services';
 
 /**
+ * Pull the buyer name and shipping address out of a PayPal order or capture
+ * payload. Returns nulls when PayPal didn't include them (e.g. digital goods).
+ */
+function paypalBuyerInfo(payload: any): { name: string | null; shippingJson: string | null } {
+  const pu = payload?.purchase_units?.[0];
+  const payer = payload?.payer;
+  const payerName = [payer?.name?.given_name, payer?.name?.surname].filter(Boolean).join(' ') || null;
+  const shipName = pu?.shipping?.name?.full_name || null;
+  const addr = pu?.shipping?.address;
+  const shippingJson = addr ? JSON.stringify({ name: shipName, ...addr }).slice(0, 2000) : null;
+  return { name: payerName || shipName, shippingJson };
+}
+
+/**
  * Mark a pending order paid and decrement inventory. Idempotent: only
  * transitions from 'pending', so capture endpoints and webhooks from
  * either provider can all call it safely (inventory decrements once).
@@ -424,7 +438,7 @@ shopPublic.post('/checkout', async (c) => {
     return c.json({ error: 'Could not start checkout — please try again' }, 502);
   }
   const pOrder = (await pres.json()) as { id: string; links?: { href: string; rel: string }[] };
-  const approveUrl = pOrder.links?.find((l) => l.rel === 'approve')?.href;
+  const approveUrl = pOrder.links?.find((l) => l.rel === 'approve' || l.rel === 'payer-action')?.href;
   if (!pOrder.id || !approveUrl) {
     console.error('[shop] PayPal order create returned no approval URL');
     return c.json({ error: 'Could not start checkout — please try again' }, 502);
@@ -446,7 +460,9 @@ shopPublic.post('/checkout', async (c) => {
       .bind(orderId, l.product_id, l.variant_id, l.name, l.variant_label, l.quantity, l.unit_price_cents, l.unit_price_cents * l.quantity)
   ));
 
-  return c.json({ success: true, data: { url: approveUrl, paypal_order_id: pOrder.id, order_id: orderId } });
+  // fundingSource=card lands the buyer on guest card checkout (no PayPal account needed).
+  const checkoutUrl = approveUrl.includes('?') ? `${approveUrl}&fundingSource=card` : `${approveUrl}?fundingSource=card`;
+  return c.json({ success: true, data: { url: checkoutUrl, paypal_order_id: pOrder.id, order_id: orderId } });
 });
 
 /* ------------------------------------------------------------------ */
@@ -501,6 +517,10 @@ shopPublic.post('/capture', async (c) => {
   const capture = cdata?.purchase_units?.[0]?.payments?.captures?.[0];
   const captureId: string | null = typeof capture?.id === 'string' ? capture.id : null;
   await markOrderPaid(db, order.id, { paypal_capture_id: captureId });
+  // Backfill buyer name / shipping address from PayPal (never overwrite what checkout collected).
+  const info = paypalBuyerInfo(cdata);
+  await db.prepare(`UPDATE orders SET customer_name = COALESCE(customer_name, ?), shipping_json = COALESCE(shipping_json, ?), updated_at = ? WHERE id = ?`)
+    .bind(info.name, info.shippingJson, new Date().toISOString(), order.id).run();
   return c.json({ success: true, data: { order_id: order.id, status: 'paid', capture_id: captureId } });
 });
 
@@ -565,6 +585,19 @@ paypalWebhook.post('/paypal', async (c) => {
       const order = await db.prepare(`SELECT * FROM orders WHERE paypal_order_id = ?`).bind(relatedOrderId).first<any>();
       if (order) {
         await markOrderPaid(db, order.id, { paypal_capture_id: typeof resource.id === 'string' ? resource.id : null });
+        // Webhook payloads don't carry buyer/shipping details — fetch the order to recover them.
+        try {
+          const ores = await fetch(`${pp.base}/v2/checkout/orders/${encodeURIComponent(relatedOrderId)}`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+          if (ores.ok) {
+            const oinfo = paypalBuyerInfo(await ores.json());
+            await db.prepare(`UPDATE orders SET customer_name = COALESCE(customer_name, ?), shipping_json = COALESCE(shipping_json, ?), updated_at = ? WHERE id = ?`)
+              .bind(oinfo.name, oinfo.shippingJson, now, order.id).run();
+          }
+        } catch (e) {
+          console.error('[shop] webhook order fetch failed:', e instanceof Error ? e.message : e);
+        }
       } else {
         // Not a shop order — it may be a service payment (deposit / balance / full).
         await handleServicePaymentEvent(db, c.env, type, relatedOrderId, resource);
