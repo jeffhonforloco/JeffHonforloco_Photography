@@ -270,6 +270,13 @@
 
 /* Staggered column animations — different durations + negative delays
    give natural offset without any visible loop point */
+/* Hero tiles only get the seamless scale (and thus a composited layer) once
+   they actually hold a photo. Placeholders use a data: URI, so this keeps
+   ~130 invisible tiles out of the layer tree for a faster LCP paint. */
+.hero-image[src^="/images/"] {
+  transform: scale(1.01);
+}
+
 .hero-col-1 {
   animation: slideSeamless 80s linear infinite;
   -webkit-backface-visibility: hidden;
