@@ -10,7 +10,16 @@ export const paypalWebhook = new Hono<AppEnv>();
 /* Schema (D1) — auto-created on first hit                             */
 /* ------------------------------------------------------------------ */
 
-export async function ensureShopSchema(db: D1Database) {
+// The admin UI fires several shop requests in parallel (products + orders +
+// settings), and every request used to run the full schema DDL batch. Those
+// concurrent DDL batches intermittently collided in D1 (write contention),
+// throwing an uncaught exception that surfaced as a plain-text 500
+// "Internal Server Error" the admin UI could not parse. Serialize the ensure
+// so one in-flight run is shared, and never let a transient DDL failure 500
+// a request on a live database.
+let shopSchemaPromise: Promise<void> | null = null;
+
+async function ensureShopSchemaInner(db: D1Database) {
   // Phase 1: create tables only.
   await db.batch([
     db.prepare(`CREATE TABLE IF NOT EXISTS products (
@@ -123,6 +132,19 @@ export async function ensureShopSchema(db: D1Database) {
       db.prepare(`INSERT OR IGNORE INTO shop_settings (key, value) VALUES ('shop_enabled', '0')`),
     ]);
   }
+}
+
+export async function ensureShopSchema(db: D1Database): Promise<void> {
+  if (!shopSchemaPromise) {
+    shopSchemaPromise = ensureShopSchemaInner(db).catch((e) => {
+      // Non-fatal: on a live DB the tables already exist, so a transient DDL
+      // collision must not fail the request. Reset the guard so the next
+      // request retries the ensure.
+      console.error('[shop] ensureShopSchema failed (non-fatal):', e);
+      shopSchemaPromise = null;
+    });
+  }
+  await shopSchemaPromise;
 }
 
 /* ------------------------------------------------------------------ */

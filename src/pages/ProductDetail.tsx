@@ -201,7 +201,7 @@ const ProductDetail: React.FC = () => {
             )}
 
             <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-zinc-400">
-              <p>Secure checkout via Stripe · Ships to US &amp; Canada · Questions? <Link to="/contact" className="text-white underline">Contact the studio</Link></p>
+              <p>Secure checkout via PayPal · Ships to US &amp; Canada · Questions? <Link to="/contact" className="text-white underline">Contact the studio</Link></p>
             </div>
           </div>
         </div>

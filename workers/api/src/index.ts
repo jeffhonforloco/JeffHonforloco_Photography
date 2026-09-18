@@ -90,6 +90,14 @@ app.get('/.well-known/mcp', (c) => c.json(mcpDiscovery()));
 // 404 fallback
 app.notFound((c) => c.json({ error: 'Not found' }, 404));
 
+// Uncaught errors must always be JSON: admin clients call res.json() on every
+// response, and a plain-text 500 ("Internal Server Error") used to surface as
+// a confusing JSON-parse error that masked the real failure.
+app.onError((err, c) => {
+  console.error('[worker] uncaught error:', err);
+  return c.json({ error: 'Internal server error' }, 500);
+});
+
 /**
  * Check if current time is 7:30 AM in America/New_York timezone.
  * DST-safe: works correctly in both EST (UTC-5) and EDT (UTC-4).

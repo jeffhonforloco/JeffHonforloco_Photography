@@ -15,6 +15,14 @@ const authHeaders = () => {
   return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 };
 
+// Read a response safely: if the server ever returns a non-JSON body, surface
+// a readable error instead of a cryptic JSON-parse exception.
+const readApiJson = async (res: Response): Promise<any> => {
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch { return { error: text.slice(0, 200) || `Request failed (HTTP ${res.status})` }; }
+};
+
 const CATEGORIES = ['Apparel', 'Prints', 'Books', 'Frames', 'Affiliate', 'Accessories'];
 
 interface ProductImage { image_url: string; thumbnail_url: string }
@@ -83,7 +91,7 @@ const AdminShop: React.FC = () => {
 
   const loadSettings = useCallback(async () => {
     const res = await fetch(apiUrl('/api/v1/admin/shop/settings'), { headers: authHeaders() });
-    const data = await res.json();
+    const data = await readApiJson(res);
     if (!res.ok) throw new Error(data.error || 'Failed to load settings');
     setSettings(data.data.settings);
     setPaypalInfo(data.data.paypal);
@@ -104,7 +112,7 @@ const AdminShop: React.FC = () => {
       const res = await fetch(apiUrl('/api/v1/admin/shop/settings'), {
         method: 'PUT', headers: authHeaders(), body: JSON.stringify(patch),
       });
-      const data = await res.json();
+      const data = await readApiJson(res);
       if (!res.ok) throw new Error(data.error || 'Save failed');
       setSettings(data.data.settings);
       clearShopSettingsCache();
