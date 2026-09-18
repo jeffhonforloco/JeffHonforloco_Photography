@@ -66,7 +66,10 @@ const Journal = () => {
   useEffect(() => {
     // Live blog API + static JSON merged: API has the newer admin-published
     // posts, static JSON has the older ones. Merge both so no article is lost.
+    // If SSR data is already present (prerendered), delay the background refresh
+    // so it doesn't compete with initial page render.
     const apiBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
+    const hasSsrData = getSsrBlogData() !== null;
 
     const mergePosts = (apiPosts: BlogPost[], staticPosts: BlogPost[]): BlogPost[] => {
       const seen = new Set(apiPosts.map(p => p.slug || p.id));
@@ -87,28 +90,41 @@ const Journal = () => {
         .then(res => res.json())
         .catch((): BlogData => ({ posts: [], categories: [] }));
 
-    if (apiBase) {
-      Promise.all([
-        fetch(`${apiBase}/api/v1/blog?limit=50`)
-          .then(res => { if (!res.ok) throw new Error('blog api failed'); return res.json(); })
-          .then((d): BlogData => ({ posts: (d.posts ?? []).map(mapApiPost), categories: d.categories ?? [] }))
-          .catch((): BlogData => ({ posts: [], categories: [] })),
-        loadStatic(),
-      ]).then(([apiData, staticData]) => {
-        const posts = mergePosts(apiData.posts, staticData.posts);
-        const categories = [...new Set([...apiData.categories, ...staticData.categories])];
-        if (posts.length > 0) {
-          apply({ posts, categories });
-        } else {
+    const refresh = () => {
+      if (apiBase) {
+        Promise.all([
+          fetch(`${apiBase}/api/v1/blog?limit=50`)
+            .then(res => { if (!res.ok) throw new Error('blog api failed'); return res.json(); })
+            .then((d): BlogData => ({ posts: (d.posts ?? []).map(mapApiPost), categories: d.categories ?? [] }))
+            .catch((): BlogData => ({ posts: [], categories: [] })),
+          loadStatic(),
+        ]).then(([apiData, staticData]) => {
+          const posts = mergePosts(apiData.posts, staticData.posts);
+          const categories = [...new Set([...apiData.categories, ...staticData.categories])];
+          if (posts.length > 0) {
+            // Only update if the data actually changed (avoid needless re-render).
+            setBlogData(prev => {
+              const prevSlugs = (prev?.posts ?? []).map(p => p.slug || p.id).join(',');
+              const nextSlugs = posts.map(p => p.slug || p.id).join(',');
+              return prevSlugs === nextSlugs ? prev : { posts, categories };
+            });
+          }
           setIsLoaded(true);
-        }
-      });
-    } else {
-      loadStatic().then((data) => {
-        if (data.posts.length > 0) apply(data);
-        else setIsLoaded(true);
-      });
+        });
+      } else {
+        loadStatic().then((data) => {
+          if (data.posts.length > 0) apply(data);
+          else setIsLoaded(true);
+        });
+      }
+    };
+
+    if (hasSsrData) {
+      // Prerendered content is already showing; refresh in background after paint.
+      const t = setTimeout(refresh, 2500);
+      return () => clearTimeout(t);
     }
+    refresh();
   }, []);
 
   // Auto-slide functionality
