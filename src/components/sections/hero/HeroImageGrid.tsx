@@ -87,7 +87,7 @@ const HeroImageGrid = () => {
           alt={image.alt}
           className="hero-image absolute inset-0 h-full w-full object-cover"
           loading={isPriority ? 'eager' : 'lazy'}
-          decoding={isPriority ? 'sync' : 'async'}
+          decoding="async"
           {...{ fetchpriority: isPriority ? 'high' : 'low' }}
           width="480"
           height="600"
