@@ -140,13 +140,21 @@ const AdminBlog: React.FC = () => {
   const createBlogPost = async (postData: Partial<BlogPost>) => {
     try {
       const token = localStorage.getItem('adminToken');
+      setError(null);
+      // The API requires a slug; generate a unique one from the title.
+      const slugify = (s: string) =>
+        s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'post';
+      const base = slugify(postData.title || '');
+      const taken = new Set(blogPosts.map(p => p.slug));
+      let slug = base, i = 2;
+      while (taken.has(slug)) slug = `${base}-${i++}`;
       const response = await fetch(apiUrl('/api/v1/blog'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(postData)
+        body: JSON.stringify({ ...postData, slug })
       });
 
       if (!response.ok) {
@@ -169,6 +177,7 @@ const AdminBlog: React.FC = () => {
   const updateBlogPost = async (postId: number, postData: Partial<BlogPost>) => {
     try {
       const token = localStorage.getItem('adminToken');
+      setError(null);
       const response = await fetch(apiUrl(`/api/v1/blog/${postId}`), {
         method: 'PUT',
         headers: {
@@ -230,6 +239,7 @@ const AdminBlog: React.FC = () => {
       tags: post.tags
     });
     setIsEditing(true);
+    setError(null);
     setIsDialogOpen(true);
   };
 
@@ -292,6 +302,7 @@ const AdminBlog: React.FC = () => {
           <Button onClick={() => {
             setEditForm({});
             setIsEditing(false);
+            setError(null);
             setIsDialogOpen(true);
           }}>
             <Plus className="h-4 w-4 mr-2" />
@@ -422,6 +433,11 @@ const AdminBlog: React.FC = () => {
               {isEditing ? 'Update the blog post information' : 'Create a new blog post'}
             </DialogDescription>
           </DialogHeader>
+          {error && (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">
+              {error}
+            </div>
+          )}
           <div className="space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-500">Title</label>
@@ -501,6 +517,7 @@ const AdminBlog: React.FC = () => {
                   setIsDialogOpen(false);
                   setEditForm({});
                   setIsEditing(false);
+                  setError(null);
                 }}
               >
                 <X className="h-4 w-4 mr-2" />
