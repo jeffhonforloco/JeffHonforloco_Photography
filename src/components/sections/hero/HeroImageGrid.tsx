@@ -98,7 +98,7 @@ const HeroImageGrid = () => {
   ) => (
     <div
       key={key}
-      className="relative aspect-[4/5] overflow-hidden bg-photo-gray-900 flex-shrink-0 ring-1 ring-inset ring-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.32)]"
+      className="hero-tile relative aspect-[4/5] overflow-hidden bg-photo-gray-900 flex-shrink-0 ring-1 ring-inset ring-white/10 shadow-[0_18px_44px_rgba(0,0,0,0.32)]"
     >
       <picture>
         <source

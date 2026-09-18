@@ -270,6 +270,14 @@
 
 /* Staggered column animations — different durations + negative delays
    give natural offset without any visible loop point */
+/* Offscreen hero tiles skip rendering until near the viewport, cutting the
+   initial style/layout/paint cost that delays the LCP paint. The aspect
+   ratio preserves layout size, so no shift occurs. */
+.hero-tile {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 210px;
+}
+
 /* Hero tiles only get the seamless scale (and thus a composited layer) once
    they actually hold a photo. Placeholders use a data: URI, so this keeps
    ~130 invisible tiles out of the layer tree for a faster LCP paint. */
