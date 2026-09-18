@@ -23,7 +23,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
 
-      {location.pathname !== '/' && location.pathname !== '/about' && !location.pathname.startsWith('/portfolio') && location.pathname !== '/contact' && <Footer />}
+      {location.pathname !== '/about' && !location.pathname.startsWith('/portfolio') && location.pathname !== '/contact' && <Footer />}
     </div>
   );
 };

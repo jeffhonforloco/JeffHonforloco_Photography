@@ -120,7 +120,12 @@ media.post('/upload', requireAuth, requireAdmin, async (c) => {
   const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
   const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const rand = Math.random().toString(36).slice(2, 10);
-  const key = `portfolio/${stamp}/${rand}.${ext}`;
+  // Optional category/folder from the admin upload UI (e.g. "headshots", "weddings", "homepage-hero").
+  // Sanitized to prevent path traversal; defaults to the dated folder for backward compatibility.
+  const rawCategory = typeof form?.get('category') === 'string' ? (form.get('category') as string) : '';
+  const category = rawCategory.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
+  const folder = category ? `portfolio/${category}/${stamp}` : `portfolio/${stamp}`;
+  const key = `${folder}/${rand}.${ext}`;
 
   const buf = await file.arrayBuffer();
   await c.env.MEDIA_BUCKET.put(key, buf, {
@@ -131,7 +136,7 @@ media.post('/upload', requireAuth, requireAdmin, async (c) => {
   let thumbKey: string | null = null;
   if (thumb) {
     const text = (thumb.name.split('.').pop() || 'webp').toLowerCase().replace(/[^a-z0-9]/g, '') || 'webp';
-    thumbKey = `portfolio/${stamp}/${rand}-thumb.${text}`;
+    thumbKey = `${folder}/${rand}-thumb.${text}`;
     await c.env.MEDIA_BUCKET.put(thumbKey, await thumb.arrayBuffer(), {
       httpMetadata: { contentType: thumb.type },
       customMetadata: { originalName: thumb.name.slice(0, 200), parent: key },

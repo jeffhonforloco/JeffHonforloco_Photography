@@ -260,17 +260,48 @@ const AdminBlog: React.FC = () => {
     }
   };
 
-  const handleEdit = (post: BlogPost) => {
-    setSelectedPost(post);
-    setEditForm({
-      title: post.title,
-      content: post.content,
-      excerpt: post.excerpt,
-      status: post.status,
-      featured_image_url: post.featured_image_url,
-      gallery_images: post.gallery_images,
-      tags: post.tags
-    });
+  const handleEdit = async (post: BlogPost) => {
+    // Fetch the full post data (the list API returns empty content)
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(apiUrl(`/api/v1/blog/${post.id}`), {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      let fullPost = post;
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          fullPost = data.data;
+        } else if (data.post) {
+          fullPost = data.post;
+        }
+      }
+      setSelectedPost(fullPost);
+      setEditForm({
+        title: fullPost.title,
+        content: fullPost.content,
+        excerpt: fullPost.excerpt,
+        status: fullPost.status,
+        featured_image_url: fullPost.featured_image_url,
+        gallery_images: fullPost.gallery_images,
+        tags: fullPost.tags
+      });
+    } catch (err) {
+      // Fallback to list data if fetch fails
+      setSelectedPost(post);
+      setEditForm({
+        title: post.title,
+        content: post.content,
+        excerpt: post.excerpt,
+        status: post.status,
+        featured_image_url: post.featured_image_url,
+        gallery_images: post.gallery_images,
+        tags: post.tags
+      });
+    }
     setGalleryInput('');
     setIsEditing(true);
     setError(null);

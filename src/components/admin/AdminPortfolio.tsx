@@ -269,7 +269,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
     }
   };
 
-  const handleFileUpload = async (file: File) => {
+  const handleFileUpload = async (file: File, category?: string) => {
     try {
       setUploading(true);
       setDialogError(null);
@@ -280,6 +280,9 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
       const formData = new FormData();
       formData.append('image', full.blob, full.name);
       formData.append('thumbnail', thumb.blob, thumb.name);
+      if (category) {
+        formData.append('category', category);
+      }
       const res = await fetch(apiUrl('/api/v1/admin/media/upload'), {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
@@ -308,6 +311,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const [mediaLoading, setMediaLoading] = useState(false);
   const [deleteMediaKey, setDeleteMediaKey] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState('');
   const dropRef = useRef<HTMLDivElement>(null);
 
   const fetchMediaLibrary = async () => {
@@ -338,7 +342,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
     }
     for (const file of list.slice(0, 10)) {
       // eslint-disable-next-line no-await-in-loop
-      await handleFileUpload(file);
+      await handleFileUpload(file, uploadCategory || undefined);
     }
   };
 
@@ -423,6 +427,29 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
           <CardDescription>Drag & drop images to upload them to cloud storage, then use the URL in any portfolio item.</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="mb-3 flex items-center gap-2">
+            <label htmlFor="upload-category" className="text-sm font-medium text-muted-foreground whitespace-nowrap">
+              Upload to:
+            </label>
+            <select
+              id="upload-category"
+              value={uploadCategory}
+              onChange={(e) => setUploadCategory(e.target.value)}
+              className="rounded-md border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm"
+            >
+              <option value="">General Media Library</option>
+              <option value="weddings">Weddings</option>
+              <option value="engagements">Engagements</option>
+              <option value="headshots">Headshots</option>
+              <option value="fashion">Fashion</option>
+              <option value="beauty">Beauty</option>
+              <option value="editorial">Editorial</option>
+              <option value="maternity">Maternity</option>
+              <option value="family">Family</option>
+              <option value="homepage-hero">Homepage Hero</option>
+              <option value="journal">Journal</option>
+            </select>
+          </div>
           <div
             ref={dropRef}
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
