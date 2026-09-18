@@ -2,10 +2,17 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, Clock, ArrowLeft, ArrowRight, Tag, Share2 } from 'lucide-react';
 import Layout from '../components/Layout';
-import { BlogData, BlogPost } from '@/types/content';
+import { BlogData, BlogPost, parseGalleryImages } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
 import SEO from '../components/SEO';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 
 // Renders HTML content from the Worker, or plain text from the static JSON fallback.
 const HTML_TAG = /<[a-z][\s\S]*>/i;
@@ -24,6 +31,7 @@ const mapApiPost = (p: any): BlogPost => ({
   content: p.content ?? '',
   category: p.category ?? '',
   image: p.featured_image_url ?? '',
+  galleryImages: parseGalleryImages(p.gallery_images),
   date: formatApiDate(p.published_at ?? p.created_at),
   readTime: p.read_time ?? '',
   slug: p.slug,
@@ -181,6 +189,9 @@ const JournalArticle = () => {
     );
   }
 
+  // Gallery slider images (different images per article; empty when none assigned).
+  const galleryImages: string[] = Array.isArray(article.galleryImages) ? article.galleryImages : [];
+
   // Per-article SEO: description from excerpt/content, canonical URL, BlogPosting schema.
   const stripTags = (s: string) => s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   const seoDescription = (() => {
@@ -222,7 +233,7 @@ const JournalArticle = () => {
       <SEO
         title={`${article.title} | Jeff Honforloco Photography`}
         description={seoDescription}
-        image={article.image || undefined}
+        image={article.image || galleryImages[0] || undefined}
         url={`/journal/${article.slug ?? slug}`}
         type="article"
         additionalSchemas={[articleSchema]}
@@ -230,11 +241,18 @@ const JournalArticle = () => {
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center pt-20">
         <div className="absolute inset-0">
-          <img
-            src={article.image}
-            alt={article.title}
-            className="w-full h-full object-cover"
-          />
+          {article.image ? (
+            <img
+              src={article.image}
+              alt={article.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div
+              className="w-full h-full bg-gradient-to-br from-neutral-900 via-black to-neutral-900"
+              aria-hidden="true"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30"></div>
         </div>
         
@@ -311,6 +329,44 @@ const JournalArticle = () => {
         </div>
       </section>
 
+      {/* Image Gallery Slider — different images that represent this article */}
+      {galleryImages.length > 0 && (
+        <section className="py-20 bg-black" aria-label="Article gallery">
+          <div className="max-w-6xl mx-auto px-8 md:px-16">
+            <Carousel
+              opts={{ loop: galleryImages.length > 1, align: 'center' }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {galleryImages.map((src, i) => (
+                  <CarouselItem key={`${src}-${i}`} className="basis-full md:basis-4/5">
+                    <div className="overflow-hidden rounded-xl border border-gray-800">
+                      <img
+                        src={src}
+                        alt={`${article.title} — photo ${i + 1}`}
+                        className="w-full h-[50vh] md:h-[65vh] object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {galleryImages.length > 1 && (
+                <>
+                  <CarouselPrevious className="left-4 bg-black/50 border-gray-700 text-white hover:bg-black/80" />
+                  <CarouselNext className="right-4 bg-black/50 border-gray-700 text-white hover:bg-black/80" />
+                </>
+              )}
+            </Carousel>
+            {galleryImages.length > 1 && (
+              <p className="text-center text-gray-500 text-sm mt-4">
+                {galleryImages.length} photos
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
         <section className="py-20 bg-gray-900">
@@ -328,11 +384,15 @@ const JournalArticle = () => {
                 >
                   <article className="bg-black rounded-xl overflow-hidden border border-gray-800 hover:border-photo-red/30 transition-all duration-500">
                     <div className="aspect-[16/10] overflow-hidden">
-                      <img
-                        src={relatedArticle.image}
-                        alt={relatedArticle.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+                      {relatedArticle.image ? (
+                        <img
+                          src={relatedArticle.image}
+                          alt={relatedArticle.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
+                      )}
                     </div>
                     <div className="p-6">
                       <div className="flex items-center gap-2 text-gray-400 text-sm mb-3">

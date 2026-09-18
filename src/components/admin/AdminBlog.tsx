@@ -48,6 +48,7 @@ interface BlogPost {
   content: string;
   excerpt: string;
   featured_image_url?: string;
+  gallery_images?: string;
   author_id: number;
   status: string;
   published_at?: string;
@@ -69,6 +70,34 @@ const AdminBlog: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [deletePostId, setDeletePostId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<BlogPost>>({});
+  const [galleryInput, setGalleryInput] = useState('');
+
+  // Gallery slider images: stored as a JSON array string in editForm.gallery_images.
+  const galleryList: string[] = (() => {
+    const raw = editForm.gallery_images;
+    if (!raw) return [];
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === 'string' && x.length > 0) : [];
+    } catch {
+      return [];
+    }
+  })();
+
+  const addGalleryImage = () => {
+    const url = galleryInput.trim();
+    if (!url) return;
+    if (galleryList.includes(url)) {
+      setGalleryInput('');
+      return;
+    }
+    setEditForm(prev => ({ ...prev, gallery_images: JSON.stringify([...galleryList, url]) }));
+    setGalleryInput('');
+  };
+
+  const removeGalleryImage = (url: string) => {
+    setEditForm(prev => ({ ...prev, gallery_images: JSON.stringify(galleryList.filter(u => u !== url)) }));
+  };
 
   useEffect(() => {
     fetchBlogPosts();
@@ -236,8 +265,10 @@ const AdminBlog: React.FC = () => {
       excerpt: post.excerpt,
       status: post.status,
       featured_image_url: post.featured_image_url,
+      gallery_images: post.gallery_images,
       tags: post.tags
     });
+    setGalleryInput('');
     setIsEditing(true);
     setError(null);
     setIsDialogOpen(true);
@@ -301,6 +332,7 @@ const AdminBlog: React.FC = () => {
           </Button>
           <Button onClick={() => {
             setEditForm({});
+            setGalleryInput('');
             setIsEditing(false);
             setError(null);
             setIsDialogOpen(true);
@@ -497,6 +529,47 @@ const AdminBlog: React.FC = () => {
                   placeholder="Enter image URL"
                   className="mt-1"
                 />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                Gallery Slider Images <span className="text-gray-400 font-normal">({galleryList.length})</span>
+              </label>
+              <p className="text-xs text-gray-400 mt-1 mb-2">
+                Different images shown in the article's sliding gallery. Only add images that represent what the article is about.
+              </p>
+              {galleryList.length > 0 && (
+                <div className="space-y-2 mb-2">
+                  {galleryList.map((url) => (
+                    <div key={url} className="flex items-center gap-2 rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
+                      <img src={url} alt="" className="h-10 w-10 rounded object-cover shrink-0" />
+                      <span className="flex-1 truncate text-xs text-gray-600">{url}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeGalleryImage(url)}
+                        className="h-7 w-7 p-0 text-gray-400 hover:text-red-600"
+                        aria-label="Remove image"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="flex gap-2">
+                <Input
+                  value={galleryInput}
+                  onChange={(e) => setGalleryInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addGalleryImage(); } }}
+                  placeholder="Paste image URL, then Add"
+                  className="mt-1"
+                />
+                <Button type="button" variant="outline" onClick={addGalleryImage} className="mt-1 shrink-0">
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
               </div>
             </div>
 

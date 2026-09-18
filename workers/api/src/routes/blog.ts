@@ -22,7 +22,7 @@ blog.get('/', async (c) => {
   if (search)   { where += ' AND (title LIKE ? OR excerpt LIKE ?)'; params.push(`%${search}%`, `%${search}%`); }
 
   const [rows, total, cats] = await Promise.all([
-    c.env.DB.prepare(`SELECT id, title, slug, excerpt, featured_image_url, category, status, read_time, published_at, created_at
+    c.env.DB.prepare(`SELECT id, title, slug, excerpt, featured_image_url, gallery_images, category, status, read_time, published_at, created_at
                       FROM blog_posts ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
       .bind(...params, limit, offset).all(),
     c.env.DB.prepare(`SELECT COUNT(*) as n FROM blog_posts ${where}`).bind(...params).first<{ n: number }>(),
@@ -61,16 +61,16 @@ blog.get('/:id', requireAuth, async (c) => {
 blog.post('/', requireAuth, async (c) => {
   const body = await c.req.json<{
     title: string; slug: string; content: string; excerpt?: string;
-    featured_image_url?: string; category?: string; status?: string;
+    featured_image_url?: string; gallery_images?: string; category?: string; status?: string;
     read_time?: string; tags?: string;
   }>();
   if (!body.title || !body.slug || !body.content) return c.json({ error: 'title, slug, content required' }, 400);
 
   const result = await c.env.DB.prepare(
-    `INSERT INTO blog_posts (title, slug, content, excerpt, featured_image_url, category, status, read_time, tags, published_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CASE WHEN ? = 'published' THEN datetime('now') ELSE NULL END)`
+    `INSERT INTO blog_posts (title, slug, content, excerpt, featured_image_url, gallery_images, category, status, read_time, tags, published_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CASE WHEN ? = 'published' THEN datetime('now') ELSE NULL END)`
   ).bind(
-    body.title, body.slug, body.content, body.excerpt ?? null, body.featured_image_url ?? null,
+    body.title, body.slug, body.content, body.excerpt ?? null, body.featured_image_url ?? null, body.gallery_images ?? null,
     body.category ?? 'Photography Tips & Techniques', body.status ?? 'draft',
     body.read_time ?? '5 min read', body.tags ?? null, body.status ?? 'draft'
   ).run();
@@ -82,7 +82,7 @@ blog.post('/', requireAuth, async (c) => {
 blog.put('/:id', requireAuth, async (c) => {
   const body = await c.req.json<{
     title?: string; content?: string; excerpt?: string; featured_image_url?: string;
-    category?: string; status?: string; read_time?: string; tags?: string;
+    gallery_images?: string; category?: string; status?: string; read_time?: string; tags?: string;
   }>();
   await c.env.DB.prepare(
     `UPDATE blog_posts SET
@@ -90,6 +90,7 @@ blog.put('/:id', requireAuth, async (c) => {
       content            = COALESCE(?, content),
       excerpt            = COALESCE(?, excerpt),
       featured_image_url = COALESCE(?, featured_image_url),
+      gallery_images     = COALESCE(?, gallery_images),
       category           = COALESCE(?, category),
       status             = COALESCE(?, status),
       read_time          = COALESCE(?, read_time),
@@ -98,7 +99,7 @@ blog.put('/:id', requireAuth, async (c) => {
       updated_at         = datetime('now')
      WHERE id = ?`
   ).bind(
-    body.title ?? null, body.content ?? null, body.excerpt ?? null, body.featured_image_url ?? null,
+    body.title ?? null, body.content ?? null, body.excerpt ?? null, body.featured_image_url ?? null, body.gallery_images ?? null,
     body.category ?? null, body.status ?? null, body.read_time ?? null, body.tags ?? null,
     body.status ?? null, c.req.param('id')
   ).run();

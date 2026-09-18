@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, ArrowRight, Calendar, Tag } from 'lucide-react';
+import { Clock, ArrowRight, Calendar, Tag, Camera } from 'lucide-react';
 import Layout from '../components/Layout';
-import { BlogData, BlogPost } from '@/types/content';
+import { BlogData, BlogPost, parseGalleryImages } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
 
@@ -20,6 +20,7 @@ const mapApiPost = (p: any): BlogPost => ({
   content: p.content ?? '',
   category: p.category ?? '',
   image: p.featured_image_url ?? '',
+  galleryImages: parseGalleryImages(p.gallery_images),
   date: formatApiDate(p.published_at ?? p.created_at),
   readTime: p.read_time ?? '',
   slug: p.slug,
@@ -139,15 +140,22 @@ const Journal = () => {
             >
               {/* Background Image */}
               <div className="absolute inset-0">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover hero-image"
-                  style={{
-                    transform: 'translateZ(0)',
-                    backfaceVisibility: 'hidden'
-                  }}
-                />
+                {post.image ? (
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-full object-cover hero-image"
+                    style={{
+                      transform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden'
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full bg-gradient-to-br from-neutral-900 via-black to-neutral-900"
+                    aria-hidden="true"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
               </div>
               
@@ -199,11 +207,17 @@ const Journal = () => {
                   <div className="hidden lg:block">
                     <div className="relative">
                       <div className="aspect-[4/5] bg-gradient-to-br from-photo-red/20 to-transparent p-1 rounded-2xl">
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-full h-full object-cover rounded-xl shadow-2xl"
-                        />
+                        {post.image ? (
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover rounded-xl shadow-2xl"
+                          />
+                        ) : (
+                          <div className="w-full h-full rounded-xl bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+                            <Camera className="w-16 h-16 text-gray-700" />
+                          </div>
+                        )}
                       </div>
                       <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-photo-red/20 rounded-full blur-xl"></div>
                       <div className="absolute -top-4 -left-4 w-16 h-16 border-2 border-photo-red/30 rounded-full"></div>
@@ -309,11 +323,17 @@ const Journal = () => {
                 <article className="bg-black rounded-2xl overflow-hidden border border-gray-800 hover:border-photo-red/30 transition-all duration-500 hover:shadow-2xl hover:shadow-photo-red/10">
                   {/* Image Container */}
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {post.image ? (
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black flex items-center justify-center">
+                        <Camera className="w-12 h-12 text-gray-700" />
+                      </div>
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                     
                     {/* Category Badge */}

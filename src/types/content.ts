@@ -39,10 +39,25 @@ export interface BlogPost {
   content: string;
   category: string;
   image: string;
+  galleryImages: string[];
   date: string;
   readTime: string;
   slug: string;
 }
+
+// Parse the worker's gallery_images JSON column into a clean string array.
+export const parseGalleryImages = (v: unknown): string[] => {
+  if (Array.isArray(v)) return v.filter((x): x is string => typeof x === 'string' && x.length > 0);
+  if (typeof v !== 'string' || !v.trim()) return [];
+  try {
+    const parsed: unknown = JSON.parse(v);
+    return Array.isArray(parsed)
+      ? parsed.filter((x): x is string => typeof x === 'string' && x.length > 0)
+      : [];
+  } catch {
+    return [];
+  }
+};
 
 export interface BlogData {
   posts: BlogPost[];
