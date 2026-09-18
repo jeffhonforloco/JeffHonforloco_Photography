@@ -6,9 +6,27 @@ import { BlogData, BlogPost } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
 
+const formatApiDate = (v: string | null | undefined): string => {
+  if (!v) return '';
+  const d = new Date(String(v).replace(' ', 'T'));
+  return isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+};
+
+// Map a worker /api/v1/blog post to the public BlogPost shape.
+const mapApiPost = (p: any): BlogPost => ({
+  id: String(p.id),
+  title: p.title,
+  excerpt: p.excerpt ?? '',
+  content: p.content ?? '',
+  category: p.category ?? '',
+  image: p.featured_image_url ?? '',
+  date: formatApiDate(p.published_at ?? p.created_at),
+  readTime: p.read_time ?? '',
+  slug: p.slug,
+});
+
 const Journal = () => {
-  const [blogData, setBlogData] = useState<BlogData | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [blogData, setBlogData] = useState<BlogData | null>(null);  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -34,29 +52,28 @@ const Journal = () => {
   };
 
   useEffect(() => {
-    const workerBase = import.meta.env.VITE_JOURNAL_API_URL as string | undefined;
-    const url = workerBase ? `${workerBase}/api/journal/posts` : '/data/blog-posts.json';
+    // Live blog API first (admin-published posts); static JSON as fallback.
+    const apiBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
-    fetch(url)
-      .then(res => res.json())
-      .then((data: BlogData) => {
-        setBlogData(data);
-        setTimeout(() => setIsLoaded(true), 300);
-      })
-      .catch(() => {
-        // Worker not yet deployed — fall back to static JSON
-        if (workerBase) {
-          fetch('/data/blog-posts.json')
-            .then(res => res.json())
-            .then((data: BlogData) => {
-              setBlogData(data);
-              setTimeout(() => setIsLoaded(true), 300);
-            })
-            .catch(() => setIsLoaded(true));
-        } else {
-          setIsLoaded(true);
-        }
-      });
+    const apply = (data: BlogData) => {
+      setBlogData(data);
+      setTimeout(() => setIsLoaded(true), 300);
+    };
+    const fallback = () => {
+      fetch('/data/blog-posts.json')
+        .then(res => res.json())
+        .then((data: BlogData) => apply(data))
+        .catch(() => setIsLoaded(true));
+    };
+
+    if (apiBase) {
+      fetch(`${apiBase}/api/v1/blog?limit=50`)
+        .then(res => { if (!res.ok) throw new Error('blog api failed'); return res.json(); })
+        .then((d) => apply({ posts: (d.posts ?? []).map(mapApiPost), categories: d.categories ?? [] }))
+        .catch(fallback);
+    } else {
+      fallback();
+    }
   }, []);
 
   // Auto-slide functionality

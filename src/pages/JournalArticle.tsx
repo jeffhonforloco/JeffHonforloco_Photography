@@ -9,6 +9,25 @@ import { toast } from '@/components/ui/use-toast';
 // Renders HTML content from the Worker, or plain text from the static JSON fallback.
 const HTML_TAG = /<[a-z][\s\S]*>/i;
 
+const formatApiDate = (v: string | null | undefined): string => {
+  if (!v) return '';
+  const d = new Date(String(v).replace(' ', 'T'));
+  return isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+};
+
+// Map a worker /api/v1/blog post to the public BlogPost shape.
+const mapApiPost = (p: any): BlogPost => ({
+  id: String(p.id),
+  title: p.title,
+  excerpt: p.excerpt ?? '',
+  content: p.content ?? '',
+  category: p.category ?? '',
+  image: p.featured_image_url ?? '',
+  date: formatApiDate(p.published_at ?? p.created_at),
+  readTime: p.read_time ?? '',
+  slug: p.slug,
+});
+
 const ARTICLE_SERVICE_LINKS: Record<string, Array<{ path: string; label: string }>> = {
   'how-to-prepare-beauty-photography-session': [
     { path: '/providence-beauty-photographer', label: 'Providence beauty photography services' },
@@ -53,7 +72,8 @@ const JournalArticle = () => {
   const [newsletterLoading, setNewsletterLoading] = useState(false);
 
   useEffect(() => {
-    const workerBase = import.meta.env.VITE_JOURNAL_API_URL as string | undefined;
+    // Live blog API first (admin-published posts); static JSON as fallback.
+    const apiBase = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
     const loadFromData = (data: BlogData) => {
       setBlogData(data);
@@ -70,37 +90,33 @@ const JournalArticle = () => {
       }
     };
 
-    if (workerBase) {
-      // Try Worker API first: single-post endpoint
-      fetch(`${workerBase}/api/journal/posts/${slug}`)
-        .then(res => {
-          if (!res.ok) throw new Error('not found');
-          return res.json();
-        })
-        .then((post: BlogPost) => {
-          setArticle(post);
-          // Fetch related posts
-          return fetch(`${workerBase}/api/journal/posts?category=${encodeURIComponent(post.category)}&limit=4`);
-        })
-        .then(res => res.json())
-        .then((data: BlogData) => {
-          setBlogData(data);
-          setRelatedArticles(
-            (data.posts || []).filter((p: BlogPost) => p.id !== slug && p.slug !== slug).slice(0, 3)
-          );
-        })
-        .catch(() => {
-          // Worker not deployed yet — fall back to static JSON
-          fetch('/data/blog-posts.json')
-            .then(r => r.json())
-            .then(loadFromData)
-            .catch(() => setNotFound(true));
-        });
-    } else {
+    const fallback = () => {
       fetch('/data/blog-posts.json')
         .then(r => r.json())
         .then(loadFromData)
         .catch(() => setNotFound(true));
+    };
+
+    if (apiBase) {
+      // Single published post by slug, then related posts from the live list.
+      fetch(`${apiBase}/api/v1/blog/slug/${slug}`)
+        .then(res => { if (!res.ok) throw new Error('not found'); return res.json(); })
+        .then((d) => {
+          const post = mapApiPost(d.post ?? d.data);
+          setArticle(post);
+          return fetch(`${apiBase}/api/v1/blog?limit=50`)
+            .then(r => (r.ok ? r.json() : { posts: [], categories: [] }))
+            .then((list) => {
+              const posts = (list.posts ?? []).map(mapApiPost);
+              setBlogData({ posts, categories: list.categories ?? [] });
+              setRelatedArticles(
+                posts.filter((p: BlogPost) => p.slug !== post.slug && p.category === post.category).slice(0, 3)
+              );
+            });
+        })
+        .catch(fallback);
+    } else {
+      fallback();
     }
   }, [slug]);
 

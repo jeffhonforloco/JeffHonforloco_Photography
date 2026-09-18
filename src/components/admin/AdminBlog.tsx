@@ -93,7 +93,7 @@ const AdminBlog: React.FC = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(apiUrl('/api/v1/blog'), {
+      const response = await fetch(apiUrl('/api/v1/blog?status=all'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
