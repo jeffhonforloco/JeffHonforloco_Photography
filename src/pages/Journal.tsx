@@ -5,7 +5,6 @@ import Layout from '../components/Layout';
 import { BlogData, BlogPost, parseGalleryImages } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
-import { journalImagePosition } from '../utils/journalImage';
 
 const formatApiDate = (v: string | null | undefined): string => {
   if (!v) return '';
@@ -145,11 +144,10 @@ const Journal = () => {
                   <img
                     src={post.image}
                     alt={post.title}
-                    className="w-full h-full object-cover hero-image"
+                    className="w-full h-full object-contain hero-image"
                     style={{
                       transform: 'translateZ(0)',
                       backfaceVisibility: 'hidden',
-                      objectPosition: journalImagePosition(post.image),
                     }}
                   />
                 ) : (
@@ -213,8 +211,7 @@ const Journal = () => {
                           <img
                             src={post.image}
                             alt={post.title}
-                            className="w-full h-full object-cover rounded-xl shadow-2xl"
-                            style={{ objectPosition: journalImagePosition(post.image) }}
+                            className="w-full h-full object-contain rounded-xl shadow-2xl"
                           />
                         ) : (
                           <div className="w-full h-full rounded-xl bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
@@ -330,8 +327,7 @@ const Journal = () => {
                       <img
                         src={post.image}
                         alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        style={{ objectPosition: journalImagePosition(post.image) }}
+                        className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
                       />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black flex items-center justify-center">

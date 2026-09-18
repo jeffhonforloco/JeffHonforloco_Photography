@@ -5,7 +5,6 @@ import Layout from '../components/Layout';
 import { BlogData, BlogPost, parseGalleryImages } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
-import { journalImagePosition } from '../utils/journalImage';
 import SEO from '../components/SEO';
 import {
   Carousel,
@@ -246,8 +245,7 @@ const JournalArticle = () => {
             <img
               src={article.image}
               alt={article.title}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: journalImagePosition(article.image) }}
+              className="w-full h-full object-contain"
             />
           ) : (
             <div
@@ -346,8 +344,7 @@ const JournalArticle = () => {
                       <img
                         src={src}
                         alt={`${article.title} — photo ${i + 1}`}
-                        className="w-full h-[50vh] md:h-[65vh] object-cover"
-                        style={{ objectPosition: journalImagePosition(src) }}
+                        className="w-full h-[50vh] md:h-[65vh] object-contain"
                         loading="lazy"
                       />
                     </div>
@@ -382,7 +379,7 @@ const JournalArticle = () => {
               {relatedArticles.map((relatedArticle: BlogPost) => (
                 <Link
                   key={relatedArticle.id}
-                  to={`/journal/${relatedArticle.id}`}
+                  to={`/journal/${relatedArticle.slug ?? relatedArticle.id}`}
                   className="group block animate-fade-in hover-scale"
                 >
                   <article className="bg-black rounded-xl overflow-hidden border border-gray-800 hover:border-photo-red/30 transition-all duration-500">
@@ -391,8 +388,7 @@ const JournalArticle = () => {
                         <img
                           src={relatedArticle.image}
                           alt={relatedArticle.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          style={{ objectPosition: journalImagePosition(relatedArticle.image) }}
+                          className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
