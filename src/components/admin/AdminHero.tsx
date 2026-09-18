@@ -56,17 +56,17 @@ const AdminHero = () => {
       try {
         const token = localStorage.getItem('adminToken');
         const headers: HeadersInit = { 'Authorization': `Bearer ${token}` };
-        const [settingsRes, imagesRes] = await Promise.all([
-          fetch(apiUrl('/api/v1/settings/hero_settings'), { headers }),
-          fetch(apiUrl('/api/v1/settings/hero_images'), { headers }),
-        ]);
-        const settingsData = await settingsRes.json();
-        const imagesData = await imagesRes.json();
-        if (settingsData.success && settingsData.data) {
-          setHeroSettings(prev => ({ ...prev, ...settingsData.data }));
+        const res = await fetch(apiUrl('/api/v1/settings'), { headers });
+        const payload = await res.json();
+        const all = (payload.success && payload.data) || {};
+        if (all.hero_settings) {
+          try { setHeroSettings(prev => ({ ...prev, ...JSON.parse(all.hero_settings) })); } catch { /* keep defaults */ }
         }
-        if (imagesData.success && Array.isArray(imagesData.data) && imagesData.data.length > 0) {
-          setPortfolioImages(imagesData.data);
+        if (all.hero_images) {
+          try {
+            const arr = JSON.parse(all.hero_images);
+            if (Array.isArray(arr) && arr.length > 0) setPortfolioImages(arr);
+          } catch { /* keep defaults */ }
         }
       } catch { /* use defaults */ }
     };
@@ -81,18 +81,13 @@ const AdminHero = () => {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       };
-      await Promise.all([
-        fetch(apiUrl('/api/v1/settings/hero_settings'), {
-          method: 'PUT',
-          headers,
-          body: JSON.stringify(heroSettings),
-        }),
-        fetch(apiUrl('/api/v1/settings/hero_images'), {
-          method: 'PUT',
-          headers,
-          body: JSON.stringify(portfolioImages),
-        }),
-      ]);
+      const res = await fetch(apiUrl('/api/v1/settings'), {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ hero_settings: heroSettings, hero_images: portfolioImages }),
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || !out.success) throw new Error(out.error || `Save failed (HTTP ${res.status})`);
       toast({
         title: 'Hero Settings Saved',
         description: 'Homepage hero section has been updated successfully.',
@@ -127,14 +122,15 @@ const AdminHero = () => {
       const token = localStorage.getItem('adminToken');
       const formData = new FormData();
       formData.append('image', file);
-      const res = await fetch(apiUrl('/api/v1/upload'), {
+      const res = await fetch(apiUrl('/api/v1/admin/media/upload'), {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData,
       });
       const data = await res.json();
-      if (data.success) {
-        setPortfolioImages(prev => [...prev, data.url]);
+      const url = data?.data?.url;
+      if (data.success && url) {
+        setPortfolioImages(prev => [...prev, url]);
         toast({ title: 'Image Uploaded', description: 'Image added to hero slideshow.' });
       } else {
         toast({ title: 'Upload Failed', description: data.message || 'Unknown error', variant: 'destructive' });
