@@ -222,6 +222,8 @@ const Journal = () => {
                           <img
                             src={post.image}
                             alt={post.title}
+                            loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-contain rounded-xl shadow-2xl"
                           />
                         ) : (
@@ -338,6 +340,8 @@ const Journal = () => {
                       <img
                         src={post.image}
                         alt={post.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
                       />
                     ) : (

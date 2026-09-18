@@ -80,6 +80,28 @@ const JournalArticle = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [publishedIso, setPublishedIso] = useState<string>('');
+  const [shareCopied, setShareCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = article?.title ?? document.title;
+    // Native share sheet on mobile; clipboard fallback on desktop.
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url });
+      } catch {
+        // User dismissed the share sheet — no action needed.
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      toast({ title: 'Copy this link', description: url });
+    }
+  };
 
   useEffect(() => {
     // Live blog API first (admin-published posts); static JSON as fallback.
@@ -292,9 +314,12 @@ const JournalArticle = () => {
           </div>
           
           {/* Share Button */}
-          <button className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-white hover:bg-white/20 transition-all duration-300">
+          <button
+            onClick={handleShare}
+            className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-white hover:bg-white/20 transition-all duration-300"
+          >
             <Share2 className="w-4 h-4 mr-2" />
-            Share Article
+            {shareCopied ? 'Link Copied!' : 'Share Article'}
           </button>
         </div>
       </section>
