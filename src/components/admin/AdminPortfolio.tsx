@@ -128,13 +128,16 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const createPortfolioImage = async (imageData: Partial<PortfolioImage>) => {
     try {
       const token = localStorage.getItem('adminToken');
+      // The API requires a category; the dropdown displays "beauty" by default,
+      // so make the submitted payload match what the user sees.
+      const payload = { category: 'beauty', ...imageData };
       const response = await fetch(apiUrl('/api/v1/portfolio'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(imageData)
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) {
@@ -392,7 +395,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
             Refresh
           </Button>
           <Button onClick={() => {
-            setEditForm(initialCategory === 'all' ? {} : { category: initialCategory });
+            setEditForm(initialCategory === 'all' ? { category: 'beauty' } : { category: initialCategory });
             setIsEditing(false);
             setSelectedImage(null);
             setDialogError(null);
