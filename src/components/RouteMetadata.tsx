@@ -110,6 +110,20 @@ const getRouteMeta = (pathname: string): RouteMeta => {
 const RouteMetadata = () => {
   const { pathname } = useLocation();
   const normalizedPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  // Article pages own their SEO: JournalArticle renders per-article meta,
+  // canonical and BlogPosting schema once the post loads. Rendering the
+  // generic route tags here too would duplicate the Article structured data.
+  const isArticleRoute = normalizedPath.startsWith('/journal/');
+
+  // Static route entry points give crawlers correct metadata before JS runs.
+  // Once React is active, remove those copies so Helmet owns one canonical and
+  // one description during client-side navigation.
+  useEffect(() => {
+    document.head.querySelectorAll('[data-static-meta="true"]').forEach((element) => element.remove());
+  }, [normalizedPath]);
+
+  if (isArticleRoute) return null;
+
   const meta = getRouteMeta(normalizedPath);
   const servicePage = SERVICE_AUTHORITY_BY_PATH[normalizedPath];
   const additionalSchemas = servicePage ? [
@@ -147,13 +161,6 @@ const RouteMetadata = () => {
       })),
     },
   ] : [];
-
-  // Static route entry points give crawlers correct metadata before JS runs.
-  // Once React is active, remove those copies so Helmet owns one canonical and
-  // one description during client-side navigation.
-  useEffect(() => {
-    document.head.querySelectorAll('[data-static-meta="true"]').forEach((element) => element.remove());
-  }, [normalizedPath]);
 
   return <SEO title={meta.title} description={meta.description} image={meta.image} url={normalizedPath} noIndex={meta.noIndex} type={normalizedPath.startsWith('/journal/') ? 'article' : 'website'} additionalSchemas={additionalSchemas} />;
 };
