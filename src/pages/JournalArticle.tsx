@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import { BlogData, BlogPost } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
+import SEO from '../components/SEO';
 
 // Renders HTML content from the Worker, or plain text from the static JSON fallback.
 const HTML_TAG = /<[a-z][\s\S]*>/i;
@@ -70,6 +71,7 @@ const JournalArticle = () => {
   const [relatedArticles, setRelatedArticles] = useState<BlogPost[]>([]);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [publishedIso, setPublishedIso] = useState<string>('');
 
   useEffect(() => {
     // Live blog API first (admin-published posts); static JSON as fallback.
@@ -102,8 +104,11 @@ const JournalArticle = () => {
       fetch(`${apiBase}/api/v1/blog/slug/${slug}`)
         .then(res => { if (!res.ok) throw new Error('not found'); return res.json(); })
         .then((d) => {
-          const post = mapApiPost(d.post ?? d.data);
+          const raw = d.post ?? d.data;
+          const post = mapApiPost(raw);
           setArticle(post);
+          const iso = String(raw?.published_at ?? raw?.created_at ?? '').replace(' ', 'T');
+          if (iso) setPublishedIso(iso);
           return fetch(`${apiBase}/api/v1/blog?limit=50`)
             .then(r => (r.ok ? r.json() : { posts: [], categories: [] }))
             .then((list) => {
@@ -176,10 +181,52 @@ const JournalArticle = () => {
     );
   }
 
+  // Per-article SEO: description from excerpt/content, canonical URL, BlogPosting schema.
+  const stripTags = (s: string) => s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const seoDescription = (() => {
+    const fromExcerpt = stripTags(article?.excerpt ?? '');
+    if (fromExcerpt.length >= 40) {
+      return fromExcerpt.length > 157 ? fromExcerpt.slice(0, 157).trim() + '\u2026' : fromExcerpt;
+    }
+    const fromContent = stripTags(article?.content ?? '');
+    if (fromContent.length >= 40) {
+      return fromContent.length > 157 ? fromContent.slice(0, 157).trim() + '\u2026' : fromContent;
+    }
+    return `${article?.title ?? 'Journal'} \u2014 photography journal by Jeff Honforloco.`;
+  })();
+  const articleUrl = `https://jeffhonforlocophotos.com/journal/${article?.slug ?? slug ?? ''}`;
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: article?.title ?? '',
+    description: seoDescription,
+    ...(article?.image ? { image: article.image } : {}),
+    author: {
+      '@type': 'Person',
+      name: 'Jeff Honforloco',
+      url: 'https://jeffhonforlocophotos.com/about',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Jeff Honforloco Photography',
+      url: 'https://jeffhonforlocophotos.com/',
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+    ...(publishedIso ? { datePublished: publishedIso } : {}),
+  };
+
   const articleServiceLinks = ARTICLE_SERVICE_LINKS[article.slug ?? article.id] ?? [];
 
   return (
     <Layout>
+      <SEO
+        title={`${article.title} | Jeff Honforloco Photography`}
+        description={seoDescription}
+        image={article.image || undefined}
+        url={`/journal/${article.slug ?? slug}`}
+        type="article"
+        additionalSchemas={[articleSchema]}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center justify-center pt-20">
         <div className="absolute inset-0">
