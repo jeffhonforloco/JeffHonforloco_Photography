@@ -67,6 +67,7 @@ const AdminBlog: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [deletePostId, setDeletePostId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<BlogPost>>({});
 
   useEffect(() => {
@@ -196,10 +197,6 @@ const AdminBlog: React.FC = () => {
   };
 
   const deleteBlogPost = async (postId: number) => {
-    if (!confirm('Are you sure you want to delete this blog post?')) {
-      return;
-    }
-
     try {
       const token = localStorage.getItem('adminToken');
       const response = await fetch(apiUrl(`/api/v1/blog/${postId}`), {
@@ -216,6 +213,7 @@ const AdminBlog: React.FC = () => {
 
       // Update local state
       setBlogPosts(prev => prev.filter(post => post.id !== postId));
+      setDeletePostId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete blog post');
     }
@@ -399,7 +397,7 @@ const AdminBlog: React.FC = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => deleteBlogPost(post.id)}
+                          onClick={() => setDeletePostId(post.id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -513,6 +511,22 @@ const AdminBlog: React.FC = () => {
                 {isEditing ? 'Update' : 'Create'}
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete post confirmation (in-page; native confirm() never fires reliably) */}
+      <Dialog open={deletePostId !== null} onOpenChange={(open) => { if (!open) setDeletePostId(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete blog post?</DialogTitle>
+            <DialogDescription>This post will be permanently removed. This cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={() => setDeletePostId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => { if (deletePostId !== null) void deleteBlogPost(deletePostId); }}>
+              Delete Post
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
