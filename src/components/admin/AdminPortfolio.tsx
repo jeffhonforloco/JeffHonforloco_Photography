@@ -301,6 +301,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   /* ---- R2 media library ---- */
   const [mediaItems, setMediaItems] = useState<Array<{ key: string; url: string; thumbnail_url?: string; size: number; uploaded: string }>>([]);
   const [mediaLoading, setMediaLoading] = useState(false);
+  const [deleteMediaKey, setDeleteMediaKey] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
 
@@ -337,7 +338,6 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   };
 
   const deleteMediaItem = async (key: string) => {
-    if (!confirm('Delete this uploaded image?')) return;
     try {
       const token = localStorage.getItem('adminToken');
       const res = await fetch(apiUrl(`/api/v1/admin/media/${encodeURIComponent(key)}`), {
@@ -346,6 +346,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
       });
       if (!res.ok) throw new Error('Delete failed');
       setMediaItems((prev) => prev.filter((m) => m.key !== key));
+      setDeleteMediaKey(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');
     }
@@ -457,7 +458,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
                   <img src={m.thumbnail_url || m.url} alt={m.key} className="aspect-square w-full object-cover" loading="lazy" />
                   <div className="absolute inset-0 flex items-center justify-center gap-1 bg-slate-950/60 opacity-0 transition-opacity group-hover:opacity-100">
                     <Button variant="secondary" size="sm" onClick={() => copyMediaUrl(m.url)}>Copy URL</Button>
-                    <Button variant="destructive" size="sm" onClick={() => deleteMediaItem(m.key)}><Trash2 className="h-3 w-3" /></Button>
+                    <Button variant="destructive" size="sm" onClick={() => setDeleteMediaKey(m.key)}><Trash2 className="h-3 w-3" /></Button>
                   </div>
                 </div>
               ))}
@@ -770,6 +771,22 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete media confirmation (in-page; native confirm() never fires reliably) */}
+      <Dialog open={deleteMediaKey !== null} onOpenChange={(open) => { if (!open) setDeleteMediaKey(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete image?</DialogTitle>
+            <DialogDescription>This uploaded image will be permanently removed from cloud storage. This cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDeleteMediaKey(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => { if (deleteMediaKey) void deleteMediaItem(deleteMediaKey); }}>
+              Delete Image
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
