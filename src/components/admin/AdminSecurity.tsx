@@ -51,6 +51,7 @@ const AdminSecurity: React.FC = () => {
   const [stats, setStats] = useState<SecurityStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -103,6 +104,7 @@ const AdminSecurity: React.FC = () => {
   };
 
   const changePassword = async () => {
+    setSuccess(null);
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -138,7 +140,7 @@ const AdminSecurity: React.FC = () => {
         confirmPassword: ''
       });
       setError(null);
-      alert('Password changed successfully');
+      setSuccess('Password changed successfully');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Password change failed');
     }
@@ -294,6 +296,9 @@ const AdminSecurity: React.FC = () => {
             </div>
             {error && (
               <div className="text-red-500 text-sm">{error}</div>
+            )}
+            {success && (
+              <div className="text-green-600 text-sm">{success}</div>
             )}
             <Button onClick={changePassword} className="w-full">
               <Key className="h-4 w-4 mr-2" />

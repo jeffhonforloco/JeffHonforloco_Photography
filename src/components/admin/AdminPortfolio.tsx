@@ -75,6 +75,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
   const mediaInputRef = useRef<HTMLInputElement>(null);
   const [viewImage, setViewImage] = useState<PortfolioImage | null>(null);
   const [dialogError, setDialogError] = useState<string | null>(null);
+  const [deleteImageId, setDeleteImageId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchPortfolioImages();
@@ -183,14 +184,12 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
     }
   };
 
-  const deletePortfolioImage = async (imageId: number) => {
-    if (!confirm('Are you sure you want to delete this portfolio image?')) {
-      return;
-    }
+  const deletePortfolioImage = async () => {
+    if (deleteImageId === null) return;
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(apiUrl(`/api/v1/portfolio/${imageId}`), {
+      const response = await fetch(apiUrl(`/api/v1/portfolio/${deleteImageId}`), {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -203,8 +202,11 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
       }
 
       // Update local state
-      setPortfolioImages(prev => prev.filter(image => image.id !== imageId));
+      const id = deleteImageId;
+      setDeleteImageId(null);
+      setPortfolioImages(prev => prev.filter(image => image.id !== id));
     } catch (err) {
+      setDeleteImageId(null);
       setError(err instanceof Error ? err.message : 'Failed to delete portfolio image');
     }
   };
@@ -571,7 +573,7 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => deletePortfolioImage(image.id)}
+                        onClick={() => setDeleteImageId(image.id)}
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -771,6 +773,22 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete portfolio image confirmation (in-page; native confirm() never fires reliably) */}
+      <Dialog open={deleteImageId !== null} onOpenChange={(open) => { if (!open) setDeleteImageId(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete portfolio image?</DialogTitle>
+            <DialogDescription>This portfolio image will be permanently removed. This cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDeleteImageId(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={() => void deletePortfolioImage()}>
+              Delete Image
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 

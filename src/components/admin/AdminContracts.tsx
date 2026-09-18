@@ -168,7 +168,7 @@ const AdminContracts: React.FC = () => {
       if (!out.success) throw new Error(out.error || 'Send failed');
       setSendResult(out.data);
       load(); openDetail(id);
-    } catch (e) { alert(e instanceof Error ? e.message : 'Send failed'); }
+    } catch (e) { setError(e instanceof Error ? e.message : 'Send failed'); }
     setSending(false);
   };
 
@@ -177,7 +177,7 @@ const AdminContracts: React.FC = () => {
       method: 'PUT', headers: authHeaders(), body: JSON.stringify({ status: 'completed' }),
     });
     const out = await res.json();
-    if (out.success) { setConfirmCompleteId(null); load(); openDetail(id); } else alert(out.error || 'Failed');
+    if (out.success) { setConfirmCompleteId(null); load(); openDetail(id); } else setError(out.error || 'Failed');
   };
 
   const del = async (id: number) => {
@@ -185,7 +185,7 @@ const AdminContracts: React.FC = () => {
     try {
       const res = await fetch(apiUrl(`/api/v1/admin/contracts/${id}`), { method: 'DELETE', headers: authHeaders() });
       const out = await res.json();
-      if (out.success) { setDetail(null); setConfirmDeleteId(null); load(); } else alert(out.error || 'Delete failed');
+      if (out.success) { setDetail(null); setConfirmDeleteId(null); load(); } else setError(out.error || 'Delete failed');
     } finally {
       setDeleting(false);
     }
@@ -206,7 +206,7 @@ const AdminContracts: React.FC = () => {
       const out = await res.json();
       if (!out.success) throw new Error(out.error || 'Save failed');
       setEditingTemplate(null); loadTemplates();
-    } catch (e) { alert(e instanceof Error ? e.message : 'Save failed'); }
+    } catch (e) { setError(e instanceof Error ? e.message : 'Save failed'); }
     setSavingTemplate(false);
   };
 
