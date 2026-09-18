@@ -71,6 +71,8 @@ const AdminBlog: React.FC = () => {
   const [deletePostId, setDeletePostId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<Partial<BlogPost>>({});
   const [galleryInput, setGalleryInput] = useState('');
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewSlide, setPreviewSlide] = useState(0);
 
   // Gallery slider images: stored as a JSON array string in editForm.gallery_images.
   const galleryList: string[] = (() => {
@@ -585,6 +587,14 @@ const AdminBlog: React.FC = () => {
 
             <div className="flex justify-end space-x-2">
               <Button
+                type="button"
+                variant="outline"
+                onClick={() => { setPreviewSlide(0); setIsPreviewOpen(true); }}
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Preview
+              </Button>
+              <Button
                 variant="outline"
                 onClick={() => {
                   setIsDialogOpen(false);
@@ -601,6 +611,85 @@ const AdminBlog: React.FC = () => {
                 {isEditing ? 'Update' : 'Create'}
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Article preview — renders the draft exactly as it will look on the public journal page */}
+      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-black text-white border-neutral-800">
+          <DialogHeader>
+            <DialogTitle className="text-white">Article Preview</DialogTitle>
+            <DialogDescription className="text-neutral-400">
+              How this article will look on the public journal page. Draft — not published.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="rounded-lg">
+            {galleryList.length > 0 ? (
+              <div className="relative bg-neutral-900 rounded-lg overflow-hidden mb-8">
+                <div className="aspect-[4/3] w-full">
+                  <img
+                    src={galleryList[Math.min(previewSlide, galleryList.length - 1)]}
+                    alt={`Preview slide ${Math.min(previewSlide, galleryList.length - 1) + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {galleryList.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="Previous photo"
+                      onClick={() => setPreviewSlide((previewSlide - 1 + galleryList.length) % galleryList.length)}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/55 border border-white/25 text-white text-lg hover:bg-[#C8102E] hover:border-[#C8102E] transition-colors"
+                    >
+                      &#10094;
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Next photo"
+                      onClick={() => setPreviewSlide((previewSlide + 1) % galleryList.length)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full bg-black/55 border border-white/25 text-white text-lg hover:bg-[#C8102E] hover:border-[#C8102E] transition-colors"
+                    >
+                      &#10095;
+                    </button>
+                    <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
+                      {galleryList.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          aria-label={`Photo ${i + 1}`}
+                          onClick={() => setPreviewSlide(i)}
+                          className={`h-2.5 w-2.5 rounded-full p-0 ${i === previewSlide ? 'bg-[#C8102E]' : 'bg-white/35 hover:bg-white/60'}`}
+                        />
+                      ))}
+                    </div>
+                    <div className="absolute top-3 right-3 bg-black/60 text-xs tracking-widest px-3 py-1.5 rounded-full">
+                      {previewSlide + 1} / {galleryList.length}
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className="border border-dashed border-neutral-700 rounded-lg text-center text-neutral-500 py-10 mb-8 text-sm">
+                No slider images — this article will show without a photo gallery.
+              </div>
+            )}
+            <div className="text-[#C8102E] text-xs tracking-[0.18em] uppercase mb-4">
+              {editForm.category || 'Uncategorized'}
+            </div>
+            <h1 className="font-playfair text-4xl md:text-5xl font-light mb-4 leading-tight">
+              {editForm.title || 'Untitled article'}
+            </h1>
+            {editForm.excerpt && (
+              <p className="text-neutral-400 text-lg font-light mb-8">{editForm.excerpt}</p>
+            )}
+            <div
+              className="article-body text-neutral-300 leading-relaxed text-lg space-y-6"
+              dangerouslySetInnerHTML={{ __html: editForm.content || '<p class="text-neutral-500">No content yet.</p>' }}
+            />
+          </div>
+          <div className="flex justify-end pt-2">
+            <Button variant="outline" onClick={() => setIsPreviewOpen(false)}>Close preview</Button>
           </div>
         </DialogContent>
       </Dialog>
