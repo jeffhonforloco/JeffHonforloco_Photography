@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import { BlogData, BlogPost, parseGalleryImages } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
+import { journalImagePosition } from '../utils/journalImage';
 import SEO from '../components/SEO';
 import {
   Carousel,
@@ -246,6 +247,7 @@ const JournalArticle = () => {
               src={article.image}
               alt={article.title}
               className="w-full h-full object-cover"
+              style={{ objectPosition: journalImagePosition(article.image) }}
             />
           ) : (
             <div
@@ -345,6 +347,7 @@ const JournalArticle = () => {
                         src={src}
                         alt={`${article.title} — photo ${i + 1}`}
                         className="w-full h-[50vh] md:h-[65vh] object-cover"
+                        style={{ objectPosition: journalImagePosition(src) }}
                         loading="lazy"
                       />
                     </div>
@@ -389,6 +392,7 @@ const JournalArticle = () => {
                           src={relatedArticle.image}
                           alt={relatedArticle.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          style={{ objectPosition: journalImagePosition(relatedArticle.image) }}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
