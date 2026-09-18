@@ -46,11 +46,14 @@ const HeroImageGrid = () => {
     // The server-rendered initial ranges cover the viewport plus several
     // upcoming tiles. Let those priority decisions settle before sampling the
     // animated columns; an immediate full-grid layout read competes with LCP.
+    // DIAGNOSTIC: sampler paused to isolate 4.1s LCP cause
     let interval: number | undefined;
-    const samplingDelay = window.setTimeout(() => {
-      loadUpcomingImages();
-      interval = window.setInterval(loadUpcomingImages, 1500);
-    }, 4000);
+    const samplingDelay = 0; // window.setTimeout(() => {
+    //   loadUpcomingImages();
+    //   interval = window.setInterval(loadUpcomingImages, 1500);
+    // }, 4000);
+    void interval;
+    void loadUpcomingImages;
     window.addEventListener('resize', loadUpcomingImages, { passive: true });
     document.addEventListener('visibilitychange', loadUpcomingImages);
 
