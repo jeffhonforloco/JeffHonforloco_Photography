@@ -1,4 +1,5 @@
 import { CheckCircle, ArrowRight, MessageCircle, Smartphone, Film } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const PREVIEW_CATEGORIES = [
@@ -88,9 +89,9 @@ const PricingPreview = () => {
             asChild
             className="bg-photo-red hover:bg-photo-red-hover text-white px-8 py-3 text-base"
           >
-            <a href="/pricing">
+            <Link to="/pricing">
               See All Packages <ArrowRight className="w-4 h-4 ml-2" />
-            </a>
+            </Link>
           </Button>
           <Button
             variant="outline"

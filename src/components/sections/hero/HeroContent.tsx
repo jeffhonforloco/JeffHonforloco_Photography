@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const HeroContent = () => {
   return (
     <>
@@ -27,18 +29,18 @@ const HeroContent = () => {
             Providence · New England · Nationwide
           </p>
           <div className="flex flex-row gap-3 pointer-events-auto mb-2">
-            <a
-              href="/book"
+            <Link
+              to="/book"
               className="bg-photo-red hover:bg-photo-red-hover text-white px-5 py-2.5 font-inter font-medium tracking-[0.18em] uppercase text-[10px] transition-colors duration-300"
             >
               Book Session
-            </a>
-            <a
-              href="/portfolios"
+            </Link>
+            <Link
+              to="/portfolios"
               className="border border-white/70 hover:border-white text-white/90 hover:text-white px-5 py-2.5 font-inter font-light tracking-[0.18em] uppercase text-[10px] transition-colors duration-300"
             >
               View Work
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -70,18 +72,18 @@ const HeroContent = () => {
             Providence &middot; New England &middot; Nationwide
           </p>
           <div className="flex flex-row gap-4 pointer-events-auto">
-            <a
-              href="/book"
+            <Link
+              to="/book"
               className="bg-photo-red hover:bg-photo-red-hover text-white px-7 py-3 font-inter font-medium tracking-[0.2em] uppercase text-xs transition-colors duration-300"
             >
               Book a Session
-            </a>
-            <a
-              href="/portfolios"
+            </Link>
+            <Link
+              to="/portfolios"
               className="border border-white/65 hover:border-white text-white/85 hover:text-white px-7 py-3 font-inter font-light tracking-[0.2em] uppercase text-xs transition-colors duration-300"
             >
               View Portfolio
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -70,14 +70,14 @@ const Pricing = () => {
                 asChild
                 className="bg-photo-red hover:bg-photo-red-hover text-white px-8 py-3 text-base"
               >
-                <a href="/book">Book a Session</a>
+                <Link to="/book">Book a Session</Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
                 className="border-white/20 bg-white/5 text-white hover:bg-white/10 px-8 py-3 text-base"
               >
-                <a href="/pay">Pay Deposit / Balance</a>
+                <Link to="/pay">Pay Deposit / Balance</Link>
               </Button>
               <Button
                 variant="outline"
@@ -145,7 +145,7 @@ const Pricing = () => {
               size="sm"
               className="bg-photo-red hover:bg-photo-red-hover text-white flex-shrink-0"
             >
-              <a href="/book?service=headshots&tier=headshots-executive">Request a Proposal</a>
+              <Link to="/book?service=headshots&tier=headshots-executive">Request a Proposal</Link>
             </Button>
           </div>
         </section>
@@ -316,9 +316,9 @@ const Pricing = () => {
                                 : 'bg-white/10 hover:bg-white/20 text-white border border-white/10'
                             }`}
                           >
-                            <a href={`/book?service=${current.id}&tier=${tier.id}`}>
+                            <Link to={`/book?service=${current.id}&tier=${tier.id}`}>
                               Book This Package
-                            </a>
+                            </Link>
                           </Button>
                           {tier.price !== 'Custom' && (
                             <div className="grid grid-cols-2 gap-2">
@@ -327,18 +327,18 @@ const Pricing = () => {
                                 variant="outline"
                                 className="w-full border-photo-red/40 bg-photo-red/10 text-white hover:bg-photo-red/20 text-xs px-2"
                               >
-                                <a href={`/pay?service=${current.id}&tier=${encodeURIComponent(tier.name)}&pay=deposit`}>
+                                <Link to={`/pay?service=${current.id}&tier=${encodeURIComponent(tier.name)}&pay=deposit`}>
                                   Pay 75% Deposit
-                                </a>
+                                </Link>
                               </Button>
                               <Button
                                 asChild
                                 variant="outline"
                                 className="w-full border-white/20 bg-white/5 text-white hover:bg-white/10 text-xs px-2"
                               >
-                                <a href={`/pay?service=${current.id}&tier=${encodeURIComponent(tier.name)}&pay=full`}>
+                                <Link to={`/pay?service=${current.id}&tier=${encodeURIComponent(tier.name)}&pay=full`}>
                                   Pay in Full
-                                </a>
+                                </Link>
                               </Button>
                             </div>
                           )}
@@ -468,7 +468,7 @@ const Pricing = () => {
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Button asChild className="bg-photo-red hover:bg-photo-red-hover text-white px-8">
-                  <a href="/book?service=headshots&tier=headshots-executive">Request a Tailored Proposal</a>
+                  <Link to="/book?service=headshots&tier=headshots-executive">Request a Tailored Proposal</Link>
                 </Button>
                 <Button
                   variant="outline"
@@ -530,7 +530,7 @@ const Pricing = () => {
                     asChild
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                   >
-                    <a href="/book?service=motion">Book Motion Package</a>
+                    <Link to="/book?service=motion">Book Motion Package</Link>
                   </Button>
                   <Button
                     asChild
@@ -595,7 +595,7 @@ const Pricing = () => {
                 variant="outline"
                 className="border-white/20 bg-white/5 text-white hover:bg-white/10 px-8 py-3 text-base"
               >
-                <a href="/book">Go Straight to Booking</a>
+                <Link to="/book">Go Straight to Booking</Link>
               </Button>
             </div>
           </div>
