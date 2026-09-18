@@ -91,6 +91,7 @@ const AdminContracts: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const [confirmCompleteId, setConfirmCompleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
 
   const [templates, setTemplates] = useState<{ type: string; body_text: string }[]>([]);
@@ -172,12 +173,11 @@ const AdminContracts: React.FC = () => {
   };
 
   const markCompleted = async (id: number) => {
-    if (!confirm('Mark this contract as completed?')) return;
     const res = await fetch(apiUrl(`/api/v1/admin/contracts/${id}`), {
       method: 'PUT', headers: authHeaders(), body: JSON.stringify({ status: 'completed' }),
     });
     const out = await res.json();
-    if (out.success) { load(); openDetail(id); } else alert(out.error || 'Failed');
+    if (out.success) { setConfirmCompleteId(null); load(); openDetail(id); } else alert(out.error || 'Failed');
   };
 
   const del = async (id: number) => {
@@ -442,7 +442,7 @@ const AdminContracts: React.FC = () => {
                 </>
               )}
               {detail.status === 'signed' && (
-                <Button onClick={() => markCompleted(detail.id)}><Check className="mr-1 h-4 w-4" /> Mark completed</Button>
+                <Button onClick={() => setConfirmCompleteId(detail.id)}><Check className="mr-1 h-4 w-4" /> Mark completed</Button>
               )}
             </div>
             {(detail.status === 'signed' || detail.status === 'completed') && (
@@ -466,6 +466,20 @@ const AdminContracts: React.FC = () => {
               <Button onClick={() => del(confirmDeleteId)} disabled={deleting} className="bg-red-600 text-white hover:bg-red-700">
                 {deleting ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Trash2 className="mr-1 h-4 w-4" />}
                 {deleting ? 'Deleting…' : 'Delete'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {confirmCompleteId !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" role="alertdialog" aria-modal="true" aria-label="Confirm contract completion">
+          <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
+            <h3 className="text-lg font-bold text-neutral-900">Mark as completed?</h3>
+            <p className="mt-2 text-sm font-medium text-neutral-700">This will mark the contract as completed.</p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setConfirmCompleteId(null)}>Cancel</Button>
+              <Button onClick={() => markCompleted(confirmCompleteId)} className="bg-green-600 text-white hover:bg-green-700">
+                Mark completed
               </Button>
             </div>
           </div>
