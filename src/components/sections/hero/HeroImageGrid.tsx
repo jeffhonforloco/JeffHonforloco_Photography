@@ -16,6 +16,9 @@ const HeroImageGrid = () => {
       const pictureSource = image.parentElement?.querySelector('source');
       const sourceSet = pictureSource?.dataset.heroSrcset;
 
+      // Add the seamless scale before swapping the source so the tile never
+      // paints one unscaled frame.
+      image.classList.add('scale-[1.01]');
       if (pictureSource && sourceSet) pictureSource.srcset = sourceSet;
       if (source) image.src = source;
       delete image.dataset.heroSrc;
@@ -85,7 +88,7 @@ const HeroImageGrid = () => {
           src={isInitiallyVisible ? image.src : TRANSPARENT_PIXEL}
           data-hero-src={isInitiallyVisible ? undefined : image.src}
           alt={image.alt}
-          className="hero-image absolute inset-0 h-full w-full object-cover scale-[1.01]"
+          className={`hero-image absolute inset-0 h-full w-full object-cover${isInitiallyVisible ? ' scale-[1.01]' : ''}`}
           loading={isPriority ? 'eager' : 'lazy'}
           decoding={isPriority ? 'sync' : 'async'}
           {...{ fetchpriority: isPriority ? 'high' : 'low' }}
