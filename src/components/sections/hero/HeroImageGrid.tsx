@@ -45,41 +45,18 @@ const HeroImageGrid = () => {
 
     // The server-rendered initial ranges cover the viewport plus several
     // upcoming tiles. The images use data-hero-src (not src), so JS must swap
-    // them in — run once on mount so visible tiles load immediately. The
-    // repeating interval only starts after user interaction to avoid perturbing
-    // the LCP measurement during initial load.
+    // them in — run once on mount so visible tiles load immediately.
+    // The carousel animates continuously, so tiles scroll into view over time.
+    // The repeating interval must run from mount (not just after interaction),
+    // otherwise tiles that rotate into view stay blank. LCP is protected because
+    // the priority image already has fetchpriority="high" and a preload link.
     let interval: number | undefined;
     loadUpcomingImages();
-    const startSampling = () => {
-      if (interval !== undefined) return;
-      interval = window.setInterval(loadUpcomingImages, 1500);
-    };
-    const stopInteractionListeners = () => {
-      window.removeEventListener('scroll', onFirstInteraction);
-      window.removeEventListener('touchstart', onFirstInteraction);
-      window.removeEventListener('wheel', onFirstInteraction);
-    };
-    const onFirstInteraction = () => {
-      stopInteractionListeners();
-      startSampling();
-    };
-    window.addEventListener('scroll', onFirstInteraction, { passive: true });
-    window.addEventListener('touchstart', onFirstInteraction, { passive: true });
-    window.addEventListener('wheel', onFirstInteraction, { passive: true });
+    interval = window.setInterval(loadUpcomingImages, 1500);
     window.addEventListener('resize', loadUpcomingImages, { passive: true });
     document.addEventListener('visibilitychange', loadUpcomingImages);
 
     return () => {
-      if (interval !== undefined) window.clearInterval(interval);
-      stopInteractionListeners();
-      window.removeEventListener('resize', loadUpcomingImages);
-      document.removeEventListener('visibilitychange', loadUpcomingImages);
-    };
-    window.addEventListener('resize', loadUpcomingImages, { passive: true });
-    document.addEventListener('visibilitychange', loadUpcomingImages);
-
-    return () => {
-      window.clearTimeout(samplingDelay);
       if (interval !== undefined) window.clearInterval(interval);
       window.removeEventListener('resize', loadUpcomingImages);
       document.removeEventListener('visibilitychange', loadUpcomingImages);
