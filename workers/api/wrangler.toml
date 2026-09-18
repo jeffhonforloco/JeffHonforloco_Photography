@@ -14,3 +14,8 @@ crons = ["*/15 * * * *", "0 8 * * *", "15 7 * * *", "30 11 * * 1", "0 8 1 * *"]
 binding = "DB"
 database_name = "photography_db"
 database_id = "02c3b8de-30af-4f83-adca-751813a6f242"
+
+# R2 media storage (bucket created 2026-09-17; also bound via Cloudflare dashboard)
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "jeffhonforloco-photography-media"
