@@ -572,6 +572,7 @@ const AdsTab: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [deleteDraftId, setDeleteDraftId] = useState<number | null>(null);
 
   const [form, setForm] = useState({
     platform: 'meta', name: '', objective: 'bookings',
@@ -638,7 +639,6 @@ const AdsTab: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Delete this draft?')) return;
     try {
       const res = await fetch(apiUrl(`/api/v1/admin/campaigns/ads/draft/${id}`), { method: 'DELETE', headers: authHeaders() });
       if (!res.ok) {
@@ -646,6 +646,7 @@ const AdsTab: React.FC = () => {
         throw new Error(d.error || 'Delete failed');
       }
       setDrafts((prev) => prev.filter((d) => d.id !== id));
+      setDeleteDraftId(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');
     }
@@ -784,7 +785,7 @@ const AdsTab: React.FC = () => {
                   <div key={d.id} className="rounded-lg border p-3">
                     <div className="flex items-center justify-between">
                       <p className="font-medium">{d.name}</p>
-                      <button onClick={() => void handleDelete(d.id)} className="text-slate-400 hover:text-red-600" aria-label="Delete draft">
+                      <button onClick={() => setDeleteDraftId(d.id)} className="text-slate-400 hover:text-red-600" aria-label="Delete draft">
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -805,6 +806,18 @@ const AdsTab: React.FC = () => {
           </Card>
         </div>
       </div>
+      {deleteDraftId !== null && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4" role="alertdialog" aria-modal="true" aria-label="Confirm draft deletion">
+          <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
+            <h3 className="text-lg font-bold text-neutral-900">Delete draft?</h3>
+            <p className="mt-2 text-sm text-neutral-600">This ad draft will be permanently removed. This cannot be undone.</p>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setDeleteDraftId(null)}>Cancel</Button>
+              <Button onClick={() => void handleDelete(deleteDraftId)} className="bg-red-600 text-white hover:bg-red-700">Delete</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
