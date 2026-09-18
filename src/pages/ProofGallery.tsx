@@ -47,6 +47,13 @@ const ProofGallery: React.FC = () => {
 
   useEffect(() => { void load(); }, [load]);
 
+  // Proper tab title (was showing "Page Not Found")
+  useEffect(() => {
+    document.title = title
+      ? `${title} | Jeff Honforloco Photography`
+      : 'Client Gallery | Jeff Honforloco Photography';
+  }, [title]);
+
   const unlock = async () => {
     setUnlocking(true);
     await load(password);
