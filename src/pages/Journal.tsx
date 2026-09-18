@@ -187,7 +187,7 @@ const Journal = () => {
                     
                     {/* CTA Button */}
                     <Link
-                      to={`/journal/${post.id}`}
+                      to={`/journal/${post.slug}`}
                       className="group inline-flex items-center px-8 py-4 bg-photo-red text-white font-semibold rounded-full hover:bg-photo-red-hover transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-photo-red/30"
                     >
                       <span>Read Full Article</span>
@@ -302,7 +302,7 @@ const Journal = () => {
             {filteredPosts.map((post: BlogPost, index: number) => (
               <Link
                 key={post.id}
-                to={`/journal/${post.id}`}
+                to={`/journal/${post.slug}`}
                 className="group block animate-fade-in hover-scale"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
