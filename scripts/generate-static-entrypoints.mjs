@@ -24,7 +24,7 @@ const routes = [
   ['/prep-guide', 'Photography Session Prep Guide | Jeff Honforloco Photography', 'Prepare wardrobe, styling and creative details for your upcoming photography session.'],
   ['/privacy', 'Privacy Policy | Jeff Honforloco Photography', 'How Jeff Honforloco Photography handles your information: inquiries, analytics, cookies, and your rights.'],
   ...serviceAuthorityMeta.map(({ path: route, title, description, image }) => [route, title, description, image]),
-  ...journalMeta.map(({ path: route, title, description }) => [route, title, description]),
+  ...journalMeta.map(({ path: route, title, description, image }) => [route, title, description, image]),
   ...['beauty', 'fashion', 'editorial', 'glamour', 'headshots', 'lifestyle'].map((category) => [
     `/portfolios/${category}`,
     `${category[0].toUpperCase()}${category.slice(1)} Photography Portfolio | Jeff Honforloco Photography`,
@@ -56,19 +56,26 @@ for (const [route, title, description, image] of routes) {
   html = setMeta(html, 'property', 'og:title', title);
   html = setMeta(html, 'property', 'og:description', description);
   html = setMeta(html, 'property', 'og:url', canonical);
+  if (route.startsWith('/journal/')) {
+    html = setMeta(html, 'property', 'og:type', 'article');
+  }
   html = setMeta(html, 'name', 'twitter:title', title);
   html = setMeta(html, 'name', 'twitter:description', description);
 
   if (image) {
-    const absoluteImage = `${SITE_URL}${image}`;
+    const absoluteImage = image.startsWith('http') ? image : `${SITE_URL}${image}`;
     html = setMeta(html, 'property', 'og:image', absoluteImage);
     html = setMeta(html, 'name', 'twitter:image', absoluteImage);
     const cleanImage = image.split('?')[0];
+    const isAbsolute = image.startsWith('http');
     const isAcquisitionImage = cleanImage.startsWith('/images/acquisition/');
-    const imageSrcset = isAcquisitionImage
-      ? [480, 768, 1200, 1600].map((width) => `${cleanImage.replace(/-\d+\.webp$/, `-${width}.webp`)} ${width}w`).join(', ')
-      : `${image.replace('-960.webp', '-480.webp')} 480w, ${image.replace('-960.webp', '-640.webp')} 640w, ${image} 960w`;
-    const preload = `<link rel="preload" as="image" type="image/webp" href="${image}" imagesrcset="${imageSrcset}" imagesizes="(max-width: 1023px) 100vw, 45vw" fetchpriority="high" />`;
+    const imageSrcset = isAbsolute
+      ? `${absoluteImage} 1024w`
+      : isAcquisitionImage
+        ? [480, 768, 1200, 1600].map((width) => `${cleanImage.replace(/-\d+\.webp$/, `-${width}.webp`)} ${width}w`).join(', ')
+        : `${image.replace('-960.webp', '-480.webp')} 480w, ${image.replace('-960.webp', '-640.webp')} 640w, ${image} 960w`;
+    const preloadHref = isAbsolute ? absoluteImage : image;
+    const preload = `<link rel="preload" as="image" type="image/webp" href="${preloadHref}" imagesrcset="${imageSrcset}" imagesizes="(max-width: 1023px) 100vw, 45vw" fetchpriority="high" />`;
     html = html.replace('</head>', `    ${preload}\n  </head>`);
   }
 
