@@ -44,6 +44,9 @@ const AdminGalleries: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   const [createOpen, setCreateOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Gallery | null>(null);
+  const [deletePhotoId, setDeletePhotoId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ title: '', client_name: '', client_email: '', password: '', expires_at: '' });
 
@@ -130,15 +133,18 @@ const AdminGalleries: React.FC = () => {
 
   /* ---- delete ---- */
   const deleteGallery = async (g: Gallery) => {
-    if (!confirm(`Delete "${g.title}" and all its photos? This cannot be undone.`)) return;
     try {
+      setDeleting(true); setError(null);
       const res = await fetch(apiUrl(`/api/v1/admin/galleries/${g.id}`), { method: 'DELETE', headers: authHeaders() });
       if (!res.ok) throw new Error('Delete failed');
       if (selected?.id === g.id) setSelected(null);
+      setDeleteTarget(null);
       flash('Gallery deleted');
       void fetchGalleries();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -175,16 +181,20 @@ const AdminGalleries: React.FC = () => {
   };
 
   const deletePhoto = async (photoId: number) => {
-    if (!selected || !confirm('Delete this photo?')) return;
+    if (!selected) return;
     try {
+      setDeleting(true); setError(null);
       const res = await fetch(apiUrl(`/api/v1/admin/galleries/${selected.id}/photos/${photoId}`), {
         method: 'DELETE', headers: authHeaders(),
       });
       if (!res.ok) throw new Error('Delete failed');
       setPhotos((p) => p.filter((x) => x.id !== photoId));
+      setDeletePhotoId(null);
       void fetchGalleries();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Delete failed');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -251,7 +261,7 @@ const AdminGalleries: React.FC = () => {
                 {photos.map((p) => (
                   <div key={p.id} className="group relative overflow-hidden rounded-lg border border-neutral-800">
                     <img src={p.thumbnail_url || p.url} alt={p.title || ''} className="aspect-square w-full object-cover" loading="lazy" />
-                    <button onClick={() => deletePhoto(p.id)}
+                    <button onClick={() => setDeletePhotoId(p.id)}
                       className="absolute right-2 top-2 rounded-md bg-slate-950/70 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100" aria-label="Delete photo">
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -348,7 +358,7 @@ const AdminGalleries: React.FC = () => {
                     <Eye className="mr-2 h-3.5 w-3.5" />Open
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => copyShareLink(g)}><Copy className="h-3.5 w-3.5" /></Button>
-                  <Button variant="outline" size="sm" onClick={() => deleteGallery(g)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                  <Button variant="outline" size="sm" onClick={() => setDeleteTarget(g)}><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
               </CardContent>
             </Card>
@@ -380,6 +390,40 @@ const AdminGalleries: React.FC = () => {
                 {creating ? 'Creating...' : 'Create Gallery'}
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete gallery confirmation (in-page; native confirm() never fires reliably) */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete gallery?</DialogTitle>
+            <DialogDescription>
+              {deleteTarget && <>Delete &ldquo;{deleteTarget.title}&rdquo; and all its photos? This cannot be undone.</>}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</Button>
+            <Button variant="destructive" onClick={() => { if (deleteTarget) void deleteGallery(deleteTarget); }} disabled={deleting}>
+              {deleting ? 'Deleting...' : 'Delete Gallery'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete photo confirmation */}
+      <Dialog open={deletePhotoId !== null} onOpenChange={(open) => { if (!open) setDeletePhotoId(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete photo?</DialogTitle>
+            <DialogDescription>This photo will be permanently removed from the gallery. This cannot be undone.</DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setDeletePhotoId(null)} disabled={deleting}>Cancel</Button>
+            <Button variant="destructive" onClick={() => { if (deletePhotoId !== null) void deletePhoto(deletePhotoId); }} disabled={deleting}>
+              {deleting ? 'Deleting...' : 'Delete Photo'}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
