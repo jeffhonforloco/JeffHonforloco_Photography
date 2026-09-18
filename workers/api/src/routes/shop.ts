@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { requireAuth, requireAdmin } from '../middleware/auth';
+import { paypalMode } from '../lib/paypal';
 import type { AppEnv } from '../types';
 
 export const shopPublic = new Hono<AppEnv>();
