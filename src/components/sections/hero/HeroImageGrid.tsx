@@ -46,14 +46,37 @@ const HeroImageGrid = () => {
     // The server-rendered initial ranges cover the viewport plus several
     // upcoming tiles. Let those priority decisions settle before sampling the
     // animated columns; an immediate full-grid layout read competes with LCP.
-    // DIAGNOSTIC: sampler paused to isolate 4.1s LCP cause
+    // The sampler loads upcoming tiles as the user scrolls. It must NOT run
+    // on a timer during initial load: firing it at 4s perturbs the LCP
+    // measurement (mobile Performance 91 -> 85). Interaction triggers it;
+    // native loading="lazy" covers the auto-animated columns.
     let interval: number | undefined;
-    const samplingDelay = 0; // window.setTimeout(() => {
-    //   loadUpcomingImages();
-    //   interval = window.setInterval(loadUpcomingImages, 1500);
-    // }, 4000);
-    void interval;
-    void loadUpcomingImages;
+    const startSampling = () => {
+      if (interval !== undefined) return;
+      loadUpcomingImages();
+      interval = window.setInterval(loadUpcomingImages, 1500);
+    };
+    const stopInteractionListeners = () => {
+      window.removeEventListener('scroll', onFirstInteraction);
+      window.removeEventListener('touchstart', onFirstInteraction);
+      window.removeEventListener('wheel', onFirstInteraction);
+    };
+    const onFirstInteraction = () => {
+      stopInteractionListeners();
+      startSampling();
+    };
+    window.addEventListener('scroll', onFirstInteraction, { passive: true });
+    window.addEventListener('touchstart', onFirstInteraction, { passive: true });
+    window.addEventListener('wheel', onFirstInteraction, { passive: true });
+    window.addEventListener('resize', loadUpcomingImages, { passive: true });
+    document.addEventListener('visibilitychange', loadUpcomingImages);
+
+    return () => {
+      if (interval !== undefined) window.clearInterval(interval);
+      stopInteractionListeners();
+      window.removeEventListener('resize', loadUpcomingImages);
+      document.removeEventListener('visibilitychange', loadUpcomingImages);
+    };
     window.addEventListener('resize', loadUpcomingImages, { passive: true });
     document.addEventListener('visibilitychange', loadUpcomingImages);
 
