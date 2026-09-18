@@ -101,6 +101,8 @@ const ALLOWED_KEYS = new Set([
   'social_instagram',
   'social_facebook',
   'booking_cta_url',
+  'hero_settings',
+  'hero_images',
 ]);
 
 settings.put('/', requireAuth, requireAdmin, async (c) => {
