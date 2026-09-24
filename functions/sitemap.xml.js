@@ -37,6 +37,7 @@ const STATIC_PAGES = [
   ['/providence-wedding-photographer', 'monthly', '0.9', '2026-09-11'],
   ['/providence-engagement-photographer', 'monthly', '0.9', '2026-09-11'],
   ['/providence-sweet-16-quinceanera-photographer', 'monthly', '0.8', '2026-09-11'],
+  ['/providence-birthday-photographer', 'monthly', '0.9', '2026-09-24'],
   ['/providence-real-estate-photographer', 'monthly', '0.9', '2026-09-11'],
 ];
 
