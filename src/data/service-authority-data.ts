@@ -27,6 +27,14 @@ export type ServiceAuthorityPage = {
   gallery?: readonly AcquisitionGalleryImage[];
 };
 
+const optimizedImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
+  src: `/images/optimized/${name}-960.webp`,
+  width,
+  height,
+  alt,
+  variants: [320, 480, 640, 960],
+});
+
 const metaByPath = Object.fromEntries(metadata.map((item) => [item.path, item]));
 const meta = (path: string) => {
   const item = metaByPath[path];
@@ -79,6 +87,14 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
       { question: 'How much does a Providence headshot session cost?', answer: 'Published individual packages begin at $499. The Professional package begins at $1,100, while corporate team work starts at $3,500 and is customized to project scope.' },
     ],
     imageAlt: 'Professional executive headshot by Providence photographer Jeff Honforloco',
+    galleryTitle: 'Executive presence, photographed',
+    gallery: [
+      optimizedImage('corporate-01', 1290, 1935, 'Corporate executive portrait on blue studio background'),
+      optimizedImage('corporate-04', 1290, 1828, 'Confident executive portrait by an office window'),
+      optimizedImage('corporate-06', 1290, 1853, 'Corporate branding portrait on a pink studio background'),
+      optimizedImage('hair-brand-09', 1290, 1935, 'Professional personal-brand headshot in a white blazer'),
+      optimizedImage('hair-brand-10', 1290, 1935, 'Executive portrait in a white blazer with wind-swept hair'),
+    ],
   },
   {
     ...meta('/providence-fashion-photographer'),
@@ -124,6 +140,11 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
       { question: 'What does fashion photography cost?', answer: 'Published fashion sessions begin at $499, the Standard package begins at $1,800, and full campaign productions are custom quoted.' },
     ],
     imageAlt: 'Red gown fashion editorial photographed in Providence by Jeff Honforloco',
+    galleryTitle: 'From boutique brands to editorial',
+    gallery: [
+      optimizedImage('brand-boutique-02', 1290, 1936, 'Fashion boutique brand model in a branded look'),
+      optimizedImage('brand-boutique-04', 1290, 1936, 'Boutique brand editorial portrait against a logo backdrop'),
+    ],
   },
   {
     ...meta('/providence-beauty-photographer'),
@@ -169,6 +190,14 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
       { question: 'How much is a beauty photography session?', answer: 'Published beauty packages begin at $499. Standard begins at $1,400, and Full Editorial begins at $3,200.' },
     ],
     imageAlt: 'Editorial beauty portrait with blue liner by Providence photographer Jeff Honforloco',
+    galleryTitle: 'Hair as the statement',
+    gallery: [
+      optimizedImage('hair-brand-01', 1290, 1935, 'Curly hair brand portrait on a pink studio background'),
+      optimizedImage('hair-brand-02', 1290, 1935, 'Voluminous curly hairstyle in a salon brand shoot'),
+      optimizedImage('hair-brand-03', 1290, 1985, 'Curly hair beauty close-up for salon branding'),
+      optimizedImage('hair-brand-04', 1290, 1935, 'Serene curly hair portrait for a stylist portfolio'),
+      optimizedImage('hair-brand-05', 1290, 1842, 'Curly hair texture detail for a hair brand campaign'),
+    ],
   },
   {
     ...meta('/providence-commercial-photographer'),
@@ -214,6 +243,14 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
       { question: 'How do I request a commercial proposal?', answer: 'Use the booking form and include the audience, channels, date, location, people or looks, deliverables and usage needs.' },
     ],
     imageAlt: 'Fashion campaign image for commercial photography clients in Providence',
+    galleryTitle: 'Brand stories in real campaigns',
+    gallery: [
+      optimizedImage('brand-boutique-01', 1290, 1935, 'Fashion boutique brand photography against a logo backdrop'),
+      optimizedImage('brand-boutique-03', 1290, 1935, 'Boutique brand model portrait for a fashion label'),
+      optimizedImage('corporate-05', 1290, 1876, 'Businesswoman in a teal suit — corporate brand imagery'),
+      optimizedImage('corporate-08', 1290, 887, 'Executive brand story with achievement awards in an office'),
+      optimizedImage('hair-brand-11', 1290, 1847, 'Editorial hair brand campaign portrait'),
+    ],
   },
   {
     ...meta('/rhode-island-editorial-photographer'),
