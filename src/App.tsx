@@ -185,6 +185,7 @@ export const AppContent = () => {
                 <Route path="/providence-engagement-photographer" element={<ServiceAuthority />} />
                 <Route path="/providence-sweet-16-quinceanera-photographer" element={<ServiceAuthority />} />
                 <Route path="/providence-real-estate-photographer" element={<ServiceAuthority />} />
+                <Route path="/providence-birthday-photographer" element={<ServiceAuthority />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/book" element={<Book />} />
                 <Route path="/pricing" element={<Pricing />} />

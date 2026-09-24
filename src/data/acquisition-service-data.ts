@@ -30,6 +30,14 @@ const sweet16Image = (name: string, width: number, height: number, alt: string):
   variants: [480, 768, width],
 });
 
+const birthdayImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
+  src: `/images/acquisition/birthday/${name}-${width}.webp`,
+  width,
+  height,
+  alt,
+  variants: [480, 768, 960, width],
+});
+
 export const ACQUISITION_SERVICE_PAGES = [
   {
     path: '/providence-wedding-photographer',
@@ -161,5 +169,45 @@ export const ACQUISITION_SERVICE_PAGES = [
     secondaryCopy: ['No portrait, wedding or stock photography is being labeled as real-estate work. Approved property images can be added to this structure when available.', 'For the fastest useful response, include the property type, location, approximate size, number of rooms, desired shoot date and listing deadline.'],
     faqs: [{ question: 'Who is property photography for?', answer: 'The service is intended for agents, brokers, hosts, property managers, developers, architects, interior designers and hospitality teams.' }, { question: 'What does real-estate photography cost?', answer: 'Published packages begin at $499, with Standard from $999 and Premium from $1,800.' }, { question: 'What should I include in the inquiry?', answer: 'Include the property type, address or area, approximate square footage, rooms, desired shoot date, listing deadline and required photography.' }, { question: 'Do you publish a property portfolio here?', answer: 'Not yet. The page intentionally reserves portfolio proof for approved real-estate photographs.' }],
     imageAlt: 'Commercial editorial photograph representing Jeff Honforloco production quality',
+  },
+  {
+    path: '/providence-birthday-photographer',
+    title: 'Providence Birthday Photographer | Jeff Honforloco',
+    description: 'Birthday photography in Providence, RI for milestone birthdays — 21st, 30th, 40th, 50th and kids\u2019 parties — with directed birthday portraits and candid party coverage across Rhode Island.',
+    image: '/images/acquisition/birthday/birthday-01-1290.webp',
+    eyebrow: 'Birthdays · Milestones · Providence',
+    h1: 'Providence Birthday Photographer',
+    introduction: 'A milestone birthday deserves photographs that feel like the celebration, not stiff party snapshots. Jeff Honforloco photographs birthday portraits and party coverage across Providence and Rhode Island — from first birthdays and kids\u2019 parties to 21st, 30th, 40th and 50th milestone celebrations — pairing directed portraits of the celebrant with candid coverage of the people who showed up.',
+    audienceTitle: 'Birthday coverage for every kind of celebration',
+    audiences: ['Milestone birthdays — 21st, 30th, 40th, 50th and beyond', 'Kids\u2019 birthday parties in Providence and Rhode Island', 'Surprise parties and family gatherings', 'Birthday portrait sessions before the party'],
+    processTitle: 'A simple birthday photography plan',
+    process: [
+      { title: 'Share the plan', text: 'Send the birthday date, venue, guest count and the moments that matter most.' },
+      { title: 'Set priorities', text: 'Decide whether you want portraits before the party, full event coverage, or both.' },
+      { title: 'Celebrate', text: 'Jeff directs the celebrant portraits and documents the party candidly as it unfolds.' },
+      { title: 'Receive', text: 'Your professionally edited images arrive in a private online gallery, ready to share and print.' },
+    ],
+    deliverablesTitle: 'Birthday coverage built around the day',
+    deliverables: ['Birthday portraits before the party when requested', 'Candid party and reception coverage', 'Coordinated family and group photographs', 'Detail images — décor, cake, and celebration styling', 'Private online gallery for sharing and printing'],
+    pricingCopy: 'Published Events & Celebrations packages begin at $799. Final scope depends on the date, venue, hours, guest count and coverage priorities.',
+    pricingService: 'events',
+    portfolioPath: '/portfolios/lifestyle',
+    portfolioLabel: 'View portrait style',
+    secondaryTitle: 'Portraits before the party',
+    secondaryCopy: ['A short portrait session before guests arrive creates space for carefully directed photographs of the celebrant, the outfit and the details — without competing with the party schedule.', 'A concise inquiry should include the birthday milestone, date, venue, estimated guest count and whether you want portraits before the celebration.'],
+    faqs: [
+      { question: 'Do you photograph kids\u2019 birthday parties?', answer: 'Yes. Kids\u2019 birthdays are covered under Jeff\u2019s published Events & Celebrations service, with candid party coverage and family portraits.' },
+      { question: 'Do you cover milestone birthdays like 30th, 40th and 50th?', answer: 'Yes. Milestone birthdays are a core part of the service — many clients pair a directed portrait session with party coverage.' },
+      { question: 'Can portraits happen before the party?', answer: 'Yes. Include pre-party portrait needs in the inquiry so they can be built into the coverage plan.' },
+      { question: 'What should we include in the inquiry?', answer: 'Share the birthday milestone, date, venue, approximate guest count and whether you want portraits, party coverage, or both.' },
+    ],
+    imageAlt: 'Woman celebrating a milestone birthday with gold number balloons in a Providence studio portrait by Jeff Honforloco',
+    galleryTitle: 'Milestone birthday portraits',
+    gallery: [
+      birthdayImage('birthday-01', 1290, 1935, 'Milestone birthday celebrant seated with gold number balloons, smiling'),
+      birthdayImage('birthday-02', 1290, 1935, 'Joyful milestone birthday portrait holding a gold number balloon'),
+      birthdayImage('birthday-03', 1290, 1936, 'Birthday celebrant standing with gold number balloons in a studio portrait'),
+      birthdayImage('birthday-04', 1290, 1935, 'Milestone birthday portrait between gold number balloons'),
+    ],
   },
 ] as const;

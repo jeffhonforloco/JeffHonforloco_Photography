@@ -107,7 +107,7 @@ const services = [
     tagline: 'Sweet sixteens, galas, corporate events & milestones',
     description:
       'Events move fast. Jeff is trained to capture the energy of a room — the speeches, the dancing, the candid moments between guests — without disrupting the flow. Every major moment gets documented. Every image is delivery-ready.',
-    forWho: ['Corporate events & conferences', 'Sweet sixteens & quinceañeras', 'Galas & charity events', 'Brand launches & product reveals'],
+    forWho: ['Corporate events & conferences', 'Sweet sixteens & quinceañeras', 'Milestone birthday parties', 'Galas & charity events', 'Brand launches & product reveals'],
     includes: ['Candid & directed coverage', 'Group shots coordinated on your schedule', 'Full gallery delivered within 7 days', 'Rush delivery available'],
     duration: '2–8 hours',
     startingAt: '$799',
