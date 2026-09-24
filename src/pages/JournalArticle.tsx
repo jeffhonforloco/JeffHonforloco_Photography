@@ -6,6 +6,7 @@ import { BlogData, BlogPost, parseGalleryImages } from '@/types/content';
 import { apiService } from '@/lib/api-service';
 import { toast } from '@/components/ui/use-toast';
 import SEO from '../components/SEO';
+import { Helmet } from 'react-helmet-async';
 import {
   Carousel,
   CarouselContent,
@@ -202,6 +203,10 @@ const JournalArticle = () => {
   if (notFound) {
     return (
       <Layout>
+        {/* Deleted/unknown article slug: keep it out of Google's index. */}
+        <Helmet>
+          <meta name="robots" content="noindex, nofollow" />
+        </Helmet>
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-white mb-4">Article Not Found</h1>
