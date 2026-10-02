@@ -25,6 +25,8 @@ export type ServiceAuthorityPage = {
   imageAlt: string;
   galleryTitle?: string;
   gallery?: readonly AcquisitionGalleryImage[];
+  videosTitle?: string;
+  videos?: Array<{ src: string; poster: string; title: string }>;
 };
 
 const optimizedImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
