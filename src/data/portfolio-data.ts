@@ -137,16 +137,6 @@ export const portfolioImages = {
     { src: '/images/portrait-bw-hoodie-jeans.webp', alt: 'Monochrome Hoodie Editorial', caption: 'STREET MOOD' },
     { src: '/images/portrait-grey-shirt-chair.webp', alt: 'Grey Shirt Minimal Portrait', caption: 'MINIMAL CHIC' },
     { src: '/images/portrait-red-tee-gold-chain.webp', alt: 'Red Tee Gold Chain Editorial', caption: 'BOLD CASUAL' },
-    { src: '/images/fashion-red-backdrop-beauty.webp', alt: 'Red Backdrop Beauty Portrait', caption: 'RED ALLURE' },
-    { src: '/images/fashion-pink-backdrop-seated.webp', alt: 'Pink Backdrop Seated Editorial', caption: 'PRETTY IN PINK' },
-    { src: '/images/fashion-soft-neutral-portrait.webp', alt: 'Soft Neutral Studio Portrait', caption: 'QUIET ELEGANCE' },
-    { src: '/images/fashion-red-glamour-portrait.webp', alt: 'Red Glamour Fashion Portrait', caption: 'GLAMOUR RED' },
-    { src: '/images/fashion-crimson-editorial.webp', alt: 'Crimson Editorial Portrait', caption: 'CRIMSON MOOD' },
-    { src: '/images/fashion-blush-studio-portrait.webp', alt: 'Blush Studio Fashion Portrait', caption: 'BLUSH TONES' },
-    { src: '/images/fashion-black-white-portrait.webp', alt: 'Black and White Fashion Portrait', caption: 'MONOCHROME MUSE' },
-    { src: '/images/fashion-red-statement-portrait.webp', alt: 'Bold Red Statement Portrait', caption: 'STATEMENT RED' },
-    { src: '/images/fashion-amber-monochrome-portrait.webp', alt: 'Amber Monochrome Portrait', caption: 'AMBER HOUR' },
-    { src: '/images/fashion-natural-light-portrait.webp', alt: 'Natural Light Fashion Portrait', caption: 'EFFORTLESS' }
   ],
   glamour: [
     { src: '/images/IMG_7656.webp', alt: 'Red Sequin Leaning Glamour', caption: 'Classic red sequin glamour' },
@@ -277,46 +267,6 @@ export const portfolioImages = {
       alt: 'Purple Top Beauty Editorial',
       caption: 'Dramatic beauty portrait in purple against black — studio editorial'
     },
-    {
-      src: '/images/editorial-red-backdrop-portrait.webp',
-      alt: 'Red Backdrop Editorial Portrait',
-      caption: 'Bold red backdrop — striking studio editorial'
-    },
-    {
-      src: '/images/editorial-red-floral-muse.webp',
-      alt: 'Red Floral Muse Editorial',
-      caption: 'Floral muse in red — vibrant editorial story'
-    },
-    {
-      src: '/images/editorial-vivid-red-story.webp',
-      alt: 'Vivid Red Editorial Story',
-      caption: 'Saturated reds — high-impact fashion editorial'
-    },
-    {
-      src: '/images/editorial-orange-backdrop-muse.webp',
-      alt: 'Orange Backdrop Muse',
-      caption: 'Warm orange backdrop — glowing editorial portrait'
-    },
-    {
-      src: '/images/editorial-monochrome-muse.webp',
-      alt: 'Monochrome Muse Editorial',
-      caption: 'Timeless monochrome — sculptural editorial portrait'
-    },
-    {
-      src: '/images/editorial-black-white-study.webp',
-      alt: 'Black and White Study',
-      caption: 'Classic black and white — fine-art editorial study'
-    },
-    {
-      src: '/images/editorial-warm-studio-editorial.webp',
-      alt: 'Warm Studio Editorial',
-      caption: 'Warm tones — intimate studio editorial'
-    },
-    {
-      src: '/images/editorial-blue-gel-muse.webp',
-      alt: 'Blue Gel Muse Editorial',
-      caption: 'Cool blue gel lighting — electric editorial mood'
-    }
   ],
   headshots: [
     { src: '/images/headshot-client-2.webp', alt: 'Executive Headshot Navy Blazer', caption: 'Executive headshot — navy blazer' },
@@ -333,15 +283,6 @@ export const portfolioImages = {
     { src: '/images/portrait-grey-shirt-chair.webp', alt: 'Grey Shirt Chair Portrait', caption: 'Clean and casual — seated portrait' },
     { src: '/images/portrait-silver-jacket-pink.webp', alt: 'Silver Jacket Pink Backdrop Portrait', caption: 'Pop color — silver jacket on pink' },
     { src: '/images/portrait-red-tee-gold-chain.webp', alt: 'Red Tee Gold Chain Portrait', caption: 'Bold casual — red tee studio portrait' },
-    { src: '/images/portrait-red-backdrop-headshot.webp', alt: 'Red Backdrop Headshot', caption: 'Bold and confident — red backdrop headshot' },
-    { src: '/images/portrait-pink-backdrop-headshot.webp', alt: 'Pink Backdrop Headshot', caption: 'Fresh and modern — pink backdrop headshot' },
-    { src: '/images/portrait-warm-studio-headshot.webp', alt: 'Warm Studio Headshot', caption: 'Warm and approachable — studio headshot' },
-    { src: '/images/portrait-monochrome-headshot.webp', alt: 'Monochrome Headshot', caption: 'Timeless black and white — classic headshot' },
-    { src: '/images/portrait-black-white-headshot.webp', alt: 'Black and White Headshot', caption: 'Striking monochrome — professional headshot' },
-    { src: '/images/portrait-studio-monochrome-headshot.webp', alt: 'Studio Monochrome Headshot', caption: 'Clean studio light — monochrome headshot' },
-    { src: '/images/portrait-crimson-headshot.webp', alt: 'Crimson Headshot', caption: 'Rich crimson tones — standout headshot' },
-    { src: '/images/portrait-blush-headshot.webp', alt: 'Blush Headshot', caption: 'Soft blush tones — natural headshot' },
-    { src: '/images/portrait-red-studio-headshot.webp', alt: 'Red Studio Headshot', caption: 'Vibrant red — energetic studio headshot' }
   ],
   lifestyle: [
     { src: '/images/IMG_7713.webp', alt: 'Sunset Beach Lifestyle', caption: 'Golden hour on the rocks — coastal lifestyle' },
@@ -418,16 +359,6 @@ export const portfolioImages = {
     { src: '/images/lifestyle-39.webp', alt: 'Teal Water Portrait', caption: 'Salt air and calm waters — tranquil coastal lifestyle' },
     { src: '/images/lifestyle-40.webp', alt: 'Lakeside Bikini Portrait', caption: 'Rooted in nature by still water — wild lifestyle' },
     { src: '/images/lifestyle-41.webp', alt: 'Striped Swimsuit Rock Portrait', caption: 'Nautical stripes on sun-warmed rock — classic seaside lifestyle' },
-    { src: '/images/lifestyle-red-celebration.webp', alt: 'Red Celebration Moment', caption: 'Celebration in red — joyful lifestyle moment' },
-    { src: '/images/lifestyle-festive-gathering.webp', alt: 'Festive Gathering', caption: 'Good company and bright colors — festive lifestyle' },
-    { src: '/images/lifestyle-golden-hour-glow.webp', alt: 'Golden Hour Glow', caption: 'Chasing golden light — warm lifestyle glow' },
-    { src: '/images/lifestyle-warm-getaway.webp', alt: 'Warm Getaway Moment', caption: 'Sun-soaked and carefree — warm lifestyle escape' },
-    { src: '/images/lifestyle-party-energy.webp', alt: 'Party Energy', caption: 'High energy celebration — vibrant lifestyle party' },
-    { src: '/images/lifestyle-colorful-party.webp', alt: 'Colorful Party Moment', caption: 'Color everywhere — lively party lifestyle' },
-    { src: '/images/lifestyle-joyful-celebration.webp', alt: 'Joyful Celebration', caption: 'Pure joy in the moment — celebration lifestyle' },
-    { src: '/images/lifestyle-blue-hour-calm.webp', alt: 'Blue Hour Calm', caption: 'Cool blue tones — calm lifestyle moment' },
-    { src: '/images/lifestyle-outdoor-fresh.webp', alt: 'Fresh Outdoor Moment', caption: 'Fresh air and open sky — outdoor lifestyle' },
-    { src: '/images/lifestyle-cool-blue-mood.webp', alt: 'Cool Blue Mood', caption: 'Moody blues — relaxed lifestyle portrait' }
   ],
   motion: []
 };
