@@ -20,17 +20,18 @@ importPortfolio.post('/import-portfolio', async (c) => {
     return c.json({ error: 'expected a non-empty JSON array' }, 400);
   }
 
-  const existing = await c.env.DB.prepare('SELECT image_url FROM portfolio_images').all();
-  const seen = new Set((existing.results as Array<{ image_url: string }>).map((r) => r.image_url));
+  const existing = await c.env.DB.prepare('SELECT image_url, category FROM portfolio_images').all();
+  const seen = new Set(
+    (existing.results as Array<{ image_url: string; category: string }>).map((r) => `${r.category}::${r.image_url}`)
+  );
 
   let imported = 0;
   let skipped = 0;
-  const batch: string[] = [];
   for (const it of items) {
     if (!it.title || !it.image_url || !it.category) { skipped++; continue; }
-    if (seen.has(it.image_url)) { skipped++; continue; }
-    seen.add(it.image_url);
-    batch.push(it.image_url);
+    const key = `${it.category}::${it.image_url}`;
+    if (seen.has(key)) { skipped++; continue; }
+    seen.add(key);
     await c.env.DB.prepare(
       `INSERT INTO portfolio_images (title, description, image_url, thumbnail_url, category, is_featured, sort_order, tags)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
