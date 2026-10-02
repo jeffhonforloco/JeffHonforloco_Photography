@@ -104,11 +104,6 @@ export const portfolioImages = {
       src: '/images/beauty-red-lip-closeup.webp',
       alt: 'Red Lip Beauty Close-up',
       caption: 'Close-up red-lip beauty with lace glove'
-    },
-    {
-      src: '/images/beauty-natural-hands-frame.webp',
-      alt: 'Natural Beauty Hands Portrait',
-      caption: 'Natural beauty with hands framing her face'
     }
   ],
   fashion: [
