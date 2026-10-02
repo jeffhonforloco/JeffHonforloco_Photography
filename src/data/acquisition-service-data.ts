@@ -38,6 +38,14 @@ const birthdayImage = (name: string, width: number, height: number, alt: string)
   variants: [480, 768, 960, width],
 });
 
+const realEstateImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
+  src: `/images/acquisition/real-estate/${name}-${width}.webp`,
+  width,
+  height,
+  alt,
+  variants: [480, 768, width],
+});
+
 export const ACQUISITION_SERVICE_PAGES = [
   {
     path: '/providence-wedding-photographer',
@@ -175,11 +183,17 @@ export const ACQUISITION_SERVICE_PAGES = [
     deliverables: ['Interior and exterior photography', 'Wide-angle compositions', 'Twilight photographs available within published packages', '48-hour delivery listed for current real-estate packages', 'Optional services discussed only when included in an existing package or confirmed proposal'],
     pricingCopy: 'Published Real Estate Photography packages begin at $499. Standard begins at $999 and Premium begins at $1,800. Final scope is confirmed from the property details and deadline.',
     pricingService: 'real-estate',
+    galleryTitle: 'Real property photographs',
+    gallery: [
+      realEstateImage('realestate-loft-living-room-brick', 1290, 854, 'Industrial loft living room with exposed brick walls and large grid windows'),
+      realEstateImage('realestate-candy-bathroom-vanity', 1290, 844, 'Candy-themed bathroom with round mirror, black fixtures and playful ice-cream decor'),
+      realEstateImage('realestate-bedroom-vanity-purple', 1290, 858, 'Bedroom with purple throw blanket and illuminated vanity desk'),
+    ],
     portfolioPath: '/contact',
     portfolioLabel: 'Request property examples',
     secondaryTitle: 'Portfolio architecture without fabricated proof',
     secondaryCopy: ['No portrait, wedding or stock photography is being labeled as real-estate work. Approved property images can be added to this structure when available.', 'For the fastest useful response, include the property type, location, approximate size, number of rooms, desired shoot date and listing deadline.'],
-    faqs: [{ question: 'Who is property photography for?', answer: 'The service is intended for agents, brokers, hosts, property managers, developers, architects, interior designers and hospitality teams.' }, { question: 'What does real-estate photography cost?', answer: 'Published packages begin at $499, with Standard from $999 and Premium from $1,800.' }, { question: 'What should I include in the inquiry?', answer: 'Include the property type, address or area, approximate square footage, rooms, desired shoot date, listing deadline and required photography.' }, { question: 'Do you publish a property portfolio here?', answer: 'Not yet. The page intentionally reserves portfolio proof for approved real-estate photographs.' }],
+    faqs: [{ question: 'Who is property photography for?', answer: 'The service is intended for agents, brokers, hosts, property managers, developers, architects, interior designers and hospitality teams.' }, { question: 'What does real-estate photography cost?', answer: 'Published packages begin at $499, with Standard from $999 and Premium from $1,800.' }, { question: 'What should I include in the inquiry?', answer: 'Include the property type, address or area, approximate square footage, rooms, desired shoot date, listing deadline and required photography.' }, { question: 'Do you publish a property portfolio here?', answer: 'Yes — approved property photographs are shown in the gallery above, with more being added as new shoots are approved.' }],
     imageAlt: 'Commercial editorial photograph representing Jeff Honforloco production quality',
   },
   {
