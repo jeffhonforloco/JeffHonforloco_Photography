@@ -76,7 +76,16 @@ export const portfolioImages = {
     { src: '/images/378e6920-c0d7-4bf9-85b7-6094238a8a9e.webp', alt: 'Fashion Photography', caption: 'GLAMOUR COLLECTION' },
     { src: '/images/8fba258d-35bd-4852-9e00-2f58fa836046.webp', alt: 'Fashion Photography', caption: 'DESIGNER COLLECTION' },
     { src: '/images/1b3d1966-a116-4938-9368-5094259e1fe6.webp', alt: 'Fashion Photography', caption: 'FORMAL COUTURE' },
-    { src: '/images/fe3059c7-202d-4437-8785-42cc1fc2cab4.webp', alt: 'Fashion Photography', caption: 'CONTEMPORARY STYLE' }
+    { src: '/images/fe3059c7-202d-4437-8785-42cc1fc2cab4.webp', alt: 'Fashion Photography', caption: 'CONTEMPORARY STYLE' },
+    { src: '/images/fashion-red-hat-lace-glove.webp', alt: 'Red Hat Lace Glove Portrait', caption: 'CRIMSON STATEMENT' },
+    { src: '/images/fashion-neon-blazer-pink-shadow.webp', alt: 'Neon Green Blazer Editorial', caption: 'NEON BOLD' },
+    { src: '/images/fashion-headwrap-bokeh-portrait.webp', alt: 'African Print Headwrap Portrait', caption: 'HERITAGE GLAMOUR' },
+    { src: '/images/fashion-headwrap-bokeh-angle.webp', alt: 'Headwrap Portrait Three-Quarter', caption: 'BOLD HERITAGE' },
+    { src: '/images/fashion-silver-jacket-pink.webp', alt: 'Silver Jacket Pink Backdrop', caption: 'POP GLAMOUR' },
+    { src: '/images/fashion-plaid-shirt-studio.webp', alt: 'Plaid Shirt Studio Portrait', caption: 'CASUAL COUTURE' },
+    { src: '/images/fashion-afro-gold-necklaces.webp', alt: 'Afro Gold Necklace Portrait', caption: 'STATEMENT BEAUTY' },
+    { src: '/images/fashion-braids-denim-profile.webp', alt: 'Braids Denim Jacket Portrait', caption: 'STREET CHIC' },
+    { src: '/images/fashion-braids-denim-closeup.webp', alt: 'Braids Close-up Denim Portrait', caption: 'NATURAL BEAUTY' }
   ],
   glamour: [
     { src: '/images/IMG_7656.webp', alt: 'Red Sequin Leaning Glamour', caption: 'Classic red sequin glamour' },
