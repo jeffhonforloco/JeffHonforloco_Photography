@@ -5,7 +5,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Switch } from '../ui/switch';
-import { Save, Upload, Image, RefreshCw } from 'lucide-react';
+import { Save, Upload, Image, RefreshCw, ExternalLink } from 'lucide-react';
 import apiUrl from '../../lib/api-base';
 import { useToast } from '../../hooks/use-toast';
 
@@ -144,9 +144,19 @@ const AdminHero = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Hero Section Management</h1>
-        <p className="text-gray-600 dark:text-gray-400">Control your homepage hero section content and appearance</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Hero Section Management</h1>
+          <p className="text-gray-600 dark:text-gray-400">Control your homepage hero section content and appearance</p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => window.open(`${window.location.origin}/`, '_blank', 'noopener,noreferrer')}
+          title="Open the live homepage in a new tab"
+        >
+          <ExternalLink className="h-4 w-4 mr-2" />
+          View live homepage
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
