@@ -114,6 +114,30 @@ const ServiceAuthority = () => {
           </section>
         )}
 
+        {page.videos && page.videos.length > 0 && (
+          <section className="py-20 md:py-28" aria-labelledby="service-videos-title">
+            <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
+              <h2 id="service-videos-title" className="font-playfair text-4xl md:text-5xl font-light mb-4">{page.videosTitle ?? 'Property films'}</h2>
+              <p className="text-gray-400 leading-relaxed mb-10 max-w-2xl">Walkthrough films from real property shoots — press play on any film to watch it.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {page.videos.map((video) => (
+                  <figure key={video.src} className="overflow-hidden bg-black border border-white/10">
+                    <video
+                      src={video.src}
+                      poster={video.poster}
+                      controls
+                      preload="none"
+                      playsInline
+                      className="w-full aspect-video object-cover"
+                    />
+                    <figcaption className="px-4 py-3 text-sm text-gray-400">{video.title}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         <section className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
             <h2 className="font-playfair text-4xl md:text-5xl font-light mb-12">{page.processTitle}</h2>
