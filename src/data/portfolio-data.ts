@@ -59,6 +59,56 @@ export const portfolioImages = {
       src: '/images/866a8725-5cf5-417a-bd5f-acce3532066a.webp',
       alt: 'Floral Beauty Concept',
       caption: 'Creative beauty with sunflower accents'
+    },
+    {
+      src: '/images/beauty-red-lip-lace-glove.webp',
+      alt: 'Red Lip Lace Glove Beauty',
+      caption: 'Red lips and black lace glove — classic beauty'
+    },
+    {
+      src: '/images/beauty-pink-bob-profile.webp',
+      alt: 'Pink Bob Profile',
+      caption: 'Pink ombre bob in profile view'
+    },
+    {
+      src: '/images/beauty-blue-hair-hat-wide.webp',
+      alt: 'Blue Hair Hat Beauty',
+      caption: 'Electric blue hair and teal makeup under black hat'
+    },
+    {
+      src: '/images/beauty-natural-leaves.webp',
+      alt: 'Natural Beauty With Leaves',
+      caption: 'Natural beauty among green leaves'
+    },
+    {
+      src: '/images/beauty-blue-glitter-eyeshadow.webp',
+      alt: 'Blue Glitter Eyeshadow Macro',
+      caption: 'Blue glitter eyeshadow in macro detail'
+    },
+    {
+      src: '/images/beauty-blue-hair-teal-lip.webp',
+      alt: 'Blue Hair Teal Lip Close-up',
+      caption: 'Electric blue hair with teal lips'
+    },
+    {
+      src: '/images/beauty-curly-pixie-dark.webp',
+      alt: 'Curly Pixie Dark Beauty',
+      caption: 'Short curly pixie on a dark background'
+    },
+    {
+      src: '/images/beauty-voluminous-curls-pink.webp',
+      alt: 'Voluminous Curls Pink Beauty',
+      caption: 'Voluminous curls and pink lips on pink'
+    },
+    {
+      src: '/images/beauty-red-lip-closeup.webp',
+      alt: 'Red Lip Beauty Close-up',
+      caption: 'Close-up red-lip beauty with lace glove'
+    },
+    {
+      src: '/images/beauty-natural-hands-frame.webp',
+      alt: 'Natural Beauty Hands Portrait',
+      caption: 'Natural beauty with hands framing her face'
     }
   ],
   fashion: [
