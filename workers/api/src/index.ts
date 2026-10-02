@@ -11,6 +11,7 @@ import contactsRoutes  from './routes/contacts';
 import emailRoutes     from './routes/email';
 import blogRoutes      from './routes/blog';
 import portfolioRoutes from './routes/portfolio';
+import importPortfolioRoutes from './routes/import-portfolio'; // TEMPORARY: remove after static import
 import adminRoutes     from './routes/admin';
 import chatRoutes      from './routes/chat';
 import settingsRoutes   from './routes/settings';
@@ -63,6 +64,7 @@ app.route('/api/v1/contacts',  contactsRoutes);
 app.route('/api/v1/email',     emailRoutes);
 app.route('/api/v1/blog',      blogRoutes);
 app.route('/api/v1/portfolio', portfolioRoutes);
+app.route('/api/v1/admin', importPortfolioRoutes); // TEMPORARY: remove after static import
 app.route('/api/v1/admin/growth', growthRoutes);
 app.route('/api/v1/admin',     adminRoutes);
 app.route('/api/v1/chat',      chatRoutes);
