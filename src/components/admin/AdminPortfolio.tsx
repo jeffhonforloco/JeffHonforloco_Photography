@@ -28,7 +28,10 @@ import {
   RefreshCw,
   Save,
   X,
-  Upload
+  Upload,
+  ExternalLink,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react';
 import { extractYouTubeId, getYouTubeThumbnail, isYouTubeUrl } from '@/lib/youtube-utils';
 import { optimizeImageForUpload } from '@/lib/image-optimize';
@@ -239,6 +242,37 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
     }
   };
 
+  const moveImage = async (image: PortfolioImage, direction: -1 | 1) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+      // Order within this category, then move the item one step and renumber.
+      const siblings = portfolioImages
+        .filter((i) => i.category === image.category)
+        .sort((a, b) => a.sort_order - b.sort_order || a.id - b.id);
+      const idx = siblings.findIndex((i) => i.id === image.id);
+      const j = idx + direction;
+      if (idx < 0 || j < 0 || j >= siblings.length) return;
+      const [moved] = siblings.splice(idx, 1);
+      siblings.splice(j, 0, moved);
+      await Promise.all(
+        siblings.map((s, k) =>
+          fetch(apiUrl(`/api/v1/portfolio/${s.id}`), {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ sort_order: k })
+          })
+        )
+      );
+      fetchPortfolioImages();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reorder image');
+    }
+  };
+
   const handleEdit = (image: PortfolioImage) => {
     setSelectedImage(image);
     setDialogError(null);
@@ -394,6 +428,16 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
           <p className="text-muted-foreground">{description}</p>
         </div>
         <div className="flex space-x-2">
+          {categoryFilter !== 'all' && (
+            <Button
+              variant="outline"
+              onClick={() => window.open(`${window.location.origin}/portfolios/${categoryFilter}`, '_blank', 'noopener,noreferrer')}
+              title="Open the public gallery page for this category in a new tab"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View live gallery
+            </Button>
+          )}
           <Button onClick={fetchPortfolioImages} variant="outline">
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
@@ -578,6 +622,24 @@ const AdminPortfolio: React.FC<AdminPortfolioProps> = ({
                       {image.category}
                     </Badge>
                     <div className="flex space-x-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => moveImage(image, -1)}
+                        aria-label={`Move ${image.title} earlier`}
+                        title="Move earlier in gallery"
+                      >
+                        <ChevronUp className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => moveImage(image, 1)}
+                        aria-label={`Move ${image.title} later`}
+                        title="Move later in gallery"
+                      >
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
