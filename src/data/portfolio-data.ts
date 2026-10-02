@@ -66,16 +66,6 @@ export const portfolioImages = {
       caption: 'Red lips and black lace glove — classic beauty'
     },
     {
-      src: '/images/beauty-pink-bob-profile.webp',
-      alt: 'Pink Bob Profile',
-      caption: 'Pink ombre bob in profile view'
-    },
-    {
-      src: '/images/beauty-blue-hair-hat-wide.webp',
-      alt: 'Blue Hair Hat Beauty',
-      caption: 'Electric blue hair and teal makeup under black hat'
-    },
-    {
       src: '/images/beauty-natural-leaves.webp',
       alt: 'Natural Beauty With Leaves',
       caption: 'Natural beauty among green leaves'
@@ -84,11 +74,6 @@ export const portfolioImages = {
       src: '/images/beauty-blue-glitter-eyeshadow.webp',
       alt: 'Blue Glitter Eyeshadow Macro',
       caption: 'Blue glitter eyeshadow in macro detail'
-    },
-    {
-      src: '/images/beauty-blue-hair-teal-lip.webp',
-      alt: 'Blue Hair Teal Lip Close-up',
-      caption: 'Electric blue hair with teal lips'
     },
     {
       src: '/images/beauty-curly-pixie-dark.webp',
