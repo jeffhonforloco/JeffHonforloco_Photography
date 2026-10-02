@@ -145,6 +145,16 @@ export const ACQUISITION_SERVICE_PAGES = [
     gallery: [
       sweet16Image('jailyn-sweet16-outdoor', 1024, 1535, 'Sweet 16 celebrant in a blush ball gown posing outdoors beside classical columns'),
       sweet16Image('jailyn-sweet16-indoor', 979, 1607, 'Sweet 16 celebrant wearing a tiara and blush ball gown in an indoor portrait'),
+      sweet16Image('sweet16-blush-gown-lakeside', 1290, 1616, 'Sweet 16 celebrant in a blush-pink sequin ball gown posing by the lake'),
+      sweet16Image('sweet16-blush-gown-glitter-portrait', 1290, 2159, 'Sweet 16 celebrant in a blush sequin gown against a glitter backdrop'),
+      sweet16Image('sweet16-red-twopiece-tiara-studio', 1290, 1616, 'Sweet 16 celebrant wearing a tiara and red embellished two-piece gown in a studio portrait'),
+      sweet16Image('sweet16-red-gold-gown-studio', 1290, 2159, 'Sweet 16 celebrant in a red gown with gold embroidery seated in a dramatic studio portrait'),
+      sweet16Image('sweet16-red-gown-laughing-studio', 1290, 2159, 'Joyful Sweet 16 celebrant in a red gown laughing with a feather bouquet in the studio'),
+      sweet16Image('sweet16-red-twopiece-full-length-studio', 1290, 2159, 'Sweet 16 celebrant in a red two-piece ball gown and tiara, full-length studio portrait'),
+      sweet16Image('sweet16-blush-gown-escort-bw', 1290, 2159, 'Sweet 16 celebrant in a blush ball gown with her escort in a black-and-white outdoor portrait'),
+      sweet16Image('sweet16-blush-gown-escort-columns', 1290, 926, 'Sweet 16 celebrant holding hands with her escort between classical columns outdoors'),
+      sweet16Image('sweet16-turquoise-gown-family-lakeside', 1290, 926, 'Sweet 16 celebrant in a turquoise ball gown with her parents by the lake'),
+      sweet16Image('sweet16-blush-gown-escort-outdoor', 1290, 1616, 'Sweet 16 celebrant in a blush ball gown with her escort in a sunny outdoor portrait'),
     ],
   },
   {
