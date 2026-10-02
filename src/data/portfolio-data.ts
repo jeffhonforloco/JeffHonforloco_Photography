@@ -135,7 +135,14 @@ export const portfolioImages = {
     { src: '/images/fashion-plaid-shirt-studio.webp', alt: 'Plaid Shirt Studio Portrait', caption: 'CASUAL COUTURE' },
     { src: '/images/fashion-afro-gold-necklaces.webp', alt: 'Afro Gold Necklace Portrait', caption: 'STATEMENT BEAUTY' },
     { src: '/images/fashion-braids-denim-profile.webp', alt: 'Braids Denim Jacket Portrait', caption: 'STREET CHIC' },
-    { src: '/images/fashion-braids-denim-closeup.webp', alt: 'Braids Close-up Denim Portrait', caption: 'NATURAL BEAUTY' }
+    { src: '/images/fashion-braids-denim-closeup.webp', alt: 'Braids Close-up Denim Portrait', caption: 'NATURAL BEAUTY' },
+    { src: '/images/portrait-suit-pink-backdrop.webp', alt: 'Tailored Suit Seated Editorial', caption: 'POWER SUITING' },
+    { src: '/images/portrait-gold-hoops-glamour.webp', alt: 'Gold Hoop Evening Glamour', caption: 'EVENING GLAMOUR' },
+    { src: '/images/portrait-curly-hair-hands.webp', alt: 'Curly Hair Moody Editorial', caption: 'MOODY MUSE' },
+    { src: '/images/portrait-tattooed-white-tee.webp', alt: 'White Tee Casual Editorial', caption: 'CASUAL EDGE' },
+    { src: '/images/portrait-bw-hoodie-jeans.webp', alt: 'Monochrome Hoodie Editorial', caption: 'STREET MOOD' },
+    { src: '/images/portrait-grey-shirt-chair.webp', alt: 'Grey Shirt Minimal Portrait', caption: 'MINIMAL CHIC' },
+    { src: '/images/portrait-red-tee-gold-chain.webp', alt: 'Red Tee Gold Chain Editorial', caption: 'BOLD CASUAL' }
   ],
   glamour: [
     { src: '/images/IMG_7656.webp', alt: 'Red Sequin Leaning Glamour', caption: 'Classic red sequin glamour' },
@@ -273,7 +280,16 @@ export const portfolioImages = {
     { src: '/images/headshot-client-3.webp', alt: 'Corporate Headshot Purple Shirt', caption: 'Corporate portrait — warm and approachable' },
     { src: '/images/IMG_7757.webp', alt: 'Headshot Portrait White Blazer', caption: 'Joyful energy in white — personal brand portrait' },
     { src: '/images/IMG_7794.webp', alt: 'Male Headshot Portrait', caption: 'Clean executive headshot' },
-    { src: '/images/IMG_7792.webp', alt: 'Creative Male Portrait with Hat', caption: 'Creative portrait with moody color lighting' }
+    { src: '/images/IMG_7792.webp', alt: 'Creative Male Portrait with Hat', caption: 'Creative portrait with moody color lighting' },
+    { src: '/images/portrait-suit-pink-backdrop.webp', alt: 'Tailored Suit Portrait Pink Backdrop', caption: 'Power suiting — seated portrait on pink' },
+    { src: '/images/portrait-gold-hoops-glamour.webp', alt: 'Gold Hoop Glamour Portrait', caption: 'Evening glamour — gold hoops and waves' },
+    { src: '/images/portrait-curly-hair-hands.webp', alt: 'Curly Hair Hands Portrait', caption: 'Moody portrait — curls and deep tones' },
+    { src: '/images/portrait-braids-denim-shoulder.webp', alt: 'Braids Denim Over-Shoulder Portrait', caption: 'Denim and braids — over-the-shoulder portrait' },
+    { src: '/images/portrait-tattooed-white-tee.webp', alt: 'Tattooed Studio Portrait White Tee', caption: 'Relaxed studio portrait — casual style' },
+    { src: '/images/portrait-bw-hoodie-jeans.webp', alt: 'Black and White Hoodie Portrait', caption: 'Monochrome mood — hoodie street portrait' },
+    { src: '/images/portrait-grey-shirt-chair.webp', alt: 'Grey Shirt Chair Portrait', caption: 'Clean and casual — seated portrait' },
+    { src: '/images/portrait-silver-jacket-pink.webp', alt: 'Silver Jacket Pink Backdrop Portrait', caption: 'Pop color — silver jacket on pink' },
+    { src: '/images/portrait-red-tee-gold-chain.webp', alt: 'Red Tee Gold Chain Portrait', caption: 'Bold casual — red tee studio portrait' }
   ],
   lifestyle: [
     { src: '/images/IMG_7713.webp', alt: 'Sunset Beach Lifestyle', caption: 'Golden hour on the rocks — coastal lifestyle' },
