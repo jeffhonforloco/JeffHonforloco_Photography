@@ -94,6 +94,13 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
       optimizedImage('corporate-06', 1290, 1853, 'Corporate branding portrait on a pink studio background'),
       optimizedImage('hair-brand-09', 1290, 1935, 'Professional personal-brand headshot in a white blazer'),
       optimizedImage('hair-brand-10', 1290, 1935, 'Executive portrait in a white blazer with wind-swept hair'),
+      optimizedImage('corporate-headshot-navy-suit-standing', 1290, 2159, 'Professional corporate headshot of a man with locs in a navy suit on a white background'),
+      optimizedImage('corporate-headshot-navy-suit-seated', 1290, 2159, 'Seated corporate portrait of a man in a navy suit with hand on chin'),
+      optimizedImage('corporate-headshot-bw-profile', 1290, 1616, 'Black and white executive profile portrait of a man with locs'),
+      optimizedImage('corporate-headshot-bw-standing', 1290, 1616, 'Black and white full-length corporate portrait of a man in a dark suit'),
+      optimizedImage('corporate-headshot-casual-seated', 1290, 1616, 'Casual corporate headshot of a smiling man in a grey shirt and jeans, seated'),
+      optimizedImage('corporate-headshot-bw-seated', 1290, 1616, 'Black and white seated corporate portrait of a man with hand on chin'),
+      optimizedImage('corporate-headshot-bw-closeup', 1290, 2159, 'Black and white close-up corporate portrait with hands clasped'),
     ],
   },
   {

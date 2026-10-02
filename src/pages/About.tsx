@@ -54,7 +54,7 @@ const About = () => {
               <div className="relative">
                 <div className="aspect-[3/4] overflow-hidden">
                   <img
-                    src="/images/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.png"
+                    src="/images/be7f5d35-71c0-4752-8fbe-46cd1a9e1fdd.webp"
                     alt="Jeff Honforloco, photographer"
                     className="w-full h-full object-cover object-center"
                   />
