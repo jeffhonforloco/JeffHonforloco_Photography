@@ -205,9 +205,7 @@ export const ACQUISITION_SERVICE_PAGES = [
       { src: '/videos/acquisition/real-estate/realestate-tour-06.mp4', poster: '/videos/acquisition/real-estate/realestate-tour-06-poster.webp', title: 'Property walkthrough film 6' },
       { src: '/videos/acquisition/real-estate/realestate-tour-07.mp4', poster: '/videos/acquisition/real-estate/realestate-tour-07-poster.webp', title: 'Property walkthrough film 7' },
       { src: '/videos/acquisition/real-estate/realestate-tour-08.mp4', poster: '/videos/acquisition/real-estate/realestate-tour-08-poster.webp', title: 'Property walkthrough film 8' },
-      { src: '/videos/acquisition/real-estate/realestate-tour-09.mp4', poster: '/videos/acquisition/real-estate/realestate-tour-09-poster.webp', title: 'Property walkthrough film 9' },
-    ],
-  },
+    ],  },
   {
     path: '/providence-birthday-photographer',
     title: 'Providence Birthday Photographer | Jeff Honforloco',
