@@ -10,7 +10,7 @@ import apiUrl from '../../lib/api-base';
 import { useToast } from '../../hooks/use-toast';
 
 const DEFAULT_SETTINGS = {
-  mainLogo: '/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.png',
+  mainLogo: '/images/ff1ac4ba-08e6-4647-8c5c-5e76943f6cfa.webp',
   heroTitle: 'FASHION & BEAUTY PHOTOGRAPHY',
   heroSubtitle: 'Nationwide bookings for high-end brands, celebrities & models',
   primaryButtonText: 'Book Session',
@@ -23,22 +23,22 @@ const DEFAULT_SETTINGS = {
 };
 
 const DEFAULT_IMAGES = [
-  '/images/cd3eb066-6ffe-4e1e-9613-a1b067806092.png',
-  '/images/060e27c9-b2d8-4f33-b575-794287894fd6.png',
-  '/images/1bb36c8a-ad7c-469a-bc03-92b007c271c3.png',
-  '/images/5f1a4833-8606-47d0-8677-805cd81b2558.png',
-  '/images/c345b4c2-442d-4dc1-bf20-2c1856ad9e11.png',
-  '/images/0987daa0-e6fd-4914-b820-b8b235e70983.png',
-  '/images/f36a817e-cd75-4d0b-a900-ce69f01e6afb.png',
-  '/images/1290de24-fbc4-4577-a048-fea0e3630a36.png',
-  '/images/bcbe9d80-3fd0-494c-a9e9-a4d5ab099c02.png',
-  '/images/13e3124a-ebf5-4084-94fa-5b85aacda039.png',
-  '/images/04f6a5f8-91e9-4568-84ae-63cac4830a52.png',
-  '/images/2523c649-4617-43c2-9e9e-ebf4ee328067.png',
-  '/images/b573482f-31ab-49e5-af48-586d9aeb6909.png',
-  '/images/be107293-394e-46fd-9fcd-d1eb5781ff56.png',
-  '/images/7c28c520-783d-4733-ad48-9683204ef054.png',
-  '/images/c279306c-86cb-49fe-a393-c5330888db34.png',
+  '/images/cd3eb066-6ffe-4e1e-9613-a1b067806092.webp',
+  '/images/060e27c9-b2d8-4f33-b575-794287894fd6.webp',
+  '/images/1bb36c8a-ad7c-469a-bc03-92b007c271c3.webp',
+  '/images/5f1a4833-8606-47d0-8677-805cd81b2558.webp',
+  '/images/c345b4c2-442d-4dc1-bf20-2c1856ad9e11.webp',
+  '/images/0987daa0-e6fd-4914-b820-b8b235e70983.webp',
+  '/images/f36a817e-cd75-4d0b-a900-ce69f01e6afb.webp',
+  '/images/1290de24-fbc4-4577-a048-fea0e3630a36.webp',
+  '/images/bcbe9d80-3fd0-494c-a9e9-a4d5ab099c02.webp',
+  '/images/13e3124a-ebf5-4084-94fa-5b85aacda039.webp',
+  '/images/04f6a5f8-91e9-4568-84ae-63cac4830a52.webp',
+  '/images/2523c649-4617-43c2-9e9e-ebf4ee328067.webp',
+  '/images/b573482f-31ab-49e5-af48-586d9aeb6909.webp',
+  '/images/be107293-394e-46fd-9fcd-d1eb5781ff56.webp',
+  '/images/7c28c520-783d-4733-ad48-9683204ef054.webp',
+  '/images/c279306c-86cb-49fe-a393-c5330888db34.webp',
 ];
 
 const AdminHero = () => {

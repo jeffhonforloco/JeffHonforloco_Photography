@@ -6,37 +6,37 @@ const portfolioCategories = [
   {
     title: 'Fashion',
     slug: 'fashion',
-    image: '/images/9cac59de-27c1-4b0a-8c2b-1d8333486e54.png',
+    image: '/images/9cac59de-27c1-4b0a-8c2b-1d8333486e54.webp',
     href: '/portfolios/fashion',
   },
   {
     title: 'Glamour',
     slug: 'glamour',
-    image: '/images/7c6c25d5-48ef-4f79-8369-b5edab7ddc85.png',
+    image: '/images/7c6c25d5-48ef-4f79-8369-b5edab7ddc85.webp',
     href: '/portfolios/glamour',
   },
   {
     title: 'Beauty',
     slug: 'beauty',
-    image: '/images/08c64276-3665-4346-a637-ca41acc6c602.png',
+    image: '/images/08c64276-3665-4346-a637-ca41acc6c602.webp',
     href: '/portfolios/beauty',
   },
   {
     title: 'Editorial',
     slug: 'editorial',
-    image: '/images/67b5c2bf-d1a3-44e4-af56-212f23e37262.png',
+    image: '/images/67b5c2bf-d1a3-44e4-af56-212f23e37262.webp',
     href: '/portfolios/editorial',
   },
   {
     title: 'Headshots',
     slug: 'headshots',
-    image: '/images/headshot-client-2.jpeg',
+    image: '/images/headshot-client-2.webp',
     href: '/portfolios/headshots',
   },
   {
     title: 'Lifestyle',
     slug: 'lifestyle',
-    image: '/images/bcd80ca3-d60c-4596-9a71-4b8602583ff7.png',
+    image: '/images/bcd80ca3-d60c-4596-9a71-4b8602583ff7.webp',
     href: '/portfolios/lifestyle',
   },
 ];
