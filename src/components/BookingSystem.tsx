@@ -256,7 +256,7 @@ const BookingSystem: React.FC = () => {
   // continuous flow: details → pay → confirmed.
   const saveBookingLead = (serviceName: string, dateStr: string) => {
     try {
-      void fetch(apiUrl('/api/v1/contacts/'), {
+      void fetch(apiUrl('/api/v1/contacts'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
