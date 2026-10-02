@@ -78,6 +78,14 @@ export const ACQUISITION_SERVICE_PAGES = [
       weddingImage('A7307180_retouched', 2048, 1365, 'Wedding ceremony moment with the couple and wedding party'),
       weddingImage('_DSC0115_retouched', 2048, 1365, 'Bride and groom holding hands during their ceremony'),
       weddingImage('A7301826(1)_retouched', 1616, 1080, 'Bride preparing with a makeup artist beside her wedding dress'),
+      weddingImage('bridal-runway-grey-suit-purple-tie', 1290, 2159, 'Groom in a light grey suit with purple tie and pocket square at a bridal fashion show'),
+      weddingImage('bridal-runway-beaded-ballgown', 1290, 1616, 'Bride in a white strapless beaded ballgown walking the runway at a bridal fashion show'),
+      weddingImage('bridal-runway-halter-satin-tiara', 1290, 2159, 'Bride in a white halter satin gown and tiara on the runway at a bridal fashion show'),
+      weddingImage('bridal-runway-corset-back-bow', 1290, 2159, 'Back view of a bridal gown with corset lacing and bow detail on the runway'),
+      weddingImage('bridal-runway-off-shoulder-gown', 1290, 2159, 'Bride in an off-shoulder white gown walking the runway at a bridal fashion show'),
+      weddingImage('bridal-runway-veil-lace-gown', 1290, 2159, 'Bride in a lace gown with a long veil on the runway at a bridal fashion show'),
+      weddingImage('bridal-runway-grey-blazer-groom', 1290, 2159, 'Groom in a grey blazer walking the runway at a bridal fashion show'),
+      weddingImage('bridal-runway-back-wide', 1290, 1937, 'Bride walking the runway in a ballgown with corset back, wide venue shot'),
     ],
   },
   {
@@ -218,6 +226,7 @@ export const ACQUISITION_SERVICE_PAGES = [
       birthdayImage('birthday-02', 1290, 1935, 'Joyful milestone birthday portrait holding a gold number balloon'),
       birthdayImage('birthday-03', 1290, 1936, 'Birthday celebrant standing with gold number balloons in a studio portrait'),
       birthdayImage('birthday-04', 1290, 1935, 'Milestone birthday portrait between gold number balloons'),
+      birthdayImage('birthday-21-gold-balloons-pink', 1290, 2159, '21st birthday portrait in a sparkly dress with gold number 21 balloons against a pink backdrop'),
     ],
   },
 ] as const;

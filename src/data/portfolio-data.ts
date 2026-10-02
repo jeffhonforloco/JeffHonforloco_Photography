@@ -151,6 +151,61 @@ export const portfolioImages = {
       src: '/images/f3227ce4-80ae-48e0-b97d-c6f9fd22284a.webp',
       alt: 'Floral Crown Editorial',
       caption: 'Editorial portrait with ornate floral and butterfly styling'
+    },
+    {
+      src: '/images/editorial-blue-gel-necklaces.webp',
+      alt: 'Blue Gel Necklace Editorial',
+      caption: 'Gel-lit editorial portrait with layered necklaces — a bold color study'
+    },
+    {
+      src: '/images/editorial-neon-paint-face.webp',
+      alt: 'Neon Paint Face Editorial',
+      caption: 'Neon body-paint close-up — experimental beauty editorial'
+    },
+    {
+      src: '/images/editorial-red-hat-silhouette.webp',
+      alt: 'Red Hat Silhouette Editorial',
+      caption: 'Selective-color silhouette with a red hat — graphic fashion editorial'
+    },
+    {
+      src: '/images/editorial-blue-gel-stool.webp',
+      alt: 'Gel Light Stool Editorial',
+      caption: 'Gel-lit editorial pose on a stool — color-drenched portrait'
+    },
+    {
+      src: '/images/editorial-afro-gladiola-flowers.webp',
+      alt: 'Afro and Gladiola Editorial',
+      caption: 'Natural hair portrait with fresh gladiolas — floral editorial'
+    },
+    {
+      src: '/images/editorial-hat-softbox-silhouette.webp',
+      alt: 'Softbox Silhouette Editorial',
+      caption: 'Hat silhouette against a softbox — high-contrast studio editorial'
+    },
+    {
+      src: '/images/editorial-sunburst-headdress-bw.webp',
+      alt: 'Sunburst Headdress Editorial',
+      caption: 'Black and white editorial with a radiant sunburst headdress'
+    },
+    {
+      src: '/images/editorial-flower-bed.webp',
+      alt: 'Flower Bed Editorial',
+      caption: 'Portrait resting in a bed of vivid flowers — botanical editorial'
+    },
+    {
+      src: '/images/editorial-blue-gel-hand-neck.webp',
+      alt: 'Blue Gel Hand Portrait',
+      caption: 'Gel-lit portrait with hand at the neck — moody color editorial'
+    },
+    {
+      src: '/images/editorial-heritage-headwrap-calabash.webp',
+      alt: 'Heritage Headwrap Editorial',
+      caption: 'Black and white heritage portrait with headwrap and calabash bowl'
+    },
+    {
+      src: '/images/editorial-purple-top-beauty.webp',
+      alt: 'Purple Top Beauty Editorial',
+      caption: 'Dramatic beauty portrait in purple against black — studio editorial'
     }
   ],
   headshots: [
