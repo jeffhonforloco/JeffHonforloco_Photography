@@ -428,7 +428,7 @@ const AdminOutreach: React.FC = () => {
                   <Input value={postalAddress} onChange={(e) => setPostalAddress(e.target.value)} placeholder="e.g. PO Box 1234, Providence, RI 02903" className="flex-1" />
                   <Button variant="outline" size="sm" onClick={savePostalAddress} disabled={savingAddr}>{savingAddr ? 'Saving…' : 'Save'}</Button>
                 </div>
-                {!postalAddress.trim() && <p className="text-xs text-amber-400 mt-1">No address set — emails will show "Providence, RI", which is not compliant for cold outreach.</p>}
+                {!postalAddress.trim() && <p className="text-xs text-amber-400 mt-1">No address set — add your P.O. box or business address here when ready.</p>}
               </div>
               {confirmSend ? (
                 <div className="flex gap-2 items-center">

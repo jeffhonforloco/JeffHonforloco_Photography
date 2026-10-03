@@ -175,9 +175,10 @@ outreach.post('/discover-email', async (c) => {
 
 function outreachFooterHtml(target: { business_name: string; unsubscribe_token: string }, postalAddress: string, baseUrl: string): string {
   const unsub = `${baseUrl}/api/v1/outreach/unsubscribe?token=${target.unsubscribe_token}`;
+  const addrLine = postalAddress.trim() ? `Jeff Honforloco Photography · ${escapeHtml(postalAddress)}<br/>` : `Jeff Honforloco Photography<br/>`;
   return `
     <hr style="border:none;border-top:1px solid #ddd;margin:24px 0 12px" />
-    <p style="font-size:12px;color:#888">Jeff Honforloco Photography · ${escapeHtml(postalAddress)}<br/>
+    <p style="font-size:12px;color:#888">${addrLine}
     You're receiving this because your business was listed publicly as a potential photography client.
     <a href="${unsub}" style="color:#888">Unsubscribe</a> from future outreach.</p>`;
 }
@@ -193,7 +194,7 @@ outreach.post('/send', async (c) => {
 
   const placeholders = rawBody.match(/{{\s*[\w]+\s*}}/g) ?? [];
   const settingAddr = await c.env.DB.prepare(`SELECT value FROM outreach_settings WHERE key = 'postal_address'`).bind().first<{ value: string }>().catch(() => null);
-  const postalAddress = settingAddr?.value || c.env.BUSINESS_POSTAL_ADDRESS || 'Providence, RI';
+  const postalAddress = settingAddr?.value || c.env.BUSINESS_POSTAL_ADDRESS || '';
   const baseUrl = c.env.PUBLIC_API_BASE_URL || 'https://jeffhonforlocophotos.com';
 
   let sent = 0;
