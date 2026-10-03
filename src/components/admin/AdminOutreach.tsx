@@ -128,8 +128,14 @@ const AdminOutreach: React.FC = () => {
     setDiscovering(null);
   };
 
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+
   const deleteTarget = async (id: number) => {
-    if (!window.confirm('Remove this business from outreach targets?')) return;
+    if (confirmDeleteId !== id) {
+      setConfirmDeleteId(id);
+      return;
+    }
+    setConfirmDeleteId(null);
     await fetch(apiUrl(`/api/v1/admin/outreach/targets/${id}`), { method: 'DELETE', headers: authHeaders() });
     setSelected((prev) => { const n = new Set(prev); n.delete(id); return n; });
     fetchTargets();
@@ -275,7 +281,14 @@ const AdminOutreach: React.FC = () => {
                         </TableCell>
                         <TableCell>{t.unsubscribed ? <Badge variant="destructive">Unsubscribed</Badge> : <Badge variant="secondary">Active</Badge>}</TableCell>
                         <TableCell>
-                          <Button size="sm" variant="ghost" onClick={() => deleteTarget(t.id)}><Trash2 className="h-4 w-4 text-red-400" /></Button>
+                          {confirmDeleteId === t.id ? (
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="destructive" onClick={() => deleteTarget(t.id)}>Delete?</Button>
+                              <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(null)}>Keep</Button>
+                            </div>
+                          ) : (
+                            <Button size="sm" variant="ghost" onClick={() => deleteTarget(t.id)}><Trash2 className="h-4 w-4 text-red-400" /></Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
