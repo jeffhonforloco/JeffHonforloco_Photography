@@ -238,7 +238,7 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
       'Consistent lighting and backgrounds for organization-wide portraits',
       'Custom scoping based on the production and usage requirements',
     ],
-    pricingCopy: 'Commercial projects are scoped through the relevant published service. Fashion campaigns, full editorial productions and organization-wide headshots are custom quoted; individual and smaller-session starting prices remain visible on the pricing page. Your proposal will depend on the chosen service, team, locations, scheduling, assets and usage needs.',
+    pricingCopy: 'Commercial sessions begin at $499. Fashion Standard begins at $1,800, beauty Standard at $1,400, editorial Standard at $2,200, and corporate team headshots start at $3,500. Full campaign productions are custom quoted around the production, team, locations, assets and usage requirements.',
     pricingService: 'fashion',
     portfolioPath: '/portfolios/editorial',
     portfolioLabel: 'Review campaign and editorial work',
@@ -249,7 +249,7 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
     ],
     faqs: [
       { question: 'What commercial photography do you offer in Providence?', answer: 'Commercial work can include fashion and beauty campaigns, editorial brand imagery, executive portraits and coordinated corporate team headshots.' },
-      { question: 'Are commercial projects custom quoted?', answer: 'Larger campaigns and corporate productions are custom quoted according to service, team, location, schedule, asset and usage requirements.' },
+      { question: 'Are commercial projects custom quoted?', answer: 'Larger campaigns and corporate productions are custom quoted according to service, team, location, schedule, asset and usage requirements. Smaller sessions start at $499, with published Standard packages from $1,400 to $2,200 depending on the service.' },
       { question: 'Can one production create assets for several platforms?', answer: 'Yes. The published Full Campaign fashion package includes multi-platform asset delivery, with final scope confirmed in the proposal.' },
       { question: 'How do I request a commercial proposal?', answer: 'Use the booking form and include the audience, channels, date, location, people or looks, deliverables and usage needs.' },
     ],
