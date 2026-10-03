@@ -70,6 +70,10 @@ const KNOWN_ROUTES = new Set([
   '/providence-engagement-photographer',
   '/providence-sweet-16-quinceanera-photographer',
   '/providence-real-estate-photographer',
+  '/providence-birthday-photographer',
+  '/providence-glamour-photographer',
+  '/providence-lifestyle-photographer',
+  '/providence-motion-video-production',
 ]);
 
 // Dynamic prefixes owned by the app router (validated client-side).
