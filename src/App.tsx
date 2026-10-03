@@ -186,6 +186,15 @@ export const AppContent = () => {
                 <Route path="/providence-sweet-16-quinceanera-photographer" element={<ServiceAuthority />} />
                 <Route path="/providence-real-estate-photographer" element={<ServiceAuthority />} />
                 <Route path="/providence-birthday-photographer" element={<ServiceAuthority />} />
+                <Route path="/warwick-photographer" element={<ServiceAuthority />} />
+                <Route path="/cranston-photographer" element={<ServiceAuthority />} />
+                <Route path="/newport-photographer" element={<ServiceAuthority />} />
+                <Route path="/pawtucket-photographer" element={<ServiceAuthority />} />
+                <Route path="/east-providence-photographer" element={<ServiceAuthority />} />
+                <Route path="/new-england-photographer" element={<ServiceAuthority />} />
+                <Route path="/massachusetts-photographer" element={<ServiceAuthority />} />
+                <Route path="/boston-photographer" element={<ServiceAuthority />} />
+                <Route path="/new-york-wedding-photographer" element={<ServiceAuthority />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/book" element={<Book />} />
                 <Route path="/pricing" element={<Pricing />} />
