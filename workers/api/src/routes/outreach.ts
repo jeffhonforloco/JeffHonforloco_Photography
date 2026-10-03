@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
-import { requireAdmin } from '../middleware/auth';
+import { requireAuth, requireAdmin } from '../middleware/auth';
 import type { AppEnv } from '../types';
 import { sendEmail, escapeHtml } from '../lib/email';
 
 const outreach = new Hono<AppEnv>();
-outreach.use('*', requireAdmin);
+outreach.use('*', requireAuth, requireAdmin);
 outreach.use('*', async (c, next) => {
   try {
     await ensureTables(c.env.DB);
