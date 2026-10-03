@@ -37,18 +37,47 @@ const authHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
 });
 
-const DEFAULT_SUBJECT = 'Photography for {{business_name}}';
-const DEFAULT_BODY = `Hi there,
+const TEMPLATES: Record<string, { label: string; subject: string; body: string }> = {
+  venue: {
+    label: 'Wedding venues',
+    subject: 'Photography that sells {{business_name}}',
+    body: `Hi there,
 
-I'm Jeff, a Providence-based photographer specializing in editorial, commercial and event photography across Rhode Island and New England.
+I came across {{business_name}} and the space photographs beautifully — but I kept thinking how much more of a bookings-driver it could be with an editorial eye on it.
 
-I came across {{business_name}} and wanted to reach out — I help businesses like yours with standout visual content: venue showcases, branding portraits, listing and property photography, and event coverage.
+I'm Jeff, a Providence-based photographer specializing in editorial and event photography. I shoot venues the way couples actually dream about them — the light, the details, the atmosphere.
 
-Would you be open to a quick call to see if there's a fit? You can see my work at jeffhonforlocophotos.com.
+Portfolio, pricing, and direct booking are all here: jeffhonforlocophotos.com
 
 Best,
-Jeff Honforloco
-Jeff Honforloco Photography`;
+Jeff Honforloco`,
+  },
+  real_estate: {
+    label: 'Realtors / brokerages',
+    subject: 'Listings that stop the scroll — {{business_name}}',
+    body: `Hi there,
+
+I'm Jeff, a Providence photographer who shoots real estate and commercial spaces with an editorial finish — the kind of listing photos that make buyers slow down instead of swipe past.
+
+Portfolio, pricing, and direct booking: jeffhonforlocophotos.com
+
+Best,
+Jeff Honforloco`,
+  },
+  brand: {
+    label: 'Brands / hospitality',
+    subject: 'Content for {{business_name}}',
+    body: `Hi there,
+
+I shoot editorial and commercial photography here in Providence, and {{business_name}} struck me as a brand with a strong visual identity that could go further — menu features, behind-the-scenes, seasonal campaigns.
+
+Portfolio, pricing, and direct booking: jeffhonforlocophotos.com
+
+Best,
+Jeff`,
+  },
+};
+const DEFAULT_TEMPLATE = 'venue';
 
 const AdminOutreach: React.FC = () => {
   const [targets, setTargets] = useState<OutreachTarget[]>([]);
@@ -56,8 +85,15 @@ const AdminOutreach: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [selected, setSelected] = useState<Set<number>>(new Set());
-  const [subject, setSubject] = useState(DEFAULT_SUBJECT);
-  const [body, setBody] = useState(DEFAULT_BODY);
+  const [subject, setSubject] = useState(TEMPLATES[DEFAULT_TEMPLATE].subject);
+  const [body, setBody] = useState(TEMPLATES[DEFAULT_TEMPLATE].body);
+  const [templateKey, setTemplateKey] = useState(DEFAULT_TEMPLATE);
+
+  const applyTemplate = (key: string) => {
+    setTemplateKey(key);
+    setSubject(TEMPLATES[key].subject);
+    setBody(TEMPLATES[key].body);
+  };
   const [sending, setSending] = useState(false);
   const [discovering, setDiscovering] = useState<number | null>(null);
   const [notice, setNotice] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
@@ -309,6 +345,16 @@ const AdminOutreach: React.FC = () => {
             <CardContent className="space-y-4">
               <div>
                 <label className="text-sm text-neutral-300">Recipients: {selected.size} selected</label>
+              </div>
+              <div>
+                <label className="text-sm text-neutral-300">Template</label>
+                <div className="flex gap-2 mt-1">
+                  {Object.entries(TEMPLATES).map(([key, t]) => (
+                    <Button key={key} size="sm" variant={templateKey === key ? 'default' : 'outline'} onClick={() => applyTemplate(key)}>
+                      {t.label}
+                    </Button>
+                  ))}
+                </div>
               </div>
               <div>
                 <label className="text-sm text-neutral-300">Subject</label>
