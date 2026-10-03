@@ -104,7 +104,6 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
       optimizedImage('corporate-headshot-bw-standing', 1290, 1616, 'Black and white full-length corporate portrait of a man in a dark suit'),
       optimizedImage('corporate-headshot-casual-seated', 1290, 1616, 'Casual corporate headshot of a smiling man in a grey shirt and jeans, seated'),
       optimizedImage('corporate-headshot-bw-seated', 1290, 1616, 'Black and white seated corporate portrait of a man with hand on chin'),
-      optimizedImage('corporate-headshot-bw-closeup', 1290, 2159, 'Black and white close-up corporate portrait with hands clasped'),
     ],
   },
   {
