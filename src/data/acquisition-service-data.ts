@@ -86,8 +86,6 @@ export const ACQUISITION_SERVICE_PAGES = [
       weddingImage('A7307180_retouched', 2048, 1365, 'Wedding ceremony moment with the couple and wedding party'),
       weddingImage('_DSC0115_retouched', 2048, 1365, 'Bride and groom holding hands during their ceremony'),
       weddingImage('A7301826(1)_retouched', 1616, 1080, 'Bride preparing with a makeup artist beside her wedding dress'),
-      weddingImage('bridal-runway-grey-blazer-groom', 1290, 2159, 'Groom in a grey blazer walking the runway at a bridal fashion show'),
-      weddingImage('bridal-runway-back-wide', 1290, 1937, 'Bride walking the runway in a ballgown with corset back, wide venue shot'),
     ],
   },
   {
@@ -155,12 +153,6 @@ export const ACQUISITION_SERVICE_PAGES = [
     gallery: [
       sweet16Image('jailyn-sweet16-outdoor', 1024, 1535, 'Sweet 16 celebrant in a blush ball gown posing outdoors beside classical columns'),
       sweet16Image('jailyn-sweet16-indoor', 979, 1607, 'Sweet 16 celebrant wearing a tiara and blush ball gown in an indoor portrait'),
-      sweet16Image('sweet16-blush-gown-lakeside', 1290, 1616, 'Sweet 16 celebrant in a blush-pink sequin ball gown posing by the lake'),
-      sweet16Image('sweet16-blush-gown-glitter-portrait', 1290, 2159, 'Sweet 16 celebrant in a blush sequin gown against a glitter backdrop'),
-      sweet16Image('sweet16-blush-gown-escort-bw', 1290, 2159, 'Sweet 16 celebrant in a blush ball gown with her escort in a black-and-white outdoor portrait'),
-      sweet16Image('sweet16-blush-gown-escort-columns', 1290, 926, 'Sweet 16 celebrant holding hands with her escort between classical columns outdoors'),
-      sweet16Image('sweet16-turquoise-gown-family-lakeside', 1290, 926, 'Sweet 16 celebrant in a turquoise ball gown with her parents by the lake'),
-      sweet16Image('sweet16-blush-gown-escort-outdoor', 1290, 1616, 'Sweet 16 celebrant in a blush ball gown with her escort in a sunny outdoor portrait'),
     ],
   },
   {
@@ -240,7 +232,6 @@ export const ACQUISITION_SERVICE_PAGES = [
       birthdayImage('birthday-02', 1290, 1935, 'Joyful milestone birthday portrait holding a gold number balloon'),
       birthdayImage('birthday-03', 1290, 1936, 'Birthday celebrant standing with gold number balloons in a studio portrait'),
       birthdayImage('birthday-04', 1290, 1935, 'Milestone birthday portrait between gold number balloons'),
-      birthdayImage('birthday-21-gold-balloons-pink', 1290, 2159, '21st birthday portrait in a sparkly dress with gold number 21 balloons against a pink backdrop'),
     ],
   },
 ] as const;

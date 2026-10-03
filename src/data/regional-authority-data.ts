@@ -56,7 +56,7 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     galleryTitle: 'New England work',
     gallery: [
       regionalWeddingImage('A7307174(1)_retouched', 1600, 1066, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
-      regionalWeddingImage('bridal-runway-back-wide', 1600, 2402, 'Bridal gown on the runway at a fashion show'),
+      regionalWeddingImage('A7306941_retouched', 1600, 1066, 'Bride standing with bridesmaids before the wedding ceremony'),
       regionalWeddingImage('A7301826(1)_retouched', 1600, 1069, 'Bride getting her hair styled while her wedding dress hangs nearby'),
     ],
     secondaryTitle: 'Why base the region\u2019s photographer in Providence',
@@ -165,7 +165,7 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     gallery: [
       regionalEngagementImage('A7306425(1)_retouched', 1600, 1066, 'Couple posing together with the skyline behind them'),
       regionalWeddingImage('_DSC0115_retouched', 1600, 1066, 'Bride and groom holding hands during their wedding ceremony'),
-      regionalWeddingImage('bridal-runway-grey-blazer-groom', 1600, 2678, 'Groomswear look walking the runway at a bridal fashion show'),
+      regionalWeddingImage('A7307180_retouched', 1600, 1066, 'Bride and groom during their outdoor wedding ceremony'),
     ],
     secondaryTitle: 'An hour away, fully present',
     secondaryCopy: [
@@ -218,7 +218,7 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     galleryTitle: 'Wedding work',
     gallery: [
       regionalWeddingImage('_DSC0115_retouched', 1600, 1066, 'Bride and groom holding hands during their wedding ceremony'),
-      regionalWeddingImage('bridal-runway-back-wide', 1600, 2402, 'Bridal gown on the runway at a fashion show'),
+      regionalWeddingImage('A7306941_retouched', 1600, 1066, 'Bride standing with bridesmaids before the wedding ceremony'),
       regionalWeddingImage('A7307174(1)_retouched', 1600, 1066, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
     ],
     secondaryTitle: 'Why New York couples book a Providence photographer',
