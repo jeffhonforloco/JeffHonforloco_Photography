@@ -240,7 +240,6 @@ const AdminOutreach: React.FC = () => {
                   </Button>
                 </div>
               )}
-              </div>
             </CardHeader>
             <CardContent>
               {loading ? <p className="text-neutral-400 text-sm">Loading…</p> : (
