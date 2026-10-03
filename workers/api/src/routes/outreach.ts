@@ -5,11 +5,47 @@ import { sendEmail, escapeHtml } from '../lib/email';
 
 const outreach = new Hono<AppEnv>();
 outreach.use('*', requireAdmin);
+outreach.use('*', async (c, next) => {
+  try {
+    await ensureTables(c.env.DB);
+  } catch (err) {
+    console.error('[outreach] table init failed:', err);
+  }
+  await next();
+});
 
 const text = (v: unknown, max = 500) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_SEND_BATCH = 20;
 const MAX_IMPORT = 100;
+
+// Self-initialize tables if the D1 migration hasn't been applied yet.
+const OUTREACH_DDL = `
+CREATE TABLE IF NOT EXISTS outreach_targets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  business_name TEXT NOT NULL,
+  address TEXT, phone TEXT, website TEXT, email TEXT, category TEXT, location TEXT,
+  unsubscribe_token TEXT UNIQUE NOT NULL,
+  unsubscribed INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_outreach_targets_unsub ON outreach_targets(unsubscribe_token);
+CREATE TABLE IF NOT EXISTS outreach_sends (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  target_id INTEGER NOT NULL REFERENCES outreach_targets(id) ON DELETE CASCADE,
+  subject TEXT NOT NULL,
+  sent_at TEXT NOT NULL DEFAULT (datetime('now')),
+  status TEXT NOT NULL DEFAULT 'sent'
+);`;
+
+let tablesEnsured = false;
+async function ensureTables(db: D1Database): Promise<void> {
+  if (tablesEnsured) return;
+  for (const stmt of OUTREACH_DDL.split(';').map((s) => s.trim()).filter(Boolean)) {
+    await db.prepare(stmt).run();
+  }
+  tablesEnsured = true;
+}
 
 function randomToken(): string {
   const bytes = new Uint8Array(24);
@@ -202,8 +238,13 @@ export default outreach;
 export const outreachPublic = new Hono<AppEnv>();
 outreachPublic.get('/unsubscribe', async (c) => {
   const token = text(c.req.query('token') ?? '', 64);
-  if (token) {
-    await c.env.DB.prepare(`UPDATE outreach_targets SET unsubscribed = 1 WHERE unsubscribe_token = ?`).bind(token).run();
+  try {
+    await ensureTables(c.env.DB);
+    if (token) {
+      await c.env.DB.prepare(`UPDATE outreach_targets SET unsubscribed = 1 WHERE unsubscribe_token = ?`).bind(token).run();
+    }
+  } catch (err) {
+    console.error('[outreach] unsubscribe failed:', err);
   }
   return c.html(`<!doctype html><html><head><title>Unsubscribed</title><meta name="viewport" content="width=device-width,initial-scale=1"></head>
     <body style="font-family:Georgia,serif;display:flex;align-items:center;justify-content:center;min-height:80vh;background:#111;color:#eee">
