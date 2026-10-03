@@ -40,41 +40,63 @@ const authHeaders = () => ({
 const TEMPLATES: Record<string, { label: string; subject: string; body: string }> = {
   venue: {
     label: 'Wedding venues',
-    subject: 'Photography that sells {{business_name}}',
-    body: `Hi there,
+    subject: 'Editorial Wedding Photography for {{business_name}}',
+    body: `Dear {{business_name}} team,
 
-I came across {{business_name}} and the space photographs beautifully — but I kept thinking how much more of a bookings-driver it could be with an editorial eye on it.
+My name is Jeff Honforloco, a Providence-based photographer specializing in editorial wedding and event photography across Rhode Island and New England.
 
-I'm Jeff, a Providence-based photographer specializing in editorial and event photography. I shoot venues the way couples actually dream about them — the light, the details, the atmosphere.
+I am writing because {{business_name}} is precisely the caliber of venue whose architecture and atmosphere deserve imagery that converts inquiries into booked tours. My work captures venues the way couples envision their celebration — light, detail, and atmosphere composed with editorial intention.
 
-See the wedding work, pricing, and book directly: jeffhonforlocophotos.com/providence-wedding-photographer
+I would welcome the opportunity to discuss how professional venue photography could support your marketing. My wedding portfolio, published pricing, and booking availability are here:
+jeffhonforlocophotos.com/providence-wedding-photographer
 
-Best,
-Jeff Honforloco`,
+Thank you for your time and consideration.
+
+Warm regards,
+Jeff Honforloco
+Jeff Honforloco Photography
+Providence, Rhode Island
+jeffhonforlocophotos.com`,
   },
   real_estate: {
     label: 'Realtors / brokerages',
-    subject: 'Listings that stop the scroll — {{business_name}}',
-    body: `Hi there,
+    subject: 'Editorial Listing Photography for {{business_name}}',
+    body: `Dear {{business_name}} team,
 
-I'm Jeff, a Providence photographer who shoots real estate and commercial spaces with an editorial finish — the kind of listing photos that make buyers slow down instead of swipe past.
+My name is Jeff Honforloco, a Providence-based photographer specializing in editorial real estate and architectural photography.
 
-See the real estate work, pricing, and book directly: jeffhonforlocophotos.com/providence-real-estate-photographer
+In a competitive market, the quality of listing photography directly influences buyer engagement. My approach brings an editorial finish to interior and exterior photography — imagery designed to make prospective buyers pause, explore, and inquire. 48-hour delivery is available.
 
-Best,
-Jeff Honforloco`,
+I would be pleased to serve as a photography resource for your listings. My real estate portfolio, published pricing, and booking are here:
+jeffhonforlocophotos.com/providence-real-estate-photographer
+
+Thank you for your consideration.
+
+Best regards,
+Jeff Honforloco
+Jeff Honforloco Photography
+Providence, Rhode Island
+jeffhonforlocophotos.com`,
   },
   brand: {
     label: 'Brands / hospitality',
-    subject: 'Content for {{business_name}}',
-    body: `Hi there,
+    subject: 'Commercial Photography for {{business_name}}',
+    body: `Dear {{business_name}} team,
 
-I shoot editorial and commercial photography here in Providence, and {{business_name}} struck me as a brand with a strong visual identity that could go further — menu features, behind-the-scenes, seasonal campaigns.
+My name is Jeff Honforloco, a Providence-based photographer specializing in editorial and commercial photography for brands and organizations.
 
-See the commercial work, pricing, and book directly: jeffhonforlocophotos.com/providence-commercial-photographer
+{{business_name}} presents a strong visual identity, and I believe elevated campaign imagery — from product features to behind-the-scenes storytelling — could further strengthen your presence across every platform.
 
-Best,
-Jeff`,
+I would welcome the opportunity to discuss your upcoming content needs. My commercial portfolio, published pricing, and booking availability are here:
+jeffhonforlocophotos.com/providence-commercial-photographer
+
+Thank you for your time.
+
+Best regards,
+Jeff Honforloco
+Jeff Honforloco Photography
+Providence, Rhode Island
+jeffhonforlocophotos.com`,
   },
 };
 const DEFAULT_TEMPLATE = 'venue';
