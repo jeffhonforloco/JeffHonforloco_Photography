@@ -1,5 +1,7 @@
 import metadata from './service-authority-meta.json';
 import { ACQUISITION_SERVICE_PAGES, type AcquisitionGalleryImage } from './acquisition-service-data';
+import { TOWN_SERVICE_PAGES } from './town-authority-data';
+import { REGIONAL_SERVICE_PAGES } from './regional-authority-data';
 
 export type ServiceAuthorityPage = {
   path: string;
@@ -307,6 +309,8 @@ export const SERVICE_AUTHORITY_PAGES: ServiceAuthorityPage[] = [
     imageAlt: 'Moody editorial portrait photographed in Rhode Island by Jeff Honforloco',
   },
   ...ACQUISITION_SERVICE_PAGES,
+  ...TOWN_SERVICE_PAGES,
+  ...REGIONAL_SERVICE_PAGES,
 ];
 
 export const SERVICE_AUTHORITY_BY_PATH = Object.fromEntries(

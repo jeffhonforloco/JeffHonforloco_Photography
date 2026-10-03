@@ -39,6 +39,15 @@ const STATIC_PAGES = [
   ['/providence-sweet-16-quinceanera-photographer', 'monthly', '0.8', '2026-09-11'],
   ['/providence-birthday-photographer', 'monthly', '0.9', '2026-09-24'],
   ['/providence-real-estate-photographer', 'monthly', '0.9', '2026-09-11'],
+  ['/warwick-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/cranston-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/newport-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/pawtucket-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/east-providence-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/new-england-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/massachusetts-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/boston-photographer', 'monthly', '0.9', '2026-10-02'],
+  ['/new-york-wedding-photographer', 'monthly', '0.9', '2026-10-02'],
 ];
 
 const escapeXml = (s) =>
