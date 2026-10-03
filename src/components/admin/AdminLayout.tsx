@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity, BarChart3, Bell, BookOpenCheck, Bot, BriefcaseBusiness, CalendarCheck,
   ChartNoAxesCombined, ChevronRight, FileText, Gauge, Globe2, Image, Images, LayoutDashboard,
-  BadgeDollarSign, Lightbulb, LogOut, Mail, MapPinned, Megaphone, Menu, Newspaper, Search, Settings, Shield, ShoppingBag, Users, X,
+  BadgeDollarSign, Lightbulb, LogOut, Mail, MapPinned, Megaphone, Menu, Newspaper, Search, Send, Settings, Shield, ShoppingBag, Users, X,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -48,6 +48,7 @@ const navigation = [
     { name: 'Service Payments', path: 'service-payments', icon: BadgeDollarSign },
     { name: 'Contracts', path: 'contracts', icon: FileText },
     { name: 'Email / Follow-up', path: 'email', icon: Mail },
+    { name: 'Outreach', path: 'outreach', icon: Send },
     { name: 'Database', path: 'database', icon: BriefcaseBusiness },
     { name: 'Security', path: 'security', icon: Shield },
     { name: 'Settings', path: 'settings', icon: Settings },

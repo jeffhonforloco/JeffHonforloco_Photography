@@ -16,6 +16,7 @@ const AdminContracts = lazy(() => import('@/components/admin/AdminContracts'));
 const AdminPages = lazy(() => import('@/components/admin/AdminPages'));
 const AdminAnalytics = lazy(() => import('@/components/admin/AdminAnalytics'));
 const AdminEmail = lazy(() => import('@/components/admin/AdminEmail'));
+const AdminOutreach = lazy(() => import('@/components/admin/AdminOutreach'));
 const AdminDatabase = lazy(() => import('@/components/admin/AdminDatabase'));
 const AdminSecurity = lazy(() => import('@/components/admin/AdminSecurity'));
 const AdminSettings = lazy(() => import('@/components/admin/AdminSettings'));
@@ -78,6 +79,7 @@ const Admin: React.FC = () => {
         />
         <Route path="analytics" element={<AdminAnalytics />} />
         <Route path="email" element={<AdminEmail />} />
+        <Route path="outreach" element={<AdminOutreach />} />
         <Route path="database" element={<AdminDatabase />} />
         <Route path="security" element={<AdminSecurity />} />
         <Route path="settings" element={<AdminSettings />} />

@@ -23,6 +23,7 @@ import { servicesPublic, servicesAdmin, sendShootReminders } from './routes/serv
 import { contracts, contractSign } from './routes/contracts';
 import growthRoutes    from './routes/growth';
 import mcpRoutes, { mcpDiscovery } from './routes/mcp';
+import outreachRoutes, { outreachPublic } from './routes/outreach';
 
 const app = new Hono<AppEnv>();
 
@@ -77,6 +78,8 @@ app.route('/api/v1/admin/campaigns', campaigns);
 app.route('/api/v1/webhooks', resendWebhook);
 app.route('/api/v1/shop', shopPublic);
 app.route('/api/v1/admin/shop', shopAdmin);
+app.route('/api/v1/admin/outreach', outreachRoutes);
+app.route('/api/v1/outreach', outreachPublic);
 app.route('/api/v1/services', servicesPublic);
 app.route('/api/v1/admin/services', servicesAdmin);
 app.route('/api/v1/webhooks', paypalWebhook);
