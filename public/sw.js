@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jeff-honforloco-v4';
+const CACHE_NAME = 'jeff-honforloco-v5';
 const OFFLINE_URL = '/';
 
 // Install event - cache the offline fallback shell
