@@ -167,6 +167,10 @@ const AdminOutreach: React.FC = () => {
     setSelected(new Set(filtered.filter((t) => t.email && !t.unsubscribed).map((t) => t.id)));
   };
 
+  const selectCategory = (category: string) => {
+    setSelected(new Set(targets.filter((t) => t.category === category && t.email && !t.unsubscribed).map((t) => t.id)));
+  };
+
   const discoverEmail = async (id: number) => {
     setDiscovering(id);
     try {
@@ -295,6 +299,12 @@ const AdminOutreach: React.FC = () => {
                 <Button variant="outline" size="sm" onClick={selectAllEmailable}>Select all with email</Button>
                 <Button variant="outline" size="sm" onClick={() => setSelected(new Set())}>Clear</Button>
                 <Button variant="outline" size="sm" onClick={() => setImportOpen((v) => !v)}>Import JSON</Button>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <span className="text-xs text-neutral-500 self-center">Quick select:</span>
+                <Button variant="outline" size="sm" onClick={() => { selectCategory('wedding_venue'); applyTemplate('venue'); }}>Venues</Button>
+                <Button variant="outline" size="sm" onClick={() => { selectCategory('real_estate'); applyTemplate('real_estate'); }}>Realtors</Button>
+                <Button variant="outline" size="sm" onClick={() => { selectCategory('brand'); applyTemplate('brand'); }}>Brands</Button>
               </div>
               {importOpen && (
                 <div className="pt-2 space-y-2">
