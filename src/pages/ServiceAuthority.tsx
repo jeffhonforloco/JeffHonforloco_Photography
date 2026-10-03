@@ -10,6 +10,45 @@ const ServiceAuthority = () => {
 
   if (!page) return <Navigate to="/not-found" replace />;
 
+  // JSON-LD structured data for SEO and AI search
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'ProfessionalService',
+        '@id': `https://jeffhonforlocophotos.com${normalizedPath}#business`,
+        name: 'Jeff Honforloco Photography',
+        description: page.description,
+        url: `https://jeffhonforlocophotos.com${normalizedPath}`,
+        image: `https://jeffhonforlocophotos.com${imagePath}`,
+        priceRange: page.pricingCopy.includes('$') ? page.pricingCopy.match(/\$\d[\d,]*/)?.[0] + '+' : '$$',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Providence',
+          addressRegion: 'RI',
+          addressCountry: 'US',
+        },
+        areaServed: ['Providence, RI', 'Rhode Island', 'New England', 'Boston, MA', 'New York, NY'],
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: page.faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://jeffhonforlocophotos.com/' },
+          { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://jeffhonforlocophotos.com/services' },
+          { '@type': 'ListItem', position: 3, name: page.h1, item: `https://jeffhonforlocophotos.com${normalizedPath}` },
+        ],
+      },
+    ],
+  };
+
   const imagePath = page.image.split('?')[0];
   const isAcquisitionImage = imagePath.startsWith('/images/acquisition/');
   const heroMedia = page.gallery?.find((image) => image.src === imagePath);
@@ -19,6 +58,7 @@ const ServiceAuthority = () => {
 
   return (
     <Layout>
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       <article className="bg-photo-black text-white overflow-x-clip">
         <section className="pt-28 md:pt-36 pb-16 md:pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-16">
