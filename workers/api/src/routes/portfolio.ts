@@ -107,23 +107,4 @@ portfolio.delete('/:id', requireAuth, async (c) => {
   return c.json({ ok: true, success: true });
 });
 
-// TEMPORARY ONE-TIME endpoint: bulk-remove recently added portfolio images.
-// Protected by a one-time secret. REMOVE AFTER USE.
-const ONE_TIME_CLEANUP_SECRET = '5c55b9e82c6720f9cc1e3d251d165ddc74515fc66b2cb870';
-portfolio.post('/one-time-cleanup', async (c) => {
-  const { secret, ids } = await c.req.json<{ secret: string; ids: number[] }>();
-  if (secret !== ONE_TIME_CLEANUP_SECRET) return c.json({ error: 'Forbidden' }, 403);
-  if (!Array.isArray(ids) || ids.length === 0 || ids.length > 200) {
-    return c.json({ error: 'ids must be a non-empty array (max 200)' }, 400);
-  }
-  const clean = ids.filter((n) => Number.isInteger(n) && n > 0);
-  const stmt = c.env.DB.prepare('DELETE FROM portfolio_images WHERE id = ?');
-  const batch = clean.map((id) => stmt.bind(id));
-  await c.env.DB.batch(batch);
-  const remaining = await c.env.DB.prepare(
-    'SELECT COUNT(*) n FROM portfolio_images'
-  ).first<{ n: number }>();
-  return c.json({ ok: true, success: true, deleted: clean.length, remaining: remaining?.n ?? -1 });
-});
-
 export default portfolio;
