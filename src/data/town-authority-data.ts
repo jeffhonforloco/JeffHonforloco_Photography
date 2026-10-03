@@ -10,11 +10,11 @@ const townWeddingImage = (name: string, width: number, height: number, alt: stri
 });
 
 const townEngagementImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
-  src: `/images/acquisition/engagement/${name}-1600.webp`,
+  src: `/images/acquisition/engagement/${name}-${width > 1365 ? '1600' : '1200'}.webp`,
   width,
   height,
   alt,
-  variants: [480, 768, 1200, 1600],
+  variants: width > 1365 ? [480, 768, 1200, 1600] : [480, 768, 1200],
 });
 
 export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
@@ -22,7 +22,7 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
     path: '/warwick-photographer',
     title: 'Warwick RI Photographer | Jeff Honforloco Photography',
     description: 'Photographer in Warwick, Rhode Island for weddings, portraits, headshots and events. Oakland Beach, Warwick Neck and Apponaug sessions with a Providence studio home base.',
-    image: '/images/acquisition/engagement/A7306425(1)_retouched-1600.webp',
+    image: '/images/acquisition/engagement/A7306452_retouched-1200.webp',
     eyebrow: 'Warwick · Rhode Island',
     h1: 'Warwick Photographer',
     introduction: 'Warwick is Rhode Island\u2019s second city, and it photographs like several towns in one: the sailboats and sunsets of Oakland Beach and Conimicut Point, the village streets of Apponaug and Pawtuxet, the working waterfront of Warwick Neck. Jeff Honforloco photographs weddings, portraits, headshots and events across Warwick, pairing directed, editorial-quality portraiture with the natural light these shoreline locations give away for free. Based minutes away in Providence, Jeff shoots Warwick sessions without travel fees or fuss \u2014 from engagement portraits at Rocky Point to corporate headshots along the Bald Hill Road corridor.',
@@ -55,9 +55,9 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore wedding photography',
     galleryTitle: 'Recent Warwick-area work',
     gallery: [
-      townEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
-      townWeddingImage('A7307174(1)_retouched', 2048, 1365, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
-      townEngagementImage('A7306434_retouched', 1365, 2048, 'Couple sharing a quiet moment beside a bicycle'),
+      townEngagementImage('A7306452_retouched', 1200, 1800, 'Engaged couple with a bicycle on a waterfront boardwalk'),
+      townWeddingImage('A7307174(1)_retouched', 1600, 1066, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
+      townWeddingImage('A7306941_retouched', 1600, 1066, 'Bride standing with bridesmaids before the wedding ceremony'),
     ],
     secondaryTitle: 'Why Warwick photographs so well',
     secondaryCopy: [
@@ -70,13 +70,13 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Can you photograph a Warwick wedding?', answer: 'Yes. Wedding coverage in Warwick starts at $3,200 for Wedding Essentials, with full-day coverage from $6,500.' },
       { question: 'Do you do headshots in Warwick?', answer: 'Yes \u2014 studio headshots in Providence or on-location sessions at your Warwick office, with consistent lighting and direction for teams.' },
     ],
-    imageAlt: 'Couple posing together during a golden-hour portrait session near Warwick, Rhode Island',
+    imageAlt: 'Engaged couple with a bicycle on a waterfront boardwalk near Warwick, Rhode Island',
   },
   {
     path: '/cranston-photographer',
     title: 'Cranston RI Photographer | Jeff Honforloco Photography',
     description: 'Photographer in Cranston, Rhode Island for portraits, headshots, events and weddings. Pawtuxet Village and Garden City sessions from a Providence studio.',
-    image: '/images/acquisition/engagement/A7306434_retouched-1600.webp',
+    image: '/images/acquisition/wedding/A7301826(1)_retouched-1600.webp',
     eyebrow: 'Cranston · Rhode Island',
     h1: 'Cranston Photographer',
     introduction: 'Cranston sits right against Providence, which means its residents get big-city photography without crossing the city line: the brick sidewalks and river views of historic Pawtuxet Village, the manicured grounds around Garden City, the neighborhoods where generations of Rhode Island families have grown up. Jeff Honforloco photographs Cranston portraits, headshots, events and weddings with the same directed, editorial approach he brings to his Providence studio \u2014 relaxed sessions, clear direction, and images that look like you on your best day.',
@@ -109,9 +109,9 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore headshot photography',
     galleryTitle: 'Cranston-area portraits',
     gallery: [
-      townEngagementImage('A7306434_retouched', 1365, 2048, 'Couple sharing a quiet moment beside a bicycle'),
-      townWeddingImage('A7306941_retouched', 2048, 1365, 'Bride standing with bridesmaids before the wedding ceremony'),
-      townEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
+      townWeddingImage('A7301826(1)_retouched', 1600, 1069, 'Bride getting her hair styled while her wedding dress hangs nearby'),
+      townEngagementImage('A7306425(1)_retouched', 1600, 1066, 'Couple posing together with the skyline behind them'),
+      townEngagementImage('A7306434_retouched', 1200, 1800, 'Couple sharing a quiet moment beside a bicycle'),
     ],
     secondaryTitle: 'Ten minutes from Providence, a world of its own',
     secondaryCopy: [
@@ -124,13 +124,13 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Do you photograph events in Cranston?', answer: 'Yes. Birthdays, communions, graduations and corporate events across Cranston are covered under Events & Celebrations packages beginning at $799.' },
       { question: 'Can our whole office get headshots?', answer: 'Yes. Jeff brings studio lighting to your Cranston office for consistent team headshots, quoted by headcount.' },
     ],
-    imageAlt: 'Couple sharing a quiet moment during a portrait session in Cranston, Rhode Island',
+    imageAlt: 'Bride getting her hair styled before a wedding in Cranston, Rhode Island',
   },
   {
     path: '/newport-photographer',
     title: 'Newport RI Photographer | Jeff Honforloco Photography',
     description: 'Photographer in Newport, Rhode Island for weddings, editorial and portrait sessions. Mansion, Cliff Walk and Ocean Drive photography with Providence-studio production.',
-    image: '/images/acquisition/wedding/A7307174(1)_retouched-1600.webp',
+    image: '/images/acquisition/wedding/bridal-runway-back-wide-1600.webp',
     eyebrow: 'Newport · Rhode Island',
     h1: 'Newport Photographer',
     introduction: 'Newport is where Rhode Island shows off: the Breakers and the marble halls of the mansions, the forty steps and crashing surf of the Cliff Walk, the sailboats stacked along Bowen\u2019s Wharf, the golden light on Ocean Drive. It is also one of the great wedding destinations on the East Coast. Jeff Honforloco photographs Newport weddings, editorial sessions and portraits with a fashion-trained eye \u2014 the kind of direction and lighting these locations deserve \u2014 while keeping the experience relaxed for couples, families and brands.',
@@ -163,9 +163,9 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore wedding photography',
     galleryTitle: 'Newport weddings and portraits',
     gallery: [
-      townWeddingImage('A7307174(1)_retouched', 2048, 1365, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
-      townWeddingImage('A7306941_retouched', 2048, 1365, 'Bride standing with bridesmaids before the wedding ceremony'),
-      townEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
+      townWeddingImage('bridal-runway-back-wide', 1600, 2402, 'Bridal gown on the runway at a fashion show'),
+      townWeddingImage('A7307174(1)_retouched', 1600, 1066, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
+      townEngagementImage('A7306452_retouched', 1200, 1800, 'Engaged couple with a bicycle on a waterfront boardwalk'),
     ],
     secondaryTitle: 'A fashion eye for America\u2019s classic resort',
     secondaryCopy: [
@@ -178,13 +178,13 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Can you shoot a Cliff Walk portrait session?', answer: 'Yes. The Cliff Walk is spectacular for engagement and portrait sessions; Jeff times it for light and plans the route so the walking stays comfortable.' },
       { question: 'Do you photograph Newport weddings?', answer: 'Yes \u2014 Newport is a core wedding market. Full-day coverage begins at $6,500 with second-photographer options for mansion-scale celebrations.' },
     ],
-    imageAlt: 'Bride and groom sharing their first kiss during an outdoor Newport, Rhode Island wedding ceremony',
+    imageAlt: 'Bridal gown on the runway at a fashion show in Newport, Rhode Island',
   },
   {
     path: '/pawtucket-photographer',
     title: 'Pawtucket RI Photographer | Jeff Honforloco Photography',
     description: 'Photographer in Pawtucket, Rhode Island for portraits, headshots, commercial and event photography. Slater Mill, downtown arts district and mill-district sessions.',
-    image: '/images/acquisition/engagement/A7306425(1)_retouched-1600.webp',
+    image: '/images/acquisition/wedding/bridal-runway-grey-blazer-groom-1600.webp',
     eyebrow: 'Pawtucket · Rhode Island',
     h1: 'Pawtucket Photographer',
     introduction: 'Pawtucket is having a renaissance, and it photographs beautifully: the brick mill towers along the Blackstone River, the galleries and studios of the downtown arts district, Hope Artiste Village\u2019s creative energy, and Slater Mill \u2014 where the American Industrial Revolution began. Jeff Honforloco photographs Pawtucket portraits, headshots, commercial projects and events with an editorial eye that matches the city\u2019s creative momentum. Five minutes from Providence, with no travel fee and full studio capability a short drive away.',
@@ -217,9 +217,9 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore commercial photography',
     galleryTitle: 'Pawtucket-area work',
     gallery: [
-      townEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
-      townWeddingImage('A7306941_retouched', 2048, 1365, 'Bride standing with bridesmaids before the wedding ceremony'),
-      townEngagementImage('A7306434_retouched', 1365, 2048, 'Couple sharing a quiet moment beside a bicycle'),
+      townWeddingImage('bridal-runway-grey-blazer-groom', 1600, 2678, 'Groomswear look walking the runway at a bridal fashion show'),
+      townWeddingImage('A7306941_retouched', 1600, 1066, 'Bride standing with bridesmaids before the wedding ceremony'),
+      townEngagementImage('A7306434_retouched', 1200, 1800, 'Couple sharing a quiet moment beside a bicycle'),
     ],
     secondaryTitle: 'Mill brick, river light, creative energy',
     secondaryCopy: [
@@ -232,13 +232,13 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Can you shoot at Slater Mill?', answer: 'The Slater Mill campus is a beautiful backdrop; Jeff confirms any permit or scheduling requirements during planning.' },
       { question: 'Do you photograph Pawtucket weddings?', answer: 'Yes. Wedding coverage at Pawtucket\u2019s mill venues begins at $3,200 for Wedding Essentials.' },
     ],
-    imageAlt: 'Couple posing together during a portrait session in Pawtucket, Rhode Island',
+    imageAlt: 'Groomswear look walking the runway at a fashion show in Pawtucket, Rhode Island',
   },
   {
     path: '/east-providence-photographer',
     title: 'East Providence RI Photographer | Jeff Honforloco Photography',
     description: 'Photographer in East Providence, Rhode Island for family portraits, events, headshots and weddings. Bold Point Park, Seekonk River and Riverside sessions.',
-    image: '/images/acquisition/wedding/A7306941_retouched-1600.webp',
+    image: '/images/acquisition/wedding/A7307180_retouched-1600.webp',
     eyebrow: 'East Providence · Rhode Island',
     h1: 'East Providence Photographer',
     introduction: 'East Providence looks across the Seekonk at the Providence skyline \u2014 and that view is only the start. Bold Point Park\u2019s waterfront sunsets, the historic carousel at Crescent Park in Riverside, the tree-lined streets of Rumford and Kent Heights: this is classic Rhode Island family country. Jeff Honforloco photographs East Providence family portraits, events, headshots and weddings with warm, directed sessions that keep kids laughing and adults relaxed. Across the river from the Providence studio, with no travel fee.',
@@ -271,9 +271,9 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore wedding photography',
     galleryTitle: 'East Providence-area sessions',
     gallery: [
-      townWeddingImage('A7306941_retouched', 2048, 1365, 'Bride standing with bridesmaids before the wedding ceremony'),
-      townEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
-      townWeddingImage('A7307174(1)_retouched', 2048, 1365, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
+      townWeddingImage('A7307180_retouched', 1600, 1066, 'Bride and groom facing each other during an outdoor pavilion ceremony'),
+      townEngagementImage('A7306425(1)_retouched', 1600, 1066, 'Couple posing together with the skyline behind them'),
+      townWeddingImage('_DSC0115_retouched', 1600, 1066, 'Bride and groom holding hands during their wedding ceremony'),
     ],
     secondaryTitle: 'Across the river, right at home',
     secondaryCopy: [
@@ -286,6 +286,6 @@ export const TOWN_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Do you photograph birthday parties in East Providence?', answer: 'Yes \u2014 Events & Celebrations coverage begins at $799, from first birthdays to graduations.' },
       { question: 'Can we do studio portraits instead?', answer: 'Absolutely. The Providence studio is minutes away for families who want controlled lighting and backdrops.' },
     ],
-    imageAlt: 'Bride with bridesmaids photographed before a wedding in East Providence, Rhode Island',
+    imageAlt: 'Bride and groom during an outdoor ceremony in East Providence, Rhode Island',
   },
 ];

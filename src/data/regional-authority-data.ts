@@ -10,11 +10,11 @@ const regionalWeddingImage = (name: string, width: number, height: number, alt: 
 });
 
 const regionalEngagementImage = (name: string, width: number, height: number, alt: string): AcquisitionGalleryImage => ({
-  src: `/images/acquisition/engagement/${name}-1600.webp`,
+  src: `/images/acquisition/engagement/${name}-${width > 1365 ? '1600' : '1200'}.webp`,
   width,
   height,
   alt,
-  variants: [480, 768, 1200, 1600],
+  variants: width > 1365 ? [480, 768, 1200, 1600] : [480, 768, 1200],
 });
 
 export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
@@ -55,9 +55,9 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore wedding photography',
     galleryTitle: 'New England work',
     gallery: [
-      regionalWeddingImage('A7307174(1)_retouched', 2048, 1365, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
-      regionalEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
-      regionalWeddingImage('A7306941_retouched', 2048, 1365, 'Bride standing with bridesmaids before the wedding ceremony'),
+      regionalWeddingImage('A7307174(1)_retouched', 1600, 1066, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
+      regionalWeddingImage('bridal-runway-back-wide', 1600, 2402, 'Bridal gown on the runway at a fashion show'),
+      regionalWeddingImage('A7301826(1)_retouched', 1600, 1069, 'Bride getting her hair styled while her wedding dress hangs nearby'),
     ],
     secondaryTitle: 'Why base the region\u2019s photographer in Providence',
     secondaryCopy: [
@@ -76,7 +76,7 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     path: '/massachusetts-photographer',
     title: 'Massachusetts Photographer | Jeff Honforloco Photography',
     description: 'Photographer serving Massachusetts \u2014 Boston, Cape Cod, the Berkshires and beyond. Weddings, portraits, editorial and commercial photography from Providence.',
-    image: '/images/acquisition/engagement/A7306425(1)_retouched-1600.webp',
+    image: '/images/acquisition/wedding/A7306941_retouched-1600.webp',
     eyebrow: 'Massachusetts · Regional Coverage',
     h1: 'Massachusetts Photographer',
     introduction: 'Massachusetts gives a photographer everything: Boston\u2019s historic streets and harbor, Cape Cod\u2019s dunes and light, the Berkshires\u2019 hills and cultural venues, the North Shore\u2019s rocky coastline. Jeff Honforloco photographs weddings, portraits, editorial and commercial work across the Commonwealth from his Providence base \u2014 close enough that Boston is an easy day trip, with the studio\u2019s full production capability behind every booking. Whether it\u2019s a Back Bay wedding, a Cape Cod engagement session or a Boston corporate headshot day, you get one photographer and one consistent standard.',
@@ -109,9 +109,9 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore Boston photography',
     galleryTitle: 'Massachusetts sessions',
     gallery: [
-      regionalEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
-      regionalWeddingImage('A7307174(1)_retouched', 2048, 1365, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
-      regionalEngagementImage('A7306434_retouched', 1365, 2048, 'Couple sharing a quiet moment beside a bicycle'),
+      regionalWeddingImage('A7306941_retouched', 1600, 1066, 'Bride standing with bridesmaids before the wedding ceremony'),
+      regionalEngagementImage('A7306452_retouched', 1200, 1800, 'Engaged couple with a bicycle on a waterfront boardwalk'),
+      regionalWeddingImage('A7307180_retouched', 1600, 1066, 'Bride and groom facing each other during an outdoor pavilion ceremony'),
     ],
     secondaryTitle: 'Boston-close, Cape Cod-ready',
     secondaryCopy: [
@@ -124,13 +124,13 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Can you do corporate headshots in Boston?', answer: 'Yes \u2014 Jeff brings studio lighting to Boston offices for consistent team headshots, quoted by headcount.' },
       { question: 'Do you shoot in the Berkshires?', answer: 'Yes. Berkshire weddings and editorial work are planned as multi-day productions with location scouting.' },
     ],
-    imageAlt: 'Couple posing together during a golden-hour portrait session in Massachusetts',
+    imageAlt: 'Bride with her bridesmaids before a Massachusetts wedding ceremony',
   },
   {
     path: '/boston-photographer',
     title: 'Boston Photographer | Jeff Honforloco Photography',
     description: 'Photographer serving Boston, Massachusetts \u2014 weddings, headshots, editorial and portraits. Back Bay, Seaport and Public Garden sessions from nearby Providence.',
-    image: '/images/acquisition/engagement/A7306434_retouched-1600.webp',
+    image: '/images/acquisition/engagement/A7306425(1)_retouched-1600.webp',
     eyebrow: 'Boston · Massachusetts',
     h1: 'Boston Photographer',
     introduction: 'Boston is an hour from Providence \u2014 and Jeff Honforloco treats it like a home market. The brownstones of Back Bay and Beacon Hill, the Public Garden in bloom, the Seaport\u2019s modern lines, the Charles River at golden hour: Boston gives portrait, wedding and editorial photography a backdrop with real character. Jeff brings fashion-trained direction and full studio production to Boston weddings, corporate headshots, editorial shoots and portraits \u2014 with the responsiveness of a nearby photographer, not a fly-in vendor.',
@@ -163,9 +163,9 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore headshot photography',
     galleryTitle: 'Boston-area work',
     gallery: [
-      regionalEngagementImage('A7306434_retouched', 1365, 2048, 'Couple sharing a quiet moment beside a bicycle'),
-      regionalWeddingImage('A7307174(1)_retouched', 2048, 1365, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
-      regionalEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
+      regionalEngagementImage('A7306425(1)_retouched', 1600, 1066, 'Couple posing together with the skyline behind them'),
+      regionalWeddingImage('_DSC0115_retouched', 1600, 1066, 'Bride and groom holding hands during their wedding ceremony'),
+      regionalWeddingImage('bridal-runway-grey-blazer-groom', 1600, 2678, 'Groomswear look walking the runway at a bridal fashion show'),
     ],
     secondaryTitle: 'An hour away, fully present',
     secondaryCopy: [
@@ -178,13 +178,13 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Can you photograph a Boston wedding?', answer: 'Yes. Boston weddings are a core booking, with full-day coverage from $6,500 and second-photographer options.' },
       { question: 'Do you offer corporate headshots in Boston?', answer: 'Yes \u2014 on-location headshot days with studio lighting for Boston firms, quoted by headcount.' },
     ],
-    imageAlt: 'Couple sharing a quiet moment during a portrait session in Boston, Massachusetts',
+    imageAlt: 'Couple posing together with the skyline behind them in Boston, Massachusetts',
   },
   {
     path: '/new-york-wedding-photographer',
     title: 'New York Wedding Photographer | Jeff Honforloco Photography',
     description: 'Destination wedding photographer for New York \u2014 NYC, the Hudson Valley, the Hamptons and Long Island. Editorial wedding coverage from Providence-based Jeff Honforloco.',
-    image: '/images/acquisition/wedding/A7306941_retouched-1600.webp',
+    image: '/images/acquisition/wedding/_DSC0115_retouched-1600.webp',
     eyebrow: 'New York · Destination Weddings',
     h1: 'New York Wedding Photographer',
     introduction: 'Some weddings deserve a photographer who treats them like an editorial assignment. Jeff Honforloco travels from Providence to New York for weddings across the city, the Hudson Valley, the Hamptons and Long Island \u2014 bringing a fashion and editorial background to celebrations where the photography matters as much as the party. For New York couples who want imagery with intention \u2014 directed portraits, invisible ceremony coverage, receptions with energy \u2014 Jeff offers a destination-wedding experience planned meticulously and delivered beautifully.',
@@ -217,9 +217,9 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
     portfolioLabel: 'Explore wedding photography',
     galleryTitle: 'Wedding work',
     gallery: [
-      regionalWeddingImage('A7306941_retouched', 2048, 1365, 'Bride standing with bridesmaids before the wedding ceremony'),
-      regionalWeddingImage('A7307174(1)_retouched', 2048, 1365, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
-      regionalEngagementImage('A7306425(1)_retouched', 2048, 1365, 'Couple posing together with the skyline behind them'),
+      regionalWeddingImage('_DSC0115_retouched', 1600, 1066, 'Bride and groom holding hands during their wedding ceremony'),
+      regionalWeddingImage('bridal-runway-back-wide', 1600, 2402, 'Bridal gown on the runway at a fashion show'),
+      regionalWeddingImage('A7307174(1)_retouched', 1600, 1066, 'Bride and groom sharing their first kiss during an outdoor ceremony'),
     ],
     secondaryTitle: 'Why New York couples book a Providence photographer',
     secondaryCopy: [
@@ -232,6 +232,6 @@ export const REGIONAL_SERVICE_PAGES: ServiceAuthorityPage[] = [
       { question: 'Can we do our engagement session in New York?', answer: 'Yes. Engagement sessions can be shot in New York or at the Providence studio, and are included with full-day wedding collections.' },
       { question: 'What is your New York wedding pricing?', answer: 'Full-day coverage begins at $6,500. Multi-day and large-scale productions are custom quoted after a vision call.' },
     ],
-    imageAlt: 'Bride with bridesmaids photographed before a New York wedding ceremony',
+    imageAlt: 'Bride and groom holding hands during their New York wedding ceremony',
   },
 ];
