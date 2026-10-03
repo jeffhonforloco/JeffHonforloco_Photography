@@ -58,6 +58,7 @@ const services = [
     duration: '1–4 hours',
     startingAt: '$499',
     bookId: 'glamour',
+    authorityPath: '/providence-glamour-photographer',
   },
   {
     id: 'editorial',
@@ -85,6 +86,7 @@ const services = [
     duration: '1–4 hours',
     startingAt: '$499',
     bookId: 'lifestyle',
+    authorityPath: '/providence-lifestyle-photographer',
   },
   {
     id: 'wedding',
@@ -141,6 +143,7 @@ const services = [
     duration: '2–4 hr shoot+',
     startingAt: '$1,500',
     bookId: 'motion',
+    authorityPath: '/providence-motion-video-production',
     isMotion: true,
   },
 ];

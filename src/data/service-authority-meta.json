@@ -43,8 +43,8 @@
   },
   {
     "path": "/providence-sweet-16-quinceanera-photographer",
-    "title": "Providence Sweet 16 and Quinceañera Photographer | Jeff Honforloco",
-    "description": "Plan Sweet 15, Sweet 16 and quinceañera photography in Providence and Rhode Island, with portrait and event coverage tailored to the celebration.",
+    "title": "Providence Sweet 16 and Quincea\u00f1era Photographer | Jeff Honforloco",
+    "description": "Plan Sweet 15, Sweet 16 and quincea\u00f1era photography in Providence and Rhode Island, with portrait and event coverage tailored to the celebration.",
     "image": "/images/acquisition/sweet-16/jailyn-sweet16-outdoor-1024.webp"
   },
   {
@@ -56,8 +56,26 @@
   {
     "path": "/providence-birthday-photographer",
     "title": "Providence Birthday Photographer | Jeff Honforloco",
-    "description": "Birthday photography in Providence, RI for milestone birthdays — 21st, 30th, 40th, 50th and kids’ parties — with directed birthday portraits and candid party coverage across Rhode Island.",
+    "description": "Birthday photography in Providence, RI for milestone birthdays \u2014 21st, 30th, 40th, 50th and kids\u2019 parties \u2014 with directed birthday portraits and candid party coverage across Rhode Island.",
     "image": "/images/acquisition/birthday/birthday-01-1290.webp"
+  },
+  {
+    "path": "/providence-glamour-photographer",
+    "title": "Providence Glamour Photographer | Jeff Honforloco",
+    "description": "Glamour photography in Providence, RI \u2014 bold, editorial portraits with dramatic lighting, styling and direction for women who want to feel unforgettable.",
+    "image": "/images/IMG_7662.webp"
+  },
+  {
+    "path": "/providence-lifestyle-photographer",
+    "title": "Providence Lifestyle Photographer | Jeff Honforloco",
+    "description": "Lifestyle photography in Providence, RI \u2014 natural, story-driven portraits at the beach, in the city and everywhere in between, across Rhode Island and New England.",
+    "image": "/images/IMG_7713.webp"
+  },
+  {
+    "path": "/providence-motion-video-production",
+    "title": "Providence Motion & Video Production | Jeff Honforloco",
+    "description": "Motion and video production in Providence, RI \u2014 property walkthrough films, brand videos and event coverage with cinematic quality across Rhode Island and New England.",
+    "image": "/videos/acquisition/real-estate/realestate-tour-01-poster.webp"
   },
   {
     "path": "/warwick-photographer",
@@ -92,25 +110,25 @@
   {
     "path": "/new-england-photographer",
     "title": "New England Photographer | Jeff Honforloco Photography",
-    "description": "Photographer serving all of New England — weddings, editorial, portraits and commercial work across Rhode Island, Massachusetts, Connecticut and beyond.",
+    "description": "Photographer serving all of New England \u2014 weddings, editorial, portraits and commercial work across Rhode Island, Massachusetts, Connecticut and beyond.",
     "image": "/images/acquisition/wedding/A7307174(1)_retouched-1600.webp"
   },
   {
     "path": "/massachusetts-photographer",
     "title": "Massachusetts Photographer | Jeff Honforloco Photography",
-    "description": "Photographer serving Massachusetts — Boston, Cape Cod, the Berkshires and beyond. Weddings, portraits, editorial and commercial photography from Providence.",
+    "description": "Photographer serving Massachusetts \u2014 Boston, Cape Cod, the Berkshires and beyond. Weddings, portraits, editorial and commercial photography from Providence.",
     "image": "/images/acquisition/wedding/A7306941_retouched-1600.webp"
   },
   {
     "path": "/boston-photographer",
     "title": "Boston Photographer | Jeff Honforloco Photography",
-    "description": "Photographer serving Boston, Massachusetts — weddings, headshots, editorial and portraits. Back Bay, Seaport and Public Garden sessions from nearby Providence.",
+    "description": "Photographer serving Boston, Massachusetts \u2014 weddings, headshots, editorial and portraits. Back Bay, Seaport and Public Garden sessions from nearby Providence.",
     "image": "/images/acquisition/engagement/A7306425(1)_retouched-1600.webp"
   },
   {
     "path": "/new-york-wedding-photographer",
     "title": "New York Wedding Photographer | Jeff Honforloco Photography",
-    "description": "Destination wedding photographer for New York — NYC, the Hudson Valley, the Hamptons and Long Island. Editorial wedding coverage from Providence-based Jeff Honforloco.",
+    "description": "Destination wedding photographer for New York \u2014 NYC, the Hudson Valley, the Hamptons and Long Island. Editorial wedding coverage from Providence-based Jeff Honforloco.",
     "image": "/images/acquisition/wedding/_DSC0115_retouched-1600.webp"
   }
 ]
