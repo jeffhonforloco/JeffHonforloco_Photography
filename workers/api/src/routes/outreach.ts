@@ -36,6 +36,10 @@ CREATE TABLE IF NOT EXISTS outreach_sends (
   subject TEXT NOT NULL,
   sent_at TEXT NOT NULL DEFAULT (datetime('now')),
   status TEXT NOT NULL DEFAULT 'sent'
+);
+CREATE TABLE IF NOT EXISTS outreach_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL
 );`;
 
 let tablesEnsured = false;
@@ -188,7 +192,8 @@ outreach.post('/send', async (c) => {
   if (!subject || !rawBody) return c.json({ error: 'subject and body are required' }, 400);
 
   const placeholders = rawBody.match(/{{\s*[\w]+\s*}}/g) ?? [];
-  const postalAddress = c.env.BUSINESS_POSTAL_ADDRESS || 'Providence, RI';
+  const settingAddr = await c.env.DB.prepare(`SELECT value FROM outreach_settings WHERE key = 'postal_address'`).bind().first<{ value: string }>().catch(() => null);
+  const postalAddress = settingAddr?.value || c.env.BUSINESS_POSTAL_ADDRESS || 'Providence, RI';
   const baseUrl = c.env.PUBLIC_API_BASE_URL || 'https://jeffhonforlocophotos.com';
 
   let sent = 0;
@@ -229,6 +234,20 @@ outreach.get('/history', async (c) => {
      ORDER BY s.sent_at DESC LIMIT 200`,
   ).all<Record<string, unknown>>()).results ?? [];
   return c.json({ sends: rows });
+});
+
+// --- Outreach settings (footer postal address) ---
+
+outreach.get('/settings', async (c) => {
+  const row = await c.env.DB.prepare(`SELECT value FROM outreach_settings WHERE key = 'postal_address'`).first<{ value: string }>().catch(() => null);
+  return c.json({ postal_address: row?.value ?? '' });
+});
+
+outreach.put('/settings', async (c) => {
+  const body = await c.req.json<{ postal_address?: string }>().catch(() => ({}));
+  const addr = text(body.postal_address ?? '', 300);
+  await c.env.DB.prepare(`INSERT INTO outreach_settings (key, value) VALUES ('postal_address', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value`).bind(addr).run();
+  return c.json({ ok: true, postal_address: addr });
 });
 
 export default outreach;

@@ -120,6 +120,29 @@ const AdminOutreach: React.FC = () => {
   const [discovering, setDiscovering] = useState<number | null>(null);
   const [notice, setNotice] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
   const [tab, setTab] = useState('targets');
+  const [postalAddress, setPostalAddress] = useState('');
+  const [savingAddr, setSavingAddr] = useState(false);
+
+  const fetchSettings = useCallback(async () => {
+    try {
+      const res = await fetch(apiUrl('/api/v1/admin/outreach/settings'), { headers: authHeaders() });
+      const data = await res.json();
+      setPostalAddress(data.postal_address ?? '');
+    } catch { /* non-fatal */ }
+  }, []);
+
+  const savePostalAddress = async () => {
+    setSavingAddr(true);
+    try {
+      const res = await fetch(apiUrl('/api/v1/admin/outreach/settings'), {
+        method: 'PUT', headers: authHeaders(), body: JSON.stringify({ postal_address: postalAddress }),
+      });
+      setNotice(res.ok ? { type: 'ok', text: 'Footer address saved' } : { type: 'err', text: 'Could not save address' });
+    } catch {
+      setNotice({ type: 'err', text: 'Could not save address' });
+    }
+    setSavingAddr(false);
+  };
   const [importOpen, setImportOpen] = useState(false);
   const [importJson, setImportJson] = useState('');
   const [importing, setImporting] = useState(false);
@@ -145,10 +168,10 @@ const AdminOutreach: React.FC = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      await Promise.all([fetchTargets(), fetchHistory()]);
+      await Promise.all([fetchTargets(), fetchHistory(), fetchSettings()]);
       setLoading(false);
     })();
-  }, [fetchTargets, fetchHistory]);
+  }, [fetchTargets, fetchHistory, fetchSettings]);
 
   const filtered = targets.filter((t) => {
     const f = filter.toLowerCase();
@@ -235,10 +258,13 @@ const AdminOutreach: React.FC = () => {
     setImporting(false);
   };
 
+  const [confirmSend, setConfirmSend] = useState(false);
+
   const sendOutreach = async () => {
     if (!selected.size) { setNotice({ type: 'err', text: 'Select at least one target with an email address' }); return; }
     if (!subject.trim() || !body.trim()) { setNotice({ type: 'err', text: 'Subject and message are required' }); return; }
-    if (!window.confirm(`Send to ${selected.size} businesses?`)) return;
+    if (!confirmSend) { setConfirmSend(true); return; }
+    setConfirmSend(false);
     setSending(true);
     try {
       const res = await fetch(apiUrl('/api/v1/admin/outreach/send'), {
@@ -396,9 +422,26 @@ const AdminOutreach: React.FC = () => {
                 <label className="text-sm text-neutral-300">Message</label>
                 <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={14} className="mt-1 font-serif" />
               </div>
-              <Button onClick={sendOutreach} disabled={sending || !selected.size}>
-                <Send className="h-4 w-4 mr-2" /> {sending ? 'Sending…' : `Send to ${selected.size} businesses`}
-              </Button>
+              <div>
+                <label className="text-sm text-neutral-300">Footer postal address <span className="text-neutral-500">(required on cold emails — use a P.O. box or business address, never your home)</span></label>
+                <div className="flex gap-2 mt-1">
+                  <Input value={postalAddress} onChange={(e) => setPostalAddress(e.target.value)} placeholder="e.g. PO Box 1234, Providence, RI 02903" className="flex-1" />
+                  <Button variant="outline" size="sm" onClick={savePostalAddress} disabled={savingAddr}>{savingAddr ? 'Saving…' : 'Save'}</Button>
+                </div>
+                {!postalAddress.trim() && <p className="text-xs text-amber-400 mt-1">No address set — emails will show "Providence, RI", which is not compliant for cold outreach.</p>}
+              </div>
+              {confirmSend ? (
+                <div className="flex gap-2 items-center">
+                  <Button variant="destructive" onClick={sendOutreach} disabled={sending}>
+                    <Send className="h-4 w-4 mr-2" /> {sending ? 'Sending…' : `Confirm send to ${selected.size} businesses`}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setConfirmSend(false)}>Cancel</Button>
+                </div>
+              ) : (
+                <Button onClick={sendOutreach} disabled={sending || !selected.size}>
+                  <Send className="h-4 w-4 mr-2" /> {sending ? 'Sending…' : `Send to ${selected.size} businesses`}
+                </Button>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
