@@ -47,7 +47,7 @@ I came across {{business_name}} and the space photographs beautifully — but I 
 
 I'm Jeff, a Providence-based photographer specializing in editorial and event photography. I shoot venues the way couples actually dream about them — the light, the details, the atmosphere.
 
-Portfolio, pricing, and direct booking are all here: jeffhonforlocophotos.com
+See the wedding work, pricing, and book directly: jeffhonforlocophotos.com/providence-wedding-photographer
 
 Best,
 Jeff Honforloco`,
@@ -59,7 +59,7 @@ Jeff Honforloco`,
 
 I'm Jeff, a Providence photographer who shoots real estate and commercial spaces with an editorial finish — the kind of listing photos that make buyers slow down instead of swipe past.
 
-Portfolio, pricing, and direct booking: jeffhonforlocophotos.com
+See the real estate work, pricing, and book directly: jeffhonforlocophotos.com/providence-real-estate-photographer
 
 Best,
 Jeff Honforloco`,
@@ -71,7 +71,7 @@ Jeff Honforloco`,
 
 I shoot editorial and commercial photography here in Providence, and {{business_name}} struck me as a brand with a strong visual identity that could go further — menu features, behind-the-scenes, seasonal campaigns.
 
-Portfolio, pricing, and direct booking: jeffhonforlocophotos.com
+See the commercial work, pricing, and book directly: jeffhonforlocophotos.com/providence-commercial-photographer
 
 Best,
 Jeff`,
