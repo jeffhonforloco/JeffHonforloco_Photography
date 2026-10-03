@@ -62,6 +62,9 @@ const AdminOutreach: React.FC = () => {
   const [discovering, setDiscovering] = useState<number | null>(null);
   const [notice, setNotice] = useState<{ type: 'ok' | 'err'; text: string } | null>(null);
   const [tab, setTab] = useState('targets');
+  const [importOpen, setImportOpen] = useState(false);
+  const [importJson, setImportJson] = useState('');
+  const [importing, setImporting] = useState(false);
 
   const fetchTargets = useCallback(async () => {
     try {
@@ -132,6 +135,38 @@ const AdminOutreach: React.FC = () => {
     fetchTargets();
   };
 
+  const importTargets = async () => {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(importJson);
+    } catch {
+      setNotice({ type: 'err', text: 'Invalid JSON — paste a JSON array of businesses' });
+      return;
+    }
+    if (!Array.isArray(parsed) || !parsed.length) {
+      setNotice({ type: 'err', text: 'JSON must be a non-empty array' });
+      return;
+    }
+    setImporting(true);
+    try {
+      const res = await fetch(apiUrl('/api/v1/admin/outreach/targets/import'), {
+        method: 'POST', headers: authHeaders(), body: JSON.stringify({ targets: parsed }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setNotice({ type: 'ok', text: `Imported ${data.imported} businesses${data.skipped ? `, ${data.skipped} skipped` : ''}` });
+        setImportOpen(false);
+        setImportJson('');
+        fetchTargets();
+      } else {
+        setNotice({ type: 'err', text: data.error ?? 'Import failed' });
+      }
+    } catch {
+      setNotice({ type: 'err', text: 'Import failed' });
+    }
+    setImporting(false);
+  };
+
   const sendOutreach = async () => {
     if (!selected.size) { setNotice({ type: 'err', text: 'Select at least one target with an email address' }); return; }
     if (!subject.trim() || !body.trim()) { setNotice({ type: 'err', text: 'Subject and message are required' }); return; }
@@ -195,6 +230,16 @@ const AdminOutreach: React.FC = () => {
                 </div>
                 <Button variant="outline" size="sm" onClick={selectAllEmailable}>Select all with email</Button>
                 <Button variant="outline" size="sm" onClick={() => setSelected(new Set())}>Clear</Button>
+                <Button variant="outline" size="sm" onClick={() => setImportOpen((v) => !v)}>Import JSON</Button>
+              </div>
+              {importOpen && (
+                <div className="pt-2 space-y-2">
+                  <Textarea rows={6} placeholder='Paste a JSON array: [{"business_name":"…","website":"…","category":"…","location":"…","address":"…","phone":"…"}]' value={importJson} onChange={(e) => setImportJson(e.target.value)} className="font-mono text-xs" />
+                  <Button size="sm" onClick={importTargets} disabled={importing || !importJson.trim()}>
+                    {importing ? 'Importing…' : 'Import businesses'}
+                  </Button>
+                </div>
+              )}
               </div>
             </CardHeader>
             <CardContent>
