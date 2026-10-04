@@ -62,13 +62,11 @@ class ErrorBoundary extends Component<Props, State> {
             >
               Refresh Page
             </button>
-            {this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <details className="mt-6 text-left">
-                <summary className="text-gray-400 cursor-pointer">Error Details (tap to expand)</summary>
-                <pre className="mt-2 p-4 bg-gray-900 text-red-400 text-xs rounded overflow-auto whitespace-pre-wrap break-words">
-                  {this.state.error.message}
-                  {'\n\n'}
-                  {this.state.error.stack?.split('\n').slice(0, 8).join('\n')}
+                <summary className="text-gray-400 cursor-pointer">Error Details</summary>
+                <pre className="mt-2 p-4 bg-gray-900 text-red-400 text-sm rounded overflow-auto">
+                  {this.state.error.stack}
                 </pre>
               </details>
             )}

@@ -10,6 +10,8 @@ const ServiceAuthority = () => {
 
   if (!page) return <Navigate to="/not-found" replace />;
 
+  const imagePath = page.image.split('?')[0];
+
   // JSON-LD structured data for SEO and AI search
   const structuredData = {
     '@context': 'https://schema.org',
@@ -49,7 +51,6 @@ const ServiceAuthority = () => {
     ],
   };
 
-  const imagePath = page.image.split('?')[0];
   const isAcquisitionImage = imagePath.startsWith('/images/acquisition/');
   const heroMedia = page.gallery?.find((image) => image.src === imagePath);
   const heroSrcSet = isAcquisitionImage
